@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardlib.portals;
+package net.wayward_realms.waywardlib.travel;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

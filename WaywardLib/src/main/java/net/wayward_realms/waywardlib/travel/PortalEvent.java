@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardlib.portals;
+package net.wayward_realms.waywardlib.travel;
 
 import net.wayward_realms.waywardlib.WaywardEvent;
 import org.bukkit.event.HandlerList;

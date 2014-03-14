@@ -13,7 +13,7 @@ import net.wayward_realms.waywardlib.lock.LockPlugin;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import net.wayward_realms.waywardlib.permissions.PermissionsPlugin;
-import net.wayward_realms.waywardlib.portals.PortalsPlugin;
+import net.wayward_realms.waywardlib.travel.TravelPlugin;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableChunk;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
@@ -83,8 +83,8 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     if (plugin instanceof PermissionsPlugin) {
                         servicesManager.register(PermissionsPlugin.class, (PermissionsPlugin) plugin, plugin, ServicePriority.Normal);
                     }
-                    if (plugin instanceof PortalsPlugin) {
-                        servicesManager.register(PortalsPlugin.class, (PortalsPlugin) plugin, plugin, ServicePriority.Normal);
+                    if (plugin instanceof TravelPlugin) {
+                        servicesManager.register(TravelPlugin.class, (TravelPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     if (plugin instanceof SkillsPlugin) {
                         servicesManager.register(SkillsPlugin.class, (SkillsPlugin) plugin, plugin, ServicePriority.Normal);
@@ -112,7 +112,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(LockPlugin.class);
         loadPluginState(ModerationPlugin.class);
         loadPluginState(PermissionsPlugin.class);
-        loadPluginState(PortalsPlugin.class);
+        loadPluginState(TravelPlugin.class);
         loadPluginState(DeathPlugin.class);
         loadPluginState(EventsPlugin.class);
         loadPluginState(EssentialsPlugin.class);
@@ -144,7 +144,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         savePluginState(getServer().getServicesManager().getRegistration(LockPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(ModerationPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(PermissionsPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(PortalsPlugin.class).getProvider());
+        savePluginState(getServer().getServicesManager().getRegistration(TravelPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(DeathPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(EventsPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(EssentialsPlugin.class).getProvider());

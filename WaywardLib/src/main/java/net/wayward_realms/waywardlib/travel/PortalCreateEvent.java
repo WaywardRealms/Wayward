@@ -1,14 +1,14 @@
-package net.wayward_realms.waywardlib.portals;
+package net.wayward_realms.waywardlib.travel;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player destroys a portalWaywardPlugin
+ * Called when a player creates a portalWaywardPlugin
  *
  */
-public class PortalDestroyEvent extends PortalEvent implements Cancellable {
+public class PortalCreateEvent extends PortalEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -16,7 +16,7 @@ public class PortalDestroyEvent extends PortalEvent implements Cancellable {
     private final Portal portal;
     private boolean cancel;
 
-    public PortalDestroyEvent(final Player player, final Portal portal) {
+    public PortalCreateEvent(final Player player, final Portal portal) {
         this.player = player;
         this.portal = portal;
     }
@@ -31,18 +31,18 @@ public class PortalDestroyEvent extends PortalEvent implements Cancellable {
     }
 
     /**
-     * Gets the player destroying the portal
+     * Gets the player creating the portal
      *
-     * @return the player destroying the portal
+     * @return the player creating the portal
      */
     public final Player getPlayer() {
         return player;
     }
 
     /**
-     * Gets the portal being destroyed
+     * Gets the portal being created
      *
-     * @return the portal to be destroyed
+     * @return the portal to be created
      */
     public final Portal getPortal() {
         return portal;

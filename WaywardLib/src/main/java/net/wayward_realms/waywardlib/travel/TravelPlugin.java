@@ -1,19 +1,19 @@
-package net.wayward_realms.waywardlib.portals;
+package net.wayward_realms.waywardlib.travel;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
 
 import java.util.Collection;
 
 /**
- * Represents a portals pluginWaywardPlugin
+ * Represents a travel pluginWaywardPlugin
  *
  */
-public interface PortalsPlugin extends WaywardPlugin {
+public interface TravelPlugin extends WaywardPlugin {
 
     /**
-     * Gets a collection of the portals
+     * Gets a collection of the travel
      *
-     * @return a collection of the portals
+     * @return a collection of the travel
      */
     public Collection<? extends Portal> getPortals();
 
