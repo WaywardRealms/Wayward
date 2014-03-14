@@ -1,5 +1,8 @@
-package net.wayward_realms.waywardlib.classes;
+package net.wayward_realms.waywardlib.skills;
 
+/**
+ * Represents a spell
+ */
 public interface Spell extends Skill {
 
     /**

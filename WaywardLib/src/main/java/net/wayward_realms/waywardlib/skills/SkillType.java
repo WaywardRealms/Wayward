@@ -1,5 +1,8 @@
-package net.wayward_realms.waywardlib.classes;
+package net.wayward_realms.waywardlib.skills;
 
+/**
+ * An enum containing skill types
+ */
 public enum SkillType {
 
     MELEE_OFFENCE,

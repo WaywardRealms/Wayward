@@ -1,8 +1,11 @@
-package net.wayward_realms.waywardlib.classes;
+package net.wayward_realms.waywardlib.skills;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
+/**
+ * Represents a skill
+ */
 public interface Skill extends ConfigurationSerializable {
 
     /**

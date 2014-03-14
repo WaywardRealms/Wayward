@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardlib.classes;
 
+import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Map;

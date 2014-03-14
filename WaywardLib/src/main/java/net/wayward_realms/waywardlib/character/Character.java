@@ -1,6 +1,6 @@
 package net.wayward_realms.waywardlib.character;
 
-import net.wayward_realms.waywardlib.classes.SkillType;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import org.bukkit.Location;
