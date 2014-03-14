@@ -1,0 +1,31 @@
+# eclipse
+*.classpath
+*.project
+*.settings
+
+# netbeans
+*/nbproject/
+
+# intellij
+*.idea/
+*.eml
+*.iml
+*.iws
+
+# maven
+*/target/
+
+# vim
+.*.sw[a-p]
+
+# various other potential build files
+*/build
+*/bin
+*/dist
+
+# mac filesystem dust
+*.DS_Store
+
+# windows filesystem dust
+*Thumbs.db
+*Desktop.ini
