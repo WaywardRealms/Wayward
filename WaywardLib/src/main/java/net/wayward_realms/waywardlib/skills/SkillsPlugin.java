@@ -1,12 +1,14 @@
 package net.wayward_realms.waywardlib.skills;
 
+import net.wayward_realms.waywardlib.WaywardPlugin;
+
 import java.util.Collection;
 
 /**
  * Represents a skills plugin
  *
  */
-public interface SkillsPlugin {
+public interface SkillsPlugin extends WaywardPlugin {
 
     /**
      * Gets the spell by the given name

@@ -13,10 +13,12 @@ import net.wayward_realms.waywardlib.lock.LockPlugin;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import net.wayward_realms.waywardlib.permissions.PermissionsPlugin;
+import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.travel.TravelPlugin;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableChunk;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
+import net.wayward_realms.waywardlib.worldgen.WorldgenPlugin;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -83,11 +85,17 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     if (plugin instanceof PermissionsPlugin) {
                         servicesManager.register(PermissionsPlugin.class, (PermissionsPlugin) plugin, plugin, ServicePriority.Normal);
                     }
+                    if (plugin instanceof ProfessionsPlugin) {
+                        servicesManager.register(ProfessionsPlugin.class, (ProfessionsPlugin) plugin, plugin, ServicePriority.Normal);
+                    }
                     if (plugin instanceof TravelPlugin) {
                         servicesManager.register(TravelPlugin.class, (TravelPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     if (plugin instanceof SkillsPlugin) {
                         servicesManager.register(SkillsPlugin.class, (SkillsPlugin) plugin, plugin, ServicePriority.Normal);
+                    }
+                    if (plugin instanceof WorldgenPlugin) {
+                        servicesManager.register(WorldgenPlugin.class, (WorldgenPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     loadState();
                 }
@@ -117,6 +125,10 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(EventsPlugin.class);
         loadPluginState(EssentialsPlugin.class);
         loadPluginState(ChatPlugin.class);
+        loadPluginState(MonstersPlugin.class);
+        loadPluginState(ProfessionsPlugin.class);
+        loadPluginState(SkillsPlugin.class);
+        loadPluginState(WorldgenPlugin.class);
     }
 
     private boolean loadPluginState(Class<? extends WaywardPlugin> clazz) {
@@ -149,6 +161,10 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         savePluginState(getServer().getServicesManager().getRegistration(EventsPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(EssentialsPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(ChatPlugin.class).getProvider());
+        savePluginState(getServer().getServicesManager().getRegistration(MonstersPlugin.class).getProvider());
+        savePluginState(getServer().getServicesManager().getRegistration(ProfessionsPlugin.class).getProvider());
+        savePluginState(getServer().getServicesManager().getRegistration(SkillsPlugin.class).getProvider());
+        savePluginState(getServer().getServicesManager().getRegistration(WorldgenPlugin.class).getProvider());
     }
 
     private boolean savePluginState(WaywardPlugin plugin) {
