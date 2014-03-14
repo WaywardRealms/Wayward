@@ -4,8 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
- * Represents a portal
- * @author Lucariatias
+ * Represents a portalWaywardPlugin
  *
  */
 public interface Portal extends ConfigurationSerializable {

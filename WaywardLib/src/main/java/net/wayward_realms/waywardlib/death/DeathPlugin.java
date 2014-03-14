@@ -6,8 +6,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Represents a death management plugin
- * @author Lucariatias
+ * Represents a death management pluginWaywardPlugin
  *
  */
 public interface DeathPlugin extends WaywardPlugin {

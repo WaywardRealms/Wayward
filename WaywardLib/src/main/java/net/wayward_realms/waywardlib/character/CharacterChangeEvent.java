@@ -6,7 +6,6 @@ import org.bukkit.event.HandlerList;
 
 /**
  * Called when a player changes character
- * @author Lucariatias
  *
  */
 public class CharacterChangeEvent extends CharacterEvent implements Cancellable {

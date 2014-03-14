@@ -1,8 +1,7 @@
 package net.wayward_realms.waywardlib.combat;
 
 /**
- * Represents any participant in a fight
- * @author Lucariatias
+ * Represents any participant in a fightWaywardPlugin
  *
  */
 public interface Combatant {

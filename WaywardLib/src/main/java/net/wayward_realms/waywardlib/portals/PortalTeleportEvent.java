@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player teleports using a portal
- * @author Lucariatias
+ * Called when a player teleports using a portalWaywardPlugin
  *
  */
 public class PortalTeleportEvent extends PortalEvent implements Cancellable {

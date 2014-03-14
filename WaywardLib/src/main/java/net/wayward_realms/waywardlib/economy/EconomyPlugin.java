@@ -7,8 +7,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.Collection;
 
 /**
- * Represents an economy plugin
- * @author Lucariatias
+ * Represents an economy pluginWaywardPlugin
  *
  */
 public interface EconomyPlugin extends WaywardPlugin {

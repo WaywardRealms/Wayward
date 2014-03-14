@@ -1,8 +1,7 @@
 package net.wayward_realms.waywardlib.combat;
 
 /**
- * Represents a combat AI
- * @author Lucariatias
+ * Represents a combat AIWaywardPlugin
  *
  */
 public interface AI extends Combatant {

@@ -4,8 +4,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 /**
- * Represents an entity's combat AI
- * @author Lucariatias
+ * Represents an entity's combat AIWaywardPlugin
  *
  */
 public interface EntityAI extends AI {

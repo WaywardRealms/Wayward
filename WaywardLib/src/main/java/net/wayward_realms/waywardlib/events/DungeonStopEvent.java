@@ -4,8 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a dungeon is stopped
- * @author Lucariatias
+ * Called when a dungeon is stoppedWaywardPlugin
  *
  */
 public class DungeonStopEvent extends DungeonEvent implements Cancellable {

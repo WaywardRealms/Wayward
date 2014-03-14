@@ -5,8 +5,7 @@ import net.wayward_realms.waywardlib.WaywardPlugin;
 import java.util.Collection;
 
 /**
- * Represents a portals plugin
- * @author Lucariatias
+ * Represents a portals pluginWaywardPlugin
  *
  */
 public interface PortalsPlugin extends WaywardPlugin {

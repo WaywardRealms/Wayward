@@ -6,8 +6,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import java.util.Map;
 
 /**
- * Represents a combat class
- * @author Lucariatias
+ * Represents a combat classWaywardPlugin
  *
  */
 public interface Class extends ConfigurationSerializable {

@@ -7,8 +7,7 @@ import org.bukkit.event.HandlerList;
 import java.util.Collection;
 
 /**
- * Called when a player chats
- * @author Lucariatias
+ * Called when a player chatsWaywardPlugin
  *
  */
 public class ChatMessageEvent extends ChatEvent implements Cancellable {

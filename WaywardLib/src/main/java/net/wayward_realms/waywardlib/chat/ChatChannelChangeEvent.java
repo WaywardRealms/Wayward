@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player changes which chat channel they are talking in
- * @author Lucariatias
+ * Called when a player changes which chat channel they are talking inWaywardPlugin
  *
  */
 public class ChatChannelChangeEvent extends ChatEvent implements Cancellable {

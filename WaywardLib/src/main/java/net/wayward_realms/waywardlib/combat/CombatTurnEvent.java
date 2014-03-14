@@ -5,8 +5,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Called when a character is making an attack
- * @author Lucariatias
+ * Called when a character is making an attackWaywardPlugin
  *
  */
 public class CombatTurnEvent extends CombatEvent implements Cancellable {

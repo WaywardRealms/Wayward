@@ -6,8 +6,7 @@ import java.io.File;
 import java.util.Collection;
 
 /**
- * Represents a combat plugin
- * @author Lucariatias
+ * Represents a combat pluginWaywardPlugin
  *
  */
 public interface CombatPlugin extends WaywardPlugin {

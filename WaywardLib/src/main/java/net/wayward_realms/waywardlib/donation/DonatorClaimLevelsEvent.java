@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a donator claims levels
- * @author Lucariatias
+ * Called when a donator claims levelsWaywardPlugin
  *
  */
 public class DonatorClaimLevelsEvent extends DonatorEvent implements Cancellable {

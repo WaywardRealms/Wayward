@@ -8,8 +8,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.Map;
 
 /**
- * Represents an essentials plugin
- * @author Lucariatias
+ * Represents an essentials pluginWaywardPlugin
  *
  */
 public interface EssentialsPlugin extends WaywardPlugin {

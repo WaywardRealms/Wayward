@@ -3,8 +3,7 @@ package net.wayward_realms.waywardlib.economy;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
- * Represents a currency
- * @author Lucariatias
+ * Represents a currencyWaywardPlugin
  *
  */
 public interface Currency extends ConfigurationSerializable {

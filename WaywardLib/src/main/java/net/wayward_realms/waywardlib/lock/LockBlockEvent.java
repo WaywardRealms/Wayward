@@ -6,8 +6,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a block is locked
- * @author Lucariatias
+ * Called when a block is lockedWaywardPlugin
  *
  */
 public class LockBlockEvent extends LockEvent implements Cancellable {

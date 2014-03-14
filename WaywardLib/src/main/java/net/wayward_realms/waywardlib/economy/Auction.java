@@ -8,8 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 
 /**
- * Represents an auction
- * @author Lucariatias
+ * Represents an auctionWaywardPlugin
  *
  */
 public interface Auction extends ConfigurationSerializable {

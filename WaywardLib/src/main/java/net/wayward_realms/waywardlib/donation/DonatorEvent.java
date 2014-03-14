@@ -5,8 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents a donator related event
- * @author Lucariatias
+ * Represents a donator related eventWaywardPlugin
  *
  */
 public abstract class DonatorEvent extends WaywardEvent {

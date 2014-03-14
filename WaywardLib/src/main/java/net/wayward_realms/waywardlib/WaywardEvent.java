@@ -4,8 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents a Vayleryn-specific event
- * @author Lucariatias
+ * Represents a Vayleryn-specific eventWaywardPlugin
  *
  */
 public abstract class WaywardEvent extends Event {

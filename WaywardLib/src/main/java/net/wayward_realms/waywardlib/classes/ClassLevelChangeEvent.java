@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a character's level changes
- * @author Lucariatias
+ * Called when a character's level changesWaywardPlugin
  *
  */
 public class ClassLevelChangeEvent extends ClassEvent implements Cancellable {

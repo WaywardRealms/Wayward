@@ -13,8 +13,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Represents a moderation plugin
- * @author Lucariatias
+ * Represents a moderation pluginWaywardPlugin
  *
  */
 public interface ModerationPlugin extends WaywardPlugin {

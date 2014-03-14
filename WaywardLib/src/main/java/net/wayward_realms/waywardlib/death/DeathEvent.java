@@ -4,8 +4,7 @@ import net.wayward_realms.waywardlib.WaywardEvent;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents a death related event
- * @author Lucariatias
+ * Represents a death related eventWaywardPlugin
  *
  */
 public abstract class DeathEvent extends WaywardEvent {

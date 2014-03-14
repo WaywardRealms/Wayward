@@ -6,8 +6,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player warps
- * @author Lucariatias
+ * Called when a player warpsWaywardPlugin
  *
  */
 public class EssentialsWarpEvent extends EssentialsEvent implements Cancellable {

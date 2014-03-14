@@ -4,8 +4,7 @@ import net.wayward_realms.waywardlib.WaywardEvent;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents an economy related event
- * @author Lucariatias
+ * Represents an economy related eventWaywardPlugin
  *
  */
 public abstract class EconomyEvent extends WaywardEvent {

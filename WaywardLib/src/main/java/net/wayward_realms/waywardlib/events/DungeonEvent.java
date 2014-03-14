@@ -4,8 +4,7 @@ import net.wayward_realms.waywardlib.WaywardEvent;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents a dungeon related event
- * @author Lucariatias
+ * Represents a dungeon related eventWaywardPlugin
  *
  */
 public abstract class DungeonEvent extends WaywardEvent {

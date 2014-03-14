@@ -8,8 +8,7 @@ import java.util.Date;
 
 /**
  * Represents a ticket
- * 
- * @author Lucariatias
+ * WaywardPlugin
  *
  */
 public interface Ticket extends ConfigurationSerializable {

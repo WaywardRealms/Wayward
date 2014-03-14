@@ -4,8 +4,7 @@ import net.wayward_realms.waywardlib.WaywardEvent;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents an essentials event
- * @author Lucariatias
+ * Represents an essentials eventWaywardPlugin
  *
  */
 public abstract class EssentialsEvent extends WaywardEvent {

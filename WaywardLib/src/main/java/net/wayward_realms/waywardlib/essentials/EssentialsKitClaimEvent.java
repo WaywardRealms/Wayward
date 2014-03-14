@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a kit is claimed
- * @author Lucariatias
+ * Called when a kit is claimedWaywardPlugin
  *
  */
 public class EssentialsKitClaimEvent extends EssentialsEvent implements Cancellable {

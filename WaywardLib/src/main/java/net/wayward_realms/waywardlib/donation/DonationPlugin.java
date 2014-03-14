@@ -6,8 +6,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.Collection;
 
 /**
- * Represents a donation management plugin
- * @author Lucariatias
+ * Represents a donation management pluginWaywardPlugin
  *
  */
 public interface DonationPlugin extends WaywardPlugin {

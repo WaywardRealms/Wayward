@@ -7,8 +7,7 @@ import org.bukkit.World;
 import java.util.Set;
 
 /**
- * Represents a permissions plugin
- * @author Lucariatias
+ * Represents a permissions pluginWaywardPlugin
  *
  */
 public interface PermissionsPlugin extends WaywardPlugin {

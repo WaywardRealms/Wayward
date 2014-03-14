@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player destroys a portal
- * @author Lucariatias
+ * Called when a player destroys a portalWaywardPlugin
  *
  */
 public class PortalDestroyEvent extends PortalEvent implements Cancellable {

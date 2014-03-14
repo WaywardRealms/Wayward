@@ -5,8 +5,7 @@ import net.wayward_realms.waywardlib.WaywardPlugin;
 import java.util.Collection;
 
 /**
- * Represents a dungeon plugin
- * @author Lucariatias
+ * Represents a dungeon pluginWaywardPlugin
  *
  */
 public interface DungeonPlugin extends WaywardPlugin {

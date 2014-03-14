@@ -7,8 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 
 /**
- * Represents an item kit
- * @author Lucariatias
+ * Represents an item kitWaywardPlugin
  *
  */
 public interface Kit extends ConfigurationSerializable {

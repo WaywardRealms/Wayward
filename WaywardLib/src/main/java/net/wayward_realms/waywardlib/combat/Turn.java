@@ -3,8 +3,7 @@ package net.wayward_realms.waywardlib.combat;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Represents a turn in a fight
- * @author Lucariatias
+ * Represents a turn in a fightWaywardPlugin
  *
  */
 public interface Turn {

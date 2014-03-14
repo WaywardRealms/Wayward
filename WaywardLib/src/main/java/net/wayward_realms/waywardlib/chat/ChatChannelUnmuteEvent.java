@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player unmutes a channel
- * @author Lucariatias
+ * Called when a player unmutes a channelWaywardPlugin
  *
  */
 public class ChatChannelUnmuteEvent extends ChatEvent implements Cancellable {

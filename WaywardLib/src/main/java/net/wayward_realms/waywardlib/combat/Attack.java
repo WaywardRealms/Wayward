@@ -5,8 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Represents an attack
- * @author Lucariatias
+ * Represents an attackWaywardPlugin
  *
  */
 public interface Attack {

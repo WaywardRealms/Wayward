@@ -5,8 +5,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import java.util.Date;
 
 /**
- * Represents a bid
- * @author Lucariatias
+ * Represents a bidWaywardPlugin
  *
  */
 public interface Bid extends ConfigurationSerializable {

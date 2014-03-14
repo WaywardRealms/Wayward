@@ -6,8 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 /**
- * Operations to simplify common location tasks
- * @author Lucariatias
+ * Operations to simplify common location tasksWaywardPlugin
  *
  */
 public class LocationUtils {

@@ -4,8 +4,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a character is revived from a PvE death
- * @author Lucariatias
+ * Called when a character is revived from a PvE deathWaywardPlugin
  *
  */
 public class DeathReviveEvent extends DeathEvent {

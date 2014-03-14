@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when money is transferred from one player to another
- * @author Lucariatias
+ * Called when money is transferred from one player to anotherWaywardPlugin
  *
  */
 public class EconomyTransactionEvent extends EconomyEvent implements Cancellable {

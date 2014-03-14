@@ -8,8 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 
 /**
- * Called when a donator claims items
- * @author Lucariatias
+ * Called when a donator claims itemsWaywardPlugin
  *
  */
 public class DonatorClaimItemsEvent extends DonatorEvent implements Cancellable {

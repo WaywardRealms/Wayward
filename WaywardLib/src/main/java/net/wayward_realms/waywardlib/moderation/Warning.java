@@ -7,8 +7,7 @@ import java.util.Date;
 
 /**
  * Represents a warning
- * 
- * @author Lucariatias
+ * WaywardPlugin
  *
  */
 public interface Warning extends ConfigurationSerializable {

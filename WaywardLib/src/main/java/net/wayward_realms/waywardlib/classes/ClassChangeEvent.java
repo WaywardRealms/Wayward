@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a character's combat class is changed
- * @author Lucariatias
+ * Called when a character's combat class is changedWaywardPlugin
  *
  */
 public class ClassChangeEvent extends ClassEvent implements Cancellable {

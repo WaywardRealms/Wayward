@@ -4,8 +4,7 @@ import net.wayward_realms.waywardlib.essentials.Kit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
- * Represents a donation rank
- * @author Lucariatias
+ * Represents a donation rankWaywardPlugin
  *
  */
 public interface DonationRank extends ConfigurationSerializable {

@@ -6,8 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 
 /**
- * Represents a fight
- * @author Lucariatias
+ * Represents a fightWaywardPlugin
  *
  */
 public interface Fight {

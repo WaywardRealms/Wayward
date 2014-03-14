@@ -5,7 +5,6 @@ import org.bukkit.event.HandlerList;
 
 /**
  * Represents an event involving a character
- * @author Lucariatias
  *
  */
 public abstract class CharacterEvent extends WaywardEvent {

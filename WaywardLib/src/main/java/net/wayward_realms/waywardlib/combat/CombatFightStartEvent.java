@@ -4,8 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a fight starts
- * @author Lucariatias
+ * Called when a fight startsWaywardPlugin
  *
  */
 public class CombatFightStartEvent extends CombatEvent implements Cancellable {
