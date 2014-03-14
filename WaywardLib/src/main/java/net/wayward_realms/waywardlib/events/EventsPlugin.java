@@ -8,7 +8,7 @@ import java.util.Collection;
  * Represents a dungeon pluginWaywardPlugin
  *
  */
-public interface DungeonPlugin extends WaywardPlugin {
+public interface EventsPlugin extends WaywardPlugin {
 
     /**
      * Gets a collection containing the dungeons

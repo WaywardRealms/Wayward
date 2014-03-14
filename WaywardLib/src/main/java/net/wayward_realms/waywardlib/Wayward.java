@@ -8,11 +8,13 @@ import net.wayward_realms.waywardlib.death.DeathPlugin;
 import net.wayward_realms.waywardlib.donation.DonationPlugin;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
-import net.wayward_realms.waywardlib.events.DungeonPlugin;
+import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.lock.LockPlugin;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
+import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import net.wayward_realms.waywardlib.permissions.PermissionsPlugin;
 import net.wayward_realms.waywardlib.portals.PortalsPlugin;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableChunk;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -60,14 +62,14 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     if (plugin instanceof DonationPlugin) {
                         servicesManager.register(DonationPlugin.class, (DonationPlugin) plugin, plugin, ServicePriority.Normal);
                     }
-                    if (plugin instanceof DungeonPlugin) {
-                        servicesManager.register(DungeonPlugin.class, (DungeonPlugin) plugin, plugin, ServicePriority.Normal);
-                    }
                     if (plugin instanceof EconomyPlugin) {
                         servicesManager.register(EconomyPlugin.class, (EconomyPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     if (plugin instanceof EssentialsPlugin) {
                         servicesManager.register(EssentialsPlugin.class, (EssentialsPlugin) plugin, plugin, ServicePriority.Normal);
+                    }
+                    if (plugin instanceof EventsPlugin) {
+                        servicesManager.register(EventsPlugin.class, (EventsPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     if (plugin instanceof LockPlugin) {
                         servicesManager.register(LockPlugin.class, (LockPlugin) plugin, plugin, ServicePriority.Normal);
@@ -75,11 +77,17 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     if (plugin instanceof ModerationPlugin) {
                         servicesManager.register(ModerationPlugin.class, (ModerationPlugin) plugin, plugin, ServicePriority.Normal);
                     }
+                    if (plugin instanceof MonstersPlugin) {
+                        servicesManager.register(MonstersPlugin.class, (MonstersPlugin) plugin, plugin, ServicePriority.Normal);
+                    }
                     if (plugin instanceof PermissionsPlugin) {
                         servicesManager.register(PermissionsPlugin.class, (PermissionsPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     if (plugin instanceof PortalsPlugin) {
                         servicesManager.register(PortalsPlugin.class, (PortalsPlugin) plugin, plugin, ServicePriority.Normal);
+                    }
+                    if (plugin instanceof SkillsPlugin) {
+                        servicesManager.register(SkillsPlugin.class, (SkillsPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     loadState();
                 }
@@ -106,7 +114,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(PermissionsPlugin.class);
         loadPluginState(PortalsPlugin.class);
         loadPluginState(DeathPlugin.class);
-        loadPluginState(DungeonPlugin.class);
+        loadPluginState(EventsPlugin.class);
         loadPluginState(EssentialsPlugin.class);
         loadPluginState(ChatPlugin.class);
     }
@@ -138,7 +146,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         savePluginState(getServer().getServicesManager().getRegistration(PermissionsPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(PortalsPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(DeathPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(DungeonPlugin.class).getProvider());
+        savePluginState(getServer().getServicesManager().getRegistration(EventsPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(EssentialsPlugin.class).getProvider());
         savePluginState(getServer().getServicesManager().getRegistration(ChatPlugin.class).getProvider());
     }
