@@ -1,12 +1,13 @@
 package net.wayward_realms.waywardlib.combat;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.skills.Skill;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 
 /**
- * Represents a fightWaywardPlugin
+ * Represents a fight
  *
  */
 public interface Fight {
@@ -41,9 +42,9 @@ public interface Fight {
      * @param attacking the character making the attack
      * @param defending the character being attacked
      * @param weapon the weapon being used to attack
-     * @param attack the attack being used
+     * @param skill the skill being used
      */
-    public void doTurn(Combatant attacking, Combatant defending, ItemStack weapon, Attack attack);
+    public void doTurn(Combatant attacking, Combatant defending, ItemStack weapon, Skill skill);
 
     /**
      * Gets the characters involved in this fight. Does not return other combatants, such as entities
@@ -51,7 +52,7 @@ public interface Fight {
      * @return a collection containing all the characters involved
      * @see Fight#getCombatants
      */
-    public Collection<? extends net.wayward_realms.waywardlib.character.Character> getCharacters();
+    public Collection<? extends Character> getCharacters();
 
     /**
      * Gets the combatants involved in the fight
@@ -61,31 +62,11 @@ public interface Fight {
     public Collection<? extends Combatant> getCombatants();
 
     /**
-     * Adds a character to the fight. If the fight has started, it will also teleport them to the arena and add them to the turn order
-     *
-     * @param character the character to add
-     * @deprecated Obsolete.
-     * @see Fight#addCombatant
-     */
-    @Deprecated
-    public void addCharacter(Character character);
-
-    /**
      * Adds a combatant to the fight. If the fight has started, it will also teleport them to the arena and add them to the turn order
      *
      * @param combatant the combatant to add
      */
     public void addCombatant(Combatant combatant);
-
-    /**
-     * Removes a character from the fight. If the fight has started, it will also teleport them back to their original location
-     *
-     * @param character the character to remove
-     * @deprecated Obsolete.
-     * @see Fight#removeCombatant
-     */
-    @Deprecated
-    public void removeCharacter(Character character);
 
     /**
      * Removes a combatant from the fight. If the fight has started, it will also teleport them back to their original location

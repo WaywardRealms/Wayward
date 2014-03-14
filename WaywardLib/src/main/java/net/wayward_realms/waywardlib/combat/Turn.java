@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardlib.combat;
 
+import net.wayward_realms.waywardlib.skills.Skill;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -62,13 +63,13 @@ public interface Turn {
      *
      * @return the attack
      */
-    public Attack getAttack();
+    public Skill getSkill();
 
     /**
      * Sets the attack being used in the turn
      *
      * @param attack the attack to set
      */
-    public void setAttack(Attack attack);
+    public void setSkill(Skill skill);
 
 }

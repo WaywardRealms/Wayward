@@ -2,6 +2,7 @@ package net.wayward_realms.waywardlib.skills;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
 
+import java.io.File;
 import java.util.Collection;
 
 /**
@@ -67,5 +68,21 @@ public interface SkillsPlugin extends WaywardPlugin {
      * @return a collection containing all skills
      */
     public Collection<? extends Skill> getSkills();
+
+    /**
+     * Attempts to load a skill from the given file
+     *
+     * @param file the file to load from
+     * @return the skill
+     */
+    public Skill loadSkill(File file);
+
+    /**
+     * Attempts to load a skill from the given class
+     *
+     * @param clazz the class
+     * @return the skill
+     */
+    public Skill loadSkill(Class<? extends Skill> clazz);
 
 }

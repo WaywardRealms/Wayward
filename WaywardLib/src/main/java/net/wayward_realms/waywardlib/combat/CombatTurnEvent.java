@@ -1,11 +1,12 @@
 package net.wayward_realms.waywardlib.combat;
 
+import net.wayward_realms.waywardlib.skills.Skill;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Called when a character is making an attackWaywardPlugin
+ * Called when a character is using a skill
  *
  */
 public class CombatTurnEvent extends CombatEvent implements Cancellable {
@@ -15,16 +16,16 @@ public class CombatTurnEvent extends CombatEvent implements Cancellable {
     private final Fight fight;
     private Combatant attacking;
     private Combatant defending;
-    private Attack attack;
+    private Skill skill;
     private ItemStack weapon;
     private boolean cancel;
 
-    public CombatTurnEvent(final Fight fight, final Combatant attacking, Combatant defending, Attack attack, ItemStack weapon) {
+    public CombatTurnEvent(final Fight fight, final Combatant attacking, Combatant defending, Skill skill, ItemStack weapon) {
         super();
         this.fight = fight;
         this.attacking = attacking;
         this.defending = defending;
-        this.attack = attack;
+        this.skill = skill;
         this.weapon = weapon;
     }
 
@@ -33,7 +34,7 @@ public class CombatTurnEvent extends CombatEvent implements Cancellable {
         this.fight = turn.getFight();
         this.attacking = turn.getAttacker();
         this.defending = turn.getDefender();
-        this.attack = turn.getAttack();
+        this.skill = turn.getAttack();
         this.weapon = turn.getWeapon();
     }
 
@@ -56,7 +57,7 @@ public class CombatTurnEvent extends CombatEvent implements Cancellable {
     }
 
     /**
-     * Gets the character carrying out the attack
+     * Gets the character carrying out the skill
      *
      * @return the attacker
      */
@@ -65,7 +66,7 @@ public class CombatTurnEvent extends CombatEvent implements Cancellable {
     }
 
     /**
-     * Gets the character defending against the attack
+     * Gets the character defending against the skill
      *
      * @return the defender
      */
@@ -74,21 +75,21 @@ public class CombatTurnEvent extends CombatEvent implements Cancellable {
     }
 
     /**
-     * Gets the attack being used
+     * Gets the skill being used
      *
-     * @return the attack being used
+     * @return the skill being used
      */
-    public Attack getAttack() {
-        return attack;
+    public Skill getSkill() {
+        return skill;
     }
 
     /**
-     * Sets the attack being used
+     * Sets the skill being used
      *
-     * @param attack the attack to set
+     * @param skill the skill to set
      */
-    public void setAttack(Attack attack) {
-        this.attack = attack;
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
 
     /**

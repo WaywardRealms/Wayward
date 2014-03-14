@@ -40,49 +40,4 @@ public interface CombatPlugin extends WaywardPlugin {
      */
     public Fight getActiveFight(Combatant combatant);
 
-    /**
-     * Gets a collection of all attacks currently available
-     *
-     * @return a collection of attacks
-     */
-    public Collection<? extends Attack> getAttacks();
-
-    /**
-     * Gets an attack by name
-     *
-     * @param name the name of the attack
-     * @return the attack with the given name
-     */
-    public Attack getAttack(String name);
-
-    /**
-     * Adds an attack
-     *
-     * @param attack the attack to add
-     */
-    public void addAttack(Attack attack);
-
-    /**
-     * Removes an attack
-     *
-     * @param attack the attack to remove
-     */
-    public void removeAttack(Attack attack);
-
-    /**
-     * Loads an attack from the given file
-     *
-     * @param file the file to load from
-     * @return the attack
-     */
-    public Attack loadAttack(File file);
-
-    /**
-     * Loads an attack from the given class
-     *
-     * @param clazz the class to load from
-     * @return the attack
-     */
-    public Attack loadAttack(Class<? extends Attack> clazz);
-
 }
