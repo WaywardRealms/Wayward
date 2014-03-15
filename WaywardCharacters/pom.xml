@@ -6,7 +6,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>waywardcharacters</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>WaywardCharacters</name>
     <description>Character framework for roleplay servers</description>
     <dependencies>

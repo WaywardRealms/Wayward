@@ -6,7 +6,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>waywardlib</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>WaywardLib</name>
     <description>Wayward Realms abstraction library</description>
     <repositories>

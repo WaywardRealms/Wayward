@@ -6,7 +6,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>waywardchat</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>WaywardChat</name>
     <description>Versatile chat plugin with emote, radius, garble, drunken slur and IRC support</description>
     <dependencies>
