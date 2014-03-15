@@ -9,6 +9,7 @@ import net.wayward_realms.waywardlib.donation.DonationPlugin;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
+import net.wayward_realms.waywardlib.items.ItemsPlugin;
 import net.wayward_realms.waywardlib.lock.LockPlugin;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
@@ -73,6 +74,9 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     if (plugin instanceof EventsPlugin) {
                         servicesManager.register(EventsPlugin.class, (EventsPlugin) plugin, plugin, ServicePriority.Normal);
                     }
+                    if (plugin instanceof ItemsPlugin) {
+                        servicesManager.register(ItemsPlugin.class, (ItemsPlugin) plugin, plugin, ServicePriority.Normal);
+                    }
                     if (plugin instanceof LockPlugin) {
                         servicesManager.register(LockPlugin.class, (LockPlugin) plugin, plugin, ServicePriority.Normal);
                     }
@@ -129,6 +133,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(ProfessionsPlugin.class);
         loadPluginState(SkillsPlugin.class);
         loadPluginState(WorldgenPlugin.class);
+        loadPluginState(ItemsPlugin.class);
     }
 
     private boolean loadPluginState(Class<? extends WaywardPlugin> clazz) {
@@ -146,25 +151,31 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
 
     @Override
     public void saveState() {
-        if (savePluginState(getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider())) {
-            if (savePluginState(getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider())) {
-                savePluginState(getServer().getServicesManager().getRegistration(CombatPlugin.class).getProvider());
+        if (savePluginState(CharacterPlugin.class)) {
+            if (savePluginState(ClassesPlugin.class)) {
+                savePluginState(CombatPlugin.class);
             }
-            savePluginState(getServer().getServicesManager().getRegistration(EconomyPlugin.class).getProvider());
+            savePluginState(EconomyPlugin.class);
         }
-        savePluginState(getServer().getServicesManager().getRegistration(DonationPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(LockPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(ModerationPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(PermissionsPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(TravelPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(DeathPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(EventsPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(EssentialsPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(ChatPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(MonstersPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(ProfessionsPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(SkillsPlugin.class).getProvider());
-        savePluginState(getServer().getServicesManager().getRegistration(WorldgenPlugin.class).getProvider());
+        savePluginState(DonationPlugin.class);
+        savePluginState(LockPlugin.class);
+        savePluginState(ModerationPlugin.class);
+        savePluginState(PermissionsPlugin.class);
+        savePluginState(TravelPlugin.class);
+        savePluginState(DeathPlugin.class);
+        savePluginState(EventsPlugin.class);
+        savePluginState(EssentialsPlugin.class);
+        savePluginState(ChatPlugin.class);
+        savePluginState(MonstersPlugin.class);
+        savePluginState(ProfessionsPlugin.class);
+        savePluginState(SkillsPlugin.class);
+        savePluginState(WorldgenPlugin.class);
+        savePluginState(ItemsPlugin.class);
+    }
+    
+    private boolean savePluginState(Class<? extends WaywardPlugin> clazz) {
+        RegisteredServiceProvider<? extends WaywardPlugin> provider = getServer().getServicesManager().getRegistration(clazz);
+        return provider != null && savePluginState(provider.getProvider());
     }
 
     private boolean savePluginState(WaywardPlugin plugin) {
