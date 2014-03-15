@@ -1,0 +1,69 @@
+channels:
+  general:
+    colour: GRAY
+    radius: -1
+    format: '&7[%channel%] %ign%: &f%message%'
+    garble-enabled: false
+    irc:
+      enabled: true
+      channel: '#wayward-general'
+  say:
+    colour: GREEN
+    radius: 16
+    format: '&a%player% says: &f%message%'
+    garble-enabled: true
+    irc:
+      enabled: false
+  shout:
+    colour: DARK_RED
+    radius: 64
+    format: '&4%player% shouts: &f%message%'
+    garble-enabled: true
+    irc:
+      enabled: false
+  whisper:
+    colour: AQUA
+    radius: 4
+    format: '&b%player% whispers: &f%message%'
+    garble-enabled: true
+    irc:
+      enabled: false
+  staff:
+    colour: DARK_PURPLE
+    radius: -1
+    format: '&5[%channel%] %ign%: &f%message%'
+    garble-enabled: false
+    irc:
+      enabled: true
+      channel: '#wayward-staff'
+  dev:
+    colour: YELLOW
+    radius: -1
+    format: '&e[%channel%] %ign%: &f%message%'
+    garble-enabled: false
+    irc:
+      enabled: true
+      channel: '#wayward-dev'
+  support:
+    colour: DARK_GREEN
+    radius: -1
+    format: '&2[%channel%] %ign%: &f%message%'
+    garble-enabled: false
+    irc:
+      enabled: true
+      channel: '#wayward-support'
+  ooc:
+    colour: BLUE
+    radius: 16
+    format: '&9[%channel%] %ign%: &f%message%'
+    garble-enabled: false
+    irc:
+      enabled: false
+emotes:
+  radius: 16
+  format: '&e&o%player% &e&o%message%'
+default-channel: general
+irc:
+  enabled: true
+  server: 'irc.esper.net:5555'
+  bot-name: Wayward

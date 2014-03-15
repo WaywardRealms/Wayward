@@ -1,0 +1,32 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardchat.VaylerynChat
+depend: [VaylerynLib]
+commands:
+    ch:
+        description: Parent command for all chat commands
+        usage: /<command>
+    chathelp:
+        description: Shows help for chat
+        usage: /<command>
+permissions:
+    wayward.chat.ch.talkin.[channel]:
+        description: Allows you to talk in a certain channel
+        default: true
+    wayward.chat.ch.listen.[channel]:
+        description: Allows you to listen to a certain channel
+        default: true
+    wayward.chat.ch.mute.[channel]:
+        description: Allows you to mute a certain channel
+        default: true
+    wayward.chat.ch.list:
+        description: Allows you to list channels
+        default: true
+    wayward.chat.help:
+        description: Allows you to see the help for chat
+        default: true
+    wayward.chat.prefix.[prefix]:
+        description: Gives you the configured prefix
+        default: false
