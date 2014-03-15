@@ -11,6 +11,7 @@ import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
 import net.wayward_realms.waywardlib.lock.LockPlugin;
+import net.wayward_realms.waywardlib.mechanics.MechanicsPlugin;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import net.wayward_realms.waywardlib.permissions.PermissionsPlugin;
@@ -134,6 +135,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(SkillsPlugin.class);
         loadPluginState(WorldgenPlugin.class);
         loadPluginState(ItemsPlugin.class);
+        loadPluginState(MechanicsPlugin.class);
     }
 
     private boolean loadPluginState(Class<? extends WaywardPlugin> clazz) {
@@ -171,6 +173,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         savePluginState(SkillsPlugin.class);
         savePluginState(WorldgenPlugin.class);
         savePluginState(ItemsPlugin.class);
+        savePluginState(MechanicsPlugin.class);
     }
     
     private boolean savePluginState(Class<? extends WaywardPlugin> clazz) {
