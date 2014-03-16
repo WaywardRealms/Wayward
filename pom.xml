@@ -33,7 +33,6 @@
         <module>WaywardProfessions</module>
         <module>WaywardUnconsciousness</module>
         <module>WaywardWorldgen</module>
-        <module>WaywardMonsters</module>
     </modules>
     <licenses>
         <license>
