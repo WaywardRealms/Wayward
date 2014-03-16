@@ -1,0 +1,79 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardclasses.WaywardClasses
+depend: [WaywardLib]
+commands:
+    addexp:
+        description: Adds exp to a player
+        usage: /<command> [ign] [amount]
+    class:
+        description: Parent command for all class commands
+        usage: /<command> [set|info|list|setlevel|addexp]
+    getclass:
+        description: Gets someones class
+        usage: /<command> (ign)
+    getlevel:
+        description: Gets someones level
+        usage: /<command> (ign)
+    listclasses:
+        description: Lists the available classes
+        usage: /<command>
+    setclass:
+        description: Sets your or someone elses class
+        usage: /<command> (player) [class]
+    setlevel:
+        description: Sets your or someone elses level
+        usage: /<command> (player) [level]
+    spell:
+        description: Uses a spell
+        usage: /<command> [spell]
+    bindspell:
+        description: Binds a spell to your item in hand
+        usage: /<command>
+    skill:
+        description: Uses a skill
+        usage: /<command> [skill]
+    bindskill:
+        description: Binds a skill to your item in hand
+        usage: /<command>
+    zeropoint:
+        description: Sets a mob-level-zero point at your location
+        usage: /<command>
+        aliases: [zp]
+    viewzeropoints:
+        description: Shows zero points
+        usage: /<command>
+        aliases: [showzeropoints]
+permissions:
+    wayward.classes.command.addexp:
+        description: Old node that allows you to add exp
+        default: op
+    wayward.classes.command.getclass:
+        description: Old node that allows you to get other peoples classes
+        default: op
+    wayward.classes.command.getlevel:
+        description: Old node that allows you to get other peoples levels
+        default: op
+    wayward.classes.command.setclass:
+        description: Old node that allows you to set other peoples classes
+        default: op
+    wayward.classes.command.setlevel:
+        description: Old node that allows you to set levels
+        default: op
+    wayward.classes.command.viewzeropoints:
+        description: Allows you to view zero points
+        default: op
+    wayward.classes.command.class.set:
+        description: Allows you to set other peoples classes
+        default: op
+    wayward.classes.command.class.info:
+        description: Allows you to view info on other peoples classes
+        default: op
+    wayward.classes.command.class.setlevel:
+        description: Allows you to set levels
+        default: op
+    wayward.classes.command.class.addexp:
+        description: Allows you to add exp
+        default: op
