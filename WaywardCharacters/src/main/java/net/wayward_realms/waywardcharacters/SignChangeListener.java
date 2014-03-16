@@ -16,7 +16,7 @@ public class SignChangeListener implements Listener {
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
         if (event.getLine(0).equalsIgnoreCase("[masheekwell]")) {
-            if (event.getPlayer().hasPermission("vayleryn.characters.createmasheekwell")) {
+            if (event.getPlayer().hasPermission("wayward.characters.createmasheekwell")) {
                 event.setLine(0, ChatColor.YELLOW + "[masheekwell]");
                 try {
                     Integer.parseInt(event.getLine(1));

@@ -27,7 +27,7 @@ public class CharacterCommand implements CommandExecutor {
                         livingCharacters++;
                     }
                 }
-                if (livingCharacters < plugin.getConfig().getInt("characters.limit") || plugin.getConfig().getInt("characters.limit") <= 0 || sender.hasPermission("vayleryn.characters.characters.unlimited")) {
+                if (livingCharacters < plugin.getConfig().getInt("characters.limit") || plugin.getConfig().getInt("characters.limit") <= 0 || sender.hasPermission("wayward.characters.characters.unlimited")) {
                     plugin.setActiveCharacter((Player) sender, new CharacterImpl((Player) sender));
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created a new character. Make sure to set up your character information!");
                 } else {
@@ -186,7 +186,7 @@ public class CharacterCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
                 }
             } else if (args[0].equalsIgnoreCase("revive")) {
-                if (sender.hasPermission("vayleryn.characters.command.character.revive")) {
+                if (sender.hasPermission("wayward.characters.command.character.revive")) {
                     if (args.length >= 2) {
                         try {
                             if (plugin.getCharacter(Integer.parseInt(args[1])) != null) {

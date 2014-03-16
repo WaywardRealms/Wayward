@@ -2,7 +2,7 @@ name: ${project.name}
 author: Lucariatias
 version: ${project.version}
 description: ${project.description}
-main: io.github.vayleryn.vayleryncharacters.VaylerynCharacters
+main: io.github.wayward.waywardcharacters.VaylerynCharacters
 depend: [VaylerynLib]
 commands:
     character:
@@ -21,12 +21,12 @@ commands:
         aliases: [sp]
         usage: /<command>
 permissions:
-    vayleryn.characters.createmasheekwell:
+    wayward.characters.createmasheekwell:
         default: op
         description: Allows the creation of masheek wells
-    vayleryn.characters.characters.unlimited:
+    wayward.characters.characters.unlimited:
         default: op
         description: Allows the creation of unlimited characters
-    vayleryn.characters.command.character.revive
+    wayward.characters.command.character.revive
         default: op
         description: Allows characters to be revived
