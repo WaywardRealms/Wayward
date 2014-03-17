@@ -1,0 +1,26 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardeconomy.WaywardEconomy
+depend: [WaywardLib]
+commands:
+    money:
+        description: Money management commands
+        usage: /<command> [help|pay|set]
+    wallet:
+        description: Opens your wallet
+        usage: /<command>
+    auction:
+        description: Auction management commands
+        usage: /<command> [create|set|openbidding|closebidding]
+    bid:
+        description: Bids on an auction
+        usage: /<command> [player]
+permissions:
+    wayward.economy.command.money.set:
+        description: Allows you to set someone's balance
+        default: op
+    wayward.economy.shop.free:
+        description: Allows you to create shops for free
+        default: false

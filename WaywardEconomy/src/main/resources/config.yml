@@ -1,0 +1,6 @@
+accounts:
+    initial-balance: 50
+shop:
+    cost: 200
+currency:
+    primary: gc
