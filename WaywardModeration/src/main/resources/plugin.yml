@@ -1,0 +1,48 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardmoderation.WaywardModeration
+depend: [WaywardLib]
+commands:
+    reputation:
+        description: Manages reputation
+        usage: /<command> [view|set|plus|minus]
+        aliases: [rep]
+    ticket:
+        description: Manages tickets
+        usage: /<command> [create|close|teleport]
+    vanish:
+        description: Toggles vanishing
+        usage: /<command>
+    warn:
+        description: Warns a player
+        usage: /<command> [player] [message]
+    warnings:
+        description: Views warnings
+        usage: /<command> (player)
+permissions:
+    wayward.moderation.command.reputation.set:
+        description: Allows you to set reputation
+        default: op
+    wayward.moderation.command.reputation.plus:
+        description: Allows you to add reputation
+        default: op
+    wayward.moderation.command.reputation.minus:
+        description: Allows you to take reputation
+        default: op
+    wayward.moderation.command.ticket.close:
+        description: Allows you to close tickets that are not your own
+        default: op
+    wayward.moderation.command.ticket.teleport:
+        description: Allows you to teleport to ticket locations
+        default: op
+    wayward.moderation.command.vanish:
+        description: Allows you to toggle vanish
+        default: op
+    wayward.moderation.command.warnings:
+        description: Allows you to view another players warnings
+        default: op
+    wayward.moderation.command.warn:
+        description: Allows you to warn people
+        default: op
