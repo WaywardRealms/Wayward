@@ -1,0 +1,189 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardessentials.WaywardEssentials
+depend: [WaywardLib]
+commands:
+    back:
+        description: Teleports to the last location teleported to
+        usage: /<command>
+    clone:
+        description: Clones the item in your hand
+        usage: /<command>
+    deletewarp:
+        description: Deletes a warp
+        usage: /<command> [name]
+    enchant:
+        description: Enchants the item in your hand
+        usage: /<command> [enchantment] [level]
+    feed:
+        description: Feeds a player
+        usage: /<command> (player)
+    fly:
+        description: Allows a player to fly
+        usage: /<command> (player)
+    getbook:
+        description: Gets a book
+        usage: /<command>
+    getsign:
+        description: Gets a sign
+        usage: /<command>
+    heal:
+        description: Heals a player
+        usage: /<command> (player)
+    inventory:
+        description: Opens someone's inventory
+        usage: /<command> [player]
+    issue:
+        description: Submits an issue to GitHub
+        usage: /<command> [create|submit]
+    item:
+        description: Spawns an item
+        usage: /<command> [material] (amount)
+        aliases: [i, giveme]
+    itemmeta:
+        description: Edits the item meta of the item in your hand
+        usage: /<command> [setname|addlore|removelore] [name|lore]
+    jump:
+        description: Jumps to the location in your line of sight
+        usage: /<command>
+        aliases: [jumpto, j]
+    kit:
+        description: Claims a kit
+        usage: /<command> (kit)
+    msg:
+        description: Messages a player
+        usage: /<command> [player] [message]
+    repair:
+        description: Repairs the item in your hand
+        usage: /<command>
+    roll:
+        description: Rolls
+        usage: /<command> [roll]
+    runas:
+        description: Runs a command as another player
+        usage: /<command> [player] [command]
+    setspawn:
+        description: Sets the worlds spawn location
+        usage: /<command>
+    setwarp:
+        description: Sets a warp at your current location
+        usage: /<command> [name]
+    spawn:
+        description: Teleports you to your worlds spawn
+        usage: /<command>
+    spawner:
+        description: Sets the entity a spawner will spawn
+        usage: /<command> [entity type]
+    spawnmob:
+        description: Spawns mobs at your location
+        usage: /<command> [entity type] [amount]
+    speed:
+        description: Sets your flyspeed
+        usage: /<command> (player) [speed]
+        aliases: [flyspeed]
+    sudo:
+        description: Runs a command with elevated priveledges
+        usage: /<command> [command]
+    togglelogmessages:
+        description: Toggles messages when players log in and out
+        usage: /<command>
+        aliases: [tlm]
+    unsign:
+        description: Unsigns written books
+        usage: /<command>
+    untame:
+        description: Untames an entity
+        usage: /<command>
+    warp:
+        description: Warps to a location
+        usage: /<command> [warp]
+permissions:
+    wayward.essentials.boatsigns.create:
+        description: Allows you to create boat signs
+        default: op
+    wayward.essentials.portcullissigns.create:
+        description: Allows you to create portcullis signs
+        default: op
+    wayward.essentials.warpsigns.create:
+        description: Allows you to create warp signs
+        default: op
+    wayward.essentials.command.back:
+        description: Allows you to teleport to the last location teleported to
+        default: op
+    wayward.essentials.command.clone:
+        description: Allows you to clone the item in your hand
+        default: op
+    wayward.essentials.command.deletewarp:
+        description: Allows you to delete a warp
+        default: op
+    wayward.essentials.command.enchant:
+        description: Allows you to enchant items by command
+        default: op
+    wayward.essentials.command.enchant.unsafe:
+        description: Allows you to add "unsafe" enchantments when enchanting by command
+        default: op
+    wayward.essentials.command.feed:
+        description: Allows you to feed players
+        default: op
+    wayward.essentials.command.fly:
+        description: Allows you to fly
+        default: op
+    wayward.essentials.command.heal:
+        description: Allows you to heal players
+        default: op
+    wayward.essentials.command.inventory:
+        description: Allows you to open other people's inventories
+        default: op
+    wayward.essentials.command.item:
+        description: Allows the spawning of items
+        default: op
+    wayward.essentials.command.itemmeta:
+        description: Allows you to modify item meta
+        default: op
+    wayward.essentials.command.jump:
+        description: Allows you to jump to locations
+        default: op
+    wayward.essentials.command.kit:
+        description: Allows you to claim kits
+        default: op
+    wayward.essentials.command.msg:
+        description: Allows you to message users
+        default: true
+    wayward.essentials.command.repair:
+        description: Allows you to repair items
+        default: op
+    wayward.essentials.command.runas:
+        description: Allows you to run a command as another player
+        default: op
+    wayward.essentials.command.setspawn:
+        description: Allows you to set the spawn
+        default: op
+    wayward.essentials.command.setwarp:
+        description: Allows you to set a warp
+        default: op
+    wayward.essentials.command.spawn:
+        description: Allows you to teleport to the spawn
+        default: op
+    wayward.essentials.command.spawner:
+        description: Allows you to change the entity spawned by a spawner
+        default: op
+    wayward.essentials.command.spawnmob:
+        description: Allows you to spawn mobs
+        default: op
+    wayward.essentials.command.speed:
+        description: Allows you to set your or someone elses flyspeed
+        default: op
+    wayward.essentials.command.sudo:
+        description: Allows you to run a command with elevated priveledges
+        default: op
+    wayward.essentials.command.togglelogmessages:
+        description: Allows you to toggle log in/out messages
+        default: op
+    wayward.essentials.command.unsign:
+        description: Allows you to unsign books
+        default: true
+    wayward.essentials.command.warp:
+        description: Allows you to use warps
+        default: op
