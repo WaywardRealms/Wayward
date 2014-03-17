@@ -4,7 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents a Vayleryn-specific eventWaywardPlugin
+ * Represents a Wayward-specific event
  *
  */
 public abstract class WaywardEvent extends Event {
