@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 
 public class ClaimLevelsCommand implements CommandExecutor {
 
-    private WaywardDonatorPerks plugin;
+    private WaywardDonations plugin;
 
-    public ClaimLevelsCommand(WaywardDonatorPerks plugin) {
+    public ClaimLevelsCommand(WaywardDonations plugin) {
         this.plugin = plugin;
     }
 

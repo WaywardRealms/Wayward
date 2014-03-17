@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 
 public class ClaimMoneyCommand implements CommandExecutor {
 
-    private WaywardDonatorPerks plugin;
+    private WaywardDonations plugin;
 
-    public ClaimMoneyCommand(WaywardDonatorPerks plugin) {
+    public ClaimMoneyCommand(WaywardDonations plugin) {
         this.plugin = plugin;
     }
 

@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
-public class WaywardDonatorPerks extends JavaPlugin implements DonationPlugin {
+public class WaywardDonations extends JavaPlugin implements DonationPlugin {
 
     private Map<String, DonationRank> donationRanks = new HashMap<>();
     private Map<String, List<DonationRank>> playerDonationRanks = new HashMap<>();
@@ -71,7 +71,7 @@ public class WaywardDonatorPerks extends JavaPlugin implements DonationPlugin {
 
     @Override
     public String getPrefix() {
-        //return "" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.BLUE + "WaywardDonatorPerks" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "| " + ChatColor.RESET;
+        //return "" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.BLUE + "WaywardDonations" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "| " + ChatColor.RESET;
         return "";
     }
 

@@ -8,9 +8,9 @@ import org.bukkit.command.ConsoleCommandSender;
 
 public class DonationCommand implements CommandExecutor {
 
-    private WaywardDonatorPerks plugin;
+    private WaywardDonations plugin;
 
-    public DonationCommand(WaywardDonatorPerks plugin) {
+    public DonationCommand(WaywardDonations plugin) {
         this.plugin = plugin;
     }
 

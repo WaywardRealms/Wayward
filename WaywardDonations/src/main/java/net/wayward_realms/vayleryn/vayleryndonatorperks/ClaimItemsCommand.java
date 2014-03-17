@@ -13,9 +13,9 @@ import java.util.Set;
 
 public class ClaimItemsCommand implements CommandExecutor {
 
-    private WaywardDonatorPerks plugin;
+    private WaywardDonations plugin;
 
-    public ClaimItemsCommand(WaywardDonatorPerks plugin) {
+    public ClaimItemsCommand(WaywardDonations plugin) {
         this.plugin = plugin;
     }
 
