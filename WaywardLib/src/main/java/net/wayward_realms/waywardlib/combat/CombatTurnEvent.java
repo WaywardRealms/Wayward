@@ -34,7 +34,7 @@ public class CombatTurnEvent extends CombatEvent implements Cancellable {
         this.fight = turn.getFight();
         this.attacking = turn.getAttacker();
         this.defending = turn.getDefender();
-        this.skill = turn.getAttack();
+        this.skill = turn.getSkill();
         this.weapon = turn.getWeapon();
     }
 
