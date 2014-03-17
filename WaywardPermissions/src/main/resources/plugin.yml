@@ -1,0 +1,32 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardpermissions.WaywardPermissions
+depend: [WaywardLib]
+commands:
+    setgroup:
+        description: Sets a players group
+        usage: /<command> [player] [group]
+    addgroup:
+        description: Adds a group to a player
+        usage: /<command> [player] [group]
+    removegroup:
+        description: Removes a group from a player
+        usage: /<command> [player] [group]
+    listgroups:
+        description: Lists the groups configured
+        usage: /<command>
+permissions:
+    wayward.permissions.command.setgroup:
+        description: Allows the player to use /setgroup
+        default: op
+    wayward.permissions.command.addgroup:
+        description: Allows the player to use /addgroup
+        default: op
+    wayward.permissions.command.removegroup:
+        description: Allows the player to use /removegroup
+        default: op
+    wayward.permissions.command.listgroups:
+        description: Allows the player to use /listgroups
+        default: op

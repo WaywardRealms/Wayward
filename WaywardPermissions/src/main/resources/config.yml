@@ -1,0 +1,18 @@
+users:
+  Lucariatias:
+  - admin
+  kiramae16f:
+  - admin
+  KiraLovesWolves:
+  - admin
+  s0lluth:
+  - admin
+groups:
+  default:
+    allow: []
+    deny: []
+  admin:
+    allow: []
+    deny: []
+    inheritsfrom: default
+# This needs some work... I'll get round to it later.
