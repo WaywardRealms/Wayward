@@ -1,8 +1,7 @@
 package net.wayward_realms.waywardmonsters;
 
-import net.wayward_realms.wayward.waywardclasses.WaywardClasses;
-import io.github.wayward.waywardlib.plugin.character.CharacterPlugin;
-import io.github.wayward.waywardlib.plugin.classes.Stat;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,9 +10,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class EntityDamageByEntityListener implements Listener {
 
-    private WaywardClasses plugin;
+    private WaywardMonsters plugin;
 
-    public EntityDamageByEntityListener(WaywardClasses plugin) {
+    public EntityDamageByEntityListener(WaywardMonsters plugin) {
         this.plugin = plugin;
     }
 
@@ -67,7 +66,7 @@ public class EntityDamageByEntityListener implements Listener {
                 defence = plugin.getEntityLevelManager().getEntityStatValue(defender);
             }
         }
-        if (attacker != null && defender != null && attackStat != null && defenceStat != null) {
+        if (attacker != null && defender != null) {
             event.setDamage((Math.ceil((((attack + 1D) / 2D) + 5D) * event.getDamage())) / (defence + 1D) / 2D);
         }
         if (defender != null) {
