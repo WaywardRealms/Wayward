@@ -26,26 +26,6 @@ commands:
     setlevel:
         description: Sets your or someone elses level
         usage: /<command> (player) [level]
-    spell:
-        description: Uses a spell
-        usage: /<command> [spell]
-    bindspell:
-        description: Binds a spell to your item in hand
-        usage: /<command>
-    skill:
-        description: Uses a skill
-        usage: /<command> [skill]
-    bindskill:
-        description: Binds a skill to your item in hand
-        usage: /<command>
-    zeropoint:
-        description: Sets a mob-level-zero point at your location
-        usage: /<command>
-        aliases: [zp]
-    viewzeropoints:
-        description: Shows zero points
-        usage: /<command>
-        aliases: [showzeropoints]
 permissions:
     wayward.classes.command.addexp:
         description: Old node that allows you to add exp
