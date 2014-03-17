@@ -7,9 +7,9 @@ import org.bukkit.command.CommandSender;
 
 public class ChatHelpCommand implements CommandExecutor {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public ChatHelpCommand(VaylerynChat plugin) {
+    public ChatHelpCommand(WaywardChat plugin) {
         this.plugin = plugin;
     }
 

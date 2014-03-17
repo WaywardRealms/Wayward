@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 public class ChCommand implements CommandExecutor {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public ChCommand(VaylerynChat plugin) {
+    public ChCommand(WaywardChat plugin) {
         this.plugin = plugin;
     }
 

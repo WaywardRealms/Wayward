@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinListener implements Listener {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public PlayerJoinListener(VaylerynChat plugin) {
+    public PlayerJoinListener(WaywardChat plugin) {
         this.plugin = plugin;
     }
 

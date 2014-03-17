@@ -1,6 +1,6 @@
 package net.wayward_realms.waywardchat.irc;
 
-import net.wayward_realms.waywardchat.VaylerynChat;
+import net.wayward_realms.waywardchat.WaywardChat;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -9,9 +9,9 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class IrcMessageListener extends ListenerAdapter<PircBotX> {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public IrcMessageListener(VaylerynChat plugin) {
+    public IrcMessageListener(WaywardChat plugin) {
         this.plugin = plugin;
     }
 

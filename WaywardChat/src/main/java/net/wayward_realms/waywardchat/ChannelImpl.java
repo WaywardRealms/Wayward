@@ -28,7 +28,7 @@ public class ChannelImpl implements Channel {
     private File log;
     private String ircChannel;
 
-    public ChannelImpl(VaylerynChat plugin, String name) {
+    public ChannelImpl(WaywardChat plugin, String name) {
         this.name = name;
         this.colour = ChatColor.valueOf(plugin.getConfig().getString("channels." + this.getName() + ".colour").toUpperCase());
         this.format = plugin.getConfig().getString("channels." + getName() + ".format");

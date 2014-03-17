@@ -7,9 +7,9 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class PlayerCommandPreprocessListener implements Listener {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public PlayerCommandPreprocessListener(VaylerynChat plugin) {
+    public PlayerCommandPreprocessListener(WaywardChat plugin) {
         this.plugin = plugin;
     }
 

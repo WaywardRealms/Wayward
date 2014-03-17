@@ -2,8 +2,8 @@ name: ${project.name}
 author: Lucariatias
 version: ${project.version}
 description: ${project.description}
-main: io.github.wayward.waywardchat.VaylerynChat
-depend: [VaylerynLib]
+main: io.github.wayward.waywardchat.WaywardChat
+depend: [WaywardLib]
 commands:
     ch:
         description: Parent command for all chat commands

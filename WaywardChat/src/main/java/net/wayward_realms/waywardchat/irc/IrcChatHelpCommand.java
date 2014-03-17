@@ -1,14 +1,14 @@
 package net.wayward_realms.waywardchat.irc;
 
-import net.wayward_realms.waywardchat.VaylerynChat;
+import net.wayward_realms.waywardchat.WaywardChat;
 import org.bukkit.ChatColor;
 import org.pircbotx.User;
 
 public class IrcChatHelpCommand extends IrcCommand {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public IrcChatHelpCommand(VaylerynChat plugin) {
+    public IrcChatHelpCommand(WaywardChat plugin) {
         super("chathelp");
         this.plugin = plugin;
     }

@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class VaylerynChat extends JavaPlugin implements ChatPlugin {
+public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     private Map<String, Channel> channels = new HashMap<>();
 

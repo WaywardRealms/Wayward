@@ -1,15 +1,15 @@
 package net.wayward_realms.waywardchat.irc;
 
-import net.wayward_realms.waywardchat.VaylerynChat;
+import net.wayward_realms.waywardchat.WaywardChat;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.pircbotx.User;
 
 public class IrcListCommand extends IrcCommand {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public IrcListCommand(VaylerynChat plugin) {
+    public IrcListCommand(WaywardChat plugin) {
         super("list");
         this.plugin = plugin;
     }

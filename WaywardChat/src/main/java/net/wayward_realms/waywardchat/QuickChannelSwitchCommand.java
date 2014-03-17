@@ -10,10 +10,10 @@ import java.util.List;
 
 public class QuickChannelSwitchCommand extends Command {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
     private Channel channel;
 
-    public QuickChannelSwitchCommand(String name, String description, List<String> aliases, VaylerynChat plugin, Channel channel) {
+    public QuickChannelSwitchCommand(String name, String description, List<String> aliases, WaywardChat plugin, Channel channel) {
         super(name, description, "/<command> [message]", aliases);
         this.plugin = plugin;
         this.channel = channel;

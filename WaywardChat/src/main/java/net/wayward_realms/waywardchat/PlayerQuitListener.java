@@ -7,9 +7,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuitListener implements Listener {
 
-    private VaylerynChat plugin;
+    private WaywardChat plugin;
 
-    public PlayerQuitListener(VaylerynChat plugin) {
+    public PlayerQuitListener(WaywardChat plugin) {
         this.plugin = plugin;
     }
 
