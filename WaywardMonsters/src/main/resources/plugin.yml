@@ -1,0 +1,21 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: net.wayward_realms.waywardmonsters.WaywardMonsters
+commands:
+    zeropoint:
+        description: Sets a mob-level-zero point at your location
+        usage: /<command>
+        aliases: [zp]
+    viewzeropoints:
+        description: Shows zero points
+        usage: /<command>
+        aliases: [showzeropoints]
+permissions:
+    wayward.monsters.command.zeropoint:
+        description: Allows you to set zero points
+        default: op
+    wayward.monsters.command.viewzeropoints:
+        description: Allows you to view the locations of zero points
+        default: op
