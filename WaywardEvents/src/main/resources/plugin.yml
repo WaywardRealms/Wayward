@@ -1,0 +1,33 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardevents.WaywardEvents
+depend: [WaywardLib]
+commands:
+    dungeon:
+        description: Used for creating and modifying dungeons
+        usage: /<command> [create|modify]
+    radiusemote:
+        description: Broadcasts a world emote with the given radius and message
+        usage: /<command> [radius] [message]
+    createeffect:
+        description: Creates a visual or sound effect for a player or at a location
+        usage: /<command> [location|player] [effect]
+permissions:
+    wayward.events.command.radiusemote:
+        description: Allows you to broadcast world emotes with a radius
+        default: op
+    wayward.events.command.dungeon.create:
+        description: Allows you to create dungeons
+        default: op
+    wayward.events.command.dungeon.modify:
+        description: Allows you to modify dungeons
+        default: op
+    wayward.events.command.dungeon.modify.other:
+        description: Allows you to modify other peoples dungeons
+        default: op
+    wayward.events.command.createeffect:
+        description: Allows you to create effects
+        default: op
+        
