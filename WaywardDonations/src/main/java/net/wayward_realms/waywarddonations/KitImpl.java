@@ -1,4 +1,4 @@
-package net.wayward_realms.vayleryn.vayleryndonatorperks;
+package net.wayward_realms.waywarddonations;
 
 import net.wayward_realms.waywardlib.essentials.Kit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

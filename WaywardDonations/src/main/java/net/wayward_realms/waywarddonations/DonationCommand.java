@@ -1,4 +1,4 @@
-package net.wayward_realms.vayleryn.vayleryndonatorperks;
+package net.wayward_realms.waywarddonations;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

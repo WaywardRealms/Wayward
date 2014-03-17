@@ -1,4 +1,4 @@
-package net.wayward_realms.vayleryn.vayleryndonatorperks;
+package net.wayward_realms.waywarddonations;
 
 import net.wayward_realms.waywardlib.donation.DonationPlugin;
 import net.wayward_realms.waywardlib.donation.DonationRank;
