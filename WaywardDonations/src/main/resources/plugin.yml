@@ -1,0 +1,22 @@
+name: ${project.name}
+authors: [Godpuppet, Lucariatias]
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywarddonatorperks.WaywardDonatorPerks
+depend: [WaywardLib]
+commands:
+    claimlevels:
+        description: Automatically gives players any levels they require
+        usage: /<command>
+    claimmoney:
+        description: Automatically gives the player their donation money
+        usage: /<command>
+    claimitems:
+        description: Automatically gives the player their donation items
+        usage: /<command>
+    title:
+        description: Allows the player to set their own title.
+        usage: /<command> [title]
+    donation:
+        description: Executed from console to add a donation rank to a player
+        usage: /<command> [player] [rank]
