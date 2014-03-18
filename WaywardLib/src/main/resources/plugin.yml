@@ -2,4 +2,4 @@ name: ${project.name}
 author: Lucariatias
 version: ${project.version}
 description: ${project.description}
-main: io.github.vayleryn.vaylerynlib.Vayleryn
+main: io.github.wayward.waywardlib.Wayward

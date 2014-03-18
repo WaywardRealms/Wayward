@@ -52,7 +52,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     private ChairManager chairManager = new ChairManager(this);
 
     private Set<String> logMessagesEnabled = new HashSet<>();
-    private Set<String> untaming = new HashSet<>();
     private Map<String, Location> previousLocations = new HashMap<>();
 
     @Override
@@ -264,18 +263,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
             players.add(getServer().getPlayer(playerName));
         }
         return players;
-    }
-
-    public boolean isUntaming(Player player) {
-        return untaming.contains(player.getName());
-    }
-
-    public void setUntaming(Player player, boolean untaming) {
-        if (untaming) {
-            this.untaming.add(player.getName());
-        } else {
-            this.untaming.remove(player.getName());
-        }
     }
 
     public Location getPreviousLocation(OfflinePlayer player) {

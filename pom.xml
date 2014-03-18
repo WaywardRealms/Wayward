@@ -29,7 +29,6 @@
         <module>WaywardLocks</module>
         <module>WaywardModeration</module>
         <module>WaywardPermissions</module>
-        <module>WaywardPortals</module>
         <module>WaywardProfessions</module>
         <module>WaywardUnconsciousness</module>
         <module>WaywardWorldgen</module>
