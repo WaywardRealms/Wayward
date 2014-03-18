@@ -1,0 +1,14 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardunconsciousness.WaywardUnconsciousness
+depend: [WaywardLib]
+commands:
+    wake:
+        description: Forcefully wakes a player from unconsciousness
+        usage: /<command> [player]
+permissions:
+    wayward.unconsciousness.command.wake:
+        description: Allows you to forcefully wake players
+        default: op
