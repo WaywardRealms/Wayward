@@ -1,0 +1,17 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+description: ${project.description}
+main: io.github.wayward.waywardportals.WaywardPortals
+depend: [WaywardLib]
+commands:
+    portal:
+        description: Parent for all portal commands
+        usage: /<command> [args...]
+permissions:
+    wayward.travel.command.portal.create:
+        description: Allows the creation of portals
+        default: op
+    wayward.travel.boatsigns.create:
+        description: Allows for the creation of boat signs
+        default: op
