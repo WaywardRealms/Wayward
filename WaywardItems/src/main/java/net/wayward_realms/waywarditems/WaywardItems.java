@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -93,6 +92,14 @@ public class WaywardItems extends JavaPlugin implements ItemsPlugin {
             ingredientMap.put('s', new ItemStack(Material.SEEDS));
             ingredientMap.put('c', new ItemStack(Material.COBBLESTONE));
             CustomMaterial exampleMaterial = new CustomMaterialImpl("Example material", Material.MOSSY_COBBLESTONE, new String[] {"sss", "scs", "sss"}, ingredientMap);
+            File exampleMaterialFile = new File(customMaterialDirectory, "example.yml");
+            YamlConfiguration exampleMaterialConfig = new YamlConfiguration();
+            exampleMaterialConfig.set("material", exampleMaterial);
+            try {
+                exampleMaterialConfig.save(exampleMaterialFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
