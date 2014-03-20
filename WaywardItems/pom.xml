@@ -10,6 +10,7 @@
     </parent>
     <artifactId>waywarditems</artifactId>
     <name>WaywardItems</name>
+    <description>Custom items plugin</description>
     <dependencies>
         <dependency>
             <groupId>net.wayward-realms</groupId>
