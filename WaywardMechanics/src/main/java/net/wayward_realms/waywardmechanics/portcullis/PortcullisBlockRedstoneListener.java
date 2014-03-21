@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardessentials.portcullis;
+package net.wayward_realms.waywardmechanics.portcullis;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -1,6 +1,6 @@
-package net.wayward_realms.waywardessentials.bookshelf;
+package net.wayward_realms.waywardmechanics.bookshelf;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardmechanics.WaywardMechanics;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BookshelfPlayerInteractListener implements Listener {
 
-    private WaywardEssentials plugin;
+    private WaywardMechanics plugin;
 
-    public BookshelfPlayerInteractListener(WaywardEssentials plugin) {
+    public BookshelfPlayerInteractListener(WaywardMechanics plugin) {
         this.plugin = plugin;
     }
 

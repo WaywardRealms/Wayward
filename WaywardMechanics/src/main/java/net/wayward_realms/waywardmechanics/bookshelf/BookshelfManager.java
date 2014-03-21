@@ -1,6 +1,6 @@
-package net.wayward_realms.waywardessentials.bookshelf;
+package net.wayward_realms.waywardmechanics.bookshelf;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardmechanics.WaywardMechanics;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -17,10 +17,10 @@ import java.util.Map;
 
 public class BookshelfManager {
 
-    private WaywardEssentials plugin;
+    private WaywardMechanics plugin;
     private Map<Block, Inventory> bookshelfInventories = new HashMap<>();
 
-    public BookshelfManager(WaywardEssentials plugin) {
+    public BookshelfManager(WaywardMechanics plugin) {
         this.plugin = plugin;
     }
 

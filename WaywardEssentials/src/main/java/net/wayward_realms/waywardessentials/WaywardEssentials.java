@@ -1,17 +1,10 @@
 package net.wayward_realms.waywardessentials;
 
-import net.wayward_realms.waywardessentials.bookshelf.BookshelfBlockBreakListener;
-import net.wayward_realms.waywardessentials.bookshelf.BookshelfManager;
-import net.wayward_realms.waywardessentials.bookshelf.BookshelfPlayerInteractListener;
-import net.wayward_realms.waywardessentials.chairs.*;
 import net.wayward_realms.waywardessentials.command.*;
 import net.wayward_realms.waywardessentials.drink.DrinkManager;
 import net.wayward_realms.waywardessentials.drink.PlayerItemConsumeListener;
 import net.wayward_realms.waywardessentials.kit.KitImpl;
 import net.wayward_realms.waywardessentials.kit.KitManager;
-import net.wayward_realms.waywardessentials.portcullis.PortcullisBlockRedstoneListener;
-import net.wayward_realms.waywardessentials.portcullis.PortcullisPlayerInteractListener;
-import net.wayward_realms.waywardessentials.portcullis.PortcullisSignChangeListener;
 import net.wayward_realms.waywardessentials.recipe.RecipeManager;
 import net.wayward_realms.waywardessentials.time.TimeSlowRunnable;
 import net.wayward_realms.waywardessentials.warp.WarpManager;
@@ -22,13 +15,11 @@ import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.essentials.Kit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kohsuke.github.GitHub;
 
@@ -43,13 +34,10 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     private WarpManager warpManager;
     private KitManager kitManager;
-    private BookshelfManager bookshelfManager;
     private DrinkManager drinkManager;
     private RecipeManager recipeManager;
 
     private GitHub gitHub;
-
-    private ChairManager chairManager = new ChairManager(this);
 
     private Set<String> logMessagesEnabled = new HashSet<>();
     private Map<String, Location> previousLocations = new HashMap<>();
@@ -59,16 +47,12 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         saveDefaultConfig();
         ConfigurationSerialization.registerClass(KitImpl.class);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new TimeSlowRunnable(this), 100L, 100L);
-        registerListeners(new BookshelfBlockBreakListener(this), new BookshelfPlayerInteractListener(this),
-                new ChairBlockBreakListener(this), new ChairExitVehicleListener(this), new ChairPlayerDeathListener(this), new ChairPlayerInteractListener(this), new ChairPlayerTeleportListener(this),
-                new PlayerJoinListener(this), new PlayerQuitListener(this), new PlayerTeleportListener(this),
-                new PortcullisBlockRedstoneListener(), new PortcullisPlayerInteractListener(), new PortcullisSignChangeListener(this),
+        registerListeners(new PlayerJoinListener(this), new PlayerQuitListener(this), new PlayerTeleportListener(this),
                 new PlayerItemConsumeListener(this),
                 new WarpSignChangeListener(this), new WarpPlayerInteractListener(this));
         registerCommands();
         warpManager = new WarpManager(this);
         kitManager = new KitManager(this);
-        bookshelfManager = new BookshelfManager(this);
         drinkManager = new DrinkManager(this);
         recipeManager = new RecipeManager(this);
         try {
@@ -103,7 +87,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     public void onDisable() {
         warpManager.save();
         kitManager.save();
-        bookshelfManager.save();
     }
 
     private void registerListeners(Listener... listeners) {
@@ -155,14 +138,12 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     public void loadState() {
         warpManager.load();
         kitManager.load();
-        bookshelfManager.load();
     }
 
     @Override
     public void saveState() {
         warpManager.save();
         kitManager.save();
-        bookshelfManager.save();
     }
 
     @Override
@@ -224,18 +205,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     public void setDrunkenness(OfflinePlayer player, int drunkenness) {
         drinkManager.setDrunkenness(player, drunkenness);
     }
-
-    public Inventory getBookshelfInventory(Block block) {
-        return bookshelfManager.getBookshelfInventory(block);
-    }
-
-    public void createBookshelfInventory(Block block) {
-        bookshelfManager.createBookshelfInventory(block);
-    }
-
-    public Map<Block, Inventory> getBookshelfInventories() {
-        return bookshelfManager.getBookshelfInventories();
-    }
     
     public GitHub getGitHub() {
         return gitHub;
@@ -271,10 +240,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     public void setPreviousLocation(OfflinePlayer player, Location location) {
         previousLocations.put(player.getName(), location);
-    }
-
-    public ChairManager getChairManager() {
-        return chairManager;
     }
 
 }

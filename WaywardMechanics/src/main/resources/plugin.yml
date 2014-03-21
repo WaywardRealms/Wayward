@@ -1,0 +1,4 @@
+name: ${project.name}
+author: Lucariatias
+version: ${project.version}
+main: net.wayward_realms.waywardmechanics.WaywardMechanics

@@ -1,6 +1,6 @@
-package net.wayward_realms.waywardessentials.chairs;
+package net.wayward_realms.waywardmechanics.chairs;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardmechanics.WaywardMechanics;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,9 +10,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class ChairBlockBreakListener implements Listener {
 
-    private WaywardEssentials plugin;
+    private WaywardMechanics plugin;
 
-    public ChairBlockBreakListener(WaywardEssentials plugin) {
+    public ChairBlockBreakListener(WaywardMechanics plugin) {
         this.plugin = plugin;
     }
 

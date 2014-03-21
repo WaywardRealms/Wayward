@@ -1,6 +1,6 @@
-package net.wayward_realms.waywardessentials.portcullis;
+package net.wayward_realms.waywardmechanics.portcullis;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardmechanics.WaywardMechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,9 +8,9 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class PortcullisSignChangeListener implements Listener {
 
-    private WaywardEssentials plugin;
+    private WaywardMechanics plugin;
 
-    public PortcullisSignChangeListener(WaywardEssentials plugin) {
+    public PortcullisSignChangeListener(WaywardMechanics plugin) {
         this.plugin = plugin;
     }
 

@@ -1,6 +1,6 @@
-package net.wayward_realms.waywardessentials.chairs;
+package net.wayward_realms.waywardmechanics.chairs;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardmechanics.WaywardMechanics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,9 +13,9 @@ import java.util.HashMap;
 
 public class ChairManager {
 
-    private WaywardEssentials plugin;
+    private WaywardMechanics plugin;
 
-    public ChairManager(WaywardEssentials plugin) {
+    public ChairManager(WaywardMechanics plugin) {
         this.plugin = plugin;
     }
 

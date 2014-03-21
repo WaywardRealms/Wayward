@@ -1,6 +1,6 @@
-package net.wayward_realms.waywardessentials.chairs;
+package net.wayward_realms.waywardmechanics.chairs;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardmechanics.WaywardMechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,9 +18,9 @@ import org.bukkit.material.WoodenStep;
 
 public class ChairPlayerInteractListener implements Listener {
 
-    private WaywardEssentials plugin;
+    private WaywardMechanics plugin;
 
-    public ChairPlayerInteractListener(WaywardEssentials plugin) {
+    public ChairPlayerInteractListener(WaywardMechanics plugin) {
         this.plugin = plugin;
     }
 
