@@ -5,7 +5,6 @@ import net.wayward_realms.waywardessentials.drink.DrinkManager;
 import net.wayward_realms.waywardessentials.drink.PlayerItemConsumeListener;
 import net.wayward_realms.waywardessentials.kit.KitImpl;
 import net.wayward_realms.waywardessentials.kit.KitManager;
-import net.wayward_realms.waywardessentials.recipe.RecipeManager;
 import net.wayward_realms.waywardessentials.time.TimeSlowRunnable;
 import net.wayward_realms.waywardessentials.warp.WarpManager;
 import net.wayward_realms.waywardessentials.warp.WarpPlayerInteractListener;
@@ -35,7 +34,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     private WarpManager warpManager;
     private KitManager kitManager;
     private DrinkManager drinkManager;
-    private RecipeManager recipeManager;
 
     private GitHub gitHub;
 
@@ -54,7 +52,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         warpManager = new WarpManager(this);
         kitManager = new KitManager(this);
         drinkManager = new DrinkManager(this);
-        recipeManager = new RecipeManager(this);
         try {
             File gitHubFile = new File(getDataFolder(), "github.yml");
             if (gitHubFile.exists()) {
@@ -80,7 +77,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
             exception.printStackTrace();
         }
         drinkManager.setupRecipes();
-        recipeManager.setupRecipes();
     }
 
     @Override

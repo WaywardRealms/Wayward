@@ -1,15 +1,15 @@
-package net.wayward_realms.waywardessentials.recipe;
+package net.wayward_realms.waywarditems.recipe;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywarditems.WaywardItems;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
 public class RecipeManager {
 
-    private WaywardEssentials plugin;
+    private WaywardItems plugin;
 
-    public RecipeManager(WaywardEssentials plugin) {
+    public RecipeManager(WaywardItems plugin) {
         this.plugin = plugin;
     }
 

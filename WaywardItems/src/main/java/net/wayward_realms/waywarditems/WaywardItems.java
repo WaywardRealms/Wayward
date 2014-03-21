@@ -1,5 +1,6 @@
 package net.wayward_realms.waywarditems;
 
+import net.wayward_realms.waywarditems.recipe.RecipeManager;
 import net.wayward_realms.waywardlib.items.CustomItemStack;
 import net.wayward_realms.waywardlib.items.CustomMaterial;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
@@ -17,6 +18,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WaywardItems extends JavaPlugin implements ItemsPlugin {
+
+    private RecipeManager recipeManager;
+
+    @Override
+    public void onEnable() {
+        recipeManager = new RecipeManager(this);
+        recipeManager.setupRecipes();
+    }
 
     private Map<String, CustomMaterial> customMaterials = new HashMap<>();
 
