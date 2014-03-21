@@ -44,12 +44,4 @@ public interface ProfessionsPlugin extends WaywardPlugin {
      */
     public int getBrewingEfficiency(Character character);
 
-    /**
-     * Gets the efficiency, out of one hundred, the character has in enchanting
-     *
-     * @param character the character
-     * @return the efficiency
-     */
-    public int getEnchantEfficiency(Character character);
-
 }
