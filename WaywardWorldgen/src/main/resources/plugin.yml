@@ -2,5 +2,5 @@ name: ${project.name}
 author: Lucariatias
 version: ${project.version}
 description: ${project.description}
-main: io.github.wayward.waywardworldgen.WaywardWorldgen
+main: net.wayward_realms.waywardworldgen.WaywardWorldgen
 load: STARTUP

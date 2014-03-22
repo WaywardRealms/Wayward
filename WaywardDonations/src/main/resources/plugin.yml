@@ -2,7 +2,7 @@ name: ${project.name}
 authors: [Godpuppet, Lucariatias]
 version: ${project.version}
 description: ${project.description}
-main: io.github.wayward.waywarddonatorperks.WaywardDonatorPerks
+main: net.wayward_realms.waywarddonatorperks.WaywardDonatorPerks
 depend: [WaywardLib]
 commands:
     claimlevels:
