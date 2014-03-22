@@ -2,7 +2,7 @@ name: ${project.name}
 author: Lucariatias
 version: ${project.version}
 description: ${project.description}
-main: io.github.wayward.waywardchat.WaywardChat
+main: net.wayward_realms.waywardchat.WaywardChat
 depend: [WaywardLib]
 commands:
     ch:
