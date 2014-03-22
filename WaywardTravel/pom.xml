@@ -7,7 +7,7 @@
     </parent>
     <artifactId>waywardtravel</artifactId>
     <name>WaywardTravel</name>
-    <description>Enhanced travel mechanics: Portals, boats, amd more!</description>
+    <description>Enhanced travel mechanics. Portals, boats, amd more!</description>
     <dependencies>
         <dependency>
             <groupId>net.wayward-realms</groupId>
