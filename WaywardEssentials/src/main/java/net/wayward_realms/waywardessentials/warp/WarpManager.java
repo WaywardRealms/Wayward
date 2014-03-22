@@ -56,11 +56,7 @@ public class WarpManager {
             YamlConfiguration warpConfig = new YamlConfiguration();
             try {
                 warpConfig.load(warpFile);
-            } catch (FileNotFoundException exception) {
-                exception.printStackTrace();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            } catch (InvalidConfigurationException exception) {
+            } catch (IOException | InvalidConfigurationException exception) {
                 exception.printStackTrace();
             }
             for (String warpName : warpConfig.getKeys(false)) {

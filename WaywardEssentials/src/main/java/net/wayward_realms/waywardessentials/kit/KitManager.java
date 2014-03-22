@@ -63,11 +63,7 @@ public class KitManager {
             YamlConfiguration kitConfig = new YamlConfiguration();
             try {
                 kitConfig.load(kitFile);
-            } catch (FileNotFoundException exception) {
-                exception.printStackTrace();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            } catch (InvalidConfigurationException exception) {
+            } catch (IOException | InvalidConfigurationException exception) {
                 exception.printStackTrace();
             }
             for (String kitName : kitConfig.getKeys(false)) {

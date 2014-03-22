@@ -2,8 +2,6 @@ package net.wayward_realms.waywardlib.classes;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.skills.Skill;
-import net.wayward_realms.waywardlib.skills.Spell;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Collection;

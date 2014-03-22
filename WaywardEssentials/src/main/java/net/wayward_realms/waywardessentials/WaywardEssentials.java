@@ -71,9 +71,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
                 getLogger().info("No GitHub config found, attempting to connect anonymously...");
                 gitHub = GitHub.connectAnonymously();
             }
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        } catch (InvalidConfigurationException exception) {
+        } catch (IOException | InvalidConfigurationException exception) {
             exception.printStackTrace();
         }
         drinkManager.setupRecipes();

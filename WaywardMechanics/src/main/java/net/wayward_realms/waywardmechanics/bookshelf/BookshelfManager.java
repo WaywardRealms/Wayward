@@ -86,11 +86,7 @@ public class BookshelfManager {
                                     if (plugin.getServer().getWorld(worldDirectory.getName()) != null) {
                                         bookshelfInventories.put(plugin.getServer().getWorld(worldDirectory.getName()).getBlockAt(Integer.parseInt(xDirectory.getName()), Integer.parseInt(yDirectory.getName()), Integer.parseInt(zDirectory.getName())), inventory);
                                     }
-                                } catch (FileNotFoundException exception) {
-                                    exception.printStackTrace();
-                                } catch (IOException exception) {
-                                    exception.printStackTrace();
-                                } catch (InvalidConfigurationException exception) {
+                                } catch (IOException | InvalidConfigurationException exception) {
                                     exception.printStackTrace();
                                 }
                             }

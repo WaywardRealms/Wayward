@@ -2,7 +2,6 @@ package net.wayward_realms.waywardlib.combat;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
 
-import java.io.File;
 import java.util.Collection;
 
 /**

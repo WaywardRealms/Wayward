@@ -21,9 +21,7 @@ public class OrePopulator extends BlockPopulator {
         YamlConfiguration miningConfig = new YamlConfiguration();
         try {
             miningConfig.load(miningFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        } catch (InvalidConfigurationException exception) {
+        } catch (IOException | InvalidConfigurationException exception) {
             exception.printStackTrace();
         }
         pockets = (List<Pocket>) miningConfig.getList("pockets");

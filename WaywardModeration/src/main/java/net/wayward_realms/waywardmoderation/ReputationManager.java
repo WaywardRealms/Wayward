@@ -20,9 +20,7 @@ public class ReputationManager {
         if (reputationConfigFile.exists()) {
             try {
                 reputationConfig.load(reputationConfigFile);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            } catch (InvalidConfigurationException exception) {
+            } catch (IOException | InvalidConfigurationException exception) {
                 exception.printStackTrace();
             }
         }

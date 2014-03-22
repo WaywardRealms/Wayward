@@ -50,9 +50,7 @@ public class AuctionManager {
                 YamlConfiguration auctionConfig = new YamlConfiguration();
                 try {
                     auctionConfig.load(currencyFile);
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                } catch (InvalidConfigurationException exception) {
+                } catch (IOException | InvalidConfigurationException exception) {
                     exception.printStackTrace();
                 }
                 Auction auction = (Auction) auctionConfig.get("auction");

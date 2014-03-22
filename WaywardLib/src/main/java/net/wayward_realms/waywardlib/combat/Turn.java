@@ -59,16 +59,16 @@ public interface Turn {
     public void setWeapon(ItemStack weapon);
 
     /**
-     * Gets the attack being used in the turn
+     * Gets the skill being used in the turn
      *
-     * @return the attack
+     * @return the skill
      */
     public Skill getSkill();
 
     /**
      * Sets the attack being used in the turn
      *
-     * @param attack the attack to set
+     * @param skill the skill to set
      */
     public void setSkill(Skill skill);
 

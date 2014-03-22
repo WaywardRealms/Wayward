@@ -41,11 +41,7 @@ public class DungeonManager {
             YamlConfiguration config = new YamlConfiguration();
             try {
                 config.load(file);
-            } catch (FileNotFoundException exception) {
-                exception.printStackTrace();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            } catch (InvalidConfigurationException exception) {
+            } catch (IOException | InvalidConfigurationException exception) {
                 exception.printStackTrace();
             }
             for (String dungeonName : config.getKeys(false)) {

@@ -85,9 +85,7 @@ public class CurrencyManager {
                 YamlConfiguration currencyConfig = new YamlConfiguration();
                 try {
                     currencyConfig.load(currencyFile);
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                } catch (InvalidConfigurationException exception) {
+                } catch (IOException | InvalidConfigurationException exception) {
                     exception.printStackTrace();
                 }
                 Currency currency = (Currency) currencyConfig.get("currency");
@@ -115,9 +113,7 @@ public class CurrencyManager {
                 YamlConfiguration characterConfig = new YamlConfiguration();
                 try {
                     characterConfig.load(characterFile);
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                } catch (InvalidConfigurationException exception) {
+                } catch (IOException | InvalidConfigurationException exception) {
                     exception.printStackTrace();
                 }
                 money.put(Integer.parseInt(characterFile.getName().replace(".yml", "")), new HashMap<Currency, Integer>());

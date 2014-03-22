@@ -70,9 +70,7 @@ public class KeyringManager {
             YamlConfiguration keyringConfig = new YamlConfiguration();
             try {
                 keyringConfig.load(keyringFile);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            } catch (InvalidConfigurationException exception) {
+            } catch (IOException | InvalidConfigurationException exception) {
                 exception.printStackTrace();
             }
             for (String section : keyringConfig.getKeys(false)) {

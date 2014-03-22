@@ -1,7 +1,6 @@
 package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

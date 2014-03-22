@@ -87,11 +87,7 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
                                     if (getServer().getWorld(worldDirectory.getName()) != null) {
                                         locked.add(getServer().getWorld(worldDirectory.getName()).getBlockAt(Integer.parseInt(xDirectory.getName()), Integer.parseInt(yDirectory.getName()), Integer.parseInt(zDirectory.getName())));
                                     }
-                                } catch (FileNotFoundException exception) {
-                                    exception.printStackTrace();
-                                } catch (IOException exception) {
-                                    exception.printStackTrace();
-                                } catch (InvalidConfigurationException exception) {
+                                } catch (IOException | InvalidConfigurationException exception) {
                                     exception.printStackTrace();
                                 }
                             }
@@ -106,9 +102,7 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
         if (locksFile.exists()) {
             try {
                 lockConfig.load(locksFile);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            } catch (InvalidConfigurationException exception) {
+            } catch (IOException | InvalidConfigurationException exception) {
                 exception.printStackTrace();
             }
             List<SerialisableLocation> lockedLocations = (List<SerialisableLocation>) lockConfig.getList("locks");
