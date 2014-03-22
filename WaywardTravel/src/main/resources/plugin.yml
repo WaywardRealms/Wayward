@@ -2,12 +2,12 @@ name: ${project.name}
 author: Lucariatias
 version: ${project.version}
 description: ${project.description}
-main: net.wayward_realms.waywardportals.WaywardPortals
+main: net.wayward_realms.waywardtravel.WaywardTravel
 depend: [WaywardLib]
 commands:
     portal:
         description: Parent for all portal commands
-        usage: /<command> [args...]
+        usage: /<command> [args]
     untame:
         description: Untames an entity
         usage: /<command>
