@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,7 +15,10 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,12 +53,18 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         setupHungerSlowdown();
     }
 
+
+    
     private void setupRegen() {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
                 for (Player player : getServer().getOnlinePlayers()) {
                     Character character = getActiveCharacter(player);
+                    character.setThirst(Math.max(character.getThirst() - 1, 0));
+                    if (character.getThirst() < 5) {
+                    	character.setHealth(character.getHealth() - 1);
+                    }
                     RegisteredServiceProvider<CombatPlugin> combatPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CombatPlugin.class);
                     if (combatPluginProvider != null) {
                         CombatPlugin combatPlugin = combatPluginProvider.getProvider();

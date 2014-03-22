@@ -46,6 +46,8 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     private int foodLevel;
     private int mana;
     private int thirst;
+	private int maxThirst = 20;
+	private int minThirst = 0;
 
     private CharacterImpl() {}
 
@@ -189,6 +191,13 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void setThirst(int thirstLevel) {
         this.thirst = thirstLevel;
+        if (getThirst() > maxThirst) {
+            this.thirst = maxThirst;
+        }
+        if (getThirst() < minThirst) {
+        	this.thirst = minThirst;
+        }
+        
     }
 
     @Override
