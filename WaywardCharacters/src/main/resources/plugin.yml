@@ -27,6 +27,6 @@ permissions:
     wayward.characters.characters.unlimited:
         default: op
         description: Allows the creation of unlimited characters
-    wayward.characters.command.character.revive
+    wayward.characters.command.character.revive:
         default: op
         description: Allows characters to be revived
