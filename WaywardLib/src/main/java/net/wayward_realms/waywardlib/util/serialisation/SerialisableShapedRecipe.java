@@ -3,6 +3,7 @@ package net.wayward_realms.waywardlib.util.serialisation;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,9 @@ public class SerialisableShapedRecipe implements SerialisableRecipe {
         ShapedRecipe recipe = new ShapedRecipe(result);
         recipe.shape(shape);
         try {
-            recipe.getClass().getDeclaredField("ingredients").set(recipe, ingredients);
+            Field field = recipe.getClass().getDeclaredField("ingredients");
+            field.setAccessible(true);
+            field.set(recipe, ingredients);
         } catch (IllegalAccessException | NoSuchFieldException exception) {
             exception.printStackTrace();
         }

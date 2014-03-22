@@ -3,6 +3,7 @@ package net.wayward_realms.waywardlib.util.serialisation;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,9 @@ public class SerialisableShapelessRecipe implements SerialisableRecipe {
     public ShapelessRecipe toRecipe() {
         ShapelessRecipe recipe = new ShapelessRecipe(result);
         try {
-            recipe.getClass().getDeclaredField("ingredients").set(recipe, ingredients);
+            Field field = recipe.getClass().getDeclaredField("ingredients");
+            field.setAccessible(true);
+            field.set(recipe, ingredients);
         } catch (IllegalAccessException | NoSuchFieldException exception) {
             exception.printStackTrace();
         }

@@ -10,6 +10,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,9 @@ public class CustomMaterialImpl implements CustomMaterial {
         this.minecraftMaterial = minecraftMaterial;
         this.recipe = new ShapedRecipe(new CustomItemStackImpl(this, 1).toMinecraftItemStack());
         try {
-            recipe.getClass().getDeclaredField("ingredients").set(recipe, recipeIngredients);
+            Field field = recipe.getClass().getDeclaredField("ingredients");
+            field.setAccessible(true);
+            field.set(recipe, recipeIngredients);
         } catch (IllegalAccessException | NoSuchFieldException exception) {
             exception.printStackTrace();
         }
