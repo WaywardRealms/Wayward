@@ -120,7 +120,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("sudo").setExecutor(new SudoCommand(this));
         getCommand("togglelogmessages").setExecutor(new ToggleLogMessagesCommand(this));
         getCommand("unsign").setExecutor(new UnsignCommand(this));
-        getCommand("untame").setExecutor(new UntameCommand(this));
         getCommand("warp").setExecutor(new WarpCommand(this));
     }
 

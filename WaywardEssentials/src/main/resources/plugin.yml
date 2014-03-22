@@ -93,9 +93,6 @@ commands:
     unsign:
         description: Unsigns written books
         usage: /<command>
-    untame:
-        description: Untames an entity
-        usage: /<command>
     warp:
         description: Warps to a location
         usage: /<command> [warp]

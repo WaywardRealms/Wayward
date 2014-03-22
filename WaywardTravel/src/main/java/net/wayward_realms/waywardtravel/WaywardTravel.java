@@ -31,6 +31,7 @@ public class WaywardTravel extends JavaPlugin implements TravelPlugin {
         ConfigurationSerialization.registerClass(PortalImpl.class);
         registerListeners(new PlayerMoveListener(this), new HorsePlayerInteractEntityListener(this), new BoatPlayerInteractListener(this), new BoatSignChangeListener(this));
         getCommand("portal").setExecutor(new PortalCommand(this));
+        getCommand("untame").setExecutor(new UntameCommand(this));
     }
 
     @Override

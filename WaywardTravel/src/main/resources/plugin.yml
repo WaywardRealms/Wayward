@@ -8,6 +8,9 @@ commands:
     portal:
         description: Parent for all portal commands
         usage: /<command> [args...]
+    untame:
+        description: Untames an entity
+        usage: /<command>
 permissions:
     wayward.travel.command.portal.create:
         description: Allows the creation of portals

@@ -1,6 +1,5 @@
-package net.wayward_realms.waywardessentials.command;
+package net.wayward_realms.waywardtravel;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,9 +8,9 @@ import org.bukkit.entity.Player;
 
 public class UntameCommand implements CommandExecutor {
 
-    private final WaywardEssentials plugin;
+    private final WaywardTravel plugin;
 
-    public UntameCommand(WaywardEssentials plugin) {
+    public UntameCommand(WaywardTravel plugin) {
         this.plugin = plugin;
     }
 
