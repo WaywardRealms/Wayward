@@ -35,7 +35,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
         getCommand("getclass").setExecutor(new GetClassCommand(this));
         getCommand("getlevel").setExecutor(new GetLevelCommand(this));
         getCommand("listclasses").setExecutor(new ListClassesCommand(this));
-        registerListeners(new EntityDamageListener(this), new EntityDamageByEntityListener(), new PlayerDeathListener(), new PlayerExpChangeListener(this), new PlayerJoinListener(this));
+        registerListeners(new EntityDamageListener(this), new EntityDamageByEntityListener(), new PlayerDeathListener(), new PlayerExpChangeListener(), new PlayerJoinListener(this));
     }
 
     @Override
