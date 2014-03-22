@@ -65,8 +65,8 @@ commands:
         description: Runs a command as another player
         usage: /<command> [player] [command]
     smite:
-    	description: Smites the player
-    	usage: /<command> [player]
+        description: Smites the player
+        usage: /<command> [player]
     setspawn:
         description: Sets the worlds spawn location
         usage: /<command>
@@ -158,8 +158,8 @@ permissions:
         description: Allows you to run a command as another player
         default: op
     wayward.essentials.command.smite:
-    	description: Smites the player
-    	default: op
+        description: Smites the player
+        default: op
     wayward.essentials.command.setspawn:
         description: Allows you to set the spawn
         default: op
