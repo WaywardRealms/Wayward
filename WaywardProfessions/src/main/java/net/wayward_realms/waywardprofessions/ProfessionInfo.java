@@ -53,18 +53,36 @@ public class ProfessionInfo implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("max-tool-durability", maxToolDurability);
-        serialised.put("craft-efficiency", craftEfficiency);
-        serialised.put("mining-efficiency", miningEfficiency);
+        Map<String, Integer> maxToolDurabilityNames = new HashMap<>();
+        for (Map.Entry<ToolType, Integer> entry : maxToolDurability.entrySet()) {
+            maxToolDurabilityNames.put(entry.getKey().toString(), entry.getValue());
+        }
+        serialised.put("max-tool-durability", maxToolDurabilityNames);
+        Map<String, Integer> craftEfficiencyNames = new HashMap<>();
+        for (Map.Entry<Material, Integer> entry : craftEfficiency.entrySet()) {
+            craftEfficiencyNames.put(entry.getKey().toString(), entry.getValue());
+        }
+        serialised.put("craft-efficiency", craftEfficiencyNames);
+        Map<String, Integer> miningEfficiencyNames = new HashMap<>();
+        for (Map.Entry<Material, Integer> entry : miningEfficiency.entrySet()) {
+            miningEfficiencyNames.put(entry.getKey().toString(), entry.getValue());
+        }
+        serialised.put("mining-efficiency", miningEfficiencyNames);
         serialised.put("brewing-efficiency", brewingEfficiency);
         return serialised;
     }
 
     public static ProfessionInfo deserialize(Map<String, Object> serialised) {
         ProfessionInfo deserialised = new ProfessionInfo();
-        deserialised.maxToolDurability = (Map<ToolType, Integer>) serialised.get("max-tool-durability");
-        deserialised.craftEfficiency = (Map<Material, Integer>) serialised.get("craft-efficiency");
-        deserialised.miningEfficiency = (Map<Material, Integer>) serialised.get("mining-efficiency");
+        for (Map.Entry<String, Integer> entry : ((Map<String, Integer>) serialised.get("max-tool-durability")).entrySet()) {
+            deserialised.maxToolDurability.put(ToolType.valueOf(entry.getKey()), entry.getValue());
+        }
+        for (Map.Entry<String, Integer> entry : ((Map<String, Integer>) serialised.get("craft-efficiency")).entrySet()) {
+            deserialised.craftEfficiency.put(Material.getMaterial(entry.getKey()), entry.getValue());
+        }
+        for (Map.Entry<String, Integer> entry : ((Map<String, Integer>) serialised.get("mining-efficiency")).entrySet()) {
+            deserialised.miningEfficiency.put(Material.getMaterial(entry.getKey()), entry.getValue());
+        }
         deserialised.brewingEfficiency = (int) serialised.get("brewing-efficiency");
         return deserialised;
     }
