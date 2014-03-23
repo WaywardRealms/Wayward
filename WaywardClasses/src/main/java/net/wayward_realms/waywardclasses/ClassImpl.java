@@ -8,6 +8,7 @@ import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +17,8 @@ public class ClassImpl implements Class, ConfigurationSerializable {
     private String name;
     private double hpBonus;
     private int manaBonus;
-    private Map<Stat, Integer> statBonuses = new HashMap<>();
-    private Map<SkillType, Integer> skillPointBonuses = new HashMap<>();
+    private Map<Stat, Integer> statBonuses = new EnumMap<>(Stat.class);
+    private Map<SkillType, Integer> skillPointBonuses = new EnumMap<>(SkillType.class);
     private Map<Class, Integer> prerequisites = new HashMap<>();
     private int maxLevel;
 
@@ -108,7 +109,7 @@ public class ClassImpl implements Class, ConfigurationSerializable {
 
     @Override
     public int getStatBonus(Stat stat) {
-        return statBonuses.get(stat);
+        return statBonuses.get(stat) != null ? statBonuses.get(stat) : 0;
     }
 
     @Override
@@ -198,7 +199,7 @@ public class ClassImpl implements Class, ConfigurationSerializable {
 
     @Override
     public int getSkillPointBonus(SkillType type) {
-        return skillPointBonuses.get(type);
+        return skillPointBonuses.get(type) != null ? skillPointBonuses.get(type) : 0;
     }
 
     @Override
