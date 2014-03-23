@@ -29,7 +29,7 @@ public class CraftItemListener implements Listener {
             if (characterPluginProvider != null) {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                 Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-                event.getCurrentItem().setDurability((short) (event.getCurrentItem().getType().getMaxDurability() - plugin.getMaxToolDurability(character, type)));
+                event.getCurrentItem().setDurability((short) (event.getCurrentItem().getType().getMaxDurability() - (0.75D * (double) plugin.getMaxToolDurability(character, type))));
                 Random random = new Random();
                 plugin.setMaxToolDurability(character, type, Math.min(plugin.getMaxToolDurability(character, type) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0), event.getCurrentItem().getType().getMaxDurability()));
             }
