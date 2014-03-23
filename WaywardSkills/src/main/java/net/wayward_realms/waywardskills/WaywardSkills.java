@@ -136,13 +136,15 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     @Override
     public void loadState() {
         File skillDirectory = new File(getDataFolder(), "skills");
-        for (File file : skillDirectory.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return !file.isDirectory() && file.getName().endsWith(".jar");
+        if (skillDirectory.exists()) {
+            for (File file : skillDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    return !file.isDirectory() && file.getName().endsWith(".jar");
+                }
+            })) {
+                loadSkill(file);
             }
-        })) {
-            loadSkill(file);
         }
     }
 
