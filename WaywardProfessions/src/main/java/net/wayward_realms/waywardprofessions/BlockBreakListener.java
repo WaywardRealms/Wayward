@@ -32,7 +32,7 @@ public class BlockBreakListener implements Listener {
             Random random = new Random();
             for (ItemStack drop : event.getBlock().getDrops()) {
                 int miningEfficiency = plugin.getMiningEfficiency(character, event.getBlock().getType());
-                int amount = (int) ((double) (miningEfficiency > 0 ? random.nextInt(miningEfficiency) : 0) * (4D / 100D) * (double) drop.getAmount());
+                int amount = (int) ((double) (random.nextInt(100) <= 30 ? (miningEfficiency > 10 ? random.nextInt(miningEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) drop.getAmount());
                 drops.add(new ItemStack(drop.getType(), amount));
             }
             event.setCancelled(true);
