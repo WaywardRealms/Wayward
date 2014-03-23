@@ -28,7 +28,8 @@ public class InventoryClickListener implements Listener {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
                     Random random = new Random();
-                    int amount = (int) ((double) random.nextInt(plugin.getBrewingEfficiency(character)) * (8D / 100D) * (double) event.getCurrentItem().getAmount());
+                    int brewingEfficiency = plugin.getBrewingEfficiency(character);
+                    int amount = (int) ((double) (brewingEfficiency > 0 ? random.nextInt(brewingEfficiency) : 0) * (8D / 100D) * (double) event.getCurrentItem().getAmount());
                     event.getCurrentItem().setAmount(amount);
                     plugin.setBrewingEfficiency(character, plugin.getBrewingEfficiency(character) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0));
                 }

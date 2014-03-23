@@ -40,7 +40,8 @@ public class CraftItemListener implements Listener {
             Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
             Material material = event.getCurrentItem().getType();
             Random random = new Random();
-            int amount = (int) ((double) random.nextInt(plugin.getCraftEfficiency(character, event.getCurrentItem().getType())) * (8D / 100D) * (double) event.getCurrentItem().getAmount());
+            int craftEfficiency = plugin.getCraftEfficiency(character, event.getCurrentItem().getType());
+            int amount = (int) ((double) (craftEfficiency > 0 ? random.nextInt(craftEfficiency) : 0) * (8D / 100D) * (double) event.getCurrentItem().getAmount());
             event.getCurrentItem().setAmount(amount);
             plugin.setCraftEfficiency(character, material, plugin.getCraftEfficiency(character, material) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0));
         }
