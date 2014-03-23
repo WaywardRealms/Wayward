@@ -58,9 +58,13 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             public void run() {
                 for (Player player : getServer().getOnlinePlayers()) {
                     Character character = getActiveCharacter(player);
-                    character.setThirst(Math.max(character.getThirst() - 1, 0));
+                    if (character.getThirst() > 0) {
+                        character.setThirst(character.getThirst() - 1);
+                        player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                    }
                     if (character.getThirst() < 5) {
                     	character.setHealth(character.getHealth() - 1);
+                        player.sendMessage(getPrefix() + ChatColor.RED + "You are very thirsty, be sure to drink something soon!");
                     }
                     RegisteredServiceProvider<CombatPlugin> combatPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CombatPlugin.class);
                     if (combatPluginProvider != null) {
