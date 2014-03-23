@@ -3,6 +3,7 @@ author: Lucariatias
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardmonsters.WaywardMonsters
+depend: [WaywardLib]
 commands:
     zeropoint:
         description: Sets a mob-level-zero point at your location
