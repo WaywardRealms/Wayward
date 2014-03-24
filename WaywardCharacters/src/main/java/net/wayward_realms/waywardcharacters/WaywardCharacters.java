@@ -56,9 +56,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
+                Random random = new Random();
                 for (Player player : getServer().getOnlinePlayers()) {
                     Character character = getActiveCharacter(player);
-                    if (character.getThirst() > 0) {
+                    if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
                         character.setThirst(character.getThirst() - 1);
                         player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
                     }
