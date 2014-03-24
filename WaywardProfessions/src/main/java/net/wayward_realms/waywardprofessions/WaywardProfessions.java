@@ -3,6 +3,7 @@ package net.wayward_realms.waywardprofessions;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -47,6 +48,11 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     public void setMaxToolDurability(Character character, ToolType toolType, int durability) {
         initialiseProfessionInfo(character);
+        if (getMaxToolDurability(character, toolType) < durability) {
+            if (character.getPlayer().isOnline()) {
+                character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (durability - getMaxToolDurability(character, toolType)) + " maximum " + toolType.toString().toLowerCase().replace('_', ' ') + " durability");
+            }
+        }
         professionInfo.get(character.getId()).setMaxToolDurability(toolType, durability);
     }
 
@@ -58,6 +64,11 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     public void setCraftEfficiency(Character character, Material material, int efficiency) {
         initialiseProfessionInfo(character);
+        if (getCraftEfficiency(character, material) < efficiency) {
+            if (character.getPlayer().isOnline()) {
+                character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getCraftEfficiency(character, material)) + " " + material.toString().toLowerCase().replace('_', ' ') + " crafting efficiency");
+            }
+        }
         professionInfo.get(character.getId()).setCraftEfficiency(material, efficiency);
     }
 
@@ -69,6 +80,11 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     public void setMiningEfficiency(Character character, Material material, int efficiency) {
         initialiseProfessionInfo(character);
+        if (getMiningEfficiency(character, material) < efficiency) {
+            if (character.getPlayer().isOnline()) {
+                character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getMiningEfficiency(character, material)) + " " + material.toString().toLowerCase().replace('_', ' ') + " mining efficiency");
+            }
+        }
         professionInfo.get(character.getId()).setMiningEfficiency(material, efficiency);
     }
 
@@ -80,6 +96,11 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     public void setBrewingEfficiency(Character character, int efficiency) {
         initialiseProfessionInfo(character);
+        if (getBrewingEfficiency(character) < efficiency) {
+            if (character.getPlayer().isOnline()) {
+                character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getBrewingEfficiency(character)) + " brewing efficiency");
+            }
+        }
         professionInfo.get(character.getId()).setBrewingEfficiency(efficiency);
     }
 
