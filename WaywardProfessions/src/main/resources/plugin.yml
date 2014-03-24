@@ -7,3 +7,6 @@ commands:
     efficiency:
         description: Shows efficiency for crafing, brewing and mining
         usage: /<command> [craft|mine|brew] (material)
+    durability:
+        description: Gets durability of item in hand
+        usage: /<command>
