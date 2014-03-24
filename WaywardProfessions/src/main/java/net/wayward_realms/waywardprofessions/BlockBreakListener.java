@@ -41,8 +41,20 @@ public class BlockBreakListener implements Listener {
                 if (ToolType.getToolType(event.getPlayer().getItemInHand().getType()) != null) {
                     ToolType toolType = ToolType.getToolType(event.getPlayer().getItemInHand().getType());
                     switch (toolType) {
-                        case SWORD: event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 2)); break;
-                        case PICKAXE:case AXE:case SPADE: event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 1)); break;
+                        case SWORD:
+                            if (event.getPlayer().getItemInHand().getDurability() + 2 < event.getPlayer().getItemInHand().getType().getMaxDurability()) {
+                                event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 2));
+                            } else {
+                                event.getPlayer().setItemInHand(null);
+                            }
+                            break;
+                        case PICKAXE:case AXE:case SPADE:
+                            if (event.getPlayer().getItemInHand().getDurability() + 1 < event.getPlayer().getItemInHand().getType().getMaxDurability()) {
+                                event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 1));
+                            } else {
+                                event.getPlayer().setItemInHand(null);
+                            }
+                            break;
                     }
                 }
             }
