@@ -2,3 +2,8 @@ name: ${project.name}
 author: Lucariatias
 version: ${project.version}
 main: net.wayward_realms.waywardprofessions.WaywardProfessions
+description: ${project.description}
+commands:
+    efficiency:
+        description: Shows efficiency for crafing, brewing and mining
+        usage: /<command> [craft|mine|brew] (material)

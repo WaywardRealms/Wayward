@@ -24,6 +24,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
     public void onEnable() {
         ConfigurationSerialization.registerClass(ProfessionInfo.class);
         registerListeners(new BlockBreakListener(this), new EnchantItemListener(), new InventoryClickListener(this), new PrepareItemCraftListener(this));
+        getCommand("efficiency").setExecutor(new EfficiencyCommand(this));
     }
 
     @Override
