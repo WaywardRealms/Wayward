@@ -17,7 +17,7 @@ public class ProfessionInfo implements ConfigurationSerializable {
 
     public int getMaxToolDurability(ToolType type) {
         if (maxToolDurability.get(type) == null) return 10;
-        return maxToolDurability.get(type);
+        return Math.max(maxToolDurability.get(type), 10);
     }
 
     public void setMaxToolDurability(ToolType type, int durability) {
