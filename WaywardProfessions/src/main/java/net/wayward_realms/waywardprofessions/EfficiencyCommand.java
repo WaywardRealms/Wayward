@@ -36,7 +36,7 @@ public class EfficiencyCommand implements CommandExecutor {
                 if (args.length > 0) {
                     if (args.length > 1 && !args[0].equalsIgnoreCase("brew")) {
                         if (Material.matchMaterial(args[1]) != null) {
-                            Material material = Material.matchMaterial(args[0]);
+                            Material material = Material.matchMaterial(args[1]);
                             if (args[0].equalsIgnoreCase("craft")) {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Crafting efficiency for " + material.toString().toLowerCase().replace('_', ' ') + ": " + plugin.getCraftEfficiency(character, material) + "%");
                                 if (ToolType.getToolType(material) != null) {
