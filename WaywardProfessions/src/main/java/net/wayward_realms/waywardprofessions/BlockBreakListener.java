@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardprofessions;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.professions.ToolType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -36,6 +37,15 @@ public class BlockBreakListener implements Listener {
                 drops.add(new ItemStack(drop.getType(), amount));
             }
             event.setCancelled(true);
+            if (event.getPlayer().getItemInHand() != null) {
+                if (ToolType.getToolType(event.getPlayer().getItemInHand().getType()) != null) {
+                    ToolType toolType = ToolType.getToolType(event.getPlayer().getItemInHand().getType());
+                    switch (toolType) {
+                        case SWORD: event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 2)); break;
+                        case PICKAXE:case AXE:case SPADE: event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 1)); break;
+                    }
+                }
+            }
             event.getBlock().setType(Material.AIR);
             for (ItemStack drop : drops) {
                 event.getBlock().getWorld().dropItem(event.getBlock().getLocation().add(0.5D, 0.5D, 0.5D), drop);
