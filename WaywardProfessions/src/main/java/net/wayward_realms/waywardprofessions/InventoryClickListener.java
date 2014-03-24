@@ -11,11 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class InventoryClickListener implements Listener {
@@ -39,29 +36,8 @@ public class InventoryClickListener implements Listener {
                         if (ToolType.getToolType(event.getCurrentItem().getType()) != null) {
                             ToolType type = ToolType.getToolType(event.getCurrentItem().getType());
                             if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                                if (characterPluginProvider != null) {
-                                    event.setCancelled(true);
-                                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                                    Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-                                    event.getWhoClicked().getInventory().addItem(event.getCurrentItem());
-                                    List<ItemStack> itemsToRemove = new ArrayList<>();
-                                    for (ItemStack item : event.getInventory()) {
-                                        if (item != null) {
-                                            if (item.getAmount() > 1) {
-                                                item.setAmount(item.getAmount() - 1);
-                                            } else {
-                                                itemsToRemove.add(item);
-                                            }
-                                        }
-                                    }
-                                    for (ItemStack item : itemsToRemove) {
-                                        event.getInventory().remove(item);
-                                    }
-                                    Random random = new Random();
-                                    plugin.setMaxToolDurability(character, type, Math.min(plugin.getMaxToolDurability(character, type) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0), event.getCurrentItem().getType().getMaxDurability()));
-                                    return;
-                                }
+                                event.setCancelled(true);
+                                return;
                             }
                             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                             if (characterPluginProvider != null) {
