@@ -16,7 +16,7 @@ public class ProfessionInfo implements ConfigurationSerializable {
     private int brewingEfficiency;
 
     public int getMaxToolDurability(ToolType type) {
-        if (maxToolDurability.get(type) == null) return 0;
+        if (maxToolDurability.get(type) == null) return 10;
         return maxToolDurability.get(type);
     }
 
