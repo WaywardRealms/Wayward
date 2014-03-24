@@ -44,7 +44,7 @@ public class InventoryClickListener implements Listener {
                                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                                 net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
                                 Random random = new Random();
-                                plugin.setMaxToolDurability(character, type, Math.min(plugin.getMaxToolDurability(character, type) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0), event.getCurrentItem().getType().getMaxDurability()));
+                                plugin.setMaxToolDurability(character, type, Math.min(plugin.getMaxToolDurability(character, type) + (random.nextInt(100) <= 75 ? random.nextInt(3) + 1 : 0), event.getCurrentItem().getType().getMaxDurability()));
                             }
                         }
                         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
@@ -53,7 +53,7 @@ public class InventoryClickListener implements Listener {
                             Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
                             Material material = event.getCurrentItem().getType();
                             Random random = new Random();
-                            plugin.setCraftEfficiency(character, material, plugin.getCraftEfficiency(character, material) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0));
+                            plugin.setCraftEfficiency(character, material, plugin.getCraftEfficiency(character, material) + (random.nextInt(100) <= 75 ? random.nextInt(3) + 1 : 0));
                         }
                     }
                 }
@@ -69,7 +69,7 @@ public class InventoryClickListener implements Listener {
                     int brewingEfficiency = plugin.getBrewingEfficiency(character);
                     int amount = (int) ((double) (random.nextInt(100) <= 30 ? (brewingEfficiency > 10 ? random.nextInt(brewingEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) event.getCurrentItem().getAmount());
                     event.getCurrentItem().setAmount(amount);
-                    plugin.setBrewingEfficiency(character, plugin.getBrewingEfficiency(character) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0));
+                    plugin.setBrewingEfficiency(character, plugin.getBrewingEfficiency(character) + (random.nextInt(100) <= 75 ? random.nextInt(3) + 1 : 0));
                 }
             }
         }
