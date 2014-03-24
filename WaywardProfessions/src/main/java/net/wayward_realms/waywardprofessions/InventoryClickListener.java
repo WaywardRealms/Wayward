@@ -60,14 +60,14 @@ public class InventoryClickListener implements Listener {
             }
         }
         if (event.getInventory().getType() == InventoryType.BREWING) {
-            if (event.getSlotType() == InventoryType.SlotType.RESULT) {
+            if (event.getSlotType() == InventoryType.SlotType.CRAFTING) {
                 RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                 if (characterPluginProvider != null) {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
                     Random random = new Random();
                     int brewingEfficiency = plugin.getBrewingEfficiency(character);
-                    int amount = (int) ((double) (random.nextInt(100) <= 30 ? (brewingEfficiency > 10 ? random.nextInt(brewingEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) event.getCurrentItem().getAmount());
+                    int amount = (int) ((double) (random.nextInt(100) <= 75 ? (brewingEfficiency > 10 ? random.nextInt(brewingEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) event.getCurrentItem().getAmount());
                     event.getCurrentItem().setAmount(amount);
                     plugin.setBrewingEfficiency(character, plugin.getBrewingEfficiency(character) + (random.nextInt(100) <= 75 ? random.nextInt(3) + 1 : 0));
                 }
