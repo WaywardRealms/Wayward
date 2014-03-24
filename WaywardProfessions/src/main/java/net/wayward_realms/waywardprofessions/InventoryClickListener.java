@@ -1,14 +1,21 @@
 package net.wayward_realms.waywardprofessions;
 
-import net.wayward_realms.waywardlib.character.*;
+import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.professions.ToolType;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class InventoryClickListener implements Listener {
@@ -21,6 +28,61 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getInventory().getType() == InventoryType.WORKBENCH || event.getInventory().getType() == InventoryType.CRAFTING) {
+            if (event.getSlotType() == InventoryType.SlotType.RESULT) {
+                if (event.getAction() == InventoryAction.PICKUP_HALF
+                        || event.getAction() == InventoryAction.PICKUP_ONE
+                        || event.getAction() == InventoryAction.PICKUP_ALL
+                        || event.getAction() == InventoryAction.PICKUP_SOME
+                        || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                    if (event.getCurrentItem() != null) {
+                        if (ToolType.getToolType(event.getCurrentItem().getType()) != null) {
+                            ToolType type = ToolType.getToolType(event.getCurrentItem().getType());
+                            if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                                if (characterPluginProvider != null) {
+                                    event.setCancelled(true);
+                                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                    Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                                    event.getWhoClicked().getInventory().addItem(event.getCurrentItem());
+                                    List<ItemStack> itemsToRemove = new ArrayList<>();
+                                    for (ItemStack item : event.getInventory()) {
+                                        if (item != null) {
+                                            if (item.getAmount() > 1) {
+                                                item.setAmount(item.getAmount() - 1);
+                                            } else {
+                                                itemsToRemove.add(item);
+                                            }
+                                        }
+                                    }
+                                    for (ItemStack item : itemsToRemove) {
+                                        event.getInventory().remove(item);
+                                    }
+                                    Random random = new Random();
+                                    plugin.setMaxToolDurability(character, type, Math.min(plugin.getMaxToolDurability(character, type) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0), event.getCurrentItem().getType().getMaxDurability()));
+                                    return;
+                                }
+                            }
+                            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                            if (characterPluginProvider != null) {
+                                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                                Random random = new Random();
+                                plugin.setMaxToolDurability(character, type, Math.min(plugin.getMaxToolDurability(character, type) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0), event.getCurrentItem().getType().getMaxDurability()));
+                            }
+                        }
+                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                        if (characterPluginProvider != null) {
+                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                            Material material = event.getCurrentItem().getType();
+                            Random random = new Random();
+                            plugin.setCraftEfficiency(character, material, plugin.getCraftEfficiency(character, material) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0));
+                        }
+                    }
+                }
+            }
+        }
         if (event.getInventory().getType() == InventoryType.BREWING) {
             if (event.getSlotType() == InventoryType.SlotType.RESULT) {
                 RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
