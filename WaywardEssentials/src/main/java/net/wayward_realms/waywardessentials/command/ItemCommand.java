@@ -37,9 +37,9 @@ public class ItemCommand implements CommandExecutor {
                         ItemStack item = new ItemStack(material, amount);
                         player.getInventory().addItem(item);
                         if (amount > 1) {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created " + amount + " " + material.toString() + "s");
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created " + amount + " " + material.toString().toLowerCase().replace('_', ' ') + "s");
                         } else {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created a " + material.toString() + ".");
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created a " + material.toString().toLowerCase().replace('_', ' ') + ".");
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Could not find that material.");
