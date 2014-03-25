@@ -52,7 +52,7 @@ public class EfficiencyCommand implements CommandExecutor {
                     } else if (args[0].equalsIgnoreCase("brew")) {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Brewing efficiency: " + plugin.getBrewingEfficiency(character) + "%");
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a material for efficiency unless you are getting brewing efficiency!");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a material for efficiency unless you are getting brewing efficiency! See " + ChatColor.BLUE + "http://goo.gl/97Nt0e " + ChatColor.GREEN + "for more details.");
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Possible arguments include \"craft\", \"mine\", or \"brew\".");
                     }
                 } else {
