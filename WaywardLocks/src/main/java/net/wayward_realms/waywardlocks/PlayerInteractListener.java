@@ -3,6 +3,7 @@ package net.wayward_realms.waywardlocks;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -159,6 +160,14 @@ public class PlayerInteractListener implements Listener {
                                             }
                                         } else {
                                             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You hear a click and the lock opens, allowing you access to the " + block.getType().toString().toLowerCase().replace('_', ' '));
+                                            final Player player = event.getPlayer();
+                                            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    player.closeInventory();
+                                                    player.sendMessage(ChatColor.RED + "The chest snaps shut again, the lock clicking shut.");
+                                                }
+                                            }, 60L);
                                         }
                                         return;
                                     }
