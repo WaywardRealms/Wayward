@@ -7,8 +7,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class EntityDamageListener implements Listener {
 
-    private static final int MAX_DISTANCE = 16;
-
     private WaywardCharacters plugin;
 
     public EntityDamageListener(WaywardCharacters plugin) {
