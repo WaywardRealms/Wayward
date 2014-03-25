@@ -10,3 +10,10 @@ commands:
     durability:
         description: Gets durability of item in hand
         usage: /<command>
+    profession:
+        description: Adds experience in profession skills
+        usage: /<command> [craftefficiency|minefficiency|brewefficiency|maxdurability] (material) [amount]
+permissions:
+    wayward.professions.command.profession:
+        description: Allows addition of profession skill points
+        default: op
