@@ -26,6 +26,13 @@ public class ProfessionCommand implements CommandExecutor {
             if (sender instanceof Player) {
                 player = (Player) sender;
             }
+            int argsOffset = 0;
+            if (args.length > 0) {
+                if (plugin.getServer().getPlayer(args[argsOffset]) != null) {
+                    player = plugin.getServer().getPlayer(args[argsOffset]);
+                    argsOffset += 1;
+                }
+            }
             if (player != null) {
                 RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                 if (characterPluginProvider != null) {
@@ -34,32 +41,32 @@ public class ProfessionCommand implements CommandExecutor {
                 }
                 if (character != null) {
                     if (args.length > 1) {
-                        if (args.length > 2 && !args[0].equalsIgnoreCase("brewefficiency")) {
-                            if (Material.matchMaterial(args[1]) != null) {
-                                Material material = Material.matchMaterial(args[1]);
-                                if (args[0].equalsIgnoreCase("craftefficiency")) {
+                        if (args.length > 2 && !args[argsOffset].equalsIgnoreCase("brewefficiency")) {
+                            if (Material.matchMaterial(args[argsOffset + 1]) != null) {
+                                Material material = Material.matchMaterial(args[argsOffset + 1]);
+                                if (args[argsOffset].equalsIgnoreCase("craftefficiency")) {
                                     try {
-                                        plugin.setCraftEfficiency(character, material, plugin.getCraftEfficiency(character, material) + Integer.parseInt(args[2]));
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s crafting efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[2] + "%" + ChatColor.GRAY + " (Total: " + plugin.getCraftEfficiency(character, material) + "%)");
+                                        plugin.setCraftEfficiency(character, material, plugin.getCraftEfficiency(character, material) + Integer.parseInt(args[argsOffset + 2]));
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s crafting efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[argsOffset + 2] + "%" + ChatColor.GRAY + " (Total: " + plugin.getCraftEfficiency(character, material) + "%)");
                                     } catch (NumberFormatException exception) {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for efficiency to add.");
                                     }
-                                } else if (args[0].equalsIgnoreCase("maxdurability")) {
+                                } else if (args[argsOffset].equalsIgnoreCase("maxdurability")) {
                                     if (ToolType.getToolType(material) != null) {
                                         ToolType toolType = ToolType.getToolType(material);
                                         try {
-                                            plugin.setMaxToolDurability(character, toolType, plugin.getMaxToolDurability(character, toolType) + Integer.parseInt(args[2]));
-                                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s maximum durability for " + toolType.toString().toLowerCase().replace('_', ' ') + "s increased by " + args[2] + ChatColor.GRAY + " (Total: " + plugin.getMaxToolDurability(character, toolType) + ")");
+                                            plugin.setMaxToolDurability(character, toolType, plugin.getMaxToolDurability(character, toolType) + Integer.parseInt(args[argsOffset + 2]));
+                                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s maximum durability for " + toolType.toString().toLowerCase().replace('_', ' ') + "s increased by " + args[argsOffset + 2] + ChatColor.GRAY + " (Total: " + plugin.getMaxToolDurability(character, toolType) + ")");
                                         } catch (NumberFormatException exception) {
                                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for durability to add.");
                                         }
                                     } else {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That material does not have durability!");
                                     }
-                                } else if (args[0].equalsIgnoreCase("mineefficiency")) {
+                                } else if (args[argsOffset].equalsIgnoreCase("mineefficiency")) {
                                     try {
-                                        plugin.setMiningEfficiency(character, material, plugin.getMiningEfficiency(character, material) + Integer.parseInt(args[2]));
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s mining efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[2] + "%" + ChatColor.GRAY + "(Total: " + plugin.getMiningEfficiency(character, material) + "%)");
+                                        plugin.setMiningEfficiency(character, material, plugin.getMiningEfficiency(character, material) + Integer.parseInt(args[argsOffset + 2]));
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s mining efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[argsOffset + 2] + "%" + ChatColor.GRAY + "(Total: " + plugin.getMiningEfficiency(character, material) + "%)");
                                     } catch (NumberFormatException exception) {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for efficiency to add.");
                                     }
@@ -67,9 +74,9 @@ public class ProfessionCommand implements CommandExecutor {
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Could not find that material!");
                             }
-                        } else if (args[0].equalsIgnoreCase("brewefficiency")) {
+                        } else if (args[argsOffset].equalsIgnoreCase("brewefficiency")) {
                             try {
-                                plugin.setBrewingEfficiency(character, plugin.getBrewingEfficiency(character) + Integer.parseInt(args[1]));
+                                plugin.setBrewingEfficiency(character, plugin.getBrewingEfficiency(character) + Integer.parseInt(args[argsOffset + 1]));
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Brewing efficiency: " + plugin.getBrewingEfficiency(character) + "%");
                             } catch (NumberFormatException exception) {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for efficiency to add.");
