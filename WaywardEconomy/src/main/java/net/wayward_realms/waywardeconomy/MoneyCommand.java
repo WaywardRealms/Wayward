@@ -91,7 +91,7 @@ public class MoneyCommand implements CommandExecutor {
                             try {
                                 plugin.addMoney(player, currency, Integer.parseInt(args[2]));
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set " + player.getDisplayName() + "'s " + currency.getNameSingular() + " balance to " + plugin.getMoney(player));
-                                player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your " + currency.getNameSingular() + " balance was set to " + args[2]);
+                                player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your " + currency.getNameSingular() + " balance was set to " + plugin.getMoney(player));
                             } catch (NumberFormatException exception) {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for the amount of money to add.");
                             }
