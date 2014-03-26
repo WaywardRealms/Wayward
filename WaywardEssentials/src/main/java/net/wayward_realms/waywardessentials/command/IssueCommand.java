@@ -33,45 +33,33 @@ public class IssueCommand implements CommandExecutor {
                     }
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Please write your issue in the book, titling it with the title of the issue, then use /issue submit [plugin] with the book in hand when done.");
                 } else if (args[0].equalsIgnoreCase("submit")) {
-                    if (args.length >= 2) {
-                        if (plugin.getServer().getPluginManager().getPlugin(args[1]) != null) {
-                            if (args[1].startsWith("Wayward")) {
-                                if (player.getItemInHand() != null) {
-                                    if (player.getItemInHand().hasItemMeta()) {
-                                        if (player.getItemInHand().getItemMeta() instanceof BookMeta) {
-                                            BookMeta meta = (BookMeta) player.getItemInHand().getItemMeta();
-                                            StringBuilder issueBody = new StringBuilder();
-                                            issueBody.append("Submitted by ").append(sender.getName()).append('\n');
-                                            for (String pageText : meta.getPages()) {
-                                                issueBody.append("> ").append(pageText).append('\n');
-                                            }
-                                            try {
-                                                GHRepository repo = plugin.getGitHub().getRepository("Wayward/" + args[1]);
-                                                GHIssue issue = repo.createIssue(meta.hasTitle() ? meta.getTitle() : "Issue").body(issueBody.toString()).create();
-                                                player.setItemInHand(null);
-                                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Issue submitted. Thank you!");
-                                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You can view it at " + issue.getUrl().toString());
-                                            } catch (IOException exception) {
-                                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Failed to create issue.");
-                                                exception.printStackTrace();
-                                            }
-                                        } else {
-                                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding a book in order to create an issue.");
-                                        }
-                                    } else {
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding a book in order to create an issue.");
-                                    }
-                                } else {
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding a book in order to create an issue.");
+                    if (player.getItemInHand() != null) {
+                        if (player.getItemInHand().hasItemMeta()) {
+                            if (player.getItemInHand().getItemMeta() instanceof BookMeta) {
+                                BookMeta meta = (BookMeta) player.getItemInHand().getItemMeta();
+                                StringBuilder issueBody = new StringBuilder();
+                                issueBody.append("Submitted by ").append(sender.getName()).append('\n');
+                                for (String pageText : meta.getPages()) {
+                                    issueBody.append("> ").append(pageText).append('\n');
+                                }
+                                try {
+                                    GHRepository repo = plugin.getGitHub().getRepository("WaywardRealms/Wayward");
+                                    GHIssue issue = repo.createIssue(meta.hasTitle() ? meta.getTitle() : "Issue").body(issueBody.toString()).create();
+                                    player.setItemInHand(null);
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Issue submitted. Thank you!");
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You can view it at " + issue.getUrl().toString());
+                                } catch (IOException exception) {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Failed to create issue.");
+                                    exception.printStackTrace();
                                 }
                             } else {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You may not report issues on third-party plugins from in-game.");
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding a book in order to create an issue.");
                             }
                         } else {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That plugin is not installed.");
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding a book in order to create an issue.");
                         }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /issue submit [plugin]");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding a book in order to create an issue.");
                     }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /issue [submit|create]");
