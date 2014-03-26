@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.mechanics.MechanicsPlugin;
 import net.wayward_realms.waywardmechanics.bookshelf.BookshelfBlockBreakListener;
 import net.wayward_realms.waywardmechanics.bookshelf.BookshelfManager;
 import net.wayward_realms.waywardmechanics.bookshelf.BookshelfPlayerInteractListener;
-import net.wayward_realms.waywardmechanics.chairs.*;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisBlockRedstoneListener;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisPlayerInteractListener;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisSignChangeListener;
@@ -18,12 +17,12 @@ import java.util.Map;
 public class WaywardMechanics extends JavaPlugin implements MechanicsPlugin {
 
     private BookshelfManager bookshelfManager = new BookshelfManager(this);
-    private ChairManager chairManager = new ChairManager(this);
+    //private ChairManager chairManager = new ChairManager(this);
 
     @Override
     public void onEnable() {
         registerListeners(new BookshelfBlockBreakListener(this), new BookshelfPlayerInteractListener(this),
-                new ChairBlockBreakListener(this), new ChairExitVehicleListener(this), new ChairPlayerDeathListener(this), new ChairPlayerInteractListener(this), new ChairPlayerTeleportListener(this),
+                //new ChairBlockBreakListener(this), new ChairExitVehicleListener(this), new ChairPlayerDeathListener(this), new ChairPlayerInteractListener(this), new ChairPlayerTeleportListener(this),
                 new PortcullisBlockRedstoneListener(), new PortcullisPlayerInteractListener(), new PortcullisSignChangeListener(this));
     }
 
@@ -65,8 +64,8 @@ public class WaywardMechanics extends JavaPlugin implements MechanicsPlugin {
         return bookshelfManager.getBookshelfInventories();
     }
 
-    public ChairManager getChairManager() {
+    /*public ChairManager getChairManager() {
         return chairManager;
-    }
+    }*/
 
 }
