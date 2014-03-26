@@ -8,12 +8,6 @@
     <artifactId>waywardlib</artifactId>
     <name>WaywardLib</name>
     <description>Wayward Realms abstraction library</description>
-    <repositories>
-        <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-    </repositories>
     <properties>
         <github.global.server>github</github.global.server>
     </properties>
