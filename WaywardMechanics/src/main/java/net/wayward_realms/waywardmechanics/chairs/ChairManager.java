@@ -37,7 +37,7 @@ public class ChairManager {
     }
 
     public void sitPlayer(Player player, Block blocktooccupy, Location sitlocation) {
-        try {
+        /*try {
             player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You are now sitting.");
             sitStopTeleportLoc.put(player.getName(), player.getLocation());
             player.teleport(sitlocation);
@@ -49,7 +49,7 @@ public class ChairManager {
             startReSitTask(player);
         } catch (Exception exception) {
             exception.printStackTrace();
-        }
+        }*/
     }
 
     public void startReSitTask(final Player player) {
