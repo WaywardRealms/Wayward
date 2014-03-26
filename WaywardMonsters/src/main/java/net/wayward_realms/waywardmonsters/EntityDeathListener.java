@@ -141,7 +141,7 @@ public class EntityDeathListener implements Listener {
                         expScale = 4;
                         break;
                     case PLAYER:
-                        expScale = 30;
+                        expScale = 0;
                         break;
                 }
                 exp = (int) Math.ceil(((double) plugin.getEntityLevelManager().getEntityLevel(event.getEntity()) * (double) expScale));
