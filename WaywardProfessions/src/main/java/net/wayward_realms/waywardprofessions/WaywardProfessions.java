@@ -65,7 +65,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     public void setCraftEfficiency(Character character, Material material, int efficiency) {
         initialiseProfessionInfo(character);
-        if (getCraftEfficiency(character, material) < efficiency) {
+        if (getCraftEfficiency(character, material) < efficiency && getCraftEfficiency(character, material) < 100) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getCraftEfficiency(character, material)) + " " + material.toString().toLowerCase().replace('_', ' ') + " crafting efficiency");
             }
@@ -81,7 +81,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     public void setMiningEfficiency(Character character, Material material, int efficiency) {
         initialiseProfessionInfo(character);
-        if (getMiningEfficiency(character, material) < efficiency) {
+        if (getMiningEfficiency(character, material) < efficiency && getMiningEfficiency(character, material) < 100) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getMiningEfficiency(character, material)) + " " + material.toString().toLowerCase().replace('_', ' ') + " mining efficiency");
             }
@@ -97,7 +97,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     public void setBrewingEfficiency(Character character, int efficiency) {
         initialiseProfessionInfo(character);
-        if (getBrewingEfficiency(character) < efficiency) {
+        if (getBrewingEfficiency(character) < efficiency && getBrewingEfficiency(character) < 100) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getBrewingEfficiency(character)) + " brewing efficiency");
             }
