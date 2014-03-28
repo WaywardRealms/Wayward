@@ -25,14 +25,14 @@ public class SkillManager {
 
     public SkillManager(WaywardSkills plugin) {
         this.plugin = plugin;
-        ConfigurationSerialization.registerClass(PoisonArrowSkill.class);
-        addSkill(new PoisonArrowSkill());
-        ConfigurationSerialization.registerClass(SharpenSkill.class);
-        addSkill(new SharpenSkill());
-        ConfigurationSerialization.registerClass(QuickStepSkill.class);
-        addSkill(new QuickStepSkill());
-        ConfigurationSerialization.registerClass(DashSkill.class);
+        addSkill(new ArrowSkill());
         addSkill(new DashSkill());
+        addSkill(new ItemSkill());
+        addSkill(new PoisonArrowSkill());
+        addSkill(new QuickStepSkill());
+        addSkill(new SharpenSkill());
+        addSkill(new SlashSkill());
+        addSkill(new StabSkill());
     }
 
     public Skill getSkill(String name) {
@@ -40,6 +40,7 @@ public class SkillManager {
     }
 
     public void addSkill(Skill skill) {
+        ConfigurationSerialization.registerClass(skill.getClass());
         skills.put(skill.getName().toUpperCase(), skill);
     }
 
