@@ -34,6 +34,7 @@ public class SpellManager {
         addSpell(new CureSpell());
         addSpell(new MageArmourSpell());
         addSpell(new DrawSwordSpell());
+        addSpell(new EmpowerSpell());
     }
 
     public Spell getSpell(String name) {
