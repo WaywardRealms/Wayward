@@ -82,4 +82,11 @@ public interface Fight {
      */
     public boolean isActive();
 
+    /**
+     * Sends a message to the combatants in the fight, and possibly surrounding players
+     *
+     * @param message the message to send
+     */
+    public void sendMessage(String message);
+
 }
