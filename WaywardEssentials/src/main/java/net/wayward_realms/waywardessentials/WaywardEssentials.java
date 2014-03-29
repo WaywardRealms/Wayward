@@ -24,10 +24,7 @@ import org.kohsuke.github.GitHub;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
@@ -234,6 +231,17 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     public void setPreviousLocation(OfflinePlayer player, Location location) {
         previousLocations.put(player.getName(), location);
+    }
+
+    public String getDailyMessage() {
+        int i = 0;
+        for (int j = 0; j < Calendar.getInstance().get(Calendar.DAY_OF_YEAR); j++) {
+            i++;
+            if (i > getConfig().getStringList("daily-messages").size() - 1) {
+                i = 0;
+            }
+        }
+        return getConfig().getStringList("daily-messages").get(i);
     }
 
 }
