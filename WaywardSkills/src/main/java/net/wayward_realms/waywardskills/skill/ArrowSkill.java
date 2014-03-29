@@ -124,15 +124,10 @@ public class ArrowSkill implements Skill {
         int damage = (int) Math.round((a * b * power) + 2D * modifier);
         defending.setHealth(defending.getHealth() - damage);
         defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
-        for (Character character : fight.getCharacters()) {
-            if (character.getPlayer().isOnline()) {
-                Player player = character.getPlayer().getPlayer();
-                if (critical) {
-                    player.sendMessage(ChatColor.YELLOW + "Critical hit!");
-                }
-                player.sendMessage(ChatColor.YELLOW + attacking.getName() + " shot an arrow at " + defending.getName() + " dealing " + (Math.round(damage * 100D) / 100D) + " points of damage.");
-            }
+        if (critical) {
+            fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
         }
+        fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " shot an arrow at " + defending.getName() + " dealing " + (Math.round(damage * 100D) / 100D) + " points of damage.");
         return true;
 	}
 

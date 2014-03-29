@@ -2,6 +2,7 @@ package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.combat.Fight;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +26,9 @@ public class FleeCommand implements CommandExecutor {
 			if (characterProvider != null) {
 				CharacterPlugin characterPlugin = characterProvider.getProvider();
 				Character character = characterPlugin.getActiveCharacter(player);
-				plugin.getActiveFight(character).removeCombatant(character);
+				Fight fight = plugin.getActiveFight(character);
+                fight.removeCombatant(character);
+                fight.sendMessage(ChatColor.YELLOW + character.getName() + " fled.");
 				sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Fled.");
 			}
 		}
