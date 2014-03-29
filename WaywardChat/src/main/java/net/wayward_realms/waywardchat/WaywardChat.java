@@ -49,7 +49,10 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             }
             setPlayerChannel(player, getChannel(getConfig().getString("default-channel").toLowerCase()));
         }
+        setupBroadcasts();
     }
+
+
 
     @Override
     public void onDisable() {
@@ -289,6 +292,32 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public PircBotX getIrcBot() {
         return ircBot;
+    }
+
+    private void setupBroadcasts() {
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                String format;
+                Random random = new Random();
+                for (Channel channel : getChannels()) {
+                    if (getConfig().getBoolean("channels." + channel.getName() + ".broadcasts.enabled")){
+                        List<String> possibleBroadcasts = getConfig().getStringList("channels." + channel.getName() + ".broadcasts.possible");
+                        String message = possibleBroadcasts.get(random.nextInt(possibleBroadcasts.size()));
+                        for (Player player : new HashSet<>(channel.getListeners())) {
+                            if (player != null) {
+                                format = channel.getFormat().replace("%channel%", channel.getName()).replace("%prefix%", "").replace("%player%", "").replace("%ign%", "").replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
+                                player.sendMessage(format);
+                            }
+                        }
+                        if (channel.isIrcEnabled()) {
+                            format = channel.getFormat().replace("%channel%", channel.getName()).replace("%prefix%", "").replace("%player%", "").replace("%ign%", "").replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
+                            getIrcBot().sendIRC().message(channel.getIrcChannel(), ChatColor.stripColor(format));
+                        }
+                    }
+                }
+            }
+        }, getConfig().getInt("broadcasts.delay") * 20, getConfig().getInt("broadcasts.delay") * 20);
     }
 
 }

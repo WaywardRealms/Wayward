@@ -7,12 +7,16 @@ channels:
     irc:
       enabled: true
       channel: '#wayward-general'
+    broadcasts:
+      enabled: false
   say:
     colour: GREEN
     radius: 16
     format: '&a%player% says: &f%message%'
     garble-enabled: true
     irc:
+      enabled: false
+    broadcasts:
       enabled: false
   shout:
     colour: DARK_RED
@@ -21,12 +25,16 @@ channels:
     garble-enabled: true
     irc:
       enabled: false
+    broadcasts:
+      enabled: false
   whisper:
     colour: AQUA
     radius: 4
     format: '&b%player% whispers: &f%message%'
     garble-enabled: true
     irc:
+      enabled: false
+    broadcasts:
       enabled: false
   staff:
     colour: DARK_PURPLE
@@ -36,6 +44,8 @@ channels:
     irc:
       enabled: true
       channel: '#wayward-staff'
+    broadcasts:
+      enabled: false
   dev:
     colour: YELLOW
     radius: -1
@@ -44,6 +54,8 @@ channels:
     irc:
       enabled: true
       channel: '#wayward-dev'
+    broadcasts:
+      enabled: false
   support:
     colour: DARK_GREEN
     radius: -1
@@ -52,6 +64,8 @@ channels:
     irc:
       enabled: true
       channel: '#wayward-support'
+    broadcasts:
+      enabled: false
   ooc:
     colour: BLUE
     radius: 16
@@ -59,6 +73,21 @@ channels:
     garble-enabled: false
     irc:
       enabled: false
+    broadcasts:
+      enabled: false
+  info:
+    colour: WHITE
+    radius: -1
+    format: '&f[&a%channel%&f] %message%'
+    garble-enabled: false
+    irc:
+      enabled: false
+    broadcasts:
+      enabled: true
+      possible:
+      - 'Remember to vote on PMC!'
+      - 'Check out the forums daily for updates on news and general discussion.'
+      - 'Drop into IRC at #wayward-general to talk in general chat even while offline!'
 emotes:
   radius: 16
   format: '&e&o%player% &e&o%message%'
@@ -67,3 +96,5 @@ irc:
   enabled: true
   server: 'irc.esper.net:5555'
   bot-name: Wayward
+broadcasts:
+  delay: 120
