@@ -1,22 +1,22 @@
-package net.wayward_realms.waywardchat;
+package net.wayward_realms.waywardchat.irc;
 
+import net.wayward_realms.waywardchat.WaywardChat;
 import net.wayward_realms.waywardlib.chat.Channel;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.pircbotx.User;
 
-public class BroadcastCommand implements CommandExecutor {
+public class IrcBroadcastCommand extends IrcCommand {
 
     private WaywardChat plugin;
 
-    public BroadcastCommand(WaywardChat plugin) {
+    public IrcBroadcastCommand(WaywardChat plugin) {
+        super("broadcast");
         this.plugin = plugin;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender.hasPermission("wayward.chat.command.broadcast")) {
+    public void execute(User sender, IrcCommand cmd, String label, String[] args) {
+        if (sender.isIrcop()) {
             StringBuilder messageBuilder = new StringBuilder();
             for (String arg : args) {
                 messageBuilder.append(arg).append(" ");
@@ -29,7 +29,6 @@ public class BroadcastCommand implements CommandExecutor {
                 }
             }
         }
-        return true;
     }
 
 }

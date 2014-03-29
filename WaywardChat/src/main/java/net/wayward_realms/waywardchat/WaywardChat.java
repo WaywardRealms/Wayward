@@ -1,9 +1,6 @@
 package net.wayward_realms.waywardchat;
 
-import net.wayward_realms.waywardchat.irc.IrcChCommand;
-import net.wayward_realms.waywardchat.irc.IrcChatHelpCommand;
-import net.wayward_realms.waywardchat.irc.IrcListCommand;
-import net.wayward_realms.waywardchat.irc.IrcMessageListener;
+import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
@@ -263,6 +260,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 .setLogin(getConfig().getString("irc.bot-name"))
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
+                .addListener(new IrcBroadcastCommand(this))
                 .addListener(new IrcChCommand(this))
                 .addListener(new IrcChatHelpCommand(this))
                 .addListener(new IrcListCommand(this))
