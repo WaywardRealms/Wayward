@@ -62,15 +62,8 @@ public class FightCommand implements CommandExecutor {
                 if (fight.getCombatants() != null) {
                     if (fight.getCombatants().size() > 1) {
                         fight.start();
-                        for (Character character : fight.getCharacters()) {
-                            if (character.getPlayer().isOnline()) {
-                                Player player = character.getPlayer().getPlayer();
-                                player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has begun!");
-                                if (character != fight.getNextTurn()) {
-                                    player.sendMessage(ChatColor.YELLOW + "It's " + fight.getNextTurn().getName() + "'s turn.");
-                                }
-                            }
-                        }
+                        fight.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has begun!");
+                        fight.sendMessage(ChatColor.YELLOW + "It's " + fight.getNextTurn().getName() + "'s turn.");
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot fight with yourself! Please get any others to join the fight first.");
                     }
@@ -81,12 +74,7 @@ public class FightCommand implements CommandExecutor {
 				Fight fight = plugin.getActiveFight(characterPlugin.getActiveCharacter((Player) sender));
                 if (fight != null) {
                     if (fight.getCharacters() != null) {
-                        for (Character character : fight.getCharacters()) {
-                            if (character.getPlayer().isOnline()) {
-                                Player player = character.getPlayer().getPlayer();
-                                player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has ended!");
-                            }
-                        }
+                        fight.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has ended!");
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are not currently in a fight.");
                     }

@@ -165,23 +165,12 @@ public class FightImpl implements Fight {
 		while (!getNextTurn().getPlayer().isOnline()) {
 			incrementTurn();
 		}
-		Set<Character> charactersToRemove = new HashSet<>();
-		for (Character character : getCharacters()) {
-			if (character.getPlayer().isOnline()) {
-				Player player = character.getPlayer().getPlayer();
-				player.sendMessage(hit ? ChatColor.YELLOW + "The attack hit! " + defending.getName() + " has " + Math.max((Math.round(defending.getHealth() * 100D) / 100D), 0D) + "/" + (Math.round(defending.getMaxHealth() * 100D) / 100D) + " health remaining." : ChatColor.YELLOW + "The attack missed.");
-				if (defending.getHealth() <= 0D) {
-					charactersToRemove.add(defending);
-                    defending.getPlayer().getPlayer().sendMessage(ChatColor.RED + "You lost the fight.");
-                    defending.getPlayer().getPlayer().damage(defending.getPlayer().getPlayer().getHealth());
-				}
-			} else {
-				charactersToRemove.add(character);
-			}
-		}
-		for (Character character : charactersToRemove) {
-			removeCharacter(character);
-		}
+		sendMessage(hit ? ChatColor.YELLOW + "The attack hit! " + defending.getName() + " has " + Math.max((Math.round(defending.getHealth() * 100D) / 100D), 0D) + "/" + (Math.round(defending.getMaxHealth() * 100D) / 100D) + " health remaining." : ChatColor.YELLOW + "The attack missed.");
+        if (defending.getHealth() <= 0D) {
+            removeCharacter(defending);
+            defending.getPlayer().getPlayer().sendMessage(ChatColor.RED + "You lost the fight.");
+            defending.getPlayer().getPlayer().damage(defending.getPlayer().getPlayer().getHealth());
+        }
 		if (getCharacters().size() == 1) {
             Character character = getCharacters().iterator().next();
 			character.getPlayer().getPlayer().sendMessage(ChatColor.GREEN + "You win.");
@@ -195,14 +184,7 @@ public class FightImpl implements Fight {
 			end();
 			return;
 		}
-		for (Character character : getCharacters()) {
-			if (character != getNextTurn()) {
-				if (character.getPlayer().isOnline()) {
-					Player player = character.getPlayer().getPlayer();
-					player.sendMessage(ChatColor.YELLOW + "It's " + getNextTurn().getName() + "'s turn.");
-				}
-			}
-		}
+		sendMessage(ChatColor.YELLOW + "It's " + getNextTurn().getName() + "'s turn.");
 		activeTurn = savedTurns.get(getNextTurn()) == null ? new TurnImpl(this) : savedTurns.get(getNextTurn());
 		Turn turn = getActiveTurn();
 		turn.setAttacker(getNextTurn());
