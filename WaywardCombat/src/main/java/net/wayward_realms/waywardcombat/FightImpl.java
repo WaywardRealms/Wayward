@@ -300,4 +300,22 @@ public class FightImpl implements Fight {
 		return active;
 	}
 
+    @Override
+    public void sendMessage(String message) {
+        Set<Player> players = new HashSet<>();
+        for (Character character : getCharacters()) {
+            if (character.getPlayer().isOnline()) {
+                players.add(character.getPlayer().getPlayer());
+            }
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (Player fightingPlayer : players) {
+                if (player.getLocation().distanceSquared(fightingPlayer.getLocation()) <= 256) {
+                    player.sendMessage(message);
+                    break;
+                }
+            }
+        }
+    }
+
 }
