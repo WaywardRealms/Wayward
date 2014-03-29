@@ -35,11 +35,7 @@ public class DashSkill implements Skill {
     @Override
     public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
         fight.removeCombatant(attacking);
-        for (Character character : fight.getCharacters()) {
-            if (character.getPlayer().isOnline()) {
-                character.getPlayer().getPlayer().sendMessage(ChatColor.GREEN + attacking.getName() + " fled the fight!");
-            }
-        }
+        fight.sendMessage(ChatColor.GREEN + attacking.getName() + " fled the fight!");
         return true;
     }
 

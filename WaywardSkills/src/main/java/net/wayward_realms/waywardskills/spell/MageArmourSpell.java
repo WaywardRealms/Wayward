@@ -51,11 +51,7 @@ public class MageArmourSpell implements Spell {
 
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         if (attacking.getMana() >= 10) {
-            for (Character character : fight.getCharacters()) {
-                if (character.getPlayer().isOnline()) {
-                    character.getPlayer().getPlayer().sendMessage(ChatColor.YELLOW + attacking.getName() + " formed a resistant barrier!");
-                }
-            }
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " formed a resistant barrier!");
             return use(attacking.getPlayer().getPlayer());
         }
         return false;

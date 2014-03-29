@@ -63,11 +63,7 @@ public class DrawSwordSpell implements Spell {
 
     @Override
     public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        for (Character character : fight.getCharacters()) {
-            if (character.getPlayer().isOnline()) {
-                character.getPlayer().getPlayer().sendMessage(ChatColor.YELLOW + attacking.getName() + " drew a sword from the ground!");
-            }
-        }
+        fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " drew a sword from the ground!");
         return use(((Character) attacking).getPlayer().getPlayer());
     }
 

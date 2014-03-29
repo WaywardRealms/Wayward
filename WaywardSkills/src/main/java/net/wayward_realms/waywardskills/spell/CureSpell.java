@@ -82,20 +82,10 @@ public class CureSpell implements Spell {
             }
             defending.setHealth(Math.min(defending.getHealth() + potency, defending.getMaxHealth()));
             defending.getPlayer().getPlayer().setHealth(defending.getHealth());
-            for (Character character : fight.getCharacters()) {
-                if (character.getPlayer().isOnline()) {
-                    Player player = character.getPlayer().getPlayer();
-                    player.sendMessage(ChatColor.YELLOW + attacking.getName() + " used Cure on " + defending.getName() + ", healing " + potency + " health.");
-                }
-            }
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " used Cure on " + defending.getName() + ", healing " + potency + " health.");
             return true;
         }
-        for (Character character : fight.getCharacters()) {
-            if (character.getPlayer().isOnline()) {
-                Player player = character.getPlayer().getPlayer();
-                player.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to use Cure on " + defending.getName() + " but did not have enough mana.");
-            }
-        }
+        fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to use Cure on " + defending.getName() + " but did not have enough mana.");
         return false;
     }
 

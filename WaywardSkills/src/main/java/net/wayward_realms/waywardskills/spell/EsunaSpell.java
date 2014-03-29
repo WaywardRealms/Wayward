@@ -49,18 +49,10 @@ public class EsunaSpell implements Spell {
             for (PotionEffectType potionEffectType : PotionEffectType.values()) {
                 ((Character) defending).getPlayer().getPlayer().addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
             }
-            for (Character character : fight.getCharacters()) {
-                if (character.getPlayer().isOnline()) {
-                    character.getPlayer().getPlayer().sendMessage(ChatColor.YELLOW + attacking.getName() + " cured " + defending.getName() + "'s status effects");
-                }
-            }
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cured " + defending.getName() + "'s status effects");
             return true;
         } else {
-            for (Character character : fight.getCharacters()) {
-                if (character.getPlayer().isOnline()) {
-                    character.getPlayer().getPlayer().sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to cure " + defending.getName() + "'s status effects, but did not have enough mana!");
-                }
-            }
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to cure " + defending.getName() + "'s status effects, but did not have enough mana!");
             return false;
         }
     }
