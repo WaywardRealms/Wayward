@@ -5,6 +5,9 @@ description: ${project.description}
 main: net.wayward_realms.waywardchat.WaywardChat
 depend: [WaywardLib]
 commands:
+    broadcast:
+        description: Broadcasts a message to all players & IRC channels
+        usage: /<command>
     ch:
         description: Parent command for all chat commands
         usage: /<command>
@@ -12,6 +15,9 @@ commands:
         description: Shows help for chat
         usage: /<command>
 permissions:
+    wayward.chat.command.broadcast:
+        description: Allows you to broadcast messages
+        default: op
     wayward.chat.ch.talkin.[channel]:
         description: Allows you to talk in a certain channel
         default: true

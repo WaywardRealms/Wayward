@@ -33,6 +33,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     @Override
     public void onEnable() {
         registerListeners(new AsyncPlayerChatListener(this), new PlayerJoinListener(this), new PlayerQuitListener(this), new PlayerCommandPreprocessListener(this));
+        getCommand("broadcast").setExecutor(new BroadcastCommand(this));
         getCommand("ch").setExecutor(new ChCommand(this));
         getCommand("chathelp").setExecutor(new ChatHelpCommand(this));
         saveDefaultConfig();
