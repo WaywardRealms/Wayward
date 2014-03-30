@@ -28,12 +28,27 @@ public interface Character extends Combatant, ConfigurationSerializable {
      */
     public String getName();
 
+
     /**
      * Sets the name of the character
      *
      * @param name the name to set
      */
     public void setName(String name);
+
+    /**
+     * Checks whether name is hidden on character cards
+     *
+     * @return whether the name is hidden
+     */
+    public boolean isNameHidden();
+
+    /**
+     * Sets whether to hide the name on character cards
+     *
+     * @param hidden whether to hide the name
+     */
+    public void setNameHidden(boolean hidden);
 
     /**
      * Gets the age of the character
@@ -50,6 +65,20 @@ public interface Character extends Combatant, ConfigurationSerializable {
     public void setAge(int age);
 
     /**
+     * Checks whether the age is hidden on character cards
+     *
+     * @return whether the age is hidden
+     */
+    public boolean isAgeHidden();
+
+    /**
+     * Sets whether the age is hidden
+     *
+     * @param hidden whether to hide the age
+     */
+    public void setAgeHidden(boolean hidden);
+
+    /**
      * Gets the gender of the character
      *
      * @return the character's gender
@@ -64,6 +93,20 @@ public interface Character extends Combatant, ConfigurationSerializable {
     public void setGender(Gender gender);
 
     /**
+     * Checks whether the gender is hidden
+     *
+     * @return whether the gender is hidden
+     */
+    public boolean isGenderHidden();
+
+    /**
+     * Sets whether the gender is hidden
+     *
+     * @param hidden whether to hide the gender
+     */
+    public void setGenderHidden(boolean hidden);
+
+    /**
      * Gets the race of the character
      *
      * @return the character's race
@@ -76,6 +119,20 @@ public interface Character extends Combatant, ConfigurationSerializable {
      * @param race the race to set
      */
     public void setRace(Race race);
+
+    /**
+     * Checks whether the race is hidden
+     *
+     * @return whether the race is hidden
+     */
+    public boolean isRaceHidden();
+
+    /**
+     * Sets whether the race is hidden
+     *
+     * @param hidden whether to hide the race
+     */
+    public void setRaceHidden(boolean hidden);
 
     /**
      * Gets the description of the character
@@ -97,6 +154,20 @@ public interface Character extends Combatant, ConfigurationSerializable {
      * @param info the info to add
      */
     public void addDescription(String info);
+
+    /**
+     * Checks whether the description is hidden
+     *
+     * @return whether the description is hidden
+     */
+    public boolean isDescriptionHidden();
+
+    /**
+     * Sets whether the description is hidden
+     *
+     * @param hidden whether to hide the description
+     */
+    public void setDescriptionHidden(boolean hidden);
 
     /**
      * Gets the player currently playing this character
@@ -246,5 +317,19 @@ public interface Character extends Combatant, ConfigurationSerializable {
      * @return the amount of skill points the character has of the skill type
      */
     public int getSkillPoints(SkillType type);
+
+    /**
+     * Checks whether the class is hidden
+     *
+     * @return whether the class is hidden
+     */
+    public boolean isClassHidden();
+
+    /**
+     * Sets whether to hide the class
+     *
+     * @param hidden whether to hide the class
+     */
+    public void setClassHidden(boolean hidden);
 
 }

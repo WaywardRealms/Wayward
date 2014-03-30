@@ -48,6 +48,13 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     private int thirst;
 	private int maxThirst = 20;
 	private int minThirst = 0;
+    //Field hiding
+    private boolean nameHidden;
+    private boolean genderHidden;
+    private boolean ageHidden;
+    private boolean raceHidden;
+    private boolean descriptionHidden;
+    private boolean classHidden;
 
     private CharacterImpl() {}
 
@@ -88,6 +95,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         }
     }
 
+    public boolean isNameHidden() {
+        return nameHidden;
+    }
+
+    public void setNameHidden(boolean nameHidden) {
+        this.nameHidden = nameHidden;
+    }
+
     @Override
     public int getAge() {
         return age;
@@ -96,6 +111,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public boolean isAgeHidden() {
+        return ageHidden;
+    }
+
+    public void setAgeHidden(boolean ageHidden) {
+        this.ageHidden = ageHidden;
     }
 
     @Override
@@ -118,6 +141,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         this.gender = gender;
     }
 
+    public boolean isGenderHidden() {
+        return genderHidden;
+    }
+
+    public void setGenderHidden(boolean genderHidden) {
+        this.genderHidden = genderHidden;
+    }
+
     @Override
     public Race getRace() {
         return race;
@@ -126,6 +157,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void setRace(Race race) {
         this.race = race;
+    }
+
+    public boolean isRaceHidden() {
+        return raceHidden;
+    }
+
+    public void setRaceHidden(boolean raceHidden) {
+        this.raceHidden = raceHidden;
     }
 
     @Override
@@ -141,6 +180,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void addDescription(String info) {
         this.description += info + " ";
+    }
+
+    public boolean isDescriptionHidden() {
+        return descriptionHidden;
+    }
+
+    public void setDescriptionHidden(boolean descriptionHidden) {
+        this.descriptionHidden = descriptionHidden;
     }
 
     @Override
@@ -263,6 +310,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
             return classesPlugin.getClass(this).getSkillPointBonus(type) * classesPlugin.getLevel(this);
         }
         return 0;
+    }
+
+    public boolean isClassHidden() {
+        return classHidden;
+    }
+
+    public void setClassHidden(boolean classHidden) {
+        this.classHidden = classHidden;
     }
 
     @Override
