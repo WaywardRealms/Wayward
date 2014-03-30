@@ -1,9 +1,12 @@
 package net.wayward_realms.waywardlocks;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.lock.LockPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import net.wayward_realms.waywardlocks.keyring.KeyringManager;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -13,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -198,7 +202,29 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
 
     @Override
     public void setLockpickEfficiency(Character character, int efficiency) {
-        lockpickEfficiency.put(character.getId(), efficiency);
+        if (efficiency > 0 && efficiency <= 100) {
+            if (character.getPlayer().isOnline()) {
+                character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getLockpickEfficiency(character)) + "% lockpicking efficiency " + ChatColor.GRAY + "(Total: " + efficiency + "%)");
+            }
+            lockpickEfficiency.put(character.getId(), efficiency);
+        }
+    }
+
+    public int getLockpickEfficiency(OfflinePlayer player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            return getLockpickEfficiency(characterPlugin.getActiveCharacter(player));
+        }
+        return 5;
+    }
+
+    public void setLockpickEfficiency(OfflinePlayer player, int efficiency) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            setLockpickEfficiency(characterPlugin.getActiveCharacter(player), efficiency);
+        }
     }
 
     public boolean isClaiming(OfflinePlayer offlinePlayer) {
