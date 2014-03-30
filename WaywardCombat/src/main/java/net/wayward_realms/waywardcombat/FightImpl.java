@@ -257,7 +257,7 @@ public class FightImpl implements Fight {
 		for (Character character : characterLocations.keySet()) {
 			ItemStack characterIcon = new ItemStack(Material.LEATHER_HELMET, 1);
 			ItemMeta characterIconMeta = characterIcon.getItemMeta();
-			characterIconMeta.setDisplayName(character.getName());
+			characterIconMeta.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
 			List<String> lore = new ArrayList<>();
 			lore.add("" + character.getId());
 			characterIconMeta.setLore(lore);

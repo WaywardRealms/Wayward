@@ -43,15 +43,15 @@ public class CharacterCommand implements CommandExecutor {
                 Character character = plugin.getActiveCharacter(player);
                 ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
                 sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + character.getName() + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
-                sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE +  character.getAge());
-                sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
-                sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
+                if (!character.isAgeHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE +  character.getAge());
+                if (!character.isGenderHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
+                if (!character.isRaceHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
                 if (classesPlugin != null) {
                     if (classesPlugin.getClass(character) != null) {
-                        sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
+                        if (!character.isClassHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
                     }
                 }
-                sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
+                if (!character.isDescriptionHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
             } else if (args[0].equalsIgnoreCase("switch")) {
                 if (args.length >= 2) {
                     boolean found = false;
@@ -80,7 +80,7 @@ public class CharacterCommand implements CommandExecutor {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot switch to a dead character.");
                                     }
                                 } else {
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + character.getName() + " is not your character.");
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.RED + " is not your character.");
                                 }
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "No character with that ID could be found.");
@@ -204,11 +204,47 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
                 }
+            } else if (args[0].equalsIgnoreCase("hide")) {
+                if (args.length >= 2) {
+                    if (sender instanceof Player) {
+                        Character character = plugin.getActiveCharacter((Player) sender);
+                        switch (args[1].toLowerCase()) {
+                            case "name": character.setNameHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Name hidden."); break;
+                            case "age": character.setAgeHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Age hidden."); break;
+                            case "gender": character.setGenderHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender hidden."); break;
+                            case "race": character.setRaceHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race hidden."); break;
+                            case "description": character.setDescriptionHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description hidden."); break;
+                            default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to hide! This includes name, age, gender, race or description.");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to hide! This includes name, age, gender, race, or description.");
+                }
+            } else if (args[0].equalsIgnoreCase("unhide")) {
+                if (args.length >= 2) {
+                    if (sender instanceof Player) {
+                        Character character = plugin.getActiveCharacter((Player) sender);
+                        switch (args[1].toLowerCase()) {
+                            case "name": character.setNameHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Name unhidden."); break;
+                            case "age": character.setAgeHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Age unhidden."); break;
+                            case "gender": character.setGenderHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender unidden."); break;
+                            case "race": character.setRaceHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race unhidden."); break;
+                            case "description": character.setDescriptionHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description unhidden."); break;
+                            default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to unhide! This includes name, age, gender, race or description.");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to unhide! This includes name, age, gender, race, or description.");
+                }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide]");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive]");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide]");
         }
         return true;
     }

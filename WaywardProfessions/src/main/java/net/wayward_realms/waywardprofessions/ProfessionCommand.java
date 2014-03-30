@@ -47,7 +47,7 @@ public class ProfessionCommand implements CommandExecutor {
                                 if (args[argsOffset].equalsIgnoreCase("craftefficiency")) {
                                     try {
                                         plugin.setCraftEfficiency(character, material, plugin.getCraftEfficiency(character, material) + Integer.parseInt(args[argsOffset + 2]));
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s crafting efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[argsOffset + 2] + "%" + ChatColor.GRAY + " (Total: " + plugin.getCraftEfficiency(character, material) + "%)");
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GREEN + "'s crafting efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[argsOffset + 2] + "%" + ChatColor.GRAY + " (Total: " + plugin.getCraftEfficiency(character, material) + "%)");
                                     } catch (NumberFormatException exception) {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for efficiency to add.");
                                     }
@@ -56,7 +56,7 @@ public class ProfessionCommand implements CommandExecutor {
                                         ToolType toolType = ToolType.getToolType(material);
                                         try {
                                             plugin.setMaxToolDurability(character, toolType, plugin.getMaxToolDurability(character, toolType) + Integer.parseInt(args[argsOffset + 2]));
-                                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s maximum durability for " + toolType.toString().toLowerCase().replace('_', ' ') + "s increased by " + args[argsOffset + 2] + ChatColor.GRAY + " (Total: " + plugin.getMaxToolDurability(character, toolType) + ")");
+                                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GREEN + "'s maximum durability for " + toolType.toString().toLowerCase().replace('_', ' ') + "s increased by " + args[argsOffset + 2] + ChatColor.GRAY + " (Total: " + plugin.getMaxToolDurability(character, toolType) + ")");
                                         } catch (NumberFormatException exception) {
                                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for durability to add.");
                                         }
@@ -66,7 +66,7 @@ public class ProfessionCommand implements CommandExecutor {
                                 } else if (args[argsOffset].equalsIgnoreCase("mineefficiency")) {
                                     try {
                                         plugin.setMiningEfficiency(character, material, plugin.getMiningEfficiency(character, material) + Integer.parseInt(args[argsOffset + 2]));
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + character.getName() + "'s mining efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[argsOffset + 2] + "%" + ChatColor.GRAY + "(Total: " + plugin.getMiningEfficiency(character, material) + "%)");
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GREEN + "'s mining efficiency for " + material.toString().toLowerCase().replace('_', ' ') + " increased by " + args[argsOffset + 2] + "%" + ChatColor.GRAY + "(Total: " + plugin.getMiningEfficiency(character, material) + "%)");
                                     } catch (NumberFormatException exception) {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for efficiency to add.");
                                     }

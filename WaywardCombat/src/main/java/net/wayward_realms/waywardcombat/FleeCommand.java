@@ -28,7 +28,7 @@ public class FleeCommand implements CommandExecutor {
 				Character character = characterPlugin.getActiveCharacter(player);
 				Fight fight = plugin.getActiveFight(character);
                 fight.removeCombatant(character);
-                fight.sendMessage(ChatColor.YELLOW + character.getName() + " fled.");
+                fight.sendMessage(ChatColor.YELLOW + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.YELLOW + " fled.");
 				sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Fled.");
 			}
 		}

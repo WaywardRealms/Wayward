@@ -79,7 +79,7 @@ public class ClassCommand implements CommandExecutor {
                 }
                 if (player != null) {
                     if (plugin.getClass(player) != null) {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + " is currently a lv" + plugin.getLevel(player) + " " +  plugin.getClass(player).getName());
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + ChatColor.GREEN + " is currently a lv" + plugin.getLevel(player) + " " +  plugin.getClass(player).getName());
                         sender.sendMessage(ChatColor.GREEN + "Other class levels: ");
                         for (Class clazz : plugin.getClasses()) {
                             if (plugin.getTotalExperience(player, clazz) > 0) {
@@ -87,7 +87,7 @@ public class ClassCommand implements CommandExecutor {
                             }
                         }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + player.getDisplayName() + " has not chosen a class!");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + player.getDisplayName() + ChatColor.RED + " has not chosen a class!");
                     }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");

@@ -37,8 +37,8 @@ public class MoneyCommand implements CommandExecutor {
                                 if (Integer.parseInt(args[2]) > 0) {
                                     try {
                                         plugin.transferMoney((Player) sender, player, currency, Integer.parseInt(args[2]));
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
-                                        player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + ChatColor.GREEN + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
+                                        player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + ChatColor.GREEN + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
                                     } catch (NumberFormatException exception) {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for the amount of money to send.");
                                     }
@@ -46,7 +46,7 @@ public class MoneyCommand implements CommandExecutor {
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must pay at least 1 " + currency.getNameSingular() + "!");
                                 }
                             } else {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + ((Player) sender).getDisplayName() + " must be standing a little closer to " + player.getDisplayName() + " in order to give them any money.");
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + ((Player) sender).getDisplayName() + ChatColor.RED + " must be standing a little closer to " + player.getDisplayName() + ChatColor.RED + " in order to give them any money.");
                             }
                         }
 
@@ -67,7 +67,7 @@ public class MoneyCommand implements CommandExecutor {
                             }
                             try {
                                 plugin.setMoney(player, currency, Integer.parseInt(args[2]));
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set " + player.getDisplayName() + "'s " + currency.getNameSingular() + " balance to " + args[2]);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set " + player.getDisplayName() + ChatColor.GREEN + "'s " + currency.getNameSingular() + " balance to " + args[2]);
                                 player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your " + currency.getNameSingular() + " balance was set to " + args[2]);
                             } catch (NumberFormatException exception) {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for the amount of money to set.");
@@ -94,7 +94,7 @@ public class MoneyCommand implements CommandExecutor {
                             }
                             try {
                                 plugin.addMoney(player, currency, Integer.parseInt(args[2]));
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set " + player.getDisplayName() + "'s " + currency.getNameSingular() + " balance to " + plugin.getMoney(player));
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set " + player.getDisplayName() + ChatColor.GREEN + "'s " + currency.getNameSingular() + " balance to " + plugin.getMoney(player));
                                 player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your " + currency.getNameSingular() + " balance was set to " + plugin.getMoney(player));
                             } catch (NumberFormatException exception) {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a number for the amount of money to add.");
@@ -129,7 +129,7 @@ public class MoneyCommand implements CommandExecutor {
                     for (int cid : topCharacters) {
                         if (cid != 0) {
                             Character character = characterPlugin.getCharacter(cid);
-                            sender.sendMessage(ChatColor.GRAY + "" + i + ". " + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getName() + ChatColor.GRAY + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + "): " + plugin.getMoney(character) + " " + (plugin.getMoney(character) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                            sender.sendMessage(ChatColor.GRAY + "" + i + ". " + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + "): " + plugin.getMoney(character) + " " + (plugin.getMoney(character) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
                         }
                         i++;
                     }

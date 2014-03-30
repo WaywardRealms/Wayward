@@ -30,9 +30,9 @@ public class GetClassCommand implements CommandExecutor {
         }
 
         if (plugin.getClass(player) != null) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + "'s class is " + plugin.getClass(player).getName());
+            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + ChatColor.GREEN + "'s class is " + plugin.getClass(player).getName());
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + player.getDisplayName() + " has not chosen a class!");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + player.getDisplayName() + ChatColor.RED + " has not chosen a class!");
         }
         return true;
     }

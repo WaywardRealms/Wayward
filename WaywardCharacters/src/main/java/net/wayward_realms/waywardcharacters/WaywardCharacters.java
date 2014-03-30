@@ -406,7 +406,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         characters.put(character.getId(), character);
-        player.setDisplayName(character.getName());
+        player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
         player.setMaxHealth(character.getMaxHealth());
         player.setHealth(Math.max(character.getHealth(), 0));
         player.setFoodLevel(character.getFoodLevel());
