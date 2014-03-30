@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardlocks;
 
+import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.lock.LockPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import net.wayward_realms.waywardlocks.keyring.KeyringManager;
@@ -16,10 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class WaywardLocks extends JavaPlugin implements LockPlugin {
 
@@ -28,6 +26,8 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
     private Set<Block> locked = new HashSet<>();
     private Set<String> unclaiming = new HashSet<>();
     private Set<String> getkey = new HashSet<>();
+
+    private Map<Integer, Integer> lockpickEfficiency = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -72,13 +72,20 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
 
     @Override
     public void loadState() {
-        File lockDirectory = new File(this.getDataFolder().getPath() + File.separator + "locks");
+        File efficiencyFile = new File(getDataFolder(), "efficiency.yml");
+        if (efficiencyFile.exists()) {
+            YamlConfiguration efficiencyConfig = YamlConfiguration.loadConfiguration(efficiencyFile);
+            for (String key : efficiencyConfig.getKeys(false)) {
+                lockpickEfficiency.put(Integer.parseInt(key), efficiencyConfig.getInt(key));
+            }
+        }
+        File lockDirectory = new File(getDataFolder(), "locks");
         if (lockDirectory.exists()) {
             for (File worldDirectory : lockDirectory.listFiles()) {
                 for (File xDirectory : worldDirectory.listFiles()) {
                     for (File yDirectory : xDirectory.listFiles()) {
                         for (File zDirectory : yDirectory.listFiles()) {
-                            File lockFile = new File(zDirectory.getPath() + File.separator + "lock.yml");
+                            File lockFile = new File(zDirectory, "lock.yml");
                             if (lockFile.exists()) {
                                 try {
                                     YamlConfiguration lockConfig = new YamlConfiguration();
@@ -128,6 +135,16 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
 
     @Override
     public void saveState() {
+        File efficiencyFile = new File(getDataFolder(), "efficiency.yml");
+        YamlConfiguration efficiencyConfig = new YamlConfiguration();
+        for (Map.Entry<Integer, Integer> entry : lockpickEfficiency.entrySet()) {
+            efficiencyConfig.set("" + entry.getKey(), entry.getValue());
+        }
+        try {
+            efficiencyConfig.save(efficiencyFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
         File locksFile = new File(getDataFolder(), "locks.yml");
         YamlConfiguration lockConfig = new YamlConfiguration();
         List<SerialisableLocation> lockedLocations = new ArrayList<>();
@@ -169,6 +186,19 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
     @Override
     public void unlock(Block block) {
         locked.remove(block);
+    }
+
+    @Override
+    public int getLockpickEfficiency(net.wayward_realms.waywardlib.character.Character character) {
+        if (lockpickEfficiency.get(character.getId()) == null) {
+            lockpickEfficiency.put(character.getId(), 5);
+        }
+        return lockpickEfficiency.get(character.getId());
+    }
+
+    @Override
+    public void setLockpickEfficiency(Character character, int efficiency) {
+        lockpickEfficiency.put(character.getId(), efficiency);
     }
 
     public boolean isClaiming(OfflinePlayer offlinePlayer) {

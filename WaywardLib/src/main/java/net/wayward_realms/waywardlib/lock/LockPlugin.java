@@ -41,4 +41,20 @@ public interface LockPlugin extends WaywardPlugin {
      */
     public void unlock(Block block);
 
+    /**
+     * Gets a character's lockpicking efficiency, from 0 to 100
+     *
+     * @param character the character
+     * @return the efficiency
+     */
+    public int getLockpickEfficiency(net.wayward_realms.waywardlib.character.Character character);
+
+    /**
+     * Sets a character's lockpicking efficiency, from 0 to 100
+     *
+     * @param character the character
+     * @param efficiency the efficiency to set
+     */
+    public void setLockpickEfficiency(net.wayward_realms.waywardlib.character.Character character, int efficiency);
+
 }
