@@ -84,14 +84,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public String getName() {
-        return nameHidden ? "???" : name;
+        return name;
     }
 
     @Override
     public void setName(String name) {
         this.name = name;
         if (getPlayer().isOnline()) {
-            getPlayer().getPlayer().setDisplayName(getName());
+            getPlayer().getPlayer().setDisplayName(nameHidden ? "???" : name);
         }
     }
 

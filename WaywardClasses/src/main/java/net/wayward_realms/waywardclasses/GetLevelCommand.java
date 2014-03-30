@@ -28,7 +28,7 @@ public class GetLevelCommand implements CommandExecutor {
                 }
             }
         }
-        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + "'s level is " + plugin.getLevel(player));
+        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + ChatColor.GREEN + "'s level is " + plugin.getLevel(player));
         if (plugin.getLevel(player) < plugin.getClass(player).getMaxLevel()) {
             sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Progress towards next level: " + plugin.getExperienceTowardsNextLevel(player) + "/" + plugin.getExpToNextLevel(plugin.getLevel(player)));
         } else {

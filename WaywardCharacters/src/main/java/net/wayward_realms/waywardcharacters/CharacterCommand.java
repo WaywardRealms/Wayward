@@ -80,7 +80,7 @@ public class CharacterCommand implements CommandExecutor {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot switch to a dead character.");
                                     }
                                 } else {
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + character.getName() + " is not your character.");
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.RED + " is not your character.");
                                 }
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "No character with that ID could be found.");

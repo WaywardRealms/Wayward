@@ -2,7 +2,7 @@ channels:
   general:
     colour: GRAY
     radius: -1
-    format: '&7[%channel%] %ign%: &f%message%'
+    format: '&7[%channel%] %ign%&7: &f%message%'
     garble-enabled: false
     irc:
       enabled: true
@@ -12,7 +12,7 @@ channels:
   say:
     colour: GREEN
     radius: 16
-    format: '&a%player% says: &f%message%'
+    format: '&a%player% says&a: &f%message%'
     garble-enabled: true
     irc:
       enabled: false
@@ -21,7 +21,7 @@ channels:
   shout:
     colour: DARK_RED
     radius: 64
-    format: '&4%player% shouts: &f%message%'
+    format: '&4%player% shouts&4: &f%message%'
     garble-enabled: true
     irc:
       enabled: false
@@ -30,7 +30,7 @@ channels:
   whisper:
     colour: AQUA
     radius: 4
-    format: '&b%player% whispers: &f%message%'
+    format: '&b%player% whispers&b: &f%message%'
     garble-enabled: true
     irc:
       enabled: false
@@ -39,7 +39,7 @@ channels:
   staff:
     colour: DARK_PURPLE
     radius: -1
-    format: '&5[%channel%] %ign%: &f%message%'
+    format: '&5[%channel%] %ign%&5: &f%message%'
     garble-enabled: false
     irc:
       enabled: true
@@ -49,7 +49,7 @@ channels:
   dev:
     colour: YELLOW
     radius: -1
-    format: '&e[%channel%] %ign%: &f%message%'
+    format: '&e[%channel%] %ign%&e: &f%message%'
     garble-enabled: false
     irc:
       enabled: true
@@ -59,7 +59,7 @@ channels:
   support:
     colour: DARK_GREEN
     radius: -1
-    format: '&2[%channel%] %ign%: &f%message%'
+    format: '&2[%channel%] %ign%&2: &f%message%'
     garble-enabled: false
     irc:
       enabled: true
@@ -69,7 +69,7 @@ channels:
   ooc:
     colour: BLUE
     radius: 16
-    format: '&9[%channel%] %ign%: &f%message%'
+    format: '&9[%channel%] %ign%&9: &f%message%'
     garble-enabled: false
     irc:
       enabled: false

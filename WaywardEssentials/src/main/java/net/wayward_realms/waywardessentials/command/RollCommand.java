@@ -79,11 +79,11 @@ public class RollCommand implements CommandExecutor {
         for (Player player : roller.getWorld().getPlayers()) {
             if (player.getLocation().distance(roller.getLocation()) <= 16) {
                 if (plus > 0) {
-                    player.sendMessage(plugin.getPrefix() + ChatColor.BLUE + roller.getName() + ChatColor.GRAY + "/" + ChatColor.BLUE + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll + "+" + plus);
+                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + roller.getName() + ChatColor.GRAY + "/" + ChatColor.GREEN + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll + "+" + plus);
                 } else if (plus < 0) {
-                    player.sendMessage(plugin.getPrefix() + ChatColor.BLUE + roller.getName() + ChatColor.GRAY + "/" + ChatColor.BLUE + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll + "" + plus);
+                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + roller.getName() + ChatColor.GRAY + "/" + ChatColor.GREEN + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll + "" + plus);
                 } else if (plus == 0) {
-                    player.sendMessage(plugin.getPrefix() + ChatColor.BLUE + roller.getName() + ChatColor.GRAY + "/" + ChatColor.BLUE + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll);
+                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + roller.getName() + ChatColor.GRAY + "/" + ChatColor.GREEN + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll);
                 }
                 player.sendMessage(plugin.getPrefix() + output);
             }
