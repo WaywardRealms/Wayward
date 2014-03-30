@@ -43,15 +43,15 @@ public class CharacterCommand implements CommandExecutor {
                 Character character = plugin.getActiveCharacter(player);
                 ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
                 sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + character.getName() + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
-                sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE +  character.getAge());
-                sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
-                sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
+                if (!character.isAgeHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE +  character.getAge());
+                if (!character.isGenderHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
+                if (!character.isRaceHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
                 if (classesPlugin != null) {
                     if (classesPlugin.getClass(character) != null) {
-                        sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
+                        if (!character.isClassHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
                     }
                 }
-                sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
+                if (!character.isDescriptionHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
             } else if (args[0].equalsIgnoreCase("switch")) {
                 if (args.length >= 2) {
                     boolean found = false;
