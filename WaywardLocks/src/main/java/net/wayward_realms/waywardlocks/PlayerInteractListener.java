@@ -149,7 +149,7 @@ public class PlayerInteractListener implements Listener {
                                         }
                                         event.getPlayer().updateInventory();
                                         Random random = new Random();
-                                        if (random.nextInt(100) > 15) {
+                                        if (random.nextInt(100) > plugin.getLockpickEfficiency(event.getPlayer())) {
                                             event.setCancelled(true);
                                             switch (random.nextInt(5)) {
                                                 case 0: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick bent inside the lock."); break;
@@ -160,6 +160,9 @@ public class PlayerInteractListener implements Listener {
                                             }
                                         } else {
                                             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You hear a click and the lock opens, allowing you access to the " + block.getType().toString().toLowerCase().replace('_', ' '));
+                                            if (random.nextInt(100) < 5) {
+                                                plugin.setLockpickEfficiency(event.getPlayer(), plugin.getLockpickEfficiency(event.getPlayer()) + 1);
+                                            }
                                             final Player player = event.getPlayer();
                                             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                                                 @Override
