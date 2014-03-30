@@ -12,6 +12,8 @@ public enum ToolType {
     AXE(WOOD_AXE, STONE_AXE, IRON_AXE, GOLD_AXE, DIAMOND_AXE),
     SPADE(WOOD_SPADE, STONE_SPADE, IRON_SPADE, GOLD_SPADE, DIAMOND_SPADE),
 
+    BOW(Material.BOW),
+
     HELMET(LEATHER_HELMET, CHAINMAIL_HELMET, GOLD_HELMET, IRON_HELMET, DIAMOND_HELMET),
     CHESTPLATE(LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, GOLD_CHESTPLATE, IRON_CHESTPLATE, DIAMOND_CHESTPLATE),
     LEGGINGS(LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, GOLD_LEGGINGS, IRON_LEGGINGS, DIAMOND_LEGGINGS),
@@ -33,6 +35,7 @@ public enum ToolType {
         if (material.toString().endsWith("_CHESTPLATE")) return CHESTPLATE;
         if (material.toString().endsWith("_LEGGINGS")) return LEGGINGS;
         if (material.toString().endsWith("_BOOTS")) return BOOTS;
+        if (material == Material.BOW) return BOW;
         return null;
     }
 
