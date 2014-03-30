@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -257,6 +258,14 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     }
 
     public void setupIrc() {
+        saveDefaultIrcConfig();
+        File ircFile = new File(getDataFolder(), "irc.yml");
+        YamlConfiguration ircConfig = new YamlConfiguration();
+        try {
+            ircConfig.load(ircFile);
+        } catch (IOException | InvalidConfigurationException exception) {
+            exception.printStackTrace();
+        }
         if (getConfig().getBoolean("irc.enabled")) {
             Configuration.Builder<PircBotX> configurationBuilder = new Configuration.Builder<>()
                 .setName(getConfig().getString("irc.bot-name"))
@@ -268,15 +277,71 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 .addListener(new IrcChatHelpCommand(this))
                 .addListener(new IrcListCommand(this))
                 .addListener(new IrcMessageListener(this))
-                .setServerHostname(getConfig().getString("irc.server").contains(":") ? getConfig().getString("irc.server").split(":")[0] : getConfig().getString("irc.server"))
                 .setAutoReconnect(true);
+            getLogger().info("Setting up IRC bot:");
+            if (ircConfig.get("name") != null) {
+                String name = (String) ircConfig.get("name");
+                configurationBuilder.setName(name);
+                getLogger().info("Name set to " + name);
+            }
+            if (ircConfig.get("real-name") != null) {
+                String realName = (String) ircConfig.get("real-name");
+                configurationBuilder.setRealName(realName);
+                getLogger().info("Real name set to " + realName);
+            }
+            if (ircConfig.get("login") != null) {
+                String login = (String) ircConfig.get("login");
+                configurationBuilder.setLogin(login);
+                getLogger().info("Login set to " + login);
+            }
+            if (ircConfig.get("cap-enabled") != null) {
+                boolean capEnabled = (boolean) ircConfig.get("cap-enabled");
+                configurationBuilder.setCapEnabled(capEnabled);
+                getLogger().info("CAP " + (capEnabled ? "enabled" : "disabled"));
+            }
+            if (ircConfig.get("auto-nick-change-enabled") != null) {
+                boolean autoNickChange = (boolean) ircConfig.get("auto-nick-change");
+                configurationBuilder.setAutoNickChange(autoNickChange);
+                getLogger().info("Auto nick change " + (autoNickChange ? "enabled" : "disabled"));
+            }
+            if (ircConfig.get("auto-split-message-enabled") != null) {
+                boolean autoSplitMessage = (boolean) ircConfig.get("auto-split-message");
+                configurationBuilder.setAutoSplitMessage(autoSplitMessage);
+                getLogger().info("Auto-split message " + (autoSplitMessage ? "enabled" : "disabled"));
+            }
+            configurationBuilder.setServerHostname(ircConfig.getString("server").contains(":") ? ircConfig.getString("server").split(":")[0] : ircConfig.getString("server"));
+            getLogger().info("Hostname set to " + (ircConfig.getString("server").contains(":") ? ircConfig.getString("server").split(":")[0] : ircConfig.getString("server")));
+            if (ircConfig.getString("server").contains(":")) {
+                try {
+                    configurationBuilder.setServerPort(Integer.parseInt(ircConfig.getString("server").split(":")[1]));
+                    getLogger().info("Port set to " + ircConfig.getString("server").split(":")[1]);
+                } catch (NumberFormatException ignore) {
+                }
+            }
+            if (ircConfig.get("max-line-length") != null) {
+                int maxLineLength = (int) ircConfig.get("max-line-length");
+                configurationBuilder.setMaxLineLength(maxLineLength);
+                getLogger().info("Max line length set to " + maxLineLength);
+            }
+            if (ircConfig.get("message-delay") != null) {
+                long messageDelay = Long.parseLong("" + (int) ircConfig.get("message-delay"));
+                configurationBuilder.setMessageDelay(messageDelay);
+                getLogger().info("Message delay set to " + messageDelay);
+            }
+            if (ircConfig.get("password") != null) {
+                String password = (String) ircConfig.get("password");
+                configurationBuilder.setNickservPassword(password);
+                getLogger().info("Password set. (" + password.length() + " characters, starting with " + password.charAt(0) + ", ending with " + password.charAt(password.length() - 1) + ")");
+            }
             for (Channel channel : getChannels()) {
                 if (channel.isIrcEnabled()) {
                     configurationBuilder.addAutoJoinChannel(channel.getIrcChannel());
                 }
             }
+            getLogger().info("Building configuration...");
             Configuration<PircBotX> configuration = configurationBuilder.buildConfiguration();
             ircBot = new PircBotX(configuration);
+            getLogger().info("Done! The bot will now be started in a separate thread.");
             getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
                 @Override
                 public void run() {
@@ -287,6 +352,28 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                     }
                 }
             });
+        }
+    }
+
+    public void saveDefaultIrcConfig() {
+        YamlConfiguration ircConfig = new YamlConfiguration();
+        File ircFile = new File(getDataFolder(), "irc.yml");
+        if (!ircFile.exists()) {
+            ircConfig.set("server", "irc.esper.net:5555");
+            ircConfig.set("name", "Wayward");
+            ircConfig.set("real-name", "Wayward");
+            ircConfig.set("login", "Wayward");
+            ircConfig.set("cap-enabled", true);
+            ircConfig.set("auto-nick-change-enabled", true);
+            ircConfig.set("auto-split-message-enabled", false);
+            ircConfig.set("max-line-length", null);
+            ircConfig.set("message-delay", null);
+            ircConfig.set("password", null);
+            try {
+                ircConfig.save(ircFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 

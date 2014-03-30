@@ -94,7 +94,5 @@ emotes:
 default-channel: general
 irc:
   enabled: true
-  server: 'irc.esper.net:5555'
-  bot-name: Wayward
 broadcasts:
   delay: 120
