@@ -51,7 +51,7 @@ public class EntityDamageByEntityListener implements Listener {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     attack = characterPlugin.getActiveCharacter((Player) attacker).getStatValue(attackStat);
                 }
-            } else if (attacker instanceof LivingEntity) {
+            } else {
                 attack = plugin.getEntityLevelManager().getEntityStatValue(attacker);
             }
         }
@@ -62,7 +62,7 @@ public class EntityDamageByEntityListener implements Listener {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     defence = characterPlugin.getActiveCharacter((Player) defender).getStatValue(defenceStat);
                 }
-            } else if (defender instanceof LivingEntity) {
+            } else {
                 defence = plugin.getEntityLevelManager().getEntityStatValue(defender);
             }
         }
