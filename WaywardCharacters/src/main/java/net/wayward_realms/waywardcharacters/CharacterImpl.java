@@ -84,14 +84,14 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public String getName() {
-        return name;
+        return nameHidden ? "???" : name;
     }
 
     @Override
     public void setName(String name) {
         this.name = name;
         if (getPlayer().isOnline()) {
-            getPlayer().getPlayer().setDisplayName(name);
+            getPlayer().getPlayer().setDisplayName(getName());
         }
     }
 
@@ -337,6 +337,12 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         serialised.put("food-level", foodLevel);
         serialised.put("mana", mana);
         serialised.put("thirst", thirst);
+        serialised.put("name-hidden", nameHidden);
+        serialised.put("gender-hidden", genderHidden);
+        serialised.put("age-hidden", ageHidden);
+        serialised.put("race-hidden", raceHidden);
+        serialised.put("description-hidden", descriptionHidden);
+        serialised.put("class-hidden", classHidden);
         return serialised;
     }
 
@@ -363,6 +369,12 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         character.foodLevel = (int) serialised.get("food-level");
         character.mana = (int) serialised.get("mana");
         character.thirst = (int) serialised.get("thirst");
+        character.nameHidden = serialised.get("name-hidden") != null && (boolean) serialised.get("name-hidden");
+        character.genderHidden = serialised.get("gender-hidden") != null && (boolean) serialised.get("gender-hidden");
+        character.ageHidden = serialised.get("age-hidden") != null && (boolean) serialised.get("age-hidden");
+        character.raceHidden = serialised.get("race-hidden") != null && (boolean) serialised.get("race-hidden");
+        character.descriptionHidden = serialised.get("description-hidden") != null && (boolean) serialised.get("description-hidden");
+        character.classHidden = serialised.get("class-hidden") != null && (boolean) serialised.get("class-hidden");
         return character;
     }
 
