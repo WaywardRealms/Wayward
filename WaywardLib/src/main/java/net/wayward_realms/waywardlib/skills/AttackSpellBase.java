@@ -19,38 +19,41 @@ public abstract class AttackSpellBase extends SpellBase {
     private Stat attackStat;
     private Stat defenceStat;
     private int criticalChance = 5;
+    private int hitChance = 90;
 
     @Override
     public boolean use(Fight fight, net.wayward_realms.waywardlib.character.Character attacking, Character defending, ItemStack weapon) {
         Player defendingPlayer = defending.getPlayer().getPlayer();
-        if (attacking.getMana() > getManaCost()) {
-            animate(fight, attacking, defending, weapon);
-            Random random = new Random();
-            int attackerLevel = 0;
-            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-            if (classesPluginProvider != null) {
-                ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                attackerLevel = classesPlugin.getLevel(attacking);
+        Random random = new Random();
+        if (random.nextInt(100) < getHitChance()) {
+            if (attacking.getMana() > getManaCost()) {
+                animate(fight, attacking, defending, weapon);
+                int attackerLevel = 0;
+                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                if (classesPluginProvider != null) {
+                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                    attackerLevel = classesPlugin.getLevel(attacking);
+                }
+                int attack = attacking.getStatValue(getAttackStat());
+                int defence = defending.getStatValue(getDefenceStat());
+                double a = (2D * (double) attackerLevel + 10D) / 250D;
+                double b = (double) attack / Math.max((double) defence, 1D);
+                double power = getPower();
+                double weaponModifier = getWeaponModifier(weapon);
+                double armourModifier = getArmourModifier(defendingPlayer.getInventory().getHelmet(), defendingPlayer.getInventory().getChestplate(), defendingPlayer.getInventory().getLeggings(), defendingPlayer.getInventory().getBoots());
+                boolean critical = random.nextInt(100) < getCriticalChance();
+                double modifier = (critical ? 2D : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
+                int damage = (int) Math.round((a * b * power) + 2D * modifier);
+                defending.setHealth(defending.getHealth() - damage);
+                defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
+                if (critical) {
+                    fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
+                }
+                fight.sendMessage(getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
+                return true;
+            } else {
+                fight.sendMessage(getFightFailManaMessage(attacking, defending));
             }
-            int attack = attacking.getStatValue(getAttackStat());
-            int defence = defending.getStatValue(getDefenceStat());
-            double a = (2D * (double) attackerLevel + 10D) / 250D;
-            double b = (double) attack / Math.max((double) defence, 1D);
-            double power = getPower();
-            double weaponModifier = getWeaponModifier(weapon);
-            double armourModifier = getArmourModifier(defendingPlayer.getInventory().getHelmet(), defendingPlayer.getInventory().getChestplate(), defendingPlayer.getInventory().getLeggings(), defendingPlayer.getInventory().getBoots());
-            boolean critical = random.nextInt(100) < getCriticalChance();
-            double modifier = (critical ? 2D : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
-            int damage = (int) Math.round((a * b * power) + 2D * modifier);
-            defending.setHealth(defending.getHealth() - damage);
-            defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
-            if (critical) {
-                fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
-            }
-            fight.sendMessage(getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
-            return true;
-        } else {
-            fight.sendMessage(getFightFailManaMessage(attacking, defending));
         }
         return false;
     }
@@ -127,5 +130,13 @@ public abstract class AttackSpellBase extends SpellBase {
     public abstract String getFightUseMessage(Character attacking, Character defending, double damage);
 
     public abstract String getFightFailManaMessage(Character attacking, Character defending);
+
+    public int getHitChance() {
+        return hitChance;
+    }
+
+    public void setHitChance(int hitChance) {
+        this.hitChance = hitChance;
+    }
 
 }
