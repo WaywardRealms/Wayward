@@ -1,14 +1,18 @@
 package net.wayward_realms.waywardlocks;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.TrapDoor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,13 +168,24 @@ public class PlayerInteractListener implements Listener {
                                                 plugin.setLockpickEfficiency(event.getPlayer(), plugin.getLockpickEfficiency(event.getPlayer()) + 1);
                                             }
                                             final Player player = event.getPlayer();
-                                            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    player.closeInventory();
-                                                    player.sendMessage(ChatColor.RED + "The chest snaps shut again, the lock clicking shut.");
-                                                }
-                                            }, 60L);
+                                            if (block.getType() == Material.CHEST) {
+                                                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        player.closeInventory();
+                                                        player.sendMessage(ChatColor.RED + "The chest snaps shut again, the lock clicking shut.");
+                                                    }
+                                                }, 60L);
+                                            } else if (block.getType() == Material.WOOD_DOOR || block.getType() == Material.WOODEN_DOOR) {
+                                                final Block finalBlock = block;
+                                                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        closeDoor(finalBlock);
+                                                        player.sendMessage(ChatColor.RED + "The door slams behind you, the lock clicking shut.");
+                                                    }
+                                                }, 60L);
+                                            }
                                         }
                                         return;
                                     }
@@ -194,6 +209,61 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 }
+            }
+        }
+    }
+
+
+    public boolean isDoorClosed(Block block) {
+        if (block.getType() == Material.TRAP_DOOR) {
+            TrapDoor trapdoor = (TrapDoor)block.getState().getData();
+            return !trapdoor.isOpen();
+        } else {
+            byte data = block.getData();
+            if ((data & 0x8) == 0x8) {
+                block = block.getRelative(BlockFace.DOWN);
+                data = block.getData();
+            }
+            return ((data & 0x4) == 0);
+        }
+    }
+
+    public void openDoor(Block block) {
+        if (block.getType() == Material.TRAP_DOOR) {
+            BlockState state = block.getState();
+            TrapDoor trapdoor = (TrapDoor)state.getData();
+            trapdoor.setOpen(true);
+            state.update();
+        } else {
+            byte data = block.getData();
+            if ((data & 0x8) == 0x8) {
+                block = block.getRelative(BlockFace.DOWN);
+                data = block.getData();
+            }
+            if (isDoorClosed(block)) {
+                data = (byte) (data | 0x4);
+                block.setData(data, true);
+                block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
+            }
+        }
+    }
+
+    public void closeDoor(Block block) {
+        if (block.getType() == Material.TRAP_DOOR) {
+            BlockState state = block.getState();
+            TrapDoor trapdoor = (TrapDoor)state.getData();
+            trapdoor.setOpen(false);
+            state.update();
+        } else {
+            byte data = block.getData();
+            if ((data & 0x8) == 0x8) {
+                block = block.getRelative(BlockFace.DOWN);
+                data = block.getData();
+            }
+            if (!isDoorClosed(block)) {
+                data = (byte) (data & 0xb);
+                block.setData(data, true);
+                block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
             }
         }
     }
