@@ -3,10 +3,10 @@ package net.wayward_realms.waywardskills.skill;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Class;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.Skill;
+import net.wayward_realms.waywardlib.skills.AttackSkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,16 +20,19 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-import static net.wayward_realms.waywardlib.classes.Stat.RANGED_ATTACK;
-import static net.wayward_realms.waywardlib.classes.Stat.RANGED_DEFENCE;
+public class ArrowSkill extends AttackSkillBase {
 
-public class ArrowSkill implements Skill {
-
-    private String name = "Arrow";
-    private SkillType type = SkillType.RANGED_OFFENCE;
-    private int coolDown = 5;
+    public ArrowSkill() {
+        setName("Arrow");
+        setCoolDown(5);
+        setType(SkillType.RANGED_OFFENCE);
+        setAttackStat(Stat.RANGED_ATTACK);
+        setDefenceStat(Stat.RANGED_DEFENCE);
+        setCriticalChance(2);
+        setHitChance(95);
+        setPower(50);
+    }
 
 	@Override
 	public ItemStack getIcon() {
@@ -39,21 +42,6 @@ public class ArrowSkill implements Skill {
 		icon.setItemMeta(iconMeta);
 		return icon;
 	}
-
-    @Override
-	public String getName() {
-		return name;
-	}
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
 
     @Override
     public boolean use(Player player) {
@@ -79,59 +67,29 @@ public class ArrowSkill implements Skill {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        return use(fight, (Character) attacking, (Character) defending, weapon);
+    public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+        attacking.getPlayer().getPlayer().launchProjectile(Arrow.class);
     }
 
     @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-		Player attackingPlayer = attacking.getPlayer().getPlayer();
-		attackingPlayer.launchProjectile(org.bukkit.entity.Arrow.class);
-        int attackerLevel = 0;
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            attackerLevel = classesPlugin.getLevel(attacking);
-        }
-        Random random = new Random();
-		int attack = attacking.getStatValue(RANGED_ATTACK);
-		int defence = defending.getStatValue(RANGED_DEFENCE);
-        double a = (2D * (double) attackerLevel + 10D) / 250D;
-        double b = (double) attack / Math.max((double) defence, 1D);
-        double power = 50D;
-        double weaponModifier = 1D;
+    public double getWeaponModifier(ItemStack weapon) {
         if (weapon != null) {
             switch (weapon.getType()) {
-                case BOW: weaponModifier = 1.5D; break;
+                case BOW:
+                    return 1.5D;
+                default:
+                    return 1D;
             }
         }
-        boolean critical = random.nextInt(100) < 2;
-        double modifier = (critical ? 2D : 1D) * weaponModifier * (((double) random.nextInt(15) + 85D) / 100D);
-        int damage = (int) Math.round((a * b * power) + 2D * modifier);
-        defending.setHealth(defending.getHealth() - damage);
-        defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
-        if (critical) {
-            fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
-        }
-        fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " shot an arrow at " + defending.getName() + " dealing " + (Math.round(damage * 100D) / 100D) + " points of damage.");
-        return true;
-	}
+        return 1D;
+    }
 
-	public boolean canUse(Class clazz, int level) {
+    @Override
+    public String getFightUseMessage(Character attacking, Character defending, double damage) {
+        return attacking.getName() + " shot an arrow at " + defending.getName() + " dealing " + damage + " points of damage.";
+    }
+
+    public boolean canUse(Class clazz, int level) {
 		return clazz.getSkillPointBonus(SkillType.RANGED_OFFENCE) * level >= 1;
 	}
 
@@ -158,15 +116,15 @@ public class ArrowSkill implements Skill {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static ArrowSkill deserialize(Map<String, Object> serialised) {
         ArrowSkill deserialised = new ArrowSkill();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

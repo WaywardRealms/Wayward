@@ -4,7 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.Skill;
+import net.wayward_realms.waywardlib.skills.SkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,11 +20,13 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DashSkill implements Skill {
+public class DashSkill extends SkillBase {
 
-    private String name = "Dash";
-    private int coolDown = 120;
-    private SkillType type = SkillType.SPEED_NIMBLE;
+    public DashSkill() {
+        setName("Dash");
+        setCoolDown(120);
+        setType(SkillType.SPEED_NIMBLE);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -33,7 +35,7 @@ public class DashSkill implements Skill {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
+    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         fight.removeCombatant(attacking);
         fight.sendMessage(ChatColor.GREEN + attacking.getName() + " fled the fight!");
         return true;
@@ -69,47 +71,17 @@ public class DashSkill implements Skill {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static DashSkill deserialize(Map<String, Object> serialised) {
         DashSkill deserialised = new DashSkill();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

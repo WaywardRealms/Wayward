@@ -1,10 +1,10 @@
 package net.wayward_realms.waywardskills.skill;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.Skill;
+import net.wayward_realms.waywardlib.skills.SkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,11 +18,13 @@ import org.bukkit.util.BlockIterator;
 
 import java.util.*;
 
-public class QuickStepSkill implements Skill {
+public class QuickStepSkill extends SkillBase {
 
-    private String name = "QuickStep";
-    private int coolDown = 30;
-    private SkillType type = SkillType.SPEED_NIMBLE;
+    public QuickStepSkill() {
+        setName("QuickStep");
+        setCoolDown(30);
+        setType(SkillType.SPEED_NIMBLE);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -35,7 +37,7 @@ public class QuickStepSkill implements Skill {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
+    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         return false;
     }
 
@@ -86,47 +88,17 @@ public class QuickStepSkill implements Skill {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static QuickStepSkill deserialize(Map<String, Object> serialised) {
         QuickStepSkill deserialised = new QuickStepSkill();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

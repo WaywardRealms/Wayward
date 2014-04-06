@@ -1,10 +1,10 @@
 package net.wayward_realms.waywardskills.skill;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.Skill;
+import net.wayward_realms.waywardlib.skills.SkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SharpenSkill implements Skill {
+public class SharpenSkill extends SkillBase {
 
     private String name = "Sharpen";
     private int coolDown = 60;
@@ -49,7 +49,7 @@ public class SharpenSkill implements Skill {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
+    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         return false;
     }
 

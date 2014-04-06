@@ -1,16 +1,14 @@
 package net.wayward_realms.waywardskills.skill;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.Skill;
+import net.wayward_realms.waywardlib.skills.AttackSkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,15 +16,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class PoisonArrowSkill implements Skill {
+public class PoisonArrowSkill extends AttackSkillBase {
 
-    private String name = "PoisonArrow";
-    private int coolDown = 20;
-    private SkillType type = SkillType.RANGED_OFFENCE;
+    public PoisonArrowSkill() {
+        setName("PoisonArrow");
+        setCoolDown(20);
+        setType(SkillType.RANGED_OFFENCE);
+        setPower(30);
+        setAttackStat(Stat.RANGED_ATTACK);
+        setDefenceStat(Stat.RANGED_DEFENCE);
+        setHitChance(90);
+        setCriticalChance(1);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -40,8 +47,14 @@ public class PoisonArrowSkill implements Skill {
         if (containsBow) {
             if (player.getInventory().containsAtLeast(new ItemStack(Material.ARROW), 1) && player.getInventory().containsAtLeast(new ItemStack(Material.FERMENTED_SPIDER_EYE), 1)) {
                 Plugin plugin = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class).getProvider();
-                Arrow arrow = player.launchProjectile(Arrow.class);
+                final Arrow arrow = player.launchProjectile(Arrow.class);
                 arrow.setMetadata("isPoisonArrow", new FixedMetadataValue(plugin, true));
+                plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        arrow.getLocation().getWorld().playEffect(arrow.getLocation(), Effect.ENDER_SIGNAL, 0);
+                    }
+                }, 5L, 5L);
                 player.getInventory().removeItem(new ItemStack(Material.ARROW), new ItemStack(Material.FERMENTED_SPIDER_EYE));
                 return true;
             } else {
@@ -50,11 +63,6 @@ public class PoisonArrowSkill implements Skill {
         } else {
             player.sendMessage(ChatColor.RED + "You require a bow to launch a poisoned arrow.");
         }
-        return false;
-    }
-
-    @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
         return false;
     }
 
@@ -88,48 +96,49 @@ public class PoisonArrowSkill implements Skill {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static PoisonArrowSkill deserialize(Map<String, Object> serialised) {
         PoisonArrowSkill deserialised = new PoisonArrowSkill();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 
+    @Override
+    public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        if (skillsPluginProvider != null) {
+            SkillsPlugin plugin = skillsPluginProvider.getProvider();
+            final Arrow arrow = attacking.getPlayer().getPlayer().launchProjectile(Arrow.class);
+            plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    arrow.getLocation().getWorld().playEffect(arrow.getLocation(), Effect.ENDER_SIGNAL, 0);
+                }
+            }, 5L, 5L);
+        }
+        attacking.getPlayer().getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 0), true);
+    }
+
+    @Override
+    public double getWeaponModifier(ItemStack weapon) {
+        if (weapon != null) {
+            switch (weapon.getType()) {
+                case BOW: return 1.5D;
+                default: return 1D;
+            }
+        }
+        return 1D;
+    }
+
+    @Override
+    public String getFightUseMessage(Character attacking, Character defending, double damage) {
+        return attacking.getName() + " shot a poisoned arrow at " + defending.getName() + " dealing " + damage + " points of damage, and poisoning them.";
+    }
 }
