@@ -5,7 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.skills.Spell;
+import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,7 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DrawSwordSpell implements Spell {
+public class DrawSwordSpell extends SpellBase {
 
     private String name = "DrawSword";
     private int manaCost = 50;
@@ -62,9 +62,9 @@ public class DrawSwordSpell implements Spell {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
+    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " drew a sword from the ground!");
-        return use(((Character) attacking).getPlayer().getPlayer());
+        return use((attacking).getPlayer().getPlayer());
     }
 
     @Override
@@ -129,17 +129,17 @@ public class DrawSwordSpell implements Spell {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("mana-cost", manaCost);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("mana-cost", getManaCost());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static DrawSwordSpell deserialize(Map<String, Object> serialised) {
         DrawSwordSpell deserialised = new DrawSwordSpell();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.manaCost = (int) serialised.get("mana-cost");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

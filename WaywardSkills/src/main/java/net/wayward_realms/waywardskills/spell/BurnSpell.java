@@ -1,11 +1,12 @@
 package net.wayward_realms.waywardskills.spell;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.skills.Spell;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -18,14 +19,22 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BurnSpell implements Spell {
+public class BurnSpell extends AttackSpellBase {
 
-    private String name = "Burn";
-    private int manaCost = 15;
     private int radius = 8;
     private int fireTicks = 200;
-    private int coolDown = 5;
-    private SkillType type = SkillType.MAGIC_OFFENCE;
+
+    public BurnSpell() {
+        setName("Burn");
+        setManaCost(15);
+        setCoolDown(5);
+        setType(SkillType.MAGIC_OFFENCE);
+        setAttackStat(Stat.MAGIC_ATTACK);
+        setDefenceStat(Stat.MAGIC_DEFENCE);
+        setHitChance(100);
+        setPower(10D);
+        setCriticalChance(0);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -37,11 +46,6 @@ public class BurnSpell implements Spell {
             }
         }
         return true;
-    }
-
-    @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        return false;
     }
 
     @Override
@@ -74,64 +78,51 @@ public class BurnSpell implements Spell {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("mana-cost", manaCost);
+        serialised.put("name", getName());
+        serialised.put("mana-cost", getManaCost());
         serialised.put("radius", radius);
         serialised.put("fire-ticks", fireTicks);
-        serialised.put("cooldown", coolDown);
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public BurnSpell deserialize(Map<String, Object> serialised) {
         BurnSpell deserialised = new BurnSpell();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.manaCost = (int) serialised.get("mana-cost");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
         deserialised.radius = (int) serialised.get("radius");
         deserialised.fireTicks = (int) serialised.get("fire-ticks");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
+    }
+
+    @Override
+    public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+        defending.getPlayer().getPlayer().setFireTicks(fireTicks);
+    }
+
+    @Override
+    public double getWeaponModifier(ItemStack weapon) {
+        if (weapon != null) {
+            switch (weapon.getType()) {
+                case STICK: return 1.1D;
+                case BLAZE_ROD: return 1.5D;
+                default: return 1D;
+            }
+        }
+        return 1D;
+    }
+
+    @Override
+    public String getFightUseMessage(Character attacking, Character defending, double damage) {
+        return attacking.getName() + " set " + defending.getName() + " alight with magic, dealing " + damage + " points of damage.";
+    }
+
+    @Override
+    public String getFightFailManaMessage(Character attacking, Character defending) {
+        return attacking.getName() + " attempted to set " + defending.getName() + " alight with magic, but did not have enough mana.";
     }
 
 }
