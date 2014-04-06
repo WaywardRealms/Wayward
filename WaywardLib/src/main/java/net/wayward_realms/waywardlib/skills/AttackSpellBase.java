@@ -19,6 +19,7 @@ public abstract class AttackSpellBase extends SpellBase {
     private Stat attackStat;
     private Stat defenceStat;
     private int criticalChance = 5;
+    private double criticalMultiplier = 2D;
     private int hitChance = 90;
 
     @Override
@@ -42,7 +43,7 @@ public abstract class AttackSpellBase extends SpellBase {
                 double weaponModifier = getWeaponModifier(weapon);
                 double armourModifier = getArmourModifier(defendingPlayer.getInventory().getHelmet(), defendingPlayer.getInventory().getChestplate(), defendingPlayer.getInventory().getLeggings(), defendingPlayer.getInventory().getBoots());
                 boolean critical = random.nextInt(100) < getCriticalChance();
-                double modifier = (critical ? 2D : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
+                double modifier = (critical ? criticalMultiplier : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
                 int damage = (int) Math.round((a * b * power) + 2D * modifier);
                 defending.setHealth(defending.getHealth() - damage);
                 defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
@@ -125,6 +126,14 @@ public abstract class AttackSpellBase extends SpellBase {
 
     public void setCriticalChance(int criticalChance) {
         this.criticalChance = criticalChance;
+    }
+
+    public double getCriticalMultiplier() {
+        return criticalMultiplier;
+    }
+
+    public void setCriticalMultiplier(double criticalMultiplier) {
+        this.criticalMultiplier = criticalMultiplier;
     }
 
     public abstract String getFightUseMessage(Character attacking, Character defending, double damage);
