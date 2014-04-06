@@ -5,7 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.skills.Spell;
+import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,13 +21,16 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EsunaSpell implements Spell {
+public class EsunaSpell extends SpellBase {
 
-    private String name = "Esuna";
-    private int manaCost = 5;
     private int radius = 8;
-    private int coolDown = 5;
-    private SkillType type = SkillType.MAGIC_HEALING;
+
+    public EsunaSpell() {
+        setName("Esuna");
+        setManaCost(5);
+        setCoolDown(5);
+        setType(SkillType.MAGIC_HEALING);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -44,10 +47,10 @@ public class EsunaSpell implements Spell {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        if (((Character) attacking).getMana() >= manaCost) {
+    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+        if (attacking.getMana() >= getManaCost()) {
             for (PotionEffectType potionEffectType : PotionEffectType.values()) {
-                ((Character) defending).getPlayer().getPlayer().addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
+                defending.getPlayer().getPlayer().addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
             }
             fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cured " + defending.getName() + "'s status effects");
             return true;
@@ -87,61 +90,21 @@ public class EsunaSpell implements Spell {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("mana-cost", manaCost);
+        serialised.put("name", getName());
+        serialised.put("mana-cost", getManaCost());
         serialised.put("radius", radius);
-        serialised.put("cooldown", coolDown);
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static EsunaSpell deserialize(Map<String, Object> serialised) {
         EsunaSpell deserialised = new EsunaSpell();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.manaCost = (int) serialised.get("mana-cost");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
         deserialised.radius = (int) serialised.get("radius");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

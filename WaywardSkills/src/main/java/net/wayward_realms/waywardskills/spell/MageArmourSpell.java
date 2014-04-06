@@ -5,7 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.skills.Spell;
+import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,21 +21,13 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MageArmourSpell implements Spell {
+public class MageArmourSpell extends SpellBase {
 
-    private String name = "MageArmour";
-    private int manaCost = 10;
-    private int coolDown = 180;
-    private SkillType type = SkillType.MAGIC_DEFENCE;
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
+    public MageArmourSpell() {
+        setName("MageArmour");
+        setManaCost(10);
+        setCoolDown(180);
+        setType(SkillType.MAGIC_DEFENCE);
     }
 
     @Override
@@ -88,49 +80,19 @@ public class MageArmourSpell implements Spell {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("mana-cost", manaCost);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("mana-cost", getManaCost());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public MageArmourSpell deserialize(Map<String, Object> serialised) {
         MageArmourSpell deserialised = new MageArmourSpell();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.manaCost = (int) serialised.get("mana-cost");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

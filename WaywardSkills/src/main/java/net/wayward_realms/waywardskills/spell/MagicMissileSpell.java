@@ -1,12 +1,13 @@
 package net.wayward_realms.waywardskills.spell;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Spell;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -19,11 +20,18 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MagicMissileSpell implements Spell {
+public class MagicMissileSpell extends AttackSpellBase {
 
-    private String name = "MagicMissile";
-    private int manaCost = 1;
-    private int coolDown = 0;
+    public MagicMissileSpell() {
+        setName("MagicMissile");
+        setManaCost(1);
+        setCoolDown(0);
+        setAttackStat(Stat.MAGIC_ATTACK);
+        setDefenceStat(Stat.MAGIC_DEFENCE);
+        setType(SkillType.MAGIC_OFFENCE);
+        setPower(10);
+        setCriticalChance(10);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -31,11 +39,6 @@ public class MagicMissileSpell implements Spell {
         Snowball snowball = player.launchProjectile(Snowball.class);
         snowball.setMetadata("isMagicMissile", new FixedMetadataValue(plugin, true));
         return true;
-    }
-
-    @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        return false;
     }
 
     @Override
@@ -64,60 +67,46 @@ public class MagicMissileSpell implements Spell {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return null;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("mana-cost", manaCost);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("mana-cost", getManaCost());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static MagicMissileSpell deserialize(Map<String, Object> serialised) {
         MagicMissileSpell deserialised = new MagicMissileSpell();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.manaCost = (int) serialised.get("mana-cost");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 
+    @Override
+    public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+        attacking.getPlayer().getPlayer().launchProjectile(Snowball.class);
+    }
+
+    @Override
+    public double getWeaponModifier(ItemStack weapon) {
+        if (weapon != null) {
+            switch (weapon.getType()) {
+                case STICK: return 1.1D;
+                case BLAZE_ROD: return 1.5D;
+                default: return 1D;
+            }
+        }
+        return 1D;
+    }
+
+    @Override
+    public String getFightUseMessage(Character attacking, Character defending, double damage) {
+        return attacking.getName() + " launched a magic missile at " + defending.getName() + ", dealing " + damage + " damage";
+    }
+
+    @Override
+    public String getFightFailManaMessage(Character attacking, Character defending) {
+        return attacking.getName() + " attempted to form a magic missile, but did not have enough mana.";
+    }
 }

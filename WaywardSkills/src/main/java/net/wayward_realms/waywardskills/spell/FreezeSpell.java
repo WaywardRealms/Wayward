@@ -6,7 +6,7 @@ import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Spell;
+import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -21,12 +21,14 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FreezeSpell implements Spell {
+public class FreezeSpell extends SpellBase {
 
-    private String name = "Freeze";
-    private int manaCost = 20;
-    private int coolDown = 0;
-    private SkillType type = SkillType.MAGIC_NATURE;
+    public FreezeSpell() {
+        setName("Freeze");
+        setManaCost(20);
+        setCoolDown(0);
+        setType(SkillType.MAGIC_NATURE);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -36,7 +38,8 @@ public class FreezeSpell implements Spell {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
+    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+        //TODO Status effects, requires #37
         return false;
     }
 
@@ -69,46 +72,6 @@ public class FreezeSpell implements Spell {
         return false;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
-    }
-
     private void scheduleLaunches(final Plugin plugin, final Player player, long... delays) {
         for (long delay : delays) {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -126,17 +89,17 @@ public class FreezeSpell implements Spell {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("mana-cost", manaCost);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("mana-cost", getManaCost());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static FreezeSpell deserialize(Map<String, Object> serialised) {
         FreezeSpell deserialised = new FreezeSpell();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.manaCost = (int) serialised.get("mana-cost");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

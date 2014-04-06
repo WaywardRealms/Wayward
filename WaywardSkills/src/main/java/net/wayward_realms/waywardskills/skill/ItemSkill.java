@@ -3,7 +3,7 @@ package net.wayward_realms.waywardskills.skill;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.Skill;
+import net.wayward_realms.waywardlib.skills.SkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,35 +16,17 @@ import org.bukkit.potion.Potion;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemSkill implements Skill {
+public class ItemSkill extends SkillBase {
 
-    private String name = "Item";
-    private int coolDown = 0;
-    private SkillType type = SkillType.SUPPORT_PERFORM;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
+    public ItemSkill() {
+        setName("Item");
+        setCoolDown(0);
+        setType(SkillType.SUPPORT_PERFORM);
     }
 
     @Override
     public boolean use(Player player) {
         return false;
-    }
-
-    @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        return use(fight, (Character) attacking, (Character) defending, weapon);
     }
 
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
@@ -85,21 +67,6 @@ public class ItemSkill implements Skill {
     }
 
     @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
     public ItemStack getIcon() {
         ItemStack icon = new ItemStack(Material.POTION);
         ItemMeta iconMeta = icon.getItemMeta();
@@ -130,15 +97,15 @@ public class ItemSkill implements Skill {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static ItemSkill deserialize(Map<String, Object> serialised) {
         ItemSkill deserialised = new ItemSkill();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 

@@ -25,12 +25,23 @@ public interface Skill extends ConfigurationSerializable {
      * Uses the skill in a fight situation
      *
      * @param fight the fight to use the attack in
+     * @param attacking the combatant making the attack
+     * @param defending the combatant defending against the attack
+     * @param weapon the weapon being used to attack
+     * @return whether the attack hits
+     */
+    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon);
+
+    /**
+     * Uses the skill in a fight situation, where both combatants are characters
+     *
+     * @param fight the fight to use the attack in
      * @param attacking the character making the attack
      * @param defending the character defending against the attack
      * @param weapon the weapon being used to attack
      * @return whether the attack hits
      */
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon);
+    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon);
 
     /**
      * Gets the itemstack to be used as the icon in menus

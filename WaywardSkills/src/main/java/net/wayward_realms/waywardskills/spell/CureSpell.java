@@ -8,7 +8,7 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.skills.Spell;
+import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,22 +25,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class CureSpell implements Spell {
+public class CureSpell extends SpellBase {
 
-    private int manaCost = 5;
-    private String name = "Cure";
-    private int coolDown = 20;
     private int radius = 8;
-    private SkillType type = SkillType.MAGIC_HEALING;
 
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
+    public CureSpell() {
+        setName("Cure");
+        setManaCost(5);
+        setCoolDown(20);
+        setType(SkillType.MAGIC_HEALING);
     }
 
     @Override
@@ -122,50 +115,20 @@ public class CureSpell implements Spell {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("mana-cost", manaCost);
-        serialised.put("name", name);
-        serialised.put("cooldown", coolDown);
+        serialised.put("mana-cost", getManaCost());
+        serialised.put("name", getName());
+        serialised.put("cooldown", getCoolDown());
         serialised.put("radius", radius);
         return serialised;
     }
 
     public static CureSpell deserialize(Map<String, Object> serialised) {
         CureSpell deserialised = new CureSpell();
-        deserialised.manaCost = (int) serialised.get("mana-cost");
-        deserialised.name = (String) serialised.get("name");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         deserialised.radius = (int) serialised.get("radius");
         return deserialised;
     }

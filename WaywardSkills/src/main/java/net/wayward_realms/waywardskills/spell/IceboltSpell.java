@@ -2,14 +2,12 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Spell;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,17 +20,22 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_DEFENCE;
 
-public class IceboltSpell implements Spell {
+public class IceboltSpell extends AttackSpellBase {
 
-    private String name = "Icebolt";
-    private int manaCost = 10;
-    private int coolDown = 0;
-    private SkillType type = SkillType.MAGIC_OFFENCE;
+    public IceboltSpell() {
+        setName("Icebolt");
+        setManaCost(10);
+        setCoolDown(0);
+        setType(SkillType.MAGIC_OFFENCE);
+        setPower(55);
+        setCriticalChance(2);
+        setAttackStat(MAGIC_ATTACK);
+        setDefenceStat(MAGIC_DEFENCE);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -42,47 +45,30 @@ public class IceboltSpell implements Spell {
     }
 
     @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        return use(fight, (Character) attacking, (Character) defending, weapon);
+    public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+        attacking.getPlayer().getPlayer().launchProjectile(Snowball.class);
     }
 
-    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        Player attackingPlayer = attacking.getPlayer().getPlayer();
-        if (attacking.getMana() >= 10) {
-            attackingPlayer.launchProjectile(Snowball.class);
-            Random random = new Random();
-            int attackerLevel = 0;
-            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-            if (classesPluginProvider != null) {
-                ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                attackerLevel = classesPlugin.getLevel(attacking);
+    @Override
+    public double getWeaponModifier(ItemStack weapon) {
+        if (weapon != null) {
+            switch (weapon.getType()) {
+                case STICK: return 1.1D;
+                case BLAZE_ROD: return 1.5D;
+                default: return 1D;
             }
-            int attack = attacking.getStatValue(MAGIC_ATTACK);
-            int defence = defending.getStatValue(MAGIC_DEFENCE);
-            double a = (2D * (double) attackerLevel + 10D) / 250D;
-            double b = (double) attack / Math.max((double) defence, 1D);
-            double power = 55D;
-            double weaponModifier = 1D;
-            if (weapon != null) {
-                switch (weapon.getType()) {
-                    case STICK: weaponModifier = 1.1D; break;
-                    case BLAZE_ROD: weaponModifier = 1.5D; break;
-                }
-            }
-            boolean critical = random.nextInt(100) < 2;
-            double modifier = (critical ? 2D : 1D) * weaponModifier * (((double) random.nextInt(15) + 85D) / 100D);
-            int damage = (int) Math.round((a * b * power) + 2D * modifier);
-            defending.setHealth(defending.getHealth() - damage);
-            defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
-            if (critical) {
-                fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
-            }
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " launched an icebolt at " + defending.getName() + " dealing " + (Math.round(damage * 100D) / 100D) + " points of damage.");
-            return true;
-        } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " tried to form an icebolt, but did not have enough mana.");
         }
-        return false;
+        return 1D;
+    }
+
+    @Override
+    public String getFightUseMessage(Character attacking, Character defending, double damage) {
+        return attacking.getName() + " launched an icebolt at " + defending.getName() + " dealing " + (Math.round(damage * 100D) / 100D) + " points of damage.";
+    }
+
+    @Override
+    public String getFightFailManaMessage(Character attacking, Character defending) {
+        return attacking.getName() + " tried to form an icebolt, but did not have enough mana.";
     }
 
     @Override
@@ -114,46 +100,6 @@ public class IceboltSpell implements Spell {
         return false;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
-    }
-
     private void scheduleLaunches(final Plugin plugin, final Player player, long... delays) {
         for (long delay : delays) {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -171,17 +117,17 @@ public class IceboltSpell implements Spell {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("mana-cost", manaCost);
-        serialised.put("cooldown", coolDown);
+        serialised.put("name", getName());
+        serialised.put("mana-cost", getManaCost());
+        serialised.put("cooldown", getCoolDown());
         return serialised;
     }
 
     public static IceboltSpell deserialize(Map<String, Object> serialised) {
         IceboltSpell deserialised = new IceboltSpell();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.manaCost = (int) serialised.get("mana-cost");
-        deserialised.coolDown = (int) serialised.get("cooldown");
+        deserialised.setName((String) serialised.get("name"));
+        deserialised.setManaCost((int) serialised.get("mana-cost"));
+        deserialised.setCoolDown((int) serialised.get("cooldown"));
         return deserialised;
     }
 
