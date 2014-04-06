@@ -15,7 +15,7 @@ import java.util.Random;
 
 public abstract class AttackSpellBase extends SpellBase {
 
-    private int power;
+    private double power;
     private Stat attackStat;
     private Stat defenceStat;
     private int criticalChance = 5;
@@ -99,7 +99,7 @@ public abstract class AttackSpellBase extends SpellBase {
         return power;
     }
 
-    public void setPower(int power) {
+    public void setPower(double power) {
         this.power = power;
     }
 

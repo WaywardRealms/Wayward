@@ -15,7 +15,7 @@ import java.util.Random;
 
 public abstract class AttackSkillBase extends SkillBase {
 
-    private int power;
+    private double power;
     private Stat attackStat;
     private Stat defenceStat;
     private int criticalChance = 5;
@@ -48,7 +48,7 @@ public abstract class AttackSkillBase extends SkillBase {
             if (critical) {
                 fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
             }
-            fight.sendMessage(getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
+            fight.sendMessage(ChatColor.YELLOW + getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
             return true;
         }
         return false;
@@ -95,7 +95,7 @@ public abstract class AttackSkillBase extends SkillBase {
         return power;
     }
 
-    public void setPower(int power) {
+    public void setPower(double power) {
         this.power = power;
     }
 
