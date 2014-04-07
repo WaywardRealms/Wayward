@@ -14,16 +14,16 @@ import java.util.Map;
  * Utility Class to store persistent fields Information.
  * @author Mohnraj, Sudhir
  */
-public class DataStorage implements ConfigurationSerializable {
+public class BlockChange implements ConfigurationSerializable {
 
     private Material material;
     private byte data;
     private Date date;
     private Location location;
 
-    private DataStorage() {}
+    private BlockChange() {}
 
-    public DataStorage(Block block) {
+    public BlockChange(Block block) {
         this.date = new Date();
         this.material = block.getType();
         this.data = block.getData();
@@ -95,10 +95,10 @@ public class DataStorage implements ConfigurationSerializable {
     /**
      * Creates a class representing the serialized map object.
      * @param serialised a map of serialized object
-     * @return the class {@link DataStorage}
+     * @return the class {@link BlockChange}
      */
-    public static DataStorage deserialize(Map<String, Object> serialised) {
-        DataStorage deserialised = new DataStorage();
+    public static BlockChange deserialize(Map<String, Object> serialised) {
+        BlockChange deserialised = new BlockChange();
         deserialised.material = Material.getMaterial((String) serialised.get("material"));
         deserialised.location = ((SerialisableLocation) serialised.get("location")).toLocation();
         deserialised.date = (Date) serialised.get("date");

@@ -3,7 +3,7 @@ package net.wayward_realms.waywardmoderation;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.moderation.Ticket;
 import net.wayward_realms.waywardlib.moderation.Warning;
-import net.wayward_realms.waywardmoderation.util.DataStorage;
+import net.wayward_realms.waywardmoderation.util.BlockChange;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -30,7 +30,7 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
 
     @Override
     public void onEnable() {
-        ConfigurationSerialization.registerClass(DataStorage.class);
+        ConfigurationSerialization.registerClass(BlockChange.class);
         ConfigurationSerialization.registerClass(TicketImpl.class);
         ConfigurationSerialization.registerClass(WarningImpl.class);
         logManager = new LogManager(this);

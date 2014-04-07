@@ -1,6 +1,6 @@
 package net.wayward_realms.waywardmoderation;
 
-import net.wayward_realms.waywardmoderation.util.DataStorage;
+import net.wayward_realms.waywardmoderation.util.BlockChange;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -15,7 +15,7 @@ import java.util.*;
 
 public class LogManager {
 
-    Map<Block, List<DataStorage>> blockChanges = new HashMap<>();
+    Map<Block, List<BlockChange>> blockChanges = new HashMap<>();
     private WaywardModeration plugin;
 
     public LogManager(final WaywardModeration plugin) {
@@ -28,7 +28,7 @@ public class LogManager {
      */
     public Map<Date, Material> getBlockMaterialChanges(Block block) {
         Map<Date, Material> blockMaterialChanges = new HashMap<>();
-        for (DataStorage change : blockChanges.get(block)) {
+        for (BlockChange change : blockChanges.get(block)) {
             blockMaterialChanges.put(change.getDate(), change.getMaterial());
         }
         return blockMaterialChanges;
@@ -36,7 +36,7 @@ public class LogManager {
 
     public Map<Date, Byte> getBlockDataChanges(Block block) {
         Map<Date, Byte> blockDataChanges = new HashMap<>();
-        for (DataStorage change : blockChanges.get(block)) {
+        for (BlockChange change : blockChanges.get(block)) {
             blockDataChanges.put(change.getDate(), change.getData());
         }
         return blockDataChanges;
@@ -48,7 +48,7 @@ public class LogManager {
 
     public Material getBlockMaterialAtTime(Block block, Date date) {
         List<Date> dates = new ArrayList<>();
-        for (DataStorage change : blockChanges.get(block)) {
+        for (BlockChange change : blockChanges.get(block)) {
             dates.add(change.getDate());
         }
         Collections.sort(dates);
@@ -59,8 +59,8 @@ public class LogManager {
             }
             lastChangeDate = changeDate;
         }
-        DataStorage lastChange = null;
-        for (DataStorage change : blockChanges.get(block)) {
+        BlockChange lastChange = null;
+        for (BlockChange change : blockChanges.get(block)) {
             if (change.getDate().equals(lastChangeDate)) {
                 lastChange = change;
             }
@@ -70,7 +70,7 @@ public class LogManager {
 
     public byte getBlockDataAtTime(Block block, Date date) {
         List<Date> dates = new ArrayList<>();
-        for (DataStorage change : blockChanges.get(block)) {
+        for (BlockChange change : blockChanges.get(block)) {
             dates.add(change.getDate());
         }
         Collections.sort(dates);
@@ -81,8 +81,8 @@ public class LogManager {
             }
             lastChangeDate = changeDate;
         }
-        DataStorage lastChange = null;
-        for (DataStorage change : blockChanges.get(block)) {
+        BlockChange lastChange = null;
+        for (BlockChange change : blockChanges.get(block)) {
             if (change.getDate().equals(lastChangeDate)) {
                 lastChange = change;
             }
@@ -101,9 +101,9 @@ public class LogManager {
     public void save() {
         final File blockChangesFile = new File(plugin.getDataFolder(), "block-changes.yml");
         final YamlConfiguration blockChangesConfig = new YamlConfiguration();
-        final Iterator<Map.Entry<Block, List<DataStorage>>> iterator = blockChanges.entrySet().iterator();
+        final Iterator<Map.Entry<Block, List<BlockChange>>> iterator = blockChanges.entrySet().iterator();
         while (iterator.hasNext()) {
-            final Map.Entry<Block, List<DataStorage>> pair = iterator.next();
+            final Map.Entry<Block, List<BlockChange>> pair = iterator.next();
             // storing the name of the material in each map.
             blockChangesConfig.set(pair.getKey().getType().toString(), pair);
             iterator.remove();
