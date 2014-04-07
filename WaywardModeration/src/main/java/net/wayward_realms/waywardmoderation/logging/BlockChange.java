@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardmoderation.util;
+package net.wayward_realms.waywardmoderation.logging;
 
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Location;

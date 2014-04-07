@@ -1,6 +1,7 @@
-package net.wayward_realms.waywardmoderation;
+package net.wayward_realms.waywardmoderation.logging;
 
-import net.wayward_realms.waywardmoderation.util.BlockChange;
+import net.wayward_realms.waywardmoderation.WaywardModeration;
+import net.wayward_realms.waywardmoderation.logging.BlockChange;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
