@@ -56,12 +56,12 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
 
     @Override
     public void loadState() {
-
+        logManager.load();
     }
 
     @Override
     public void saveState() {
-
+        logManager.save();
     }
 
     private void registerListeners(Listener... listeners) {
