@@ -3,6 +3,7 @@ package net.wayward_realms.waywardmoderation.util;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Date;
@@ -16,8 +17,18 @@ import java.util.Map;
 public class DataStorage implements ConfigurationSerializable {
 
     private Material material;
+    private byte data;
     private Date date;
-    private SerialisableLocation serialisableLocation;
+    private Location location;
+
+    private DataStorage() {}
+
+    public DataStorage(Block block) {
+        this.date = new Date();
+        this.material = block.getType();
+        this.data = block.getData();
+        this.location = block.getLocation();
+    }
 
     /**
      * @return the material.
@@ -27,24 +38,32 @@ public class DataStorage implements ConfigurationSerializable {
     }
 
     /**
+     * @param material the material to set.
+     */
+    public void setMaterial(final Material material) {
+        this.material = material;
+    }
+
+    public byte getData() {
+        return data;
+    }
+
+    public void setData(byte data) {
+        this.data = data;
+    }
+
+    /**
      * @return the location.
      */
     public Location getLocation() {
-        return serialisableLocation.toLocation();
+        return location;
     }
 
     /**
      * @param location the location to set.
      */
     public void setLocation(final Location location) {
-        this.serialisableLocation = new SerialisableLocation(location);
-    }
-
-    /**
-     * @param material the material to set.
-     */
-    public void setMaterial(final Material material) {
-        this.material = material;
+        this.location = location;
     }
 
     /**
@@ -66,8 +85,8 @@ public class DataStorage implements ConfigurationSerializable {
      */
     @Override
     public Map<String, Object> serialize() {
-        final Map<String, Object> serialised = new HashMap<>();
-        serialised.put("location", serialisableLocation);
+        Map<String, Object> serialised = new HashMap<>();
+        serialised.put("location", new SerialisableLocation(location));
         serialised.put("material", material.toString());
         serialised.put("date", date);
         return serialised;
@@ -78,10 +97,10 @@ public class DataStorage implements ConfigurationSerializable {
      * @param serialised a map of serialized object
      * @return the class {@link DataStorage}
      */
-    public static DataStorage deserialize(final Map<String, Object> serialised) {
-        final DataStorage deserialised = new DataStorage();
+    public static DataStorage deserialize(Map<String, Object> serialised) {
+        DataStorage deserialised = new DataStorage();
         deserialised.material = Material.getMaterial((String) serialised.get("material"));
-        deserialised.serialisableLocation = (SerialisableLocation) serialised.get("location");
+        deserialised.location = ((SerialisableLocation) serialised.get("location")).toLocation();
         deserialised.date = (Date) serialised.get("date");
         return deserialised;
     }

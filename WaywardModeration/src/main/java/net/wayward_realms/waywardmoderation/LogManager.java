@@ -15,7 +15,7 @@ import java.util.*;
 
 public class LogManager {
 
-    Map<Block, List<DataStorage>> mapOfBlockChanges = new HashMap<>();
+    Map<Block, List<DataStorage>> blockChanges = new HashMap<>();
     private WaywardModeration plugin;
 
     public LogManager(final WaywardModeration plugin) {
@@ -23,46 +23,71 @@ public class LogManager {
     }
 
     /**
-     * @param block
-     *            {@link Block} of interest.
-     * @return a Map of the date and {@link Material} a {@link Block} changed
-     *         to.
+     * @param block {@link Block} of interest.
+     * @return a Map of the date and {@link Material} a {@link Block} changed to.
      */
     public Map<Date, Material> getBlockMaterialChanges(Block block) {
-        final Map<Date, Material> blockMaterialChanges = new HashMap<>();
-        for (final Map.Entry<Block, List<DataStorage>> entry : mapOfBlockChanges
-                .entrySet()) {
-            final Block key = entry.getKey();
-            // to see if this is the block indeed of interest.
-            if (key == block) {
-                final List<DataStorage> value = entry.getValue();
-                for (final DataStorage values : value) {
-                    final Date date = new Date();
-                    blockMaterialChanges.put(date, values.getMaterial());
-                }
-            }
+        Map<Date, Material> blockMaterialChanges = new HashMap<>();
+        for (DataStorage change : blockChanges.get(block)) {
+            blockMaterialChanges.put(change.getDate(), change.getMaterial());
         }
         return blockMaterialChanges;
     }
 
     public Map<Date, Byte> getBlockDataChanges(Block block) {
-        // TODO
-        return null;
+        Map<Date, Byte> blockDataChanges = new HashMap<>();
+        for (DataStorage change : blockChanges.get(block)) {
+            blockDataChanges.put(change.getDate(), change.getData());
+        }
+        return blockDataChanges;
     }
 
     public Map<Date, ItemStack> getInventoryContentChanges(Inventory inventory) {
-        // TODO
         return null;
     }
 
     public Material getBlockMaterialAtTime(Block block, Date date) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Date> dates = new ArrayList<>();
+        for (DataStorage change : blockChanges.get(block)) {
+            dates.add(change.getDate());
+        }
+        Collections.sort(dates);
+        Date lastChangeDate = null;
+        for (Date changeDate : dates) {
+            if (!changeDate.before(date)) {
+                break;
+            }
+            lastChangeDate = changeDate;
+        }
+        DataStorage lastChange = null;
+        for (DataStorage change : blockChanges.get(block)) {
+            if (change.getDate().equals(lastChangeDate)) {
+                lastChange = change;
+            }
+        }
+        return lastChange == null ? block.getType() : lastChange.getMaterial();
     }
 
-    public Byte getBlockDataAtTime(Block block, Date date) {
-        // TODO Auto-generated method stub
-        return null;
+    public byte getBlockDataAtTime(Block block, Date date) {
+        List<Date> dates = new ArrayList<>();
+        for (DataStorage change : blockChanges.get(block)) {
+            dates.add(change.getDate());
+        }
+        Collections.sort(dates);
+        Date lastChangeDate = null;
+        for (Date changeDate : dates) {
+            if (!changeDate.before(date)) {
+                break;
+            }
+            lastChangeDate = changeDate;
+        }
+        DataStorage lastChange = null;
+        for (DataStorage change : blockChanges.get(block)) {
+            if (change.getDate().equals(lastChangeDate)) {
+                lastChange = change;
+            }
+        }
+        return lastChange == null ? block.getData() : lastChange.getData();
     }
 
     public ItemStack[] getInventoryContentsAtTime(Inventory inventory, Date date) {
@@ -76,14 +101,14 @@ public class LogManager {
     public void save() {
         final File blockChangesFile = new File(plugin.getDataFolder(), "block-changes.yml");
         final YamlConfiguration blockChangesConfig = new YamlConfiguration();
-        final Iterator<Map.Entry<Block, List<DataStorage>>> iterator = mapOfBlockChanges.entrySet().iterator();
+        final Iterator<Map.Entry<Block, List<DataStorage>>> iterator = blockChanges.entrySet().iterator();
         while (iterator.hasNext()) {
             final Map.Entry<Block, List<DataStorage>> pair = iterator.next();
             // storing the name of the material in each map.
             blockChangesConfig.set(pair.getKey().getType().toString(), pair);
             iterator.remove();
         }
-        blockChangesConfig.set("material", mapOfBlockChanges);
+        blockChangesConfig.set("material", blockChanges);
         try {
             blockChangesConfig.save(blockChangesFile);
         } catch (final IOException exception) {
