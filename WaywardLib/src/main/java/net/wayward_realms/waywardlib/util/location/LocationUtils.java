@@ -52,4 +52,14 @@ public class LocationUtils {
         throw new IllegalArgumentException("Unparsable location!");
     }
 
+    /**
+     * Converts a location into a string parsable with the {@link #parseLocation(String) parseLocation} method
+     *
+     * @param location the location to convert into a string
+     * @return the location string
+     */
+    public String stringify(Location location) {
+        return location.getWorld().getName() + ',' + location.getX() + ',' + location.getY() + ',' + location.getZ() + ',' + location.getYaw() + ',' + location.getPitch();
+    }
+
 }
