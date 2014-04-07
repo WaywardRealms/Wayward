@@ -16,7 +16,7 @@ import java.util.*;
 public class LogManager {
 
     Map<Block, List<DataStorage>> mapOfBlockChanges = new HashMap<>();
-    private final WaywardModeration plugin;
+    private WaywardModeration plugin;
 
     public LogManager(final WaywardModeration plugin) {
         this.plugin = plugin;
@@ -28,7 +28,7 @@ public class LogManager {
      * @return a Map of the date and {@link Material} a {@link Block} changed
      *         to.
      */
-    public Map<Date, Material> getBlockMaterialChanges(final Block block) {
+    public Map<Date, Material> getBlockMaterialChanges(Block block) {
         final Map<Date, Material> blockMaterialChanges = new HashMap<>();
         for (final Map.Entry<Block, List<DataStorage>> entry : mapOfBlockChanges
                 .entrySet()) {
@@ -45,29 +45,27 @@ public class LogManager {
         return blockMaterialChanges;
     }
 
-    public Map<Date, Byte> getBlockDataChanges(final Block block) {
+    public Map<Date, Byte> getBlockDataChanges(Block block) {
         // TODO
         return null;
     }
 
-    public Map<Date, ItemStack> getInventoryContentChanges(
-            final Inventory inventory) {
+    public Map<Date, ItemStack> getInventoryContentChanges(Inventory inventory) {
         // TODO
         return null;
     }
 
-    public Material getBlockMaterialAtTime(final Block block, final Date date) {
+    public Material getBlockMaterialAtTime(Block block, Date date) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Byte getBlockDataAtTime(final Block block, final Date date) {
+    public Byte getBlockDataAtTime(Block block, Date date) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public ItemStack[] getInventoryContentsAtTime(final Inventory inventory,
-                                                  final Date date) {
+    public ItemStack[] getInventoryContentsAtTime(Inventory inventory, Date date) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -76,8 +74,7 @@ public class LogManager {
      * Saves the yaml file
      */
     public void save() {
-        final File blockChangesFile = new File(plugin.getDataFolder().getPath()
-                + File.separator + "blockChanges.yml");
+        final File blockChangesFile = new File(plugin.getDataFolder(), "block-changes.yml");
         final YamlConfiguration blockChangesConfig = new YamlConfiguration();
         final Iterator<Map.Entry<Block, List<DataStorage>>> iterator = mapOfBlockChanges.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -90,9 +87,7 @@ public class LogManager {
         try {
             blockChangesConfig.save(blockChangesFile);
         } catch (final IOException exception) {
-            plugin.getLogger().warning(
-                    "Failed to store blockchanges yaml file: "
-                            + exception.getMessage());
+            plugin.getLogger().warning("Failed to store blockchanges yaml file: " + exception.getMessage());
         }
     }
 
@@ -100,24 +95,17 @@ public class LogManager {
      * loads the yaml file.
      */
     public void load() {
-        final File blockChangesFile = new File(plugin.getDataFolder().getPath()
-                + File.separator + "blockChanges.yml");
+        File blockChangesFile = new File(plugin.getDataFolder(), "block-changes.yml");
         if (blockChangesFile.exists()) {
-            final YamlConfiguration blockChangesConfig = new YamlConfiguration();
+            YamlConfiguration blockChangesConfig = new YamlConfiguration();
             try {
                 blockChangesConfig.load(blockChangesFile);
-            } catch (final FileNotFoundException exception) {
-                plugin.getLogger().warning(
-                        "blockchanges yaml file does not exist: "
-                                + exception.getMessage());
-            } catch (final IOException e) {
-                plugin.getLogger().warning(
-                        "An error occured whenl loading the blockchanges yaml file: "
-                                + e.getMessage());
-            } catch (final InvalidConfigurationException e) {
-                plugin.getLogger().warning(
-                        "blockchanges yaml file has invalid configuration: "
-                                + e.getMessage());
+            } catch (FileNotFoundException exception) {
+                plugin.getLogger().warning("blockchanges yaml file does not exist: " + exception.getMessage());
+            } catch (IOException exception) {
+                plugin.getLogger().warning("An error occured whenl loading the blockchanges yaml file: " + exception.getMessage());
+            } catch (InvalidConfigurationException exception) {
+                plugin.getLogger().warning("blockchanges yaml file has invalid configuration: " + exception.getMessage());
             }
         }
     }
