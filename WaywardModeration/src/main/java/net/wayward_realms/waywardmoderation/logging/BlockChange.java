@@ -1,8 +1,10 @@
 package net.wayward_realms.waywardmoderation.logging;
 
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
@@ -16,6 +18,7 @@ import java.util.Map;
  */
 public class BlockChange implements ConfigurationSerializable {
 
+    private String playerName;
     private Material material;
     private byte data;
     private Date date;
@@ -24,10 +27,24 @@ public class BlockChange implements ConfigurationSerializable {
     private BlockChange() {}
 
     public BlockChange(Block block) {
+        this.playerName = "NONE";
         this.date = new Date();
         this.material = block.getType();
         this.data = block.getData();
         this.location = block.getLocation();
+    }
+
+    public BlockChange(Block block, OfflinePlayer player) {
+        this(block);
+        this.playerName = player.getName();
+    }
+
+    public OfflinePlayer getPlayer() {
+        return Bukkit.getOfflinePlayer(playerName);
+    }
+
+    public void setPlayer(OfflinePlayer player) {
+        this.playerName = player.getName();
     }
 
     /**
@@ -86,6 +103,7 @@ public class BlockChange implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
+        serialised.put("player", playerName);
         serialised.put("location", new SerialisableLocation(location));
         serialised.put("material", material.toString());
         serialised.put("date", date);
@@ -99,6 +117,7 @@ public class BlockChange implements ConfigurationSerializable {
      */
     public static BlockChange deserialize(Map<String, Object> serialised) {
         BlockChange deserialised = new BlockChange();
+        deserialised.playerName = (String) serialised.get("player");
         deserialised.material = Material.getMaterial((String) serialised.get("material"));
         deserialised.location = ((SerialisableLocation) serialised.get("location")).toLocation();
         deserialised.date = (Date) serialised.get("date");
