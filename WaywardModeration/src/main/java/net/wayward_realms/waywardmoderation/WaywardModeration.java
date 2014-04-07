@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.moderation.Ticket;
 import net.wayward_realms.waywardlib.moderation.Warning;
 import net.wayward_realms.waywardmoderation.logging.BlockChange;
+import net.wayward_realms.waywardmoderation.logging.BlockListener;
 import net.wayward_realms.waywardmoderation.logging.LogManager;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -44,7 +45,7 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         getCommand("vanish").setExecutor(new VanishCommand(this));
         getCommand("warn").setExecutor(new WarnCommand(this));
         getCommand("warnings").setExecutor(new WarningsCommand(this));
-        registerListeners(new PlayerJoinListener(this));
+        registerListeners(new PlayerJoinListener(this), new BlockListener(this));
     }
 
     @Override
@@ -92,6 +93,14 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
     @Override
     public Byte getBlockDataAtTime(Block block, Date date) {
         return logManager.getBlockDataAtTime(block, date);
+    }
+
+    public void recordBlockChange(Block block) {
+        logManager.recordBlockChange(block);
+    }
+
+    public void recordBlockChange(Block block, OfflinePlayer player) {
+        logManager.recordBlockChange(block, player);
     }
 
     @Override

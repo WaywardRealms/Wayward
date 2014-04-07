@@ -1,8 +1,8 @@
 package net.wayward_realms.waywardmoderation.logging;
 
 import net.wayward_realms.waywardmoderation.WaywardModeration;
-import net.wayward_realms.waywardmoderation.logging.BlockChange;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -89,6 +89,20 @@ public class LogManager {
             }
         }
         return lastChange == null ? block.getData() : lastChange.getData();
+    }
+
+    public void recordBlockChange(Block block) {
+        if (blockChanges.get(block) == null) {
+            blockChanges.put(block, new ArrayList<BlockChange>());
+        }
+        blockChanges.get(block).add(new BlockChange(block));
+    }
+
+    public void recordBlockChange(Block block, OfflinePlayer player) {
+        if (blockChanges.get(block) == null) {
+            blockChanges.put(block, new ArrayList<BlockChange>());
+        }
+        blockChanges.get(block).add(new BlockChange(block, player));
     }
 
     public ItemStack[] getInventoryContentsAtTime(Inventory inventory, Date date) {
