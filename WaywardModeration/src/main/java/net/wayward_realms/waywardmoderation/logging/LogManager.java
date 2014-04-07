@@ -1,6 +1,8 @@
 package net.wayward_realms.waywardmoderation.logging;
 
+import net.wayward_realms.waywardlib.util.location.LocationUtils;
 import net.wayward_realms.waywardmoderation.WaywardModeration;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -114,19 +116,14 @@ public class LogManager {
      * Saves the yaml file
      */
     public void save() {
-        final File blockChangesFile = new File(plugin.getDataFolder(), "block-changes.yml");
-        final YamlConfiguration blockChangesConfig = new YamlConfiguration();
-        final Iterator<Map.Entry<Block, List<BlockChange>>> iterator = blockChanges.entrySet().iterator();
-        while (iterator.hasNext()) {
-            final Map.Entry<Block, List<BlockChange>> pair = iterator.next();
-            // storing the name of the material in each map.
-            blockChangesConfig.set(pair.getKey().getType().toString(), pair);
-            iterator.remove();
+        File blockChangesFile = new File(plugin.getDataFolder(), "block-changes.yml");
+        YamlConfiguration blockChangesConfig = new YamlConfiguration();
+        for (Map.Entry<Block, List<BlockChange>> pair : blockChanges.entrySet()) {
+            blockChangesConfig.set(LocationUtils.stringify(pair.getKey().getLocation()), pair.getValue());
         }
-        blockChangesConfig.set("material", blockChanges);
         try {
             blockChangesConfig.save(blockChangesFile);
-        } catch (final IOException exception) {
+        } catch (IOException exception) {
             plugin.getLogger().warning("Failed to store blockchanges yaml file: " + exception.getMessage());
         }
     }
@@ -140,6 +137,10 @@ public class LogManager {
             YamlConfiguration blockChangesConfig = new YamlConfiguration();
             try {
                 blockChangesConfig.load(blockChangesFile);
+                for (String key : blockChangesConfig.getKeys(false)) {
+                    Location location = LocationUtils.parseLocation(key);
+                    blockChanges.put(location.getWorld().getBlockAt(location), (List<BlockChange>) blockChangesConfig.get(key));
+                }
             } catch (FileNotFoundException exception) {
                 plugin.getLogger().warning("blockchanges yaml file does not exist: " + exception.getMessage());
             } catch (IOException exception) {
