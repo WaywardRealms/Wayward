@@ -58,7 +58,7 @@ public class LocationUtils {
      * @param location the location to convert into a string
      * @return the location string
      */
-    public String stringify(Location location) {
+    public static String stringify(Location location) {
         return location.getWorld().getName() + ',' + location.getX() + ',' + location.getY() + ',' + location.getZ() + ',' + location.getYaw() + ',' + location.getPitch();
     }
 
