@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -18,7 +19,8 @@ import java.util.*;
 
 public class LogManager {
 
-    Map<Block, List<BlockChange>> blockChanges = new HashMap<>();
+    private Map<Block, List<BlockChange>> blockChanges = new HashMap<>();
+    private Map<InventoryHolder, List<InventoryChange>> inventoryChanges = new HashMap<>();
     private WaywardModeration plugin;
 
     public LogManager(final WaywardModeration plugin) {
@@ -45,8 +47,24 @@ public class LogManager {
         return blockDataChanges;
     }
 
-    public Map<Date, ItemStack> getInventoryContentChanges(Inventory inventory) {
-        return null;
+    public Map<Date, ItemStack> getInventoryContentAdditions(InventoryHolder inventoryHolder) {
+        Map<Date, ItemStack> inventoryContentAdditions = new HashMap<>();
+        for (InventoryChange inventoryChange : inventoryChanges.get(inventoryHolder)) {
+            if (inventoryChange.getType() == InventoryChangeType.ADDITION) {
+                inventoryContentAdditions.put(inventoryChange.getDate(), inventoryChange.getItemStack());
+            }
+        }
+        return inventoryContentAdditions;
+    }
+
+    public Map<Date, ItemStack> getInventoryContentRemovals(InventoryHolder inventoryHolder) {
+        Map<Date, ItemStack> inventoryContentRemovals = new HashMap<>();
+        for (InventoryChange inventoryChange : inventoryChanges.get(inventoryHolder)) {
+            if (inventoryChange.getType() == InventoryChangeType.REMOVAL) {
+                inventoryContentRemovals.put(inventoryChange.getDate(), inventoryChange.getItemStack());
+            }
+        }
+        return inventoryContentRemovals;
     }
 
     public Material getBlockMaterialAtTime(Block block, Date date) {
@@ -126,6 +144,7 @@ public class LogManager {
         } catch (IOException exception) {
             plugin.getLogger().warning("Failed to store blockchanges yaml file: " + exception.getMessage());
         }
+        //TODO save inventory changes
     }
 
     /**
@@ -149,6 +168,34 @@ public class LogManager {
                 plugin.getLogger().warning("blockchanges yaml file has invalid configuration: " + exception.getMessage());
             }
         }
+        //TODO load inventory changes
     }
 
+    public void recordInventoryAddition(InventoryHolder holder, ItemStack item, OfflinePlayer player) {
+        if (inventoryChanges.get(holder) == null) {
+            inventoryChanges.put(holder, new ArrayList<InventoryChange>());
+        }
+        inventoryChanges.get(holder).add(new InventoryChange(item, InventoryChangeType.ADDITION, player));
+    }
+
+    public void recordInventoryAddition(InventoryHolder holder, ItemStack item) {
+        if (inventoryChanges.get(holder) == null) {
+            inventoryChanges.put(holder, new ArrayList<InventoryChange>());
+        }
+        inventoryChanges.get(holder).add(new InventoryChange(item, InventoryChangeType.ADDITION));
+    }
+
+    public void recordInventoryRemoval(InventoryHolder holder, ItemStack item, OfflinePlayer player) {
+        if (inventoryChanges.get(holder) == null) {
+            inventoryChanges.put(holder, new ArrayList<InventoryChange>());
+        }
+        inventoryChanges.get(holder).add(new InventoryChange(item, InventoryChangeType.REMOVAL, player));
+    }
+
+    public void recordInventoryRemoval(InventoryHolder holder, ItemStack item) {
+        if (inventoryChanges.get(holder) == null) {
+            inventoryChanges.put(holder, new ArrayList<InventoryChange>());
+        }
+        inventoryChanges.get(holder).add(new InventoryChange(item, InventoryChangeType.REMOVAL));
+    }
 }

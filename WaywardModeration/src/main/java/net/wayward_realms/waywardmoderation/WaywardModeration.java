@@ -13,6 +13,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -81,8 +82,29 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
     }
 
     @Override
-    public Map<Date, ItemStack> getInventoryContentChanges(Inventory inventory) {
-        return logManager.getInventoryContentChanges(inventory);
+    public Map<Date, ItemStack> getInventoryContentAdditions(InventoryHolder inventoryHolder) {
+        return logManager.getInventoryContentAdditions(inventoryHolder);
+    }
+
+    @Override
+    public Map<Date, ItemStack> getInventoryContentRemovals(InventoryHolder inventoryHolder) {
+        return logManager.getInventoryContentRemovals(inventoryHolder);
+    }
+
+    public void recordInventoryAddition(InventoryHolder holder, ItemStack item, OfflinePlayer player) {
+        logManager.recordInventoryAddition(holder, item, player);
+    }
+
+    public void recordInventoryAddition(InventoryHolder holder, ItemStack item) {
+        logManager.recordInventoryAddition(holder, item);
+    }
+
+    public void recordInventoryRemoval(InventoryHolder holder, ItemStack item, OfflinePlayer player) {
+        logManager.recordInventoryRemoval(holder, item, player);
+    }
+
+    public void recordInventoryRemoval(InventoryHolder holder, ItemStack item) {
+        logManager.recordInventoryRemoval(holder, item);
     }
 
     @Override
@@ -184,5 +206,6 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
     public void setGivenReputation(OfflinePlayer setter, OfflinePlayer player, int amount) {
         reputationManager.setGivenReputation(setter, player, amount);
     }
+
 
 }
