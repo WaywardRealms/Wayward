@@ -22,9 +22,11 @@ public class CharacterCommand implements CommandExecutor {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("new")) {
                 int livingCharacters = 0;
-                for (net.wayward_realms.waywardlib.character.Character character : plugin.getCharacters((Player) sender)) {
-                    if (!character.isDead()) {
-                        livingCharacters++;
+                for (Character character : plugin.getCharacters((Player) sender)) {
+                    if (character != null) {
+                        if (!character.isDead()) {
+                            livingCharacters++;
+                        }
                     }
                 }
                 if (livingCharacters < plugin.getConfig().getInt("characters.limit") || plugin.getConfig().getInt("characters.limit") <= 0 || sender.hasPermission("wayward.characters.characters.unlimited")) {
@@ -56,15 +58,17 @@ public class CharacterCommand implements CommandExecutor {
                 if (args.length >= 2) {
                     boolean found = false;
                     for (Character character : plugin.getCharacters((Player) sender)) {
-                        if (character.getName().toUpperCase().startsWith(args[1].toUpperCase())) {
-                            if (!character.isDead()) {
-                                plugin.setActiveCharacter((Player) sender, character);
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Switched character to " + character.getName());
-                            } else {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot switch to a dead character.");
+                        if (character != null) {
+                            if (character.getName().toUpperCase().startsWith(args[1].toUpperCase())) {
+                                if (!character.isDead()) {
+                                    plugin.setActiveCharacter((Player) sender, character);
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Switched character to " + character.getName());
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot switch to a dead character.");
+                                }
+                                found = true;
+                                break;
                             }
-                            found = true;
-                            break;
                         }
                     }
                     if (!found) {
@@ -183,7 +187,9 @@ public class CharacterCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("list")) {
                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Character list: ");
                 for (Character character : plugin.getCharacters((Player) sender)) {
-                    sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
+                    if (character != null) {
+                        sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
+                    }
                 }
             } else if (args[0].equalsIgnoreCase("revive")) {
                 if (sender.hasPermission("wayward.characters.command.character.revive")) {
