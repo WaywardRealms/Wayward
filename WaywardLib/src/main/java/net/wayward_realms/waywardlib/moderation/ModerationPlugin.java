@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
@@ -37,12 +38,20 @@ public interface ModerationPlugin extends WaywardPlugin {
     public Map<Date, Byte> getBlockDataChanges(Block block);
 
     /**
-     * Gets a map of dates to the content changes
+     * Gets a map of dates to the content additions to an inventory
      *
-     * @param inventory the inventory
-     * @return a map of dates to itemstack changes in the inventory
+     * @param inventoryHolder the holder of the inventory
+     * @return a map of dates to itemstack removals in the inventory
      */
-    public Map<Date, ItemStack> getInventoryContentChanges(Inventory inventory);
+    public Map<Date, ItemStack> getInventoryContentAdditions(InventoryHolder inventoryHolder);
+
+    /**
+     * Gets a map of dates to the content removals of an inventory
+     *
+     * @param inventoryHolder the holder of the inventory
+     * @return a map of dates to itemstack removals in the inventory
+     */
+    public Map<Date, ItemStack> getInventoryContentRemovals(InventoryHolder inventoryHolder);
 
     /**
      * Gets a block's material at a given time
