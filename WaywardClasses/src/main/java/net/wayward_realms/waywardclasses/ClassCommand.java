@@ -105,7 +105,7 @@ public class ClassCommand implements CommandExecutor {
                         } catch (NumberFormatException exception) {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Level must be an integer!");
                         }
-                    } else if (args.length >= 1) {
+                    } else if (args.length >= 2) {
                         try {
                             plugin.setLevel((Player) sender, Integer.parseInt(args[1]));
                             sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Level set to " + args[1]);
