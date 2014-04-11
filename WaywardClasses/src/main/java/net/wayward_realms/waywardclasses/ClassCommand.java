@@ -80,10 +80,11 @@ public class ClassCommand implements CommandExecutor {
                 if (player != null) {
                     if (plugin.getClass(player) != null) {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + ChatColor.GREEN + " is currently a lv" + plugin.getLevel(player) + " " +  plugin.getClass(player).getName());
+                        sender.sendMessage(ChatColor.GRAY + " (Progress towards level " + (plugin.getLevel(player) + 1) + ": " + plugin.getExperienceTowardsNextLevel(player) + "/" + plugin.getExpToNextLevel(plugin.getLevel(player)) + ")");
                         sender.sendMessage(ChatColor.GREEN + "Other class levels: ");
                         for (Class clazz : plugin.getClasses()) {
                             if (plugin.getTotalExperience(player, clazz) > 0) {
-                                sender.sendMessage(clazz.getName() + " - lv" + plugin.getLevel(player, clazz));
+                                sender.sendMessage(ChatColor.GREEN + clazz.getName() + " - lv" + plugin.getLevel(player, clazz) + ChatColor.GRAY + "(" + plugin.getExperienceTowardsNextLevel(player) + "/" + plugin.getExpToNextLevel(plugin.getLevel(player)) + " exp)");
                             }
                         }
                     } else {
