@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardchat.irc;
 
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -27,10 +28,10 @@ public abstract class IrcCommand extends ListenerAdapter<PircBotX> {
                     args[i - 1] = event.getMessage().split(" ")[i];
                 }
             }
-            execute(event.getUser(), this, event.getMessage().contains(" ") ? event.getMessage().split(" ")[0].replace("!", "") : event.getMessage().replace("!", ""), args);
+            execute(event.getChannel(), event.getUser(), this, event.getMessage().contains(" ") ? event.getMessage().split(" ")[0].replace("!", "") : event.getMessage().replace("!", ""), args);
         }
     }
 
-    public abstract void execute(User sender, IrcCommand cmd, String label, String[] args);
+    public abstract void execute(Channel channel, User sender, IrcCommand cmd, String label, String[] args);
 
 }

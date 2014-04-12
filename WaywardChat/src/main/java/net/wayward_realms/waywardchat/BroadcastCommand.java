@@ -21,7 +21,7 @@ public class BroadcastCommand implements CommandExecutor {
             for (String arg : args) {
                 messageBuilder.append(arg).append(" ");
             }
-            String message = ChatColor.GRAY + "[" + ChatColor.GREEN + "BROADCAST" + ChatColor.GRAY + "]" + ChatColor.WHITE + messageBuilder.toString();
+            String message = ChatColor.GRAY + "[" + ChatColor.GREEN + "BROADCAST" + ChatColor.GRAY + "] " + ChatColor.WHITE + messageBuilder.toString();
             plugin.getServer().broadcastMessage(message);
             for (Channel channel : plugin.getChannels()) {
                 if (channel.isIrcEnabled()) {
