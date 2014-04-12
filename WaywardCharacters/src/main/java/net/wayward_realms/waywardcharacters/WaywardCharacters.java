@@ -6,10 +6,7 @@ import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -58,42 +55,44 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             public void run() {
                 Random random = new Random();
                 for (Player player : getServer().getOnlinePlayers()) {
-                    Character character = getActiveCharacter(player);
-                    if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
-                        character.setThirst(character.getThirst() - 1);
-                        player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
-                    }
-                    if (character.getThirst() < 5) {
-                    	character.setHealth(character.getHealth() - 1);
-                        player.sendMessage(getPrefix() + ChatColor.RED + "You are very thirsty, be sure to drink something soon!");
-                    }
-                    RegisteredServiceProvider<CombatPlugin> combatPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CombatPlugin.class);
-                    if (combatPluginProvider != null) {
-                        CombatPlugin combatPlugin = combatPluginProvider.getProvider();
-                        if (combatPlugin.getActiveFight(character) != null) {
-                            continue;
+                    if (player.getGameMode() != GameMode.CREATIVE) {
+                        Character character = getActiveCharacter(player);
+                        if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
+                            character.setThirst(character.getThirst() - 1);
+                            player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
                         }
-                    }
-                    int manaRegen = Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()) - character.getMana();
-                    character.setMana(Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()));
-                    if (manaRegen > 0) {
-                        player.sendMessage(getPrefix() + ChatColor.GREEN + "Mana regenerated: " + manaRegen);
-                    }
-                    if (player.getFoodLevel() >= 15) {
-                        double healthRegen;
-                        if (player.isSleeping()) {
-                            healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()) - character.getHealth();
-                            character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()));
-                        } else {
-                            healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()) - character.getHealth();
-                            character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()));
+                        if (character.getThirst() < 5) {
+                            character.setHealth(character.getHealth() - 1);
+                            player.sendMessage(getPrefix() + ChatColor.RED + "You are very thirsty, be sure to drink something soon! " + ChatColor.GRAY + "(Health: -1)");
                         }
-                        if (healthRegen > 0) {
-                            player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + healthRegen);
+                        RegisteredServiceProvider<CombatPlugin> combatPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CombatPlugin.class);
+                        if (combatPluginProvider != null) {
+                            CombatPlugin combatPlugin = combatPluginProvider.getProvider();
+                            if (combatPlugin.getActiveFight(character) != null) {
+                                continue;
+                            }
                         }
+                        int manaRegen = Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()) - character.getMana();
+                        character.setMana(Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()));
+                        if (manaRegen > 0) {
+                            player.sendMessage(getPrefix() + ChatColor.GREEN + "Mana regenerated: " + manaRegen);
+                        }
+                        if (player.getFoodLevel() >= 15) {
+                            double healthRegen;
+                            if (player.isSleeping()) {
+                                healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()) - character.getHealth();
+                                character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()));
+                            } else {
+                                healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()) - character.getHealth();
+                                character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()));
+                            }
+                            if (healthRegen > 0) {
+                                player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + healthRegen);
+                            }
+                        }
+                        player.setMaxHealth(character.getMaxHealth());
+                        player.setHealth(Math.max(character.getHealth(), 0));
                     }
-                    player.setMaxHealth(character.getMaxHealth());
-                    player.setHealth(Math.max(character.getHealth(), 0));
                 }
             }
         }, 500L, 500L);
