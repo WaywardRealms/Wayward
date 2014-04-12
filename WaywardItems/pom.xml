@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.wayward-realms</groupId>
         <artifactId>wayward</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <version>0.2.3-SNAPSHOT</version>
     </parent>
     <artifactId>waywarditems</artifactId>
     <name>WaywardItems</name>
@@ -13,7 +13,7 @@
         <dependency>
             <groupId>net.wayward-realms</groupId>
             <artifactId>waywardlib</artifactId>
-            <version>0.2.2-SNAPSHOT</version>
+            <version>0.2.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
