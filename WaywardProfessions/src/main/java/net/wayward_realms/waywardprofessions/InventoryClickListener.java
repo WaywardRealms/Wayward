@@ -28,7 +28,7 @@ public class InventoryClickListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(final InventoryClickEvent event) {
         if (event.getWhoClicked().getGameMode() != GameMode.CREATIVE) {
             if (event.getInventory().getType() == InventoryType.WORKBENCH || event.getInventory().getType() == InventoryType.CRAFTING) {
                 if (event.getSlotType() == InventoryType.SlotType.RESULT) {
@@ -91,7 +91,6 @@ public class InventoryClickListener implements Listener {
                     }
                 }
             }
-            ((Player) event.getWhoClicked()).updateInventory();
         }
     }
 
