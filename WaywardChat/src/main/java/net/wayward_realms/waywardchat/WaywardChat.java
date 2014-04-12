@@ -305,7 +305,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 getLogger().info("Auto nick change " + (autoNickChange ? "enabled" : "disabled"));
             }
             if (ircConfig.get("auto-split-message-enabled") != null) {
-                boolean autoSplitMessage = (boolean) ircConfig.get("auto-split-message");
+                boolean autoSplitMessage = (boolean) ircConfig.get("auto-split-message-enabled");
                 configurationBuilder.setAutoSplitMessage(autoSplitMessage);
                 getLogger().info("Auto-split message " + (autoSplitMessage ? "enabled" : "disabled"));
             }
