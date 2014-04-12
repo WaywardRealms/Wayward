@@ -54,7 +54,9 @@ public class DrawSwordSpell extends SpellBase {
         }
         if (sword != null) {
             block.setType(Material.AIR);
-            player.getWorld().dropItem(player.getLocation(), player.getItemInHand());
+            if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
+                player.getWorld().dropItem(player.getLocation(), player.getItemInHand());
+            }
             player.setItemInHand(sword);
             return true;
         }
