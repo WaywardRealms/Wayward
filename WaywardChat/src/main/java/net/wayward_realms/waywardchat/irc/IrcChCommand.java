@@ -15,14 +15,14 @@ public class IrcChCommand extends IrcCommand {
     }
 
     @Override
-    public void execute(User sender, IrcCommand cmd, String label, String[] args) {
+    public void execute(org.pircbotx.Channel channel, User sender, IrcCommand cmd, String label, String[] args) {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("list")) {
                 sender.send().message(ChatColor.stripColor(plugin.getPrefix()) + "Channel list: ");
-                for (Channel channel : plugin.getChannels()) {
-                    if (channel.isIrcEnabled()) {
-                        sender.send().message(channel.getName());
-                        sender.send().message(" - Format: " + channel.getFormat());
+                for (Channel channel1 : plugin.getChannels()) {
+                    if (channel1.isIrcEnabled()) {
+                        sender.send().message(channel1.getIrcChannel());
+                        sender.send().message(" - Format: " + channel1.getFormat());
                     }
                 }
             } else {
