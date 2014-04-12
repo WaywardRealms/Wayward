@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,6 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -145,7 +145,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void loadState() {
         // Genders
-        File gendersFile = new File(getDataFolder().getPath() + File.separator + "genders.yml");
+        File gendersFile = new File(getDataFolder(), "genders.yml");
         if (gendersFile.exists()) {
             YamlConfiguration gendersConfig = new YamlConfiguration();
             try {
@@ -176,7 +176,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             genders.put("TWO_SPIRIT", new GenderImpl("TWO_SPIRIT"));
         }
         // Races
-        File racesFile = new File(getDataFolder().getPath() + File.separator + "races.yml");
+        File racesFile = new File(getDataFolder(), "races.yml");
         if (racesFile.exists()) {
             YamlConfiguration racesConfig = new YamlConfiguration();
             try {
@@ -197,9 +197,14 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             races.put("ELF", new RaceImpl("Elf", arrows));
         }
         // Characters
-        File characterDirectory = new File(getDataFolder().getPath() + File.separator + "characters");
+        File characterDirectory = new File(getDataFolder(), "characters");
         if (characterDirectory.exists()) {
-            for (File file : characterDirectory.listFiles()) {
+            for (File file : characterDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    return file.getPath().endsWith(".yml");
+                }
+            })) {
                 YamlConfiguration characterSave = new YamlConfiguration();
                 try {
                     characterSave.load(file);
@@ -226,9 +231,14 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             }
         }
         // Player character associations
-        File playerDataDirectory = new File(getDataFolder().getPath() + File.separator + "players");
+        File playerDataDirectory = new File(getDataFolder(), "players");
         if (playerDataDirectory.exists()) {
-            for (File file : playerDataDirectory.listFiles()) {
+            for (File file : playerDataDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    return file.getPath().endsWith(".yml");
+                }
+            })) {
                 YamlConfiguration playerSave = new YamlConfiguration();
                 try {
                     playerSave.load(file);
