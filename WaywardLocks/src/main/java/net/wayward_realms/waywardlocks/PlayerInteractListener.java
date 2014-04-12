@@ -164,7 +164,7 @@ public class PlayerInteractListener implements Listener {
                                             }
                                         } else {
                                             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You hear a click and the lock opens, allowing you access to the " + block.getType().toString().toLowerCase().replace('_', ' '));
-                                            if (random.nextInt(100) < 5) {
+                                            if (random.nextInt(100) < 50) {
                                                 plugin.setLockpickEfficiency(event.getPlayer(), plugin.getLockpickEfficiency(event.getPlayer()) + 1);
                                             }
                                             final Player player = event.getPlayer();
