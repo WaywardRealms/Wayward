@@ -300,7 +300,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 getLogger().info("CAP " + (capEnabled ? "enabled" : "disabled"));
             }
             if (ircConfig.get("auto-nick-change-enabled") != null) {
-                boolean autoNickChange = (boolean) ircConfig.get("auto-nick-change");
+                boolean autoNickChange = (boolean) ircConfig.get("auto-nick-change-enabled");
                 configurationBuilder.setAutoNickChange(autoNickChange);
                 getLogger().info("Auto nick change " + (autoNickChange ? "enabled" : "disabled"));
             }
