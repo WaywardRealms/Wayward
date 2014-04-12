@@ -25,6 +25,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         spellManager = new SpellManager(this);
         skillManager = new SkillManager(this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(this), this);
+        getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(), this);
         getCommand("skill").setExecutor(new SkillCommand(this));
         getCommand("spell").setExecutor(new SpellCommand(this));
         getCommand("bindskill").setExecutor(new BindSkillCommand(this));

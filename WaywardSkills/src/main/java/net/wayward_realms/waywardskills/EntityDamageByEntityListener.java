@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardclasses;
+package net.wayward_realms.waywardskills;
 
 import org.bukkit.Material;
 import org.bukkit.entity.*;
