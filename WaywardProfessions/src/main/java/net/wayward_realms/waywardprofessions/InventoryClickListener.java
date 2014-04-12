@@ -91,6 +91,7 @@ public class InventoryClickListener implements Listener {
                     }
                 }
             }
+            ((Player) event.getWhoClicked()).updateInventory();
         }
     }
 
