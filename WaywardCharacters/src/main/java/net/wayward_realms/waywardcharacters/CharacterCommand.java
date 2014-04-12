@@ -220,13 +220,14 @@ public class CharacterCommand implements CommandExecutor {
                             case "gender": character.setGenderHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender hidden."); break;
                             case "race": character.setRaceHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race hidden."); break;
                             case "description": character.setDescriptionHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description hidden."); break;
+                            case "class": character.setClassHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Class hidden."); break;
                             default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to hide! This includes name, age, gender, race or description.");
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
                     }
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to hide! This includes name, age, gender, race, or description.");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to hide! This includes name, age, gender, race, description, or class.");
                 }
             } else if (args[0].equalsIgnoreCase("unhide")) {
                 if (args.length >= 2) {
@@ -238,7 +239,8 @@ public class CharacterCommand implements CommandExecutor {
                             case "gender": character.setGenderHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender unidden."); break;
                             case "race": character.setRaceHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race unhidden."); break;
                             case "description": character.setDescriptionHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description unhidden."); break;
-                            default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to unhide! This includes name, age, gender, race or description.");
+                            case "class": character.setClassHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Class unhidden."); break;
+                            default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to unhide! This includes name, age, gender, race, description or class.");
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
