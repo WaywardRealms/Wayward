@@ -17,6 +17,9 @@ commands:
     getkey:
         description: Gets a copy of the key to a chest or door
         usage: /<command>
+    lockpickefficiency:
+        description: Checks your lockpick efficiency
+        usage: /<command>
 permissions:
     wayward.locks.command.getkey:
         description: Allows you to get the key to any door or chest

@@ -40,6 +40,7 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
         getCommand("lock").setExecutor(new LockCommand(this));
         getCommand("unlock").setExecutor(new UnlockCommand(this));
         getCommand("getkey").setExecutor(new GetKeyCommand(this));
+        getCommand("lockpickefficiency").setExecutor(new LockpickEfficiencyCommand(this));
         getServer().getPluginManager().registerEvents(new CraftItemListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new InventoryCloseListener(this), this);
