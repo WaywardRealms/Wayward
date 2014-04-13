@@ -22,9 +22,10 @@ public class SignChangeListener implements Listener {
     public void onSignChange(SignChangeEvent event) {
         if (event.getLine(0).equalsIgnoreCase("[shop]")) {
             event.setLine(0, ChatColor.DARK_PURPLE + "[shop]");
-            if (!(event.getLine(1).toLowerCase().contains("buy ") || event.getLine(1).toLowerCase().contains("sell ")) || !(StringUtils.countMatches(event.getLine(1), " ") == 2 && event.getLine(1).toLowerCase().contains("sell "))) {
+            if (!(event.getLine(1).toLowerCase().contains("buy ") || event.getLine(1).toLowerCase().contains("sell "))) {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
+                event.getPlayer().sendMessage(ChatColor.RED + "You appear to have neglected to mention whether this is a buy or sell shop.");
                 return;
             }
             try {
@@ -32,12 +33,20 @@ public class SignChangeListener implements Listener {
             } catch (NumberFormatException exception) {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
+                event.getPlayer().sendMessage(ChatColor.RED + "You appear to have given a non-integer value for the amount.");
                 return;
             }
             if (event.getLine(1).toLowerCase().contains("sell")) {
                 if (Material.matchMaterial(event.getLine(1).split(" ")[1].replace(' ', '_')) == null) {
                     event.getBlock().breakNaturally();
                     event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
+                    event.getPlayer().sendMessage(ChatColor.RED + "You appear to have neglected to mention which material you want.");
+                    return;
+                }
+                if (StringUtils.countMatches(event.getLine(1), " ") < 2) {
+                    event.getBlock().breakNaturally();
+                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
+                    event.getPlayer().sendMessage(ChatColor.RED + "You appear to have neglected to mention the amount and/or material you want.");
                     return;
                 }
             }

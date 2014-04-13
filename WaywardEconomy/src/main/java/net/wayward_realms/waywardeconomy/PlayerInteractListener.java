@@ -76,7 +76,7 @@ public class PlayerInteractListener implements Listener {
                 try {
                     if (characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))) != null) {
                         String playerName = characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getName();
-                        if (!(sign.getLine(1).toLowerCase().contains("buy ") || sign.getLine(1).toLowerCase().contains("sell ")) || !(StringUtils.countMatches(sign.getLine(1), " ") == 2 && sign.getLine(1).toLowerCase().contains("sell "))) {
+                        if (!(sign.getLine(1).toLowerCase().contains("buy ") || sign.getLine(1).toLowerCase().contains("sell "))) {
                             player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
                             return;
                         }
@@ -88,6 +88,10 @@ public class PlayerInteractListener implements Listener {
                         }
                         if (sign.getLine(1).toLowerCase().contains("sell")) {
                             if (Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_')) == null) {
+                                player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
+                                return;
+                            }
+                            if (StringUtils.countMatches(sign.getLine(1), " ") < 2) {
                                 player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
                                 return;
                             }
