@@ -70,7 +70,7 @@ public class InventoryClickListener implements Listener {
                                                     item.setAmount(Integer.parseInt(sign.getLine(2).replace("for ", "")));
                                                     player.getInventory().addItem(item);
                                                     chest.getInventory().removeItem(item);
-                                                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bought " + item.getAmount() + " x " + item.getType().toString().toLowerCase().replace('_', ' ') + " for " + sign.getLine(1).split(":")[1] + " " + (Integer.parseInt(sign.getLine(1).split(":")[1]) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bought " + item.getAmount() + " x " + item.getType().toString().toLowerCase().replace('_', ' ') + " for " + sign.getLine(2).split(" ")[1] + " " + (Integer.parseInt(sign.getLine(1).split(" ")[1]) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
                                                 } else {
                                                     player.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough money.");
                                                 }

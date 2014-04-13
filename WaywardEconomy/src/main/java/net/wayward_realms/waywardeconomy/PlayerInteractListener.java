@@ -36,7 +36,7 @@ public class PlayerInteractListener implements Listener {
                             event.getPlayer().openInventory(chest.getInventory());
                         } else if (sign.getLine(1).toLowerCase().contains("sell")) {
                             if (event.getPlayer().getItemInHand().getType() == Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_'))) {
-                                if (event.getPlayer().getItemInHand().getAmount() >= Integer.parseInt(sign.getLine(2).split(" ")[2])) {
+                                if (event.getPlayer().getItemInHand().getAmount() >= Integer.parseInt(sign.getLine(1).split(" ")[2])) {
                                     RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                                     if (characterPluginProvider != null) {
                                         CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
