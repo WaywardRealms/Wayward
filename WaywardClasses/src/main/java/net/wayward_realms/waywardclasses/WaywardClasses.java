@@ -137,10 +137,14 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
             })) {
                 YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
                 int characterId = Integer.parseInt(characterFile.getName().replace(".yml", ""));
-                characterClasses.put(characterId, getClass(characterConfig.getString("class")));
+                if (characterConfig.get("class") != null) {
+                    characterClasses.put(characterId, getClass(characterConfig.getString("class")));
+                }
                 experience.put(characterId, new HashMap<Class, Integer>());
-                for (String className : characterConfig.getConfigurationSection("experience").getKeys(false)) {
-                    experience.get(characterId).put(getClass(className), characterConfig.getInt("experience." + className));
+                if (characterConfig.getConfigurationSection("experience") != null) {
+                    for (String className : characterConfig.getConfigurationSection("experience").getKeys(false)) {
+                        experience.get(characterId).put(getClass(className), characterConfig.getInt("experience." + className));
+                    }
                 }
             }
         }
