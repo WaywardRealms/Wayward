@@ -189,7 +189,26 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             races.put("ELF", new RaceImpl("Elf", arrows));
         }
         // Characters
-        File characterDirectory = new File(getDataFolder(), "characters");
+        // Old character conversion
+        File oldCharacterDirectory = new File(getDataFolder(), "characters");
+        if (oldCharacterDirectory.exists()) {
+            for (File file : oldCharacterDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.getName().endsWith(".yml");
+                }
+            })) {
+                YamlConfiguration oldcharacterSave = YamlConfiguration.loadConfiguration(file);
+                if (oldcharacterSave.get("character") != null) {
+                    if (oldcharacterSave.get("character") instanceof CharacterImpl) {
+                        oldcharacterSave.get("character");
+                    }
+                }
+            }
+            delete(oldCharacterDirectory);
+        }
+
+        File characterDirectory = new File(getDataFolder(), "characters-new");
         if (characterDirectory.exists()) {
             for (File file : characterDirectory.listFiles(new FileFilter() {
                 @Override
@@ -201,6 +220,15 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 if (id > CharacterImpl.getNextId()) CharacterImpl.setNextId(id);
             }
         }
+    }
+
+    private void delete(File file) {
+        if (file.isDirectory()) {
+            for (File childFile : file.listFiles()) {
+                delete(childFile);
+            }
+        }
+        file.delete();
     }
 
     @Override
@@ -234,7 +262,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
         if (playerSave.get("active-character") == null) {
             CharacterImpl character = new CharacterImpl(this, player);
-            playerSave.set(player.getName(), character.getId());
+            playerSave.set("active-character", character.getId());
         }
         return getCharacter(playerSave.getInt("active-character"));
     }
@@ -294,15 +322,22 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void setActiveCharacter(Player player, Character character) {
         if (getActiveCharacter(player) != null) {
-            Character activeCharacter = this.getActiveCharacter(player);
+            Character activeCharacter = getActiveCharacter(player);
             activeCharacter.setInventoryContents(player.getInventory().getContents());
             activeCharacter.setLocation(player.getLocation());
             activeCharacter.setHealth(player.getHealth());
             activeCharacter.setFoodLevel(player.getFoodLevel());
         }
         addCharacter(player, character);
-        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        File playerDirectory = new File(getDataFolder(), "players");
+        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(playerFile);
         playerSave.set("active-character", character.getId());
+        try {
+            playerSave.save(playerFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
         player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
@@ -319,7 +354,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public Character getCharacter(int id) {
-        return new CharacterImpl(new File(new File(getDataFolder(), "characters"), id + ".yml"));
+        File newCharacterDirectory = new File(getDataFolder(), "characters-new");
+        File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
+        return new CharacterImpl(newCharacterFile);
     }
 
     @Override

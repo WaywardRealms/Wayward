@@ -47,7 +47,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     public CharacterImpl(CharacterPlugin plugin, OfflinePlayer player) {
         int id = CharacterImpl.nextAvailableId();
-        this.file = new File(plugin.getDataFolder(), id + ".yml");
+        this.file = new File(new File(plugin.getDataFolder(), "characters-new"), id + ".yml");
         setId(id);
         setPlayer(player);
         setName("Unknown");
@@ -360,7 +360,36 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     }
 
     public static CharacterImpl deserialize(Map<String, Object> serialised) {
-        return new CharacterImpl();
+        CharacterPlugin plugin = Bukkit.getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
+        CharacterImpl character = new CharacterImpl(new File(new File(plugin.getDataFolder(), "characters-new"), ((int) serialised.get("id")) + ".yml"));
+        character.setId((int) serialised.get("id"));
+        if (character.getId() > nextId) {
+            nextId = character.getId();
+        }
+        character.setPlayer(Bukkit.getOfflinePlayer((String) serialised.get("ign")));
+        character.setName((String) serialised.get("name"));
+        character.setGender((Gender) serialised.get("gender"));
+        character.setAge((int) serialised.get("age"));
+        character.setRace((Race) serialised.get("race"));
+        character.setDescription((String) serialised.get("description"));
+        character.setDead((boolean) serialised.get("dead"));
+        character.setLocation(((SerialisableLocation) serialised.get("location")).toLocation());
+        if (serialised.get("inventory-contents") instanceof List<?>) {
+            character.setInventoryContents(((List<ItemStack>) serialised.get("inventory-contents")).toArray(new ItemStack[36]));
+        } else {
+            character.setInventoryContents(new ItemStack[36]);
+        }
+        character.setHealth((double) serialised.get("health"));
+        character.setFoodLevel((int) serialised.get("food-level"));
+        character.setMana((int) serialised.get("mana"));
+        character.setThirst((int) serialised.get("thirst"));
+        character.setNameHidden(serialised.get("name-hidden") != null && (boolean) serialised.get("name-hidden"));
+        character.setGenderHidden(serialised.get("gender-hidden") != null && (boolean) serialised.get("gender-hidden"));
+        character.setAgeHidden(serialised.get("age-hidden") != null && (boolean) serialised.get("age-hidden"));
+        character.setRaceHidden(serialised.get("race-hidden") != null && (boolean) serialised.get("race-hidden"));
+        character.setDescriptionHidden(serialised.get("description-hidden") != null && (boolean) serialised.get("description-hidden"));
+        character.setClassHidden(serialised.get("class-hidden") != null && (boolean) serialised.get("class-hidden"));
+        return character;
     }
 
 }
