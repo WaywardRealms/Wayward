@@ -14,6 +14,7 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         entityLevelManager = new EntityLevelManager(this);
         getServer().getPluginManager().registerEvents(new CreatureSpawnListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(this), this);

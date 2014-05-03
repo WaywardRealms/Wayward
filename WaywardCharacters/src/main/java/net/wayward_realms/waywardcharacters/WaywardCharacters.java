@@ -18,18 +18,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
 public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
-    private Map<Integer, net.wayward_realms.waywardlib.character.Character> characters = new HashMap<>();
-    private Map<String, Integer> activeCharacters = new HashMap<>();
-    private Map<String, Set<Integer>> playerCharacters = new HashMap<>();
     private Map<String, Gender> genders = new HashMap<>();
     private Map<String, Race> races = new HashMap<>();
-    private Map<String, Long> kitClaims = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -38,7 +33,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
         saveDefaultConfig();
-        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this),new SignChangeListener(this));
+        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this));
         getCommand("character").setExecutor(new CharacterCommand(this));
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
@@ -46,8 +41,6 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         setupRegen();
         setupHungerSlowdown();
     }
-
-
     
     private void setupRegen() {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -196,7 +189,26 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             races.put("ELF", new RaceImpl("Elf", arrows));
         }
         // Characters
-        File characterDirectory = new File(getDataFolder(), "characters");
+        // Old character conversion
+        File oldCharacterDirectory = new File(getDataFolder(), "characters");
+        if (oldCharacterDirectory.exists()) {
+            for (File file : oldCharacterDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.getName().endsWith(".yml");
+                }
+            })) {
+                YamlConfiguration oldcharacterSave = YamlConfiguration.loadConfiguration(file);
+                if (oldcharacterSave.get("character") != null) {
+                    if (oldcharacterSave.get("character") instanceof CharacterImpl) {
+                        oldcharacterSave.get("character");
+                    }
+                }
+            }
+            delete(oldCharacterDirectory);
+        }
+
+        File characterDirectory = new File(getDataFolder(), "characters-new");
         if (characterDirectory.exists()) {
             for (File file : characterDirectory.listFiles(new FileFilter() {
                 @Override
@@ -204,74 +216,19 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                     return file.getPath().endsWith(".yml");
                 }
             })) {
-                YamlConfiguration characterSave = new YamlConfiguration();
-                try {
-                    characterSave.load(file);
-                    if (characterSave.contains("character")) {
-                        if (characterSave.get("character") instanceof CharacterImpl) {
-                            CharacterImpl character = (CharacterImpl) characterSave.get("character");
-                            characters.put(character.getId(), character);
-                        } else {
-                            getLogger().severe("Failed to load character from " + file.getPath() + ": file did not specify a valid character");
-                        }
-                    } else {
-                        getLogger().severe("Failed to load character from " + file.getPath() + ": file did not specify a valid character");
-                    }
-                } catch (FileNotFoundException exception) {
-                    getLogger().severe("Failed to load character data from " + file.getPath() + ": the file did not exist.");
-                    exception.printStackTrace();
-                } catch (IOException exception) {
-                    getLogger().severe("Failed to load character data from " + file.getPath() + ": encountered I/O exception.");
-                    exception.printStackTrace();
-                } catch (InvalidConfigurationException exception) {
-                    getLogger().severe("Failed to load character data from " + file.getPath() + ": file was invalid.");
-                    exception.printStackTrace();
-                }
+                int id = Integer.parseInt(file.getName().replace(".yml", ""));
+                if (id > CharacterImpl.getNextId()) CharacterImpl.setNextId(id);
             }
         }
-        // Player character associations
-        File playerDataDirectory = new File(getDataFolder(), "players");
-        if (playerDataDirectory.exists()) {
-            for (File file : playerDataDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.getPath().endsWith(".yml");
-                }
-            })) {
-                YamlConfiguration playerSave = new YamlConfiguration();
-                try {
-                    playerSave.load(file);
-                    if (playerSave.contains("active-character")) {
-                        activeCharacters.put(file.getName().replace(".yml", ""), playerSave.getInt("active-character"));
-                    }
-                    if (playerSave.contains("characters")) {
-                        playerCharacters.put(file.getName().replace(".yml", ""), (Set<Integer>) playerSave.get("characters"));
-                    }
-                } catch (FileNotFoundException exception) {
-                    getLogger().severe("Failed to load player data from " + file.getPath() + ": the file did not exist.");
-                    exception.printStackTrace();
-                } catch (IOException exception) {
-                    getLogger().severe("Failed to load player data from " + file.getPath() + ": encountered I/O exception.");
-                    exception.printStackTrace();
-                } catch (InvalidConfigurationException exception) {
-                    getLogger().severe("Failed to load player data from " + file.getPath() + ": file was invalid.");
-                    exception.printStackTrace();
-                }
+    }
+
+    private void delete(File file) {
+        if (file.isDirectory()) {
+            for (File childFile : file.listFiles()) {
+                delete(childFile);
             }
         }
-        // Race kit claims
-        File raceKitClaimFile = new File(getDataFolder().getPath() + File.separator + "racekitclaims.yml");
-        if (raceKitClaimFile.exists()) {
-            YamlConfiguration raceKitClaimSave = new YamlConfiguration();
-            try {
-                raceKitClaimSave.load(raceKitClaimFile);
-                for (String playerName : raceKitClaimSave.getKeys(false)) {
-                    kitClaims.put(playerName, raceKitClaimSave.getLong(playerName));
-                }
-            } catch (IOException | InvalidConfigurationException exception) {
-                exception.printStackTrace();
-            }
-        }
+        file.delete();
     }
 
     @Override
@@ -298,123 +255,91 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        // Characters
-        File characterDirectory = new File(getDataFolder().getPath() + File.separator + "characters");
-        if (characterDirectory.exists()) {
-            characterDirectory.delete();
-        }
-        characterDirectory.mkdir();
-        for (Character character : characters.values()) {
-            File file = new File(characterDirectory.getPath() + File.separator + character.getId() + ".yml");
-            YamlConfiguration characterSave = new YamlConfiguration();
-            characterSave.set("character", character);
-            try {
-                characterSave.save(file);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        // Player character associations
-        File playerDirectory = new File(getDataFolder().getPath() + File.separator + "players");
-        if (playerDirectory.exists()) {
-            playerDirectory.delete();
-        }
-        playerDirectory.mkdir();
-        for (String player : activeCharacters.keySet()) {
-            File file = new File(playerDirectory + File.separator + player + ".yml");
-            YamlConfiguration playerSave = new YamlConfiguration();
-            playerSave.set("active-character", activeCharacters.get(player));
-            playerSave.set("characters", playerCharacters.get(player));
-            try {
-                playerSave.save(file);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        // Race kit claims
-        File raceKitClaimFile = new File(getDataFolder().getPath() + File.separator + "racekitclaims.yml");
-        YamlConfiguration raceKitClaimSave = new YamlConfiguration();
-        for (String playerName : kitClaims.keySet()) {
-            raceKitClaimSave.set(playerName, kitClaims.get(playerName));
-        }
-        try {
-            raceKitClaimSave.save(raceKitClaimFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
     }
 
     @Override
     public Character getActiveCharacter(OfflinePlayer player) {
-        if (activeCharacters.get(player.getName()) == null) {
-            CharacterImpl character = new CharacterImpl(player);
-            characters.put(character.getId(), character);
-            activeCharacters.put(player.getName(), character.getId());
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        if (playerSave.get("active-character") == null) {
+            CharacterImpl character = new CharacterImpl(this, player);
+            playerSave.set("active-character", character.getId());
         }
-        return characters.get(activeCharacters.get(player.getName()));
+        return getCharacter(playerSave.getInt("active-character"));
     }
 
     @Override
     public Set<Character> getCharacters(OfflinePlayer player) {
-        if (playerCharacters.get(player.getName()) == null) {
-            playerCharacters.put(player.getName(), new HashSet<Integer>());
-        }
-        for (Character character : characters.values()) {
-            if (character.getPlayer() == player) {
-                playerCharacters.get(player.getName()).add(character.getId());
-            }
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        if (playerSave.get("characters") == null) {
+            playerSave.set("characters", new HashSet<Integer>());
         }
         Set<Character> characters = new HashSet<>();
-        for (int characterId : playerCharacters.get(player.getName())) {
-            characters.add(this.characters.get(characterId));
+        for (int cid : (Set<Integer>) playerSave.get("characters")) {
+            characters.add(getCharacter(cid));
         }
         return characters;
     }
 
     @Override
     public void addCharacter(OfflinePlayer player, Character character) {
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
         character.setPlayer(player);
-        if (playerCharacters.get(player.getName()) == null) {
-            playerCharacters.put(player.getName(), new HashSet<Integer>());
+        if (playerSave.get("characters") == null) {
+            playerSave.set("characters", new HashSet<Integer>());
         }
-        playerCharacters.get(player.getName()).add(character.getId());
-        if (!characters.containsKey(character.getId())) {
-            characters.put(character.getId(), character);
+        Set<Integer> cids = (Set<Integer>) playerSave.get("characters");
+        cids.add(character.getId());
+        playerSave.set("characters", cids);
+        try {
+            playerSave.save(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
     @Override
     public void removeCharacter(OfflinePlayer player, Character character) {
-        playerCharacters.get(player.getName()).remove(character.getId());
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        character.setPlayer(player);
+        if (playerSave.get("characters") == null) {
+            playerSave.set("characters", new HashSet<Integer>());
+        }
+        Set<Integer> cids = (Set<Integer>) playerSave.get("characters");
+        cids.remove(character.getId());
+        playerSave.set("characters", cids);
+        try {
+            playerSave.save(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     @Override
     public void removeCharacter(Character character) {
-        Set<String> playersToRemove = new HashSet<>();
-        for (String playerName : playerCharacters.keySet()) {
-            if (playerCharacters.get(playerName).contains(character.getId())) {
-                playersToRemove.add(playerName);
-            }
-        }
-        for (String playerName : playersToRemove) {
-            playerCharacters.get(playerName).remove(character.getId());
-        }
+        throw new UnsupportedOperationException("Removing a character breaks stuff! Don't do it!");
     }
 
     @Override
     public void setActiveCharacter(Player player, Character character) {
-        if (this.getActiveCharacter(player) != null) {
-            Character activeCharacter = this.getActiveCharacter(player);
+        if (getActiveCharacter(player) != null) {
+            Character activeCharacter = getActiveCharacter(player);
             activeCharacter.setInventoryContents(player.getInventory().getContents());
             activeCharacter.setLocation(player.getLocation());
             activeCharacter.setHealth(player.getHealth());
             activeCharacter.setFoodLevel(player.getFoodLevel());
         }
         addCharacter(player, character);
-        this.activeCharacters.put(player.getName(), character.getId());
+        File playerDirectory = new File(getDataFolder(), "players");
+        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(playerFile);
+        playerSave.set("active-character", character.getId());
+        try {
+            playerSave.save(playerFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
         player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
-        characters.put(character.getId(), character);
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
         player.setMaxHealth(character.getMaxHealth());
         player.setHealth(Math.max(character.getHealth(), 0));
@@ -429,7 +354,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public Character getCharacter(int id) {
-        return characters.get(id);
+        File newCharacterDirectory = new File(getDataFolder(), "characters-new");
+        File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
+        return new CharacterImpl(newCharacterFile);
     }
 
     @Override
@@ -474,19 +401,28 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public CharacterImpl createNewCharacter(OfflinePlayer player) {
-        return new CharacterImpl(player);
+        return new CharacterImpl(this, player);
     }
 
     public long getRaceKitClaim(OfflinePlayer player) {
-        return kitClaims.get(player.getName());
+        YamlConfiguration raceKitClaimSave = YamlConfiguration.loadConfiguration(new File("racekitclaims.yml"));
+        return raceKitClaimSave.getLong(player.getName());
     }
 
     public void setRaceKitClaim(OfflinePlayer player) {
-        kitClaims.put(player.getName(), System.currentTimeMillis());
+        File raceKitClaimFile = new File("racekitclaims.yml");
+        YamlConfiguration raceKitClaimSave = YamlConfiguration.loadConfiguration(new File("racekitclaims.yml"));
+        raceKitClaimSave.set(player.getName(), System.currentTimeMillis());
+        try {
+            raceKitClaimSave.save(raceKitClaimFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public boolean canClaimRaceKit(OfflinePlayer player) {
-        return kitClaims.get(player.getName()) == null || System.currentTimeMillis() - kitClaims.get(player.getName()) > 86400000L;
+        YamlConfiguration raceKitClaimSave = YamlConfiguration.loadConfiguration(new File("racekitclaims.yml"));
+        return raceKitClaimSave.get(player.getName()) == null || System.currentTimeMillis() - raceKitClaimSave.getLong(player.getName()) > 86400000L;
     }
 
 }

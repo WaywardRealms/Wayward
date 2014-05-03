@@ -5,16 +5,19 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,226 +26,257 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     private static int nextId = 0;
 
-    public static int getNextId() {
+    public static int nextAvailableId() {
         nextId++;
         return nextId;
     }
 
-    private int id;
-    //The player the character is associated with
-    private String ign;
-    //The character and their IC details. Character card stuff.
-    private String name;
-    private Gender gender;
-    private int age;
-    private Race race;
-    private String description;
-    private boolean dead;
-    //World data to save/restore upon switching character
-    private Location location;
-    private ItemStack[] inventoryContents;
-    //Stats and other character data
-    private double health;
-    private int foodLevel;
-    private int mana;
-    private int thirst;
+    public static int getNextId() {
+        return nextId;
+    }
+
+    public static void setNextId(int id) {
+        CharacterImpl.nextId = id;
+    }
+
+    private File file;
 	private static final int MAX_THIRST = 20;
 	private static final int MIN_THIRST = 0;
-    //Field hiding
-    private boolean nameHidden;
-    private boolean genderHidden;
-    private boolean ageHidden;
-    private boolean raceHidden;
-    private boolean descriptionHidden;
-    private boolean classHidden;
 
     private CharacterImpl() {}
 
-    public CharacterImpl(OfflinePlayer player) {
-        CharacterPlugin characterPlugin = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
-        ClassesPlugin classesPlugin = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
-        this.id = CharacterImpl.getNextId();
-        this.ign = player.getName();
-        this.name = "Unknown";
-        this.gender = characterPlugin.getGender("UNKNOWN");
-        this.age = 0;
-        this.race = characterPlugin.getRace("UNKNOWN");
-        this.description = player.getName() + "'s character";
-        this.dead = false;
-        this.location = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
-        this.inventoryContents = new ItemStack[36];
-        this.health = classesPlugin.getClass(this).getHpBonus() * classesPlugin.getLevel(this);
-        this.foodLevel = 20;
-        this.mana = getMaxMana();
-        this.thirst = 20;
+    public CharacterImpl(CharacterPlugin plugin, OfflinePlayer player) {
+        int id = CharacterImpl.nextAvailableId();
+        this.file = new File(new File(plugin.getDataFolder(), "characters-new"), id + ".yml");
+        setId(id);
+        setPlayer(player);
+        setName("Unknown");
+        setGender(plugin.getGender("UNKNOWN"));
+        setAge(0);
+        setRace(plugin.getRace("UNKNOWN"));
+        setDescription(player.getName() + "'s character");
+        setDead(false);
+        setLocation(Bukkit.getServer().getWorlds().get(0).getSpawnLocation());
+        setInventoryContents(new ItemStack[36]);
+        setHealth(getMaxHealth());
+        setFoodLevel(20);
+        setMana(getMaxMana());
+        setThirst(20);
+    }
+
+    public CharacterImpl(File file) {
+        this.file = file;
+    }
+
+    private void setFieldValue(String field, Object value) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        save.set("character." + field, value);
+        try {
+            save.save(file);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private Object getFieldValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.get("character." + field);
+    }
+
+    private int getFieldIntValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getInt("character." + field);
+    }
+
+    private double getFieldDoubleValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getDouble("character." + field);
+    }
+
+    private boolean getFieldBooleanValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getBoolean("character." + field);
+    }
+
+    private String getFieldStringValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getString("character." + field);
     }
 
     @Override
     public int getId() {
-        return id;
+        return getFieldIntValue("id");
+    }
+
+    private void setId(int id) {
+        setFieldValue("id", id);
     }
 
     @Override
     public String getName() {
-        return name;
+        return getFieldStringValue("name");
     }
 
     @Override
     public void setName(String name) {
-        this.name = name;
+        setFieldValue("name", name);
         if (getPlayer().isOnline()) {
-            getPlayer().getPlayer().setDisplayName(nameHidden ? "???" : name);
+            getPlayer().getPlayer().setDisplayName(isNameHidden() ? "???" : name);
         }
     }
 
     public boolean isNameHidden() {
-        return nameHidden;
+        return getFieldBooleanValue("name-hidden");
     }
 
     public void setNameHidden(boolean nameHidden) {
-        this.nameHidden = nameHidden;
+        setFieldValue("name-hidden", nameHidden);
     }
 
     @Override
     public int getAge() {
-        return age;
+        return getFieldIntValue("age");
     }
 
     @Override
     public void setAge(int age) {
-        this.age = age;
+        setFieldValue("age", age);
     }
 
     public boolean isAgeHidden() {
-        return ageHidden;
+        return getFieldBooleanValue("age-hidden");
     }
 
     public void setAgeHidden(boolean ageHidden) {
-        this.ageHidden = ageHidden;
+        setFieldValue("age-hidden", ageHidden);
     }
 
     @Override
     public OfflinePlayer getPlayer() {
-        return Bukkit.getOfflinePlayer(ign);
+        return Bukkit.getOfflinePlayer(getFieldStringValue("ign"));
     }
 
     @Override
     public void setPlayer(OfflinePlayer player) {
-        this.ign = player.getName();
+        setFieldValue("ign", player.getName());
     }
 
     @Override
     public Gender getGender() {
-        return gender;
+        return (Gender) getFieldValue("gender");
     }
 
     @Override
     public void setGender(Gender gender) {
-        this.gender = gender;
+        setFieldValue("gender", gender);
     }
 
     public boolean isGenderHidden() {
-        return genderHidden;
+        return getFieldBooleanValue("gender-hidden");
     }
 
     public void setGenderHidden(boolean genderHidden) {
-        this.genderHidden = genderHidden;
+        setFieldValue("gender-hidden", genderHidden);
     }
 
     @Override
     public Race getRace() {
-        return race;
+        return (Race) getFieldValue("race");
     }
 
     @Override
     public void setRace(Race race) {
-        this.race = race;
+        setFieldValue("race", race);
     }
 
     public boolean isRaceHidden() {
-        return raceHidden;
+        return getFieldBooleanValue("race-hidden");
     }
 
     public void setRaceHidden(boolean raceHidden) {
-        this.raceHidden = raceHidden;
+        setFieldValue("race-hidden", raceHidden);
     }
 
     @Override
     public String getDescription() {
-        return description;
+        return getFieldStringValue("description");
     }
 
     @Override
     public void setDescription(String description) {
-        this.description = description + " ";
+        setFieldValue("description", description + " ");
     }
 
     @Override
     public void addDescription(String info) {
-        this.description += info + " ";
+        setDescription(getDescription() + info + " ");
     }
 
     public boolean isDescriptionHidden() {
-        return descriptionHidden;
+        return getFieldBooleanValue("description-hidden");
     }
 
     public void setDescriptionHidden(boolean descriptionHidden) {
-        this.descriptionHidden = descriptionHidden;
+        setFieldValue("description-hidden", descriptionHidden);
     }
 
     @Override
     public Location getLocation() {
-        return location;
+        return ((SerialisableLocation) getFieldValue("location")).toLocation();
     }
 
     @Override
     public void setLocation(Location location) {
-        this.location = location;
+        setFieldValue("location", new SerialisableLocation(location));
     }
 
     @Override
     public ItemStack[] getInventoryContents() {
-        return inventoryContents;
+        if (getFieldValue("inventory-contents") instanceof List<?>) {
+            return ((List<ItemStack>) getFieldValue("inventory-contents")).toArray(new ItemStack[36]);
+        } else {
+            return new ItemStack[36];
+        }
     }
 
     @Override
     public void setInventoryContents(ItemStack[] inventoryContents) {
-        this.inventoryContents = inventoryContents;
+        setFieldValue("inventory-contents", inventoryContents);
     }
 
     @Override
     public double getHealth() {
-        return health;
+        return getFieldDoubleValue("health");
     }
 
     @Override
     public void setHealth(double health) {
-        this.health = health;
+        setFieldValue("health", health);
     }
 
     @Override
     public int getFoodLevel() {
-        return foodLevel;
+        return getFieldIntValue("food-level");
     }
 
     @Override
     public void setFoodLevel(int foodLevel) {
-        this.foodLevel = foodLevel;
+        setFieldValue("food-level", foodLevel);
     }
 
     @Override
     public int getThirst() {
-        return thirst;
+        return getFieldIntValue("thirst");
     }
 
     @Override
     public void setThirst(int thirstLevel) {
-        this.thirst = thirstLevel;
+        setFieldValue("thirst", thirstLevel);
         if (getThirst() > MAX_THIRST) {
-            this.thirst = MAX_THIRST;
+            setThirst(MAX_THIRST);
         }
         if (getThirst() < MIN_THIRST) {
-        	this.thirst = MIN_THIRST;
+        	setThirst(MIN_THIRST);
         }
         
     }
@@ -264,12 +298,12 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public int getMana() {
-        return mana;
+        return getFieldIntValue("mana");
     }
 
     @Override
     public void setMana(int mana) {
-        this.mana = mana;
+        setFieldValue("mana", mana);
     }
 
     @Override
@@ -284,12 +318,12 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public boolean isDead() {
-        return dead;
+        return getFieldBooleanValue("dead");
     }
 
     @Override
     public void setDead(boolean dead) {
-        this.dead = dead;
+        setFieldValue("dead", dead);
     }
 
     @Override
@@ -313,68 +347,48 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     }
 
     public boolean isClassHidden() {
-        return classHidden;
+        return getFieldBooleanValue("class-hidden");
     }
 
     public void setClassHidden(boolean classHidden) {
-        this.classHidden = classHidden;
+        setFieldValue("class-hidden", classHidden);
     }
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("id", id);
-        serialised.put("ign", ign);
-        serialised.put("name", name);
-        serialised.put("gender", gender);
-        serialised.put("age", age);
-        serialised.put("race", race);
-        serialised.put("description", description);
-        serialised.put("dead", dead);
-        serialised.put("location", new SerialisableLocation(location));
-        serialised.put("inventory-contents", inventoryContents);
-        serialised.put("health", health);
-        serialised.put("food-level", foodLevel);
-        serialised.put("mana", mana);
-        serialised.put("thirst", thirst);
-        serialised.put("name-hidden", nameHidden);
-        serialised.put("gender-hidden", genderHidden);
-        serialised.put("age-hidden", ageHidden);
-        serialised.put("race-hidden", raceHidden);
-        serialised.put("description-hidden", descriptionHidden);
-        serialised.put("class-hidden", classHidden);
-        return serialised;
+        return new HashMap<>();
     }
 
     public static CharacterImpl deserialize(Map<String, Object> serialised) {
-        CharacterImpl character = new CharacterImpl();
-        character.id = (int) serialised.get("id");
-        if (character.id > nextId) {
-            nextId = character.id;
+        CharacterPlugin plugin = Bukkit.getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
+        CharacterImpl character = new CharacterImpl(new File(new File(plugin.getDataFolder(), "characters-new"), ((int) serialised.get("id")) + ".yml"));
+        character.setId((int) serialised.get("id"));
+        if (character.getId() > nextId) {
+            nextId = character.getId();
         }
-        character.ign = (String) serialised.get("ign");
-        character.name = (String) serialised.get("name");
-        character.gender = (Gender) serialised.get("gender");
-        character.age = (int) serialised.get("age");
-        character.race = (Race) serialised.get("race");
-        character.description = (String) serialised.get("description");
-        character.dead = (boolean) serialised.get("dead");
-        character.location = ((SerialisableLocation) serialised.get("location")).toLocation();
+        character.setPlayer(Bukkit.getOfflinePlayer((String) serialised.get("ign")));
+        character.setName((String) serialised.get("name"));
+        character.setGender((Gender) serialised.get("gender"));
+        character.setAge((int) serialised.get("age"));
+        character.setRace((Race) serialised.get("race"));
+        character.setDescription((String) serialised.get("description"));
+        character.setDead((boolean) serialised.get("dead"));
+        character.setLocation(((SerialisableLocation) serialised.get("location")).toLocation());
         if (serialised.get("inventory-contents") instanceof List<?>) {
-            character.inventoryContents = ((List<ItemStack>) serialised.get("inventory-contents")).toArray(new ItemStack[36]);
+            character.setInventoryContents(((List<ItemStack>) serialised.get("inventory-contents")).toArray(new ItemStack[36]));
         } else {
-            character.inventoryContents = new ItemStack[36];
+            character.setInventoryContents(new ItemStack[36]);
         }
-        character.health = (double) serialised.get("health");
-        character.foodLevel = (int) serialised.get("food-level");
-        character.mana = (int) serialised.get("mana");
-        character.thirst = (int) serialised.get("thirst");
-        character.nameHidden = serialised.get("name-hidden") != null && (boolean) serialised.get("name-hidden");
-        character.genderHidden = serialised.get("gender-hidden") != null && (boolean) serialised.get("gender-hidden");
-        character.ageHidden = serialised.get("age-hidden") != null && (boolean) serialised.get("age-hidden");
-        character.raceHidden = serialised.get("race-hidden") != null && (boolean) serialised.get("race-hidden");
-        character.descriptionHidden = serialised.get("description-hidden") != null && (boolean) serialised.get("description-hidden");
-        character.classHidden = serialised.get("class-hidden") != null && (boolean) serialised.get("class-hidden");
+        character.setHealth((double) serialised.get("health"));
+        character.setFoodLevel((int) serialised.get("food-level"));
+        character.setMana((int) serialised.get("mana"));
+        character.setThirst((int) serialised.get("thirst"));
+        character.setNameHidden(serialised.get("name-hidden") != null && (boolean) serialised.get("name-hidden"));
+        character.setGenderHidden(serialised.get("gender-hidden") != null && (boolean) serialised.get("gender-hidden"));
+        character.setAgeHidden(serialised.get("age-hidden") != null && (boolean) serialised.get("age-hidden"));
+        character.setRaceHidden(serialised.get("race-hidden") != null && (boolean) serialised.get("race-hidden"));
+        character.setDescriptionHidden(serialised.get("description-hidden") != null && (boolean) serialised.get("description-hidden"));
+        character.setClassHidden(serialised.get("class-hidden") != null && (boolean) serialised.get("class-hidden"));
         return character;
     }
 

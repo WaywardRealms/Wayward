@@ -30,7 +30,7 @@ public class CharacterCommand implements CommandExecutor {
                     }
                 }
                 if (livingCharacters < plugin.getConfig().getInt("characters.limit") || plugin.getConfig().getInt("characters.limit") <= 0 || sender.hasPermission("wayward.characters.characters.unlimited")) {
-                    plugin.setActiveCharacter((Player) sender, new CharacterImpl((Player) sender));
+                    plugin.setActiveCharacter((Player) sender, plugin.createNewCharacter((Player) sender));
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created a new character. Make sure to set up your character information!");
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You have reached your character limit.");
@@ -164,7 +164,7 @@ public class CharacterCommand implements CommandExecutor {
                     } else if (args[1].equalsIgnoreCase("dead")) {
                         Player player = (Player) sender;
                         character.setDead(true);
-                        plugin.setActiveCharacter(player, new CharacterImpl(player));
+                        plugin.setActiveCharacter(player, plugin.createNewCharacter(player));
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your character has been set to daed, and a new character has been created.");
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead]");
