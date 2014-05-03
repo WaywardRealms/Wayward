@@ -259,10 +259,17 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public Character getActiveCharacter(OfflinePlayer player) {
-        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        File playerDirectory = new File(getDataFolder(), "players");
+        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(playerFile);
         if (playerSave.get("active-character") == null) {
             CharacterImpl character = new CharacterImpl(this, player);
             playerSave.set("active-character", character.getId());
+            try {
+                playerSave.save(playerFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
         return getCharacter(playerSave.getInt("active-character"));
     }
