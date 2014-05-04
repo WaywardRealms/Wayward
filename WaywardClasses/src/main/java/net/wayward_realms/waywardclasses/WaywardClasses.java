@@ -98,7 +98,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
     public Class getClass(Character character) {
         File characterDirectory = new File(getDataFolder(), "characters");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(new File(characterDirectory, character.getId() + ".yml"));
-        if (characterConfig.get("class") == null) setClass(character, (Class) getConfig().get("default-class"));
+        if (characterConfig.get("class") == null) return (Class) getConfig().get("default-class");
         return getClass(characterConfig.getString("class"));
     }
 
