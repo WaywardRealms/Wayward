@@ -171,7 +171,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     @Override
     public int getTotalExperience(Character character, Class clazz) {
-        File characterDirectory = new File(getDataFolder(), character.getId() + ".yml");
+        File characterDirectory = new File(getDataFolder(), "characters");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(new File(characterDirectory, character.getId() + ".yml"));
         if (characterConfig.getConfigurationSection("experience") == null || characterConfig.get("experience." + clazz.getName()) == null) {
             return 0;
