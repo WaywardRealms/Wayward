@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,8 +25,6 @@ import java.util.Map;
 public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     private Map<String, Class> classes = new HashMap<>();
-    private Map<Integer, Class> characterClasses = new HashMap<>();
-    private Map<Integer, Map<Class, Integer>> experience = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -61,50 +58,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     @Override
     public void saveState() {
-        File characterDirectory = new File(getDataFolder(), "characters");
-        if (!characterDirectory.exists()) {
-            characterDirectory.mkdir();
-        }
-        for (int characterId : characterClasses.keySet()) {
-            File characterFile = new File(characterDirectory, characterId + ".yml");
-            YamlConfiguration characterConfig;
-            if (characterFile.exists()) {
-                characterConfig = YamlConfiguration.loadConfiguration(characterFile);
-            } else {
-                characterConfig = new YamlConfiguration();
-            }
-            characterConfig.set("class", characterClasses.get(characterId).getName());
-            try {
-                characterConfig.save(characterFile);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        for (int characterId : experience.keySet()) {
-            File characterFile = new File(characterDirectory, characterId + ".yml");
-            YamlConfiguration characterConfig;
-            if (characterFile.exists()) {
-                characterConfig = YamlConfiguration.loadConfiguration(characterFile);
-            } else {
-                characterConfig = new YamlConfiguration();
-            }
-            for (Class clazz : experience.get(characterId).keySet()) {
-                characterConfig.set("experience." + clazz.getName(), experience.get(characterId).get(clazz));
-            }
-            try {
-                characterConfig.save(characterFile);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        if (getConfig().getConfigurationSection("character-classes") != null) {
-            getConfig().set("character-classes", null);
-            saveConfig();
-        }
-        if (getConfig().getConfigurationSection("experience") != null) {
-            getConfig().set("experience", null);
-            saveConfig();
-        }
+
     }
 
     @Override
@@ -112,40 +66,6 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
         if (getConfig().getConfigurationSection("classes") != null) {
             for (String section : getConfig().getConfigurationSection("classes").getKeys(false)) {
                 classes.put(section.toUpperCase(), (ClassImpl) getConfig().get("classes." + section));
-            }
-        }
-        if (getConfig().getConfigurationSection("character-classes") != null) {
-            for (String section : getConfig().getConfigurationSection("character-classes").getKeys(false)) {
-                characterClasses.put(Integer.parseInt(section), getClass(getConfig().getString("character-classes." + section)));
-            }
-        }
-        if (getConfig().getConfigurationSection("experience") != null) {
-            for (String characterId : getConfig().getConfigurationSection("experience").getKeys(false)) {
-                experience.put(Integer.parseInt(characterId), new HashMap<Class, Integer>());
-                for (String className : getConfig().getConfigurationSection("experience." + characterId).getKeys(false)) {
-                    experience.get(Integer.parseInt(characterId)).put(getClass(className), getConfig().getInt("experience." + characterId + "." + className));
-                }
-            }
-        }
-        File charactersDirectory = new File(getDataFolder(), "characters");
-        if (charactersDirectory.exists()) {
-            for (File characterFile : charactersDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.getName().endsWith(".yml");
-                }
-            })) {
-                YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
-                int characterId = Integer.parseInt(characterFile.getName().replace(".yml", ""));
-                if (characterConfig.get("class") != null) {
-                    characterClasses.put(characterId, getClass(characterConfig.getString("class")));
-                }
-                experience.put(characterId, new HashMap<Class, Integer>());
-                if (characterConfig.getConfigurationSection("experience") != null) {
-                    for (String className : characterConfig.getConfigurationSection("experience").getKeys(false)) {
-                        experience.get(characterId).put(getClass(className), characterConfig.getInt("experience." + className));
-                    }
-                }
             }
         }
         if (classes.isEmpty()) {
@@ -176,10 +96,10 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     @Override
     public Class getClass(Character character) {
-        if (characterClasses.get(character.getId()) == null) {
-            characterClasses.put(character.getId(), (Class) getConfig().get("default-class"));
-        }
-        return characterClasses.get(character.getId());
+        File characterDirectory = new File(getDataFolder(), "characters");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(new File(characterDirectory, character.getId() + ".yml"));
+        if (characterConfig.get("class") == null) setClass(character, (Class) getConfig().get("default-class"));
+        return getClass(characterConfig.getString("class"));
     }
 
     @Override
@@ -251,10 +171,12 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     @Override
     public int getTotalExperience(Character character, Class clazz) {
-        if (experience.get(character.getId()) == null || experience.get(character.getId()).get(clazz) == null) {
+        File characterDirectory = new File(getDataFolder(), character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(new File(characterDirectory, character.getId() + ".yml"));
+        if (characterConfig.getConfigurationSection("experience") == null || characterConfig.get("experience." + clazz.getName()) == null) {
             return 0;
         }
-        return experience.get(character.getId()).get(clazz);
+        return characterConfig.getInt("experience." + clazz.getName());
     }
 
     @Override
@@ -301,7 +223,15 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
         if (event.isCancelled()) {
             return;
         }
-        characterClasses.put(event.getCharacter().getId(), event.getClazz());
+        File characterDirectory = new File(getDataFolder(), "characters");
+        File characterFile = new File(characterDirectory, event.getCharacter().getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        characterConfig.set("class", event.getClazz().getName());
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
         event.getCharacter().setHealth(Math.min(event.getCharacter().getHealth(), event.getCharacter().getMaxHealth()));
         if (event.getCharacter().getPlayer().isOnline()) {
             updateExp(event.getCharacter().getPlayer().getPlayer());
@@ -400,10 +330,15 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
                 }
             }
         }
-        if (experience.get(character.getId()) == null) {
-            experience.put(character.getId(), new HashMap<Class, Integer>());
+        File characterDirectory = new File(getDataFolder(), "characters");
+        File characterFile = new File(characterDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        characterConfig.set("experience." + clazz.getName(), Math.min(amount, getTotalExperienceForLevel(clazz.getMaxLevel())));
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-        experience.get(character.getId()).put(clazz, Math.min(amount, getTotalExperienceForLevel(clazz.getMaxLevel())));
         OfflinePlayer offlinePlayer = character.getPlayer();
         if (offlinePlayer.isOnline()) {
             Player player = offlinePlayer.getPlayer();
