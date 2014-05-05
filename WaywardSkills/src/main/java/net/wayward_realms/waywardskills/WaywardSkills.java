@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Spell;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.spell.SpellManager;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -24,12 +25,17 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     public void onEnable() {
         spellManager = new SpellManager(this);
         skillManager = new SkillManager(this);
-        getServer().getPluginManager().registerEvents(new PlayerInteractListener(this), this);
-        getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(), this);
+        registerListeners(new PlayerInteractListener(this), new EntityDamageByEntityListener(), new EntityTargetListener(this));
         getCommand("skill").setExecutor(new SkillCommand(this));
         getCommand("spell").setExecutor(new SpellCommand(this));
         getCommand("bindskill").setExecutor(new BindSkillCommand(this));
         getCommand("bindspell").setExecutor(new BindSpellCommand(this));
+    }
+
+    private void registerListeners(Listener... listeners) {
+        for (Listener listener : listeners) {
+            getServer().getPluginManager().registerEvents(listener, this);
+        }
     }
 
     @Override

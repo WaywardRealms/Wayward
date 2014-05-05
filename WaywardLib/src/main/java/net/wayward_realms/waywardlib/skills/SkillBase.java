@@ -68,4 +68,40 @@ public abstract class SkillBase implements Skill {
         this.coolDown = coolDown;
     }
 
+    public double getMeleeWeaponModifier(ItemStack weapon) {
+        if (weapon != null) {
+            switch (weapon.getType()) {
+                case WOOD_SWORD: return 1.1D;
+                case STONE_SWORD: return 1.2D;
+                case IRON_SWORD: return 1.3D;
+                case DIAMOND_SWORD: return 1.5D;
+                default: return 1D;
+            }
+        }
+        return 1D;
+    }
+
+    public double getRangedWeaponModifier(ItemStack weapon) {
+        if (weapon != null) {
+            switch (weapon.getType()) {
+                case BOW: return 1.5D;
+                default: return 1D;
+            }
+        }
+        return 1D;
+    }
+
+    public double getMagicWeaponModifier(ItemStack weapon) {
+        if (weapon != null) {
+            switch (weapon.getType()) {
+                case STICK: return 1.1D;
+                case BLAZE_ROD: return 1.5D;
+                default: return 1D;
+            }
+        }
+        return 1D;
+    }
+
+
+
 }
