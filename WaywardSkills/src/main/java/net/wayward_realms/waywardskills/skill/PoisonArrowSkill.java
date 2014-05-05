@@ -128,13 +128,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case BOW: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getRangedWeaponModifier(weapon);
     }
 
     @Override

@@ -57,16 +57,7 @@ public class StabSkill extends AttackSkillBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case WOOD_SWORD: return 1.1D;
-                case STONE_SWORD: return 1.2D;
-                case IRON_SWORD: return 1.3D;
-                case DIAMOND_SWORD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMeleeWeaponModifier(weapon);
     }
 
     @Override
