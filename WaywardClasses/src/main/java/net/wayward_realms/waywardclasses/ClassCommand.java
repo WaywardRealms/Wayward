@@ -84,7 +84,7 @@ public class ClassCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.GREEN + "Other class levels: ");
                         for (Class clazz : plugin.getClasses()) {
                             if (plugin.getTotalExperience(player, clazz) > 0) {
-                                sender.sendMessage(ChatColor.GREEN + clazz.getName() + " - lv" + plugin.getLevel(player, clazz) + ChatColor.GRAY + "(" + plugin.getExperienceTowardsNextLevel(player) + "/" + plugin.getExpToNextLevel(plugin.getLevel(player)) + " exp)");
+                                sender.sendMessage(ChatColor.GREEN + clazz.getName() + " - lv" + plugin.getLevel(player, clazz) + ChatColor.GRAY + " (" + plugin.getExperienceTowardsNextLevel(player) + "/" + plugin.getExpToNextLevel(plugin.getLevel(player)) + " exp)");
                             }
                         }
                     } else {
