@@ -36,6 +36,7 @@ public class SpellManager {
         addSpell(new DrawSwordSpell());
         addSpell(new EmpowerSpell());
         addSpell(new SummonZombieSpell(plugin));
+        addSpell(new SummonSkeletonSpell(plugin));
     }
 
     public Spell getSpell(String name) {

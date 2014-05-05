@@ -21,27 +21,27 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SummonZombieSpell extends AttackSpellBase {
+public class SummonSkeletonSpell extends AttackSpellBase {
 
     private WaywardSkills plugin;
 
-    public SummonZombieSpell(WaywardSkills plugin) {
+    public SummonSkeletonSpell(WaywardSkills plugin) {
         this.plugin = plugin;
-        setName("SummonZombie");
-        setManaCost(50);
+        setName("SummonSkeleton");
+        setManaCost(60);
         setCoolDown(60);
         setAttackStat(Stat.MAGIC_ATTACK);
         setDefenceStat(Stat.MAGIC_DEFENCE);
         setType(SkillType.MAGIC_SUMMONING);
         setPower(90);
         setCriticalChance(5);
-        setHitChance(30);
+        setHitChance(40);
     }
 
     @Override
     public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         Player attackingPlayer = attacking.getPlayer().getPlayer();
-        Entity zombie = attackingPlayer.getWorld().spawnEntity(attackingPlayer.getLocation(), EntityType.ZOMBIE);
+        Entity zombie = attackingPlayer.getWorld().spawnEntity(attackingPlayer.getLocation(), EntityType.SKELETON);
         if (zombie != null) {
             zombie.setMetadata("summoner", new FixedMetadataValue(plugin, attacking.getId()));
         }
@@ -54,12 +54,12 @@ public class SummonZombieSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " summoned a zombie and demanded it attack " + defending.getName() + "! It dealt " + damage + " damage.";
+        return attacking.getName() + " summoned a skeleton and demanded it attack " + defending.getName() + "! It dealt " + damage + " damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to summon a zombie, but did not have enough mana.";
+        return attacking.getName() + " attempted to summon a skeleton, but did not have enough mana.";
     }
 
     @Override
@@ -67,7 +67,7 @@ public class SummonZombieSpell extends AttackSpellBase {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            Entity zombie = player.getWorld().spawnEntity(player.getLocation(), EntityType.ZOMBIE);
+            Entity zombie = player.getWorld().spawnEntity(player.getLocation(), EntityType.SKELETON);
             if (zombie != null) {
                 zombie.setMetadata("summoner", new FixedMetadataValue(plugin, characterPlugin.getActiveCharacter(player).getId()));
                 return true;
@@ -80,12 +80,12 @@ public class SummonZombieSpell extends AttackSpellBase {
 
     @Override
     public ItemStack getIcon() {
-        return new ItemStack(Material.SKULL_ITEM, 1, (byte) 2);
+        return new ItemStack(Material.SKULL_ITEM, 1, (byte) 0);
     }
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 5;
+        return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 10;
     }
 
     @Override
@@ -97,12 +97,12 @@ public class SummonZombieSpell extends AttackSpellBase {
         return serialised;
     }
 
-    public static SummonZombieSpell deserialize(Map<String, Object> serialised) {
+    public static SummonSkeletonSpell deserialize(Map<String, Object> serialised) {
         RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
         if (skillsPluginProvider != null) {
             SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
             if (skillsPlugin instanceof WaywardSkills) {
-                SummonZombieSpell deserialised = new SummonZombieSpell((WaywardSkills) skillsPlugin);
+                SummonSkeletonSpell deserialised = new SummonSkeletonSpell((WaywardSkills) skillsPlugin);
                 deserialised.setName((String) serialised.get("name"));
                 deserialised.setManaCost((int) serialised.get("mana-cost"));
                 deserialised.setCoolDown((int) serialised.get("cooldown"));
