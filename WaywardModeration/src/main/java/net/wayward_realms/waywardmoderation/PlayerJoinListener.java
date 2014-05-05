@@ -20,6 +20,7 @@ public class PlayerJoinListener implements Listener {
             if (!plugin.canSee(event.getPlayer(), player)) event.getPlayer().hidePlayer(player);
         }
         if (plugin.isVanished(event.getPlayer())) {
+            event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You are vanished.");
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 if (!plugin.canSee(player, event.getPlayer())) player.hidePlayer(event.getPlayer());
             }
