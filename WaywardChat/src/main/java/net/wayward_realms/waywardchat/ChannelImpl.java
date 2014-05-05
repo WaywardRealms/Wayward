@@ -10,7 +10,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -163,7 +166,8 @@ public class ChannelImpl implements Channel {
     public void log(String message) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(log, true));
-            writer.append(message).append("\n");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            writer.append("[").append(dateFormat.format(new Date())).append("] ").append(message).append("\n");
             writer.close();
         } catch (IOException exception) {
             exception.printStackTrace();
