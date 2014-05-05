@@ -16,11 +16,11 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         for (Player player : plugin.getVanishedPlayers()) {
-            event.getPlayer().hidePlayer(player);
+            if (!plugin.canSee(event.getPlayer(), player)) event.getPlayer().hidePlayer(player);
         }
         if (plugin.isVanished(event.getPlayer())) {
             for (Player player : plugin.getServer().getOnlinePlayers()) {
-                player.hidePlayer(event.getPlayer());
+                if (!plugin.canSee(player, event.getPlayer())) player.hidePlayer(event.getPlayer());
             }
         }
     }
