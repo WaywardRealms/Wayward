@@ -189,8 +189,16 @@ public class CharacterCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " extenddescription [info]");
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Character list: ");
-                for (Character character : plugin.getCharacters((Player) sender)) {
+                Player player = (Player) sender;
+                if (sender.hasPermission("wayward.characters.command.character.list.others")) {
+                    if (args.length >= 2) {
+                        if (plugin.getServer().getPlayer(args[2]) != null) {
+                            player = plugin.getServer().getPlayer(args[2]);
+                        }
+                    }
+                }
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getName() + "'s character list: ");
+                for (Character character : plugin.getCharacters(player)) {
                     if (character != null) {
                         sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
                     }
