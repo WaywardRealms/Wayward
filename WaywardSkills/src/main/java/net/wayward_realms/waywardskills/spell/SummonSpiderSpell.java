@@ -21,13 +21,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SummonSkeletonSpell extends AttackSpellBase {
+public class SummonSpiderSpell extends AttackSpellBase {
 
     private WaywardSkills plugin;
 
-    public SummonSkeletonSpell(WaywardSkills plugin) {
+    public SummonSpiderSpell(WaywardSkills plugin) {
         this.plugin = plugin;
-        setName("SummonSkeleton");
+        setName("SummonSpider");
         setManaCost(60);
         setCoolDown(60);
         setAttackStat(Stat.MAGIC_ATTACK);
@@ -41,9 +41,9 @@ public class SummonSkeletonSpell extends AttackSpellBase {
     @Override
     public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         Player attackingPlayer = attacking.getPlayer().getPlayer();
-        Entity skeleton = attackingPlayer.getWorld().spawnEntity(attackingPlayer.getLocation(), EntityType.SKELETON);
-        if (skeleton != null) {
-            skeleton.setMetadata("summoner", new FixedMetadataValue(plugin, attacking.getId()));
+        Entity spider = attackingPlayer.getWorld().spawnEntity(attackingPlayer.getLocation(), EntityType.SPIDER);
+        if (spider != null) {
+            spider.setMetadata("summoner", new FixedMetadataValue(plugin, attacking.getId()));
         }
     }
 
@@ -54,12 +54,12 @@ public class SummonSkeletonSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " summoned a skeleton and demanded it attack " + defending.getName() + "! It dealt " + damage + " damage.";
+        return attacking.getName() + " summoned a spider and demanded it attack " + defending.getName() + "! It dealt " + damage + " damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to summon a skeleton, but did not have enough mana.";
+        return attacking.getName() + " attempted to summon a spider, but did not have enough mana.";
     }
 
     @Override
@@ -67,12 +67,12 @@ public class SummonSkeletonSpell extends AttackSpellBase {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            Entity skeleton = player.getWorld().spawnEntity(player.getLocation(), EntityType.SKELETON);
-            if (skeleton != null) {
-                skeleton.setMetadata("summoner", new FixedMetadataValue(plugin, characterPlugin.getActiveCharacter(player).getId()));
+            Entity spider = player.getWorld().spawnEntity(player.getLocation(), EntityType.SPIDER);
+            if (spider != null) {
+                spider.setMetadata("summoner", new FixedMetadataValue(plugin, characterPlugin.getActiveCharacter(player).getId()));
                 return true;
             } else {
-                player.sendMessage(ChatColor.RED + "You cannot summon a skeleton here! (Try a bit further into the wilderness)");
+                player.sendMessage(ChatColor.RED + "You cannot summon a spider here! (Try a bit further into the wilderness)");
             }
         }
         return false;
@@ -97,12 +97,12 @@ public class SummonSkeletonSpell extends AttackSpellBase {
         return serialised;
     }
 
-    public static SummonSkeletonSpell deserialize(Map<String, Object> serialised) {
+    public static SummonSpiderSpell deserialize(Map<String, Object> serialised) {
         RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
         if (skillsPluginProvider != null) {
             SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
             if (skillsPlugin instanceof WaywardSkills) {
-                SummonSkeletonSpell deserialised = new SummonSkeletonSpell((WaywardSkills) skillsPlugin);
+                SummonSpiderSpell deserialised = new SummonSpiderSpell((WaywardSkills) skillsPlugin);
                 deserialised.setName((String) serialised.get("name"));
                 deserialised.setManaCost((int) serialised.get("mana-cost"));
                 deserialised.setCoolDown((int) serialised.get("cooldown"));
