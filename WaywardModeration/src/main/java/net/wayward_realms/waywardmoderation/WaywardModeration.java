@@ -41,6 +41,7 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         getCommand("vanish").setExecutor(new VanishCommand(this));
         getCommand("warn").setExecutor(new WarnCommand(this));
         getCommand("warnings").setExecutor(new WarningsCommand(this));
+        getCommand("amivanished").setExecutor(new AmIVanishedCommand(this));
         registerListeners(new PlayerJoinListener(this));
     }
 

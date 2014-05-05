@@ -21,6 +21,9 @@ commands:
     warnings:
         description: Views warnings
         usage: /<command> (player)
+    amivanished:
+        description: Checks whether you are vanished
+        usage: /<command>
 permissions:
     wayward.moderation.command.reputation.set:
         description: Allows you to set reputation
