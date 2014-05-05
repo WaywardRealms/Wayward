@@ -30,3 +30,6 @@ permissions:
     wayward.characters.command.character.revive:
         default: op
         description: Allows characters to be revived
+    wayward.characters.command.character.list.others:
+        default: op
+        description: Allows you to list other players characters
