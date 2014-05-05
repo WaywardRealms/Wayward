@@ -10,12 +10,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ChannelImpl implements Channel {
 
+    private WaywardChat plugin;
     private String name;
     private ChatColor colour;
     private String format;
@@ -25,10 +29,10 @@ public class ChannelImpl implements Channel {
     private boolean garbleEnabled;
     private boolean ircEnabled;
     private Command command;
-    private File log;
     private String ircChannel;
 
     public ChannelImpl(WaywardChat plugin, String name) {
+        this.plugin = plugin;
         this.name = name;
         this.colour = ChatColor.valueOf(plugin.getConfig().getString("channels." + this.getName() + ".colour").toUpperCase());
         this.format = plugin.getConfig().getString("channels." + getName() + ".format");
@@ -39,17 +43,6 @@ public class ChannelImpl implements Channel {
         this.ircEnabled = plugin.getConfig().getBoolean("irc.enabled") && plugin.getConfig().getBoolean("channels." + getName() + ".irc.enabled");
         if (isIrcEnabled()) {
             this.ircChannel = plugin.getConfig().getString("channels." + getName() + ".irc.channel");
-        }
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
-        }
-        log = new File(plugin.getDataFolder() + File.separator + "chat-" + this.getName() + ".log");
-        if (!log.exists()) {
-            try {
-                log.createNewFile();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
         }
     }
 
@@ -161,9 +154,24 @@ public class ChannelImpl implements Channel {
 
     @Override
     public void log(String message) {
+        File logDirectory = new File(plugin.getDataFolder(), "logs");
+        DateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        File datedLogDirectory = new File(logDirectory, logDateFormat.format(new Date()));
+        if (!datedLogDirectory.exists()) {
+            datedLogDirectory.mkdirs();
+        }
+        File log = new File(datedLogDirectory, "chat-" + this.getName() + ".log");
+        if (!log.exists()) {
+            try {
+                log.createNewFile();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(log, true));
-            writer.append(message).append("\n");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            writer.append("[").append(dateFormat.format(new Date())).append("] ").append(message).append("\n");
             writer.close();
         } catch (IOException exception) {
             exception.printStackTrace();
