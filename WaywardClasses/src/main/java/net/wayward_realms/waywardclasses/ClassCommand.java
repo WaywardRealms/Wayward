@@ -99,6 +99,7 @@ public class ClassCommand implements CommandExecutor {
                         try {
                             if (plugin.getServer().getPlayer(args[1]) != null) {
                                 plugin.setLevel(plugin.getServer().getPlayer(args[1]), Integer.parseInt(args[2]));
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + plugin.getServer().getPlayer(args[1]).getName() + "'s level was set to " + Integer.parseInt(args[2]));
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not online!");
                             }
