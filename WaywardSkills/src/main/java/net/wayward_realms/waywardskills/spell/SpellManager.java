@@ -35,6 +35,7 @@ public class SpellManager {
         addSpell(new MageArmourSpell());
         addSpell(new DrawSwordSpell());
         addSpell(new EmpowerSpell());
+        addSpell(new SummonZombieSpell(plugin));
     }
 
     public Spell getSpell(String name) {
