@@ -30,7 +30,7 @@ public class InventoryClickListener implements Listener {
 		CharacterPlugin characterPlugin = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
 		if (event.getInventory().getTitle().equals("Skill type")) {
 			event.setCancelled(true);
-			if (event.getSlot() == 2 || event.getSlot() == 3 || event.getSlot() == 4 || event.getSlot() == 5 || event.getSlot() == 6) {
+			if (event.getSlot() >= 1 && event.getSlot() <= 13) {
 				Set<Skill> skills = new HashSet<>();
                 RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
                 if (skillsPluginProvider != null) {
