@@ -110,6 +110,10 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         return vanishManager.getVanishedPlayers();
     }
 
+    public boolean canSee(Player player, Player target) {
+        return vanishManager.canSee(player, target);
+    }
+
     @Override
     public Collection<Warning> getWarnings(OfflinePlayer player) {
         return warningManager.getWarnings(player);
