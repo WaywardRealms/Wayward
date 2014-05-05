@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,6 +26,9 @@ import java.util.*;
 public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     private Map<String, Channel> channels = new HashMap<>();
+    private Map<String, ChatGroup> chatGroups = new HashMap<>();
+    private Map<String, ChatGroup> lastPrivateMessage = new HashMap<>();
+    private Set<String> snooping = new HashSet<>();
 
     private PircBotX ircBot;
 
@@ -34,6 +38,10 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         getCommand("broadcast").setExecutor(new BroadcastCommand(this));
         getCommand("ch").setExecutor(new ChCommand(this));
         getCommand("chathelp").setExecutor(new ChatHelpCommand(this));
+        getCommand("chatgroup").setExecutor(new ChatGroupCommand(this));
+        getCommand("message").setExecutor(new MessageCommand(this));
+        getCommand("reply").setExecutor(new ReplyCommand(this));
+        getCommand("snoop").setExecutor(new SnoopCommand(this));
         saveDefaultConfig();
         saveDefaultPrefixes();
         for (String section : getConfig().getConfigurationSection("channels").getKeys(false)) {
@@ -52,8 +60,6 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         }
         setupBroadcasts();
     }
-
-
 
     @Override
     public void onDisable() {
@@ -405,6 +411,49 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 }
             }
         }, getConfig().getInt("broadcasts.delay") * 20, getConfig().getInt("broadcasts.delay") * 20);
+    }
+
+    public ChatGroup getChatGroup(String name) {
+        return chatGroups.get(name.toLowerCase());
+    }
+
+    public void removeChatGroup(String name) {
+        chatGroups.remove(name.toLowerCase());
+        for (Iterator<Map.Entry<String, ChatGroup>> iterator = lastPrivateMessage.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, ChatGroup> entry = iterator.next();
+            if (entry.getValue().getName().equalsIgnoreCase(name)) iterator.remove();
+        }
+    }
+
+    public void addChatGroup(ChatGroup chatGroup) {
+        chatGroups.put(chatGroup.getName(), chatGroup);
+    }
+
+    public void sendPrivateMessage(Player sender, ChatGroup recipients, String message) {
+        recipients.sendMessage(sender, message);
+        for (String recipient : recipients.getPlayers()) {
+            lastPrivateMessage.put(recipient, recipients);
+        }
+    }
+
+    public Set<String> getSnooping() {
+        return snooping;
+    }
+
+    public boolean isSnooping(OfflinePlayer player) {
+        return snooping.contains(player.getName());
+    }
+
+    public void setSnooping(OfflinePlayer player, boolean snoop) {
+        if (snoop) {
+            snooping.add(player.getName());
+        } else {
+            snooping.remove(player.getName());
+        }
+    }
+
+    public ChatGroup getLastPrivateMessage(Player player) {
+        return lastPrivateMessage.get(player.getName());
     }
 
 }

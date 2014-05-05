@@ -14,6 +14,21 @@ commands:
     chathelp:
         description: Shows help for chat
         usage: /<command>
+    chatgroup:
+        description: Parent command for chat group commands
+        usage: /<command> [create|disband|invite|join|leave|message|players]
+        aliases: [cg]
+    message:
+        description: Sends a private message to a group or individual
+        usage: /<command> [player|group] [message]
+        aliases: [msg, m]
+    reply:
+        description: Replies to the last group or player to send you a message
+        usage: /<command> [message]
+        aliases: [r]
+    snoop:
+        description: Toggles PM and command snooping
+        usage: /<command>
 permissions:
     wayward.chat.command.broadcast:
         description: Allows you to broadcast messages
@@ -36,3 +51,6 @@ permissions:
     wayward.chat.prefix.[prefix]:
         description: Gives you the configured prefix
         default: false
+    wayward.chat.command.snoop:
+        description: Allows you to toggle snooping
+        default: op
