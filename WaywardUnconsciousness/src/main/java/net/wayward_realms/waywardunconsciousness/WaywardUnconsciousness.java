@@ -1,7 +1,7 @@
 package net.wayward_realms.waywardunconsciousness;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.death.DeathPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.ChatColor;
@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -42,6 +43,14 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
                 new PlayerInteractListener(this),
                 new EntityDamageByEntityListener(this));
         getCommand("wake").setExecutor(new WakeCommand(this));
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                for (Player player : getServer().getOnlinePlayers()) {
+                    if (!isUnconscious(player)) player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 0, 0), true);
+                }
+            }
+        }, 0L, 200L);
     }
 
     private void registerListeners(Listener... listeners) {
