@@ -30,6 +30,11 @@ public class WarnCommand implements CommandExecutor {
                     Warning warning = new WarningImpl(reason.toString(), player, issuer);
                     plugin.addWarning(player, warning);
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Warned " + player.getName() + ".");
+                    if (player.isOnline()) {
+                        player.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You have recieved a warning. (You have a total of " + plugin.getWarnings(player).size() + ")");
+                        sender.sendMessage(ChatColor.RED + warning.getReason());
+                        sender.sendMessage(ChatColor.RED + "(Issued by " + warning.getIssuer().getName() + ")");
+                    }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a player and a warning.");
                 }
