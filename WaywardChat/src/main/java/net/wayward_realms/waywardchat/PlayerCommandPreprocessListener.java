@@ -17,7 +17,9 @@ public class PlayerCommandPreprocessListener implements Listener {
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         for (String player : plugin.getSnooping()) {
-            plugin.getServer().getPlayerExact(player).sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "command" + ChatColor.WHITE + "] " + event.getPlayer().getName() + ": " + event.getMessage());
+            if (plugin.getServer().getPlayerExact(player) != null) {
+                plugin.getServer().getPlayerExact(player).sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "command" + ChatColor.WHITE + "] " + event.getPlayer().getName() + ": " + event.getMessage());
+            }
         }
         for (Channel channel : plugin.getChannels()) {
             for (String alias : channel.getCommand().getAliases()) {
