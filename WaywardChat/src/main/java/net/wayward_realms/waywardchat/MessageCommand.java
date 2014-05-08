@@ -29,8 +29,15 @@ public class MessageCommand implements CommandExecutor {
                 }
             } else if (plugin.getServer().getPlayer(args[0]) != null) {
                 Player player = plugin.getServer().getPlayer(args[0]);
-                ChatGroup chatGroup = new ChatGroup(plugin, "_pm_" + sender.getName() + "_" + player.getName(), (Player) sender, player);
-                plugin.addChatGroup(chatGroup);
+                ChatGroup chatGroup;
+                if (plugin.getChatGroup("_pm_" + sender.getName() + "_" + player.getName()) != null) {
+                    chatGroup = plugin.getChatGroup("_pm_" + sender.getName() + "_" + player.getName());
+                } else if (plugin.getChatGroup("_pm_" + player.getName() + "_" + sender.getName()) != null) {
+                    chatGroup = plugin.getChatGroup("_pm_" + player.getName() + "_" + sender.getName());
+                } else {
+                    chatGroup = new ChatGroup(plugin, "_pm_" + sender.getName() + "_" + player.getName(), (Player) sender, player);
+                    plugin.addChatGroup(chatGroup);
+                }
                 StringBuilder message = new StringBuilder();
                 for (int i = 1; i < args.length; i++) {
                     message.append(args[i]).append(" ");
