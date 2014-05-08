@@ -105,14 +105,7 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case STICK: return 1.1D;
-                case BLAZE_ROD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMagicWeaponModifier(weapon);
     }
 
     @Override

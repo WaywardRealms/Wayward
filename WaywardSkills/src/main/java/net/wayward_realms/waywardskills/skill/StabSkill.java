@@ -1,14 +1,16 @@
 package net.wayward_realms.waywardskills.skill;
 
-import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.util.vector.Vector3D;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
@@ -22,6 +24,8 @@ import java.util.Map;
 
 public class StabSkill extends AttackSkillBase {
 
+    private int reach = 16;
+
     public StabSkill() {
         setName("Stab");
         setCoolDown(60);
@@ -34,15 +38,41 @@ public class StabSkill extends AttackSkillBase {
         setCriticalMultiplier(1.5D);
     }
 
+    public int getReach() {
+        return reach;
+    }
+
+    public void setReach(int reach) {
+        this.reach = reach;
+    }
+
     @Override
     public boolean use(Player player) {
-        for (LivingEntity livingEntity : player.getWorld().getLivingEntities()) {
-            if (player.hasLineOfSight(livingEntity)) {
-                player.teleport(livingEntity);
-                livingEntity.damage(10D, player);
+        Location observerPos = player.getEyeLocation();
+        Vector3D observerDir = new Vector3D(observerPos.getDirection());
+        Vector3D observerStart = new Vector3D(observerPos);
+        Vector3D observerEnd = observerStart.add(observerDir.multiply(reach));
+        // Get nearby entities
+        for (LivingEntity target : player.getWorld().getLivingEntities()) {
+            // Bounding box of the given player
+            Vector3D targetPos = new Vector3D(target.getLocation());
+            Vector3D minimum = targetPos.add(-0.5, 0, -0.5);
+            Vector3D maximum = targetPos.add(0.5, 1.67, 0.5);
+            if (target != player && hasIntersection(observerStart, observerEnd, minimum, maximum)) {
+                player.teleport(target);
+                target.damage(10D, player);
             }
         }
         return true;
+    }
+
+    private boolean hasIntersection(Vector3D p1, Vector3D p2, Vector3D min, Vector3D max) {
+        final double epsilon = 0.0001f;
+        Vector3D d = p2.subtract(p1).multiply(0.5);
+        Vector3D e = max.subtract(min).multiply(0.5);
+        Vector3D c = p1.add(d).subtract(min.add(max).multiply(0.5));
+        Vector3D ad = d.abs();
+        return !(Math.abs(c.x) > e.x + ad.x || Math.abs(c.y) > e.y + ad.y || Math.abs(c.z) > e.z + ad.z || Math.abs(d.y * c.z - d.z * c.y) > e.y * ad.z + e.z * ad.y + epsilon || Math.abs(d.z * c.x - d.x * c.z) > e.z * ad.x + e.x * ad.z + epsilon || Math.abs(d.x * c.y - d.y * c.x) > e.x * ad.y + e.y * ad.x + epsilon);
     }
 
     @Override
@@ -57,16 +87,7 @@ public class StabSkill extends AttackSkillBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case WOOD_SWORD: return 1.1D;
-                case STONE_SWORD: return 1.2D;
-                case IRON_SWORD: return 1.3D;
-                case DIAMOND_SWORD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMeleeWeaponModifier(weapon);
     }
 
     @Override
@@ -111,6 +132,7 @@ public class StabSkill extends AttackSkillBase {
         Map<String, Object> serialised = new HashMap<>();
         serialised.put("name", getName());
         serialised.put("cooldown", getCoolDown());
+        serialised.put("reach", getReach());
         return serialised;
     }
 
@@ -118,6 +140,7 @@ public class StabSkill extends AttackSkillBase {
         StabSkill deserialised = new StabSkill();
         deserialised.setName((String) serialised.get("name"));
         deserialised.setCoolDown((int) serialised.get("cooldown"));
+        deserialised.setReach((int) serialised.get("reach"));
         return deserialised;
     }
 

@@ -30,7 +30,7 @@ public class InventoryClickListener implements Listener {
 		CharacterPlugin characterPlugin = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
 		if (event.getInventory().getTitle().equals("Skill type")) {
 			event.setCancelled(true);
-			if (event.getSlot() == 2 || event.getSlot() == 3 || event.getSlot() == 4 || event.getSlot() == 5 || event.getSlot() == 6) {
+			if (event.getSlot() >= 1 && event.getSlot() <= 13) {
 				Set<Skill> skills = new HashSet<>();
                 RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
                 if (skillsPluginProvider != null) {
@@ -72,8 +72,8 @@ public class InventoryClickListener implements Listener {
                 SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
                 for (Skill skill : skillsPlugin.getSkills()) {
                     if (skill.getIcon().equals(event.getCurrentItem())) {
-                        Character skilling = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-                        FightImpl fight = (FightImpl) plugin.getActiveFight(skilling);
+                        Character attacking = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                        FightImpl fight = (FightImpl) plugin.getActiveFight(attacking);
                         Turn turn = fight.getActiveTurn();
                         turn.setSkill(skill);
                         event.getWhoClicked().closeInventory();

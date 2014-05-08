@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import org.bukkit.ChatColor;
@@ -126,11 +127,14 @@ public class CharacterCommand implements CommandExecutor {
                         }
                     } else if (args[1].equalsIgnoreCase("gender")) {
                         if (args.length >= 3) {
-                            try {
+                            if (plugin.getGender(args[2].toUpperCase()) != null) {
                                 character.setGender(plugin.getGender(args[2].toUpperCase()));
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set character's gender to " + args[2].toUpperCase());
-                            } catch (IllegalArgumentException exception) {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Gender must be either male or female");
+                            } else {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Gender must be one of the following:");
+                                for (Gender gender : plugin.getGenders()) {
+                                    sender.sendMessage(ChatColor.RED + gender.getName());
+                                }
                             }
                         } else {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set gender [gender]");
@@ -185,8 +189,16 @@ public class CharacterCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " extenddescription [info]");
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Character list: ");
-                for (Character character : plugin.getCharacters((Player) sender)) {
+                Player player = (Player) sender;
+                if (sender.hasPermission("wayward.characters.command.character.list.others")) {
+                    if (args.length >= 2) {
+                        if (plugin.getServer().getPlayer(args[1]) != null) {
+                            player = plugin.getServer().getPlayer(args[1]);
+                        }
+                    }
+                }
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getName() + "'s character list: ");
+                for (Character character : plugin.getCharacters(player)) {
                     if (character != null) {
                         sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
                     }

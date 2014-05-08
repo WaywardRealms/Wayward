@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardmoderation;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,13 +17,15 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         for (Player player : plugin.getVanishedPlayers()) {
-            event.getPlayer().hidePlayer(player);
+            if (!plugin.canSee(event.getPlayer(), player)) event.getPlayer().hidePlayer(player);
         }
         if (plugin.isVanished(event.getPlayer())) {
+            event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You are vanished.");
             for (Player player : plugin.getServer().getOnlinePlayers()) {
-                player.hidePlayer(event.getPlayer());
+                if (!plugin.canSee(player, event.getPlayer())) player.hidePlayer(event.getPlayer());
             }
         }
+        event.getPlayer().sendMessage(plugin.getWarnings(event.getPlayer()).size() <= 0 ? ChatColor.GREEN + "You have no warnings." : ChatColor.RED + "You have " + plugin.getWarnings(event.getPlayer()) + " warnings. Use /warnings to view them.");
     }
 
 }

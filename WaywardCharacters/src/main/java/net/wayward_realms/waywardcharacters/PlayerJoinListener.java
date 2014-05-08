@@ -14,6 +14,9 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if (plugin.getActiveCharacter(event.getPlayer()) == null) {
+            plugin.setActiveCharacter(event.getPlayer(), new CharacterImpl(plugin, event.getPlayer()));
+        }
         event.getPlayer().setDisplayName(plugin.getActiveCharacter(event.getPlayer()).getName());
     }
 

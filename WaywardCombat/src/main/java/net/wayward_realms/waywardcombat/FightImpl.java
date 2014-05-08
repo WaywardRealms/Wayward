@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -21,12 +22,12 @@ import java.util.*;
 
 public class FightImpl implements Fight {
 	
-	private Map<Character, Location> characterLocations = new HashMap<>();
-	private List<Character> turnOrder = new ArrayList<>();
+	private Map<Integer, Location> characterLocations = new HashMap<>();
+	private List<Integer> turnOrder = new ArrayList<>();
 	private int turn = -1;
 	private boolean active;
     private Turn activeTurn;
-    private Map<Character, Turn> savedTurns = new HashMap<>();
+    private Map<Integer, Turn> savedTurns = new HashMap<>();
 	
 	private Inventory turnOptions = Bukkit.createInventory(null, 18, "Skill type");
 	
@@ -115,12 +116,17 @@ public class FightImpl implements Fight {
 	@Override
 	public void start() {
 		active = true;
-		for (Character character : characterLocations.keySet()) {
-			if (character.getPlayer().isOnline()) {
-				Player player = character.getPlayer().getPlayer();
-				characterLocations.put(character, player.getLocation());
-			}
-		}
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            for (int cid : characterLocations.keySet()) {
+                Character character = characterPlugin.getCharacter(cid);
+                if (character.getPlayer().isOnline()) {
+                    Player player = character.getPlayer().getPlayer();
+                    characterLocations.put(character.getId(), player.getLocation());
+                }
+            }
+        }
 		incrementTurn();
 		if (getNextTurn().getPlayer().isOnline()) {
 			activeTurn = new TurnImpl(this);
@@ -145,12 +151,17 @@ public class FightImpl implements Fight {
 
 	@Override
 	public Character getNextTurn() {
-		return turnOrder.get(turn);
+		RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+		if (characterPluginProvider != null) {
+		    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            return characterPlugin.getCharacter(turnOrder.get(turn));
+		}
+        return null;
 	}
 
 	@Override
 	public void doTurn(Turn turn) {
-        savedTurns.put((Character) turn.getAttacker(), turn);
+        savedTurns.put(((Character) turn.getAttacker()).getId(), turn);
 		doTurn(turn.getAttacker(), turn.getDefender(), turn.getWeapon(), turn.getSkill());
 	}
 
@@ -185,7 +196,7 @@ public class FightImpl implements Fight {
 			return;
 		}
 		sendMessage(ChatColor.YELLOW + "It's " + getNextTurn().getName() + "'s turn.");
-		activeTurn = savedTurns.get(getNextTurn()) == null ? new TurnImpl(this) : savedTurns.get(getNextTurn());
+		activeTurn = savedTurns.get(getNextTurn().getId()) == null ? new TurnImpl(this) : savedTurns.get(getNextTurn().getId());
 		Turn turn = getActiveTurn();
 		turn.setAttacker(getNextTurn());
 		getNextTurn().getPlayer().getPlayer().sendMessage(new String[] {ChatColor.GREEN + "It's your turn.",
@@ -198,7 +209,15 @@ public class FightImpl implements Fight {
 
 	@Override
 	public Set<Character> getCharacters() {
-		return characterLocations.keySet();
+		Set<Character> characters = new HashSet<>();
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            for (int cid : characterLocations.keySet()) {
+                characters.add(characterPlugin.getCharacter(cid));
+            }
+        }
+        return characters;
 	}
 
     @Override
@@ -207,11 +226,11 @@ public class FightImpl implements Fight {
     }
 
 	public void addCharacter(Character character) {
-		characterLocations.put(character, character.getLocation());
-		turnOrder.add(character);
+		characterLocations.put(character.getId(), character.getLocation());
+		turnOrder.add(character.getId());
 		if (character.getPlayer().isOnline()) {
 			Player player = character.getPlayer().getPlayer();
-			characterLocations.put(character, player.getLocation());
+			characterLocations.put(character.getId(), player.getLocation());
 		}
 	}
 
@@ -223,8 +242,8 @@ public class FightImpl implements Fight {
     }
 
 	public void removeCharacter(Character character) {
-		turnOrder.remove(character);
-		characterLocations.remove(character);
+		turnOrder.remove((Integer) character.getId());
+		characterLocations.remove(character.getId());
 	}
 
     @Override
@@ -254,7 +273,7 @@ public class FightImpl implements Fight {
 	
 	public void showCharacterOptions(Player player) {
 		Inventory characterOptions = Bukkit.createInventory(null, (int) Math.ceil((double) characterLocations.keySet().size() / 9D) * 9, "Target");
-		for (Character character : characterLocations.keySet()) {
+		for (Character character : getCharacters()) {
 			ItemStack characterIcon = new ItemStack(Material.LEATHER_HELMET, 1);
 			ItemMeta characterIconMeta = characterIcon.getItemMeta();
 			characterIconMeta.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());

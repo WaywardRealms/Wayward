@@ -21,6 +21,9 @@ commands:
     warnings:
         description: Views warnings
         usage: /<command> (player)
+    amivanished:
+        description: Checks whether you are vanished
+        usage: /<command>
 permissions:
     wayward.moderation.command.reputation.set:
         description: Allows you to set reputation
@@ -46,3 +49,12 @@ permissions:
     wayward.moderation.command.warn:
         description: Allows you to warn people
         default: op
+    wayward.moderation.vanish.see.tier1:
+        description: Allows you to see all vanished people
+        default: op
+    wayward.moderation.vanish.see.tier2:
+        description: Allows you to see vanished people tier 2 and below
+        default: false
+    wayward.moderation.vanish.see.tier3:
+        description: Allows you to see vanished people tier 3 and below
+        default: false

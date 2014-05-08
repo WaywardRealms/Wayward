@@ -17,8 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,23 +42,32 @@ public class CureSpell extends SpellBase {
                 players.add(player1);
             }
         }
-        int healthPotionLevel = (int) Math.round(4D / (double) players.size()) - 1;
-        for (Player player1 : players) {
-            double initialHealth = player1.getHealth();
-            player1.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, healthPotionLevel));
-            double newHealth = player1.getHealth();
-            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-            if (classesPluginProvider != null) {
-                ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                classesPlugin.giveExperience(player, (int) Math.round(newHealth - initialHealth));
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            for (Player player1 : players) {
+                double potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE) / 4D;
+                if (player.getItemInHand() != null) {
+                    switch (player.getItemInHand().getType()) {
+                        case STICK: potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE) / 2D; break;
+                        case BLAZE_ROD: potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE); break;
+                        default: break;
+                    }
+                }
+                double healthRestore = potency / (double) players.size();
+                Character target = characterPlugin.getActiveCharacter(player1);
+                double initialHealth = player1.getHealth();
+                target.setHealth(Math.min(target.getHealth() + healthRestore, target.getMaxHealth()));
+                player1.setHealth(target.getHealth());
+                double newHealth = player1.getHealth();
+                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                if (classesPluginProvider != null) {
+                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                    classesPlugin.giveExperience(player, (int) Math.round(newHealth - initialHealth));
+                }
             }
         }
         return true;
-    }
-
-    @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        return use(fight, (Character) attacking, (Character) defending, weapon);
     }
 
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {

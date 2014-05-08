@@ -69,29 +69,73 @@ public abstract class AttackSpellBase extends SpellBase {
 
     public double getArmourModifier(ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots) {
         double armourModifier = 1D;
-        switch (helmet.getType()) {
-            case LEATHER_HELMET: armourModifier -= 0.05D; break;
-            case GOLD_HELMET:case CHAINMAIL_HELMET:case IRON_HELMET: armourModifier -= 0.1D; break;
-            case DIAMOND_HELMET: armourModifier -= 0.15D; break;
+        if (helmet != null) {
+            switch (helmet.getType()) {
+                case LEATHER_HELMET:
+                    armourModifier -= 0.05D;
+                    break;
+                case GOLD_HELMET:
+                case CHAINMAIL_HELMET:
+                case IRON_HELMET:
+                    armourModifier -= 0.1D;
+                    break;
+                case DIAMOND_HELMET:
+                    armourModifier -= 0.15D;
+                    break;
+            }
         }
-        switch (chestplate.getType()) {
-            case LEATHER_CHESTPLATE: armourModifier -= 0.15D; break;
-            case GOLD_CHESTPLATE: armourModifier -= 0.25D; break;
-            case CHAINMAIL_CHESTPLATE: armourModifier -= 0.25D; break;
-            case IRON_CHESTPLATE: armourModifier -= 0.3D; break;
-            case DIAMOND_CHESTPLATE: armourModifier -= 0.4D; break;
+        if (chestplate != null) {
+            switch (chestplate.getType()) {
+                case LEATHER_CHESTPLATE:
+                    armourModifier -= 0.15D;
+                    break;
+                case GOLD_CHESTPLATE:
+                    armourModifier -= 0.25D;
+                    break;
+                case CHAINMAIL_CHESTPLATE:
+                    armourModifier -= 0.25D;
+                    break;
+                case IRON_CHESTPLATE:
+                    armourModifier -= 0.3D;
+                    break;
+                case DIAMOND_CHESTPLATE:
+                    armourModifier -= 0.4D;
+                    break;
+            }
         }
-        switch (leggings.getType()) {
-            case LEATHER_LEGGINGS: armourModifier -= 0.1D; break;
-            case GOLD_LEGGINGS: armourModifier -= 0.15D; break;
-            case CHAINMAIL_LEGGINGS: armourModifier -= 0.2D; break;
-            case IRON_LEGGINGS: armourModifier -= 0.25D; break;
-            case DIAMOND_LEGGINGS: armourModifier -= 0.3D; break;
+        if (leggings != null) {
+            switch (leggings.getType()) {
+                case LEATHER_LEGGINGS:
+                    armourModifier -= 0.1D;
+                    break;
+                case GOLD_LEGGINGS:
+                    armourModifier -= 0.15D;
+                    break;
+                case CHAINMAIL_LEGGINGS:
+                    armourModifier -= 0.2D;
+                    break;
+                case IRON_LEGGINGS:
+                    armourModifier -= 0.25D;
+                    break;
+                case DIAMOND_LEGGINGS:
+                    armourModifier -= 0.3D;
+                    break;
+            }
         }
-        switch (boots.getType()) {
-            case LEATHER_BOOTS:case GOLD_BOOTS:case CHAINMAIL_BOOTS: armourModifier -= 0.05D; break;
-            case IRON_BOOTS: armourModifier -= 0.1D; break;
-            case DIAMOND_BOOTS: armourModifier -= 0.15D; break;
+        if (boots != null) {
+            switch (boots.getType()) {
+                case LEATHER_BOOTS:
+                case GOLD_BOOTS:
+                case CHAINMAIL_BOOTS:
+                    armourModifier -= 0.05D;
+                    break;
+                case IRON_BOOTS:
+                    armourModifier -= 0.1D;
+                    break;
+                case DIAMOND_BOOTS:
+                    armourModifier -= 0.15D;
+                    break;
+            }
         }
         return Math.max(armourModifier, 0.01D);
     }

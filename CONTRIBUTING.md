@@ -21,7 +21,7 @@ Branches
 * Keep branches topic-related! That means no strange commits changing things unrelated to the branch topic.
 * We use [nvie's branching model](http://nvie.com/posts/a-successful-git-branching-model/)
 * Feature branches should be prefixed with feature/
-* Bugfix branches should be prefixed with bug/
+* Bugfix branches should be prefixed with bugfix/
 * Hotfix branches should be prefixed with hotfix/
 * Release branches should be prefixed with release/
 

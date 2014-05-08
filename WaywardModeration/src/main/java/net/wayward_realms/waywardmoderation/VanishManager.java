@@ -22,7 +22,7 @@ public class VanishManager {
         if (vanished) {
             this.vanished.add(player.getName());
             for (Player player1 : plugin.getServer().getOnlinePlayers()) {
-                player1.hidePlayer(player);
+                if (!canSee(player1, player)) player1.hidePlayer(player);
             }
         } else {
             this.vanished.remove(player.getName());
@@ -40,6 +40,30 @@ public class VanishManager {
             }
         }
         return vanishedPlayers;
+    }
+
+    public boolean canSee(Player player, Player target) {
+        if (!vanished.contains(target.getName())) return true;
+        int playerTier = 4, targetTier = 4;
+        if (player.hasPermission("wayward.moderation.vanish.see.tier3")) {
+            playerTier = 3;
+        }
+        if (target.hasPermission("wayward.moderation.vanish.see.tier3")) {
+            targetTier = 3;
+        }
+        if (player.hasPermission("wayward.moderation.vanish.see.tier2")) {
+            playerTier = 2;
+        }
+        if (target.hasPermission("wayward.moderation.vanish.see.tier2")) {
+            targetTier = 2;
+        }
+        if (player.hasPermission("wayward.moderation.vanish.see.tier1")) {
+            playerTier = 1;
+        }
+        if (target.hasPermission("wayward.moderation.vanish.see.tier1")) {
+            targetTier = 1;
+        }
+        return playerTier >= targetTier;
     }
 
 }
