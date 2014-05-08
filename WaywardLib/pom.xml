@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.wayward-realms</groupId>
         <artifactId>wayward</artifactId>
-        <version>0.3.4-SNAPSHOT</version>
+        <version>0.4.0</version>
     </parent>
     <artifactId>waywardlib</artifactId>
     <name>WaywardLib</name>
