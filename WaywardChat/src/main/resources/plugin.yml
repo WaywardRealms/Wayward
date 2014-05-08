@@ -21,7 +21,7 @@ commands:
     message:
         description: Sends a private message to a group or individual
         usage: /<command> [player|group] [message]
-        aliases: [msg, m]
+        aliases: [msg, m, pm]
     reply:
         description: Replies to the last group or player to send you a message
         usage: /<command> [message]
