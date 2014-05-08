@@ -48,9 +48,9 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
 		for (Fight fight : fights) {
 			if (fight != null) {
 				if (fight.getCombatants() != null) {
-					if (fight.getCombatants().contains(character)) {
-						return fight;
-					}
+                    for (Character character1 : fight.getCharacters()) {
+                        if (character1.getId() == character.getId()) return fight;
+                    }
 				}
 			}
 		}

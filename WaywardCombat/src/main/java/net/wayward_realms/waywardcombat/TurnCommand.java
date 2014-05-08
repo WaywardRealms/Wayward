@@ -28,7 +28,7 @@ public class TurnCommand implements CommandExecutor {
                 if (fight.isActive()) {
                     Turn turn = fight.getActiveTurn();
                     if (args.length > 0) {
-                        if (turn.getAttacker() == character) {
+                        if (((Character) turn.getAttacker()).getId() == character.getId()) {
                             if (args[0].equalsIgnoreCase("skill")) {
                                 fight.showTurnOptions(player);
                             } else if (args[0].equalsIgnoreCase("target")) {

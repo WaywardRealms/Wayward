@@ -72,8 +72,8 @@ public class InventoryClickListener implements Listener {
                 SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
                 for (Skill skill : skillsPlugin.getSkills()) {
                     if (skill.getIcon().equals(event.getCurrentItem())) {
-                        Character skilling = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-                        FightImpl fight = (FightImpl) plugin.getActiveFight(skilling);
+                        Character attacking = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                        FightImpl fight = (FightImpl) plugin.getActiveFight(attacking);
                         Turn turn = fight.getActiveTurn();
                         turn.setSkill(skill);
                         event.getWhoClicked().closeInventory();
