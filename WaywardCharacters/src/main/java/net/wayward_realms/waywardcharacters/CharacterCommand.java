@@ -192,8 +192,8 @@ public class CharacterCommand implements CommandExecutor {
                 Player player = (Player) sender;
                 if (sender.hasPermission("wayward.characters.command.character.list.others")) {
                     if (args.length >= 2) {
-                        if (plugin.getServer().getPlayer(args[2]) != null) {
-                            player = plugin.getServer().getPlayer(args[2]);
+                        if (plugin.getServer().getPlayer(args[1]) != null) {
+                            player = plugin.getServer().getPlayer(args[1]);
                         }
                     }
                 }
