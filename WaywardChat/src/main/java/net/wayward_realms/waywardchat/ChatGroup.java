@@ -39,7 +39,7 @@ public class ChatGroup {
     }
 
     public void sendMessage(Player sender, String message) {
-        String format = ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + (name.startsWith("_pm_") ? name : "private message") + ChatColor.WHITE + "] " + ChatColor.GRAY + sender.getName() + ": " + message;
+        String format = ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + (name.startsWith("_pm_") ? "private message" : name) + ChatColor.WHITE + "] " + ChatColor.GRAY + sender.getName() + ": " + message;
         for (String player : players) {
             plugin.getServer().getPlayerExact(player).sendMessage(format);
         }
