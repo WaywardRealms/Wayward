@@ -20,8 +20,8 @@ public class ReplyCommand implements CommandExecutor {
             if (plugin.getLastPrivateMessage((Player) sender) != null) {
                 if (args.length >= 1) {
                     StringBuilder message = new StringBuilder();
-                    for (int i = 1; i < args.length; i++) {
-                        message.append(args[i]).append(" ");
+                    for (String arg : args) {
+                        message.append(arg).append(" ");
                     }
                     plugin.sendPrivateMessage((Player) sender, plugin.getLastPrivateMessage((Player) sender), message.toString());
                 } else {
