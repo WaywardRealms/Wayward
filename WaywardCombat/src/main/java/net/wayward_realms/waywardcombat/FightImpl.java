@@ -242,7 +242,7 @@ public class FightImpl implements Fight {
     }
 
 	public void removeCharacter(Character character) {
-		turnOrder.remove(character.getId());
+		turnOrder.remove((Integer) character.getId());
 		characterLocations.remove(character.getId());
 	}
 
