@@ -63,7 +63,7 @@ public class VanishManager {
         if (target.hasPermission("wayward.moderation.vanish.see.tier1")) {
             targetTier = 1;
         }
-        return playerTier >= targetTier;
+        return playerTier <= targetTier;
     }
 
 }
