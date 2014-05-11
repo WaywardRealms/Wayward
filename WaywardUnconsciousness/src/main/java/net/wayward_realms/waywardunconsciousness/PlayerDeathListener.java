@@ -1,12 +1,9 @@
 package net.wayward_realms.waywardunconsciousness;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,59 +19,23 @@ public class PlayerDeathListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         event.setDeathMessage("");
+        plugin.setDeathCause(event.getEntity(), event.getEntity().getLastDamageCause().getCause());
         if (event.getEntity().getLastDamageCause() != null) {
             if (event.getEntity().getLastDamageCause().getCause() != null) {
-                switch (event.getEntity().getLastDamageCause().getCause()) {
-                    case FIRE:
-                    case FIRE_TICK:
-                    case LAVA:
-                    case DROWNING:
-                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                        if (characterPluginProvider != null) {
-                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                            characterPlugin.getActiveCharacter(event.getEntity()).setDead(true);
-                            characterPlugin.setActiveCharacter(event.getEntity(), characterPlugin.createNewCharacter(event.getEntity()));
-                            event.getDrops().clear();
-                            event.getEntity().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your death was determined to be a fatality, and a new character has been created for you.");
-                        }
-                        break;
-                    case FALL:
-                        if (event.getEntity().getFallDistance() >= 64) {
-                            characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                            if (characterPluginProvider != null) {
-                                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                                characterPlugin.getActiveCharacter(event.getEntity()).setDead(true);
-                                characterPlugin.setActiveCharacter(event.getEntity(), characterPlugin.createNewCharacter(event.getEntity()));
-                                event.getDrops().clear();
-                                event.getEntity().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your death was determined to be a fatality, and a new character has been created for you.");
-                            }
-                        }
-                        break;
-                    default:
-                        plugin.setUnconscious(event.getEntity(), true);
-                        plugin.setDeathLocation(event.getEntity(), event.getEntity().getLocation());
-                        plugin.setDeathTime(event.getEntity());
-                        List<ItemStack> drops = new ArrayList<>(event.getDrops());
-                        plugin.setDeathInventory(event.getEntity(), drops);
-                        event.getDrops().clear();
-                        break;
+                if (!plugin.isDeath(event.getEntity().getLastDamageCause().getCause())) {
+                    plugin.setUnconscious(event.getEntity(), true);
                 }
             } else {
                 plugin.setUnconscious(event.getEntity(), true);
-                plugin.setDeathLocation(event.getEntity(), event.getEntity().getLocation());
-                plugin.setDeathTime(event.getEntity());
-                List<ItemStack> drops = new ArrayList<>(event.getDrops());
-                plugin.setDeathInventory(event.getEntity(), drops);
-                event.getDrops().clear();
             }
         } else {
             plugin.setUnconscious(event.getEntity(), true);
-            plugin.setDeathLocation(event.getEntity(), event.getEntity().getLocation());
-            plugin.setDeathTime(event.getEntity());
-            List<ItemStack> drops = new ArrayList<>(event.getDrops());
-            plugin.setDeathInventory(event.getEntity(), drops);
-            event.getDrops().clear();
         }
+        plugin.setDeathLocation(event.getEntity(), event.getEntity().getLocation());
+        plugin.setDeathTime(event.getEntity());
+        List<ItemStack> drops = new ArrayList<>(event.getDrops());
+        plugin.setDeathInventory(event.getEntity(), drops);
+        event.getDrops().clear();
     }
 
 }
