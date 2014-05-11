@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.death.DeathPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -11,6 +12,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,6 +31,8 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
     private YamlConfiguration deathTimes;
     private File deathInventoriesFile;
     private YamlConfiguration deathInventories;
+    private File deathCausesFile;
+    private YamlConfiguration deathCauses;
 
     @Override
     public void onEnable() {
@@ -67,14 +71,16 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
 
     @Override
     public void loadState() {
-        this.deathLocationsFile = new File(this.getDataFolder().getPath() + File.separator + "death-locations.yml");
+        this.deathLocationsFile = new File(getDataFolder(), "death-locations.yml");
         this.deathLocations = new YamlConfiguration();
-        this.deathTimesFile = new File(this.getDataFolder().getPath() + File.separator + "death-times.yml");
+        this.deathTimesFile = new File(getDataFolder(), "death-times.yml");
         this.deathTimes = new YamlConfiguration();
-        this.deathInventoriesFile = new File(this.getDataFolder().getPath() + File.separator + "death-inventories.yml");
+        this.deathInventoriesFile = new File(getDataFolder(), "death-inventories.yml");
         this.deathInventories = new YamlConfiguration();
-        if (!this.getDataFolder().exists()) {
-            this.getDataFolder().mkdir();
+        this.deathCausesFile = new File(getDataFolder(), "death-causes.yml");
+        this.deathCauses = new YamlConfiguration();
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdir();
         }
         if (!deathLocationsFile.exists()) {
             try {
@@ -97,10 +103,18 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
                 exception.printStackTrace();
             }
         }
+        if (!deathCausesFile.exists()) {
+            try {
+                deathCausesFile.createNewFile();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
         try {
             deathLocations.load(deathLocationsFile);
             deathTimes.load(deathTimesFile);
             deathInventories.load(deathInventoriesFile);
+            deathCauses.load(deathCausesFile);
         } catch (IOException | InvalidConfigurationException exception) {
             exception.printStackTrace();
         }
@@ -150,6 +164,60 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public void setDeathCause(OfflinePlayer player, EntityDamageEvent.DamageCause cause) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            setDeathCause(characterPlugin.getActiveCharacter(player), cause);
+        }
+    }
+
+    public void setDeathCause(Character character, EntityDamageEvent.DamageCause cause) {
+        deathCauses.set("" + character.getId(), cause.toString());
+        try {
+            deathCauses.save(deathCausesFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public EntityDamageEvent.DamageCause getDeathCause(OfflinePlayer player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            return getDeathCause(characterPlugin.getActiveCharacter(player));
+        }
+        return null;
+    }
+
+    public EntityDamageEvent.DamageCause getDeathCause(Character character) {
+        return EntityDamageEvent.DamageCause.valueOf(deathCauses.getString("" + character.getId()));
+    }
+
+    public void removeDeathCause(OfflinePlayer player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            removeDeathCause(characterPlugin.getActiveCharacter(player));
+        }
+    }
+
+    public void removeDeathCause(Character character) {
+        deathCauses.set("" + character.getId(), null);
+        try {
+            deathCauses.save(deathCausesFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public boolean isDeath(EntityDamageEvent.DamageCause damageCause) {
+        return damageCause == EntityDamageEvent.DamageCause.LAVA ||
+                damageCause == EntityDamageEvent.DamageCause.FIRE ||
+                damageCause == EntityDamageEvent.DamageCause.FIRE_TICK ||
+                damageCause == EntityDamageEvent.DamageCause.DROWNING;
     }
 
     @Override
