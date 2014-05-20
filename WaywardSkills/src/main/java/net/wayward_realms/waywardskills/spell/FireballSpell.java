@@ -35,14 +35,14 @@ public class FireballSpell extends AttackSpellBase {
         setDefenceStat(MAGIC_DEFENCE);
     }
 
-	@Override
-	public ItemStack getIcon() {
-		ItemStack icon = new ItemStack(Material.BLAZE_POWDER, 1);
-		ItemMeta iconMeta = icon.getItemMeta();
-		iconMeta.setDisplayName("Fireball");
-		icon.setItemMeta(iconMeta);
-		return icon;
-	}
+    @Override
+    public ItemStack getIcon() {
+        ItemStack icon = new ItemStack(Material.BLAZE_POWDER, 1);
+        ItemMeta iconMeta = icon.getItemMeta();
+        iconMeta.setDisplayName("Fireball");
+        icon.setItemMeta(iconMeta);
+        return icon;
+    }
 
     @Override
     public boolean use(Player player) {
@@ -71,27 +71,27 @@ public class FireballSpell extends AttackSpellBase {
     }
 
     public boolean canUse(Class clazz, int level) {
-		return clazz.getSkillPointBonus(SkillType.MAGIC_OFFENCE) * level >= 30;
-	}
+        return clazz.getSkillPointBonus(SkillType.MAGIC_OFFENCE) * level >= 30;
+    }
 
     @Override
     public boolean canUse(Combatant combatant) {
         return canUse((Character) combatant);
     }
 
-	public boolean canUse(Character character) {
-		return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 30;
-	}
+    public boolean canUse(Character character) {
+        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 30;
+    }
 
-	@Override
-	public boolean canUse(OfflinePlayer player) {
+    @Override
+    public boolean canUse(OfflinePlayer player) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             return canUse(characterPlugin.getActiveCharacter(player));
         }
-		return false;
-	}
+        return false;
+    }
 
     @Override
     public Map<String, Object> serialize() {

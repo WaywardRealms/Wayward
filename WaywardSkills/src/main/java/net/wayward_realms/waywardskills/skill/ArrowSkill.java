@@ -34,14 +34,14 @@ public class ArrowSkill extends AttackSkillBase {
         setPower(50);
     }
 
-	@Override
-	public ItemStack getIcon() {
-		ItemStack icon = new ItemStack(Material.ARROW, 1);
-		ItemMeta iconMeta = icon.getItemMeta();
-		iconMeta.setDisplayName("Arrow");
-		icon.setItemMeta(iconMeta);
-		return icon;
-	}
+    @Override
+    public ItemStack getIcon() {
+        ItemStack icon = new ItemStack(Material.ARROW, 1);
+        ItemMeta iconMeta = icon.getItemMeta();
+        iconMeta.setDisplayName("Arrow");
+        icon.setItemMeta(iconMeta);
+        return icon;
+    }
 
     @Override
     public boolean use(Player player) {
@@ -82,8 +82,8 @@ public class ArrowSkill extends AttackSkillBase {
     }
 
     public boolean canUse(Class clazz, int level) {
-		return clazz.getSkillPointBonus(SkillType.RANGED_OFFENCE) * level >= 1;
-	}
+        return clazz.getSkillPointBonus(SkillType.RANGED_OFFENCE) * level >= 1;
+    }
 
     @Override
     public boolean canUse(Combatant combatant) {
@@ -91,19 +91,19 @@ public class ArrowSkill extends AttackSkillBase {
     }
 
     @Override
-	public boolean canUse(Character character) {
-		return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 1;
-	}
+    public boolean canUse(Character character) {
+        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 1;
+    }
 
-	@Override
-	public boolean canUse(OfflinePlayer player) {
+    @Override
+    public boolean canUse(OfflinePlayer player) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-	}
+    }
 
     @Override
     public Map<String, Object> serialize() {

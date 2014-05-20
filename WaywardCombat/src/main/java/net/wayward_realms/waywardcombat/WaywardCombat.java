@@ -13,65 +13,65 @@ import java.util.Set;
 
 public class WaywardCombat extends JavaPlugin implements CombatPlugin {
 
-	private Set<Fight> fights = new HashSet<>();
+    private Set<Fight> fights = new HashSet<>();
 
-	@Override
-	public void onEnable() {
-		registerListeners(new InventoryClickListener(this));
-		getCommand("fight").setExecutor(new FightCommand(this));
-		getCommand("turn").setExecutor(new TurnCommand(this));
-		getCommand("flee").setExecutor(new FleeCommand(this));
-	}
+    @Override
+    public void onEnable() {
+        registerListeners(new InventoryClickListener(this));
+        getCommand("fight").setExecutor(new FightCommand(this));
+        getCommand("turn").setExecutor(new TurnCommand(this));
+        getCommand("flee").setExecutor(new FleeCommand(this));
+    }
 
-	@Override
-	public String getPrefix() {
-		//return "" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.BLUE + "WaywardCombat" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "| " + ChatColor.RESET;
+    @Override
+    public String getPrefix() {
+        //return "" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.BLUE + "WaywardCombat" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "| " + ChatColor.RESET;
         return "";
-	}
-	
-	@Override
-	public void loadState() {
-		
-	}
-	
-	@Override
-	public void saveState() {
-		
-	}
+    }
 
-	@Override
-	public Collection<Fight> getActiveFights() {
-		return fights;
-	}
+    @Override
+    public void loadState() {
 
-	public Fight getActiveFight(Character character) {
-		for (Fight fight : fights) {
-			if (fight != null) {
-				if (fight.getCombatants() != null) {
+    }
+
+    @Override
+    public void saveState() {
+
+    }
+
+    @Override
+    public Collection<Fight> getActiveFights() {
+        return fights;
+    }
+
+    public Fight getActiveFight(Character character) {
+        for (Fight fight : fights) {
+            if (fight != null) {
+                if (fight.getCombatants() != null) {
                     for (Character character1 : fight.getCharacters()) {
                         if (character1.getId() == character.getId()) return fight;
                     }
-				}
-			}
-		}
-		return null;
-	}
-	
-	private void registerListeners(Listener... listeners) {
-		for (Listener listener : listeners) {
-			this.getServer().getPluginManager().registerEvents(listener, this);
-		}
-	}
+                }
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public void addFight(Fight fight) {
-		fights.add(fight);
-	}
+    private void registerListeners(Listener... listeners) {
+        for (Listener listener : listeners) {
+            this.getServer().getPluginManager().registerEvents(listener, this);
+        }
+    }
 
-	@Override
-	public void removeFight(Fight fight) {
-		fights.remove(fight);
-	}
+    @Override
+    public void addFight(Fight fight) {
+        fights.add(fight);
+    }
+
+    @Override
+    public void removeFight(Fight fight) {
+        fights.remove(fight);
+    }
 
     @Override
     public Fight getActiveFight(Combatant combatant) {
