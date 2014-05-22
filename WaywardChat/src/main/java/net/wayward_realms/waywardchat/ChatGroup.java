@@ -41,7 +41,9 @@ public class ChatGroup {
     public void sendMessage(Player sender, String message) {
         String format = ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + (name.startsWith("_pm_") ? "private message" : name) + ChatColor.WHITE + "] " + ChatColor.GRAY + sender.getName() + ": " + message;
         for (String player : players) {
-            plugin.getServer().getPlayerExact(player).sendMessage(format);
+            if (plugin.getServer().getPlayerExact(player) != null) {
+                plugin.getServer().getPlayerExact(player).sendMessage(format);
+            }
         }
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (plugin.isSnooping(player)) player.sendMessage(format);
