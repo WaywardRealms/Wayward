@@ -25,6 +25,7 @@ public class PlayerDeathListener implements Listener {
         List<ItemStack> drops = new ArrayList<>(event.getDrops());
         plugin.setDeathInventory(event.getEntity(), drops);
         event.getDrops().clear();
+        event.getEntity().setBedSpawnLocation(null, true);
     }
 
 }
