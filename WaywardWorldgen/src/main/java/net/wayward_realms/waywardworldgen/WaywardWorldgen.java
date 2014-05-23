@@ -54,6 +54,8 @@ public class WaywardWorldgen extends JavaPlugin implements WorldgenPlugin {
         pockets.add(new Pocket(QUARTZ_ORE, 4, 30));
         pockets.add(new Pocket(GLOWSTONE, 8, 36));
         miningConfig.set("pockets", pockets);
+        miningConfig.set("cave-height", 192);
+        miningConfig.set("cave-centre", 128);
         try {
             miningConfig.save(miningFile);
         } catch (IOException exception) {
