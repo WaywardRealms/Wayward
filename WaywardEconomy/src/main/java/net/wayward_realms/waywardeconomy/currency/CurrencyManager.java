@@ -18,7 +18,6 @@ public class CurrencyManager {
     private WaywardEconomy plugin;
     private Currency primaryCurrency;
     private Map<String, Currency> currencies = new HashMap<>();
-    private Map<Integer, Map<Currency, Integer>> money = new HashMap<>();
 
     public CurrencyManager(WaywardEconomy plugin) {
         this.plugin = plugin;
@@ -49,19 +48,25 @@ public class CurrencyManager {
     }
 
     public int getMoney(Character character, Currency currency) {
-        if (money.get(character.getId()) != null) {
-            if (money.get(character.getId()).get(currency) != null) {
-                return money.get(character.getId()).get(currency);
-            }
+        File characterDirectory = new File(plugin.getDataFolder(), "characters");
+        File characterFile = new File(characterDirectory, character.getId() + ".yml");
+        if (characterFile.exists()) {
+            YamlConfiguration characterSave = YamlConfiguration.loadConfiguration(characterFile);
+            return characterSave.getInt("currencies." + currency.getName(), currency.getDefaultAmount());
         }
         return currency.getDefaultAmount();
     }
 
     public void setMoney(Character character, Currency currency, int amount) {
-        if (money.get(character.getId()) == null) {
-            money.put(character.getId(), new HashMap<Currency, Integer>());
+        File characterDirectory = new File(plugin.getDataFolder(), "characters");
+        File characterFile = new File(characterDirectory, character.getId() + ".yml");
+        YamlConfiguration characterSave = YamlConfiguration.loadConfiguration(characterFile);
+        characterSave.set("currencies." + currency.getName(), amount);
+        try {
+            characterSave.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-        money.get(character.getId()).put(currency, amount);
     }
 
     public void addMoney(Character character, Currency currency, int amount) {
@@ -102,26 +107,6 @@ public class CurrencyManager {
             currencies.put(currency.getName(), currency);
         }
         setPrimaryCurrency(getCurrency(plugin.getConfig().getString("currency.primary")));
-        File characterDirectory = new File(plugin.getDataFolder(), "characters");
-        if (characterDirectory.exists()) {
-            for (File characterFile : characterDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.getName().endsWith(".yml");
-                }
-            })) {
-                YamlConfiguration characterConfig = new YamlConfiguration();
-                try {
-                    characterConfig.load(characterFile);
-                } catch (IOException | InvalidConfigurationException exception) {
-                    exception.printStackTrace();
-                }
-                money.put(Integer.parseInt(characterFile.getName().replace(".yml", "")), new HashMap<Currency, Integer>());
-                for (String currencyName : characterConfig.getConfigurationSection("currencies").getKeys(false)) {
-                    money.get(Integer.parseInt(characterFile.getName().replace(".yml", ""))).put(plugin.getCurrency(currencyName), characterConfig.getInt("currencies." + currencyName));
-                }
-            }
-        }
     }
 
     public void saveState() {
@@ -137,26 +122,6 @@ public class CurrencyManager {
             currencyConfig.set("currency", currency);
             try {
                 currencyConfig.save(new File(currencyDirectory, currency.getName() + ".yml"));
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        File characterDirectory = new File(plugin.getDataFolder(), "characters");
-        if (!characterDirectory.isDirectory()) {
-            characterDirectory.delete();
-        }
-        if (!characterDirectory.exists()) {
-            characterDirectory.mkdir();
-        }
-        for (Map.Entry<Integer, Map<Currency, Integer>> entry : money.entrySet()) {
-            YamlConfiguration characterConfig = new YamlConfiguration();
-            Map<String, Integer> currencies = new HashMap<>();
-            for (Map.Entry<Currency,Integer> currencyEntry : entry.getValue().entrySet()) {
-                currencies.put(currencyEntry.getKey().getName(), currencyEntry.getValue());
-            }
-            characterConfig.set("currencies", currencies);
-            try {
-                characterConfig.save(new File(characterDirectory, entry.getKey() + ".yml"));
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
