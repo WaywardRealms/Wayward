@@ -59,6 +59,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             setPlayerChannel(player, getChannel(getConfig().getString("default-channel").toLowerCase()));
         }
         setupBroadcasts();
+        setupChatGroupDisposal();
     }
 
     @Override
@@ -454,6 +455,21 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public ChatGroup getLastPrivateMessage(Player player) {
         return lastPrivateMessage.get(player.getName());
+    }
+
+    public Collection<ChatGroup> getChatGroups() {
+        return chatGroups.values();
+    }
+
+    public void setupChatGroupDisposal() {
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                for (ChatGroup chatGroup : chatGroups.values()) {
+                    chatGroup.disposeIfUnused();
+                }
+            }
+        }, 0L, 900000L);
     }
 
 }

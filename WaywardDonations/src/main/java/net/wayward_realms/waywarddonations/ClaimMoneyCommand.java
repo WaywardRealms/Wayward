@@ -22,13 +22,12 @@ public class ClaimMoneyCommand implements CommandExecutor {
         for (DonationRank rank : plugin.getDonationRanks((Player) sender)) {
             money += rank.getMoney();
         }
-        int moneyAlreadyClaimed = plugin.getConfig().getInt(sender.getName() + ".money-claimed", 0);
+        int moneyAlreadyClaimed = plugin.getMoneyClaimed((Player) sender);
         money -= moneyAlreadyClaimed;
         if (money > 0) {
             EconomyPlugin economyPlugin = plugin.getServer().getServicesManager().getRegistration(EconomyPlugin.class).getProvider();
             economyPlugin.addMoney((Player) sender, money);
-            plugin.getConfig().set(sender.getName() + ".money-claimed", money);
-            plugin.saveConfig();
+            plugin.setMoneyClaimed((Player) sender, money);
         } else {
             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You may not currently claim any more money.");
         }

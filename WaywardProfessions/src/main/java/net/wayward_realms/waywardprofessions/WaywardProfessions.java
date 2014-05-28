@@ -3,6 +3,7 @@ package net.wayward_realms.waywardprofessions;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -12,17 +13,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.bukkit.Material.*;
 
 public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin {
-
-    private Map<Integer, ProfessionInfo> professionInfo = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -46,36 +42,32 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     @Override
     public int getMaxToolDurability(Character character, ToolType toolType) {
-        initialiseProfessionInfo(character);
-        return professionInfo.get(character.getId()).getMaxToolDurability(toolType);
+        return getProfessionInfo(character.getId()).getMaxToolDurability(toolType);
     }
 
     public void setMaxToolDurability(Character character, ToolType toolType, int durability) {
-        initialiseProfessionInfo(character);
         if (getMaxToolDurability(character, toolType) < durability) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (durability - getMaxToolDurability(character, toolType)) + " maximum " + toolType.toString().toLowerCase().replace('_', ' ') + " durability");
             }
         }
-        professionInfo.get(character.getId()).setMaxToolDurability(toolType, durability);
+        getProfessionInfo(character.getId()).setMaxToolDurability(toolType, durability);
     }
 
     @Override
     public int getCraftEfficiency(Character character, Material material) {
         if (!canGainCraftEfficency(material)) return 0;
-        initialiseProfessionInfo(character);
-        return professionInfo.get(character.getId()).getCraftEfficiency(material);
+        return getProfessionInfo(character.getId()).getCraftEfficiency(material);
     }
 
     public void setCraftEfficiency(Character character, Material material, int efficiency) {
         if (!canGainCraftEfficency(material)) return;
-        initialiseProfessionInfo(character);
         if (getCraftEfficiency(character, material) < efficiency && getCraftEfficiency(character, material) < 100) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getCraftEfficiency(character, material)) + " " + material.toString().toLowerCase().replace('_', ' ') + " crafting efficiency");
             }
         }
-        professionInfo.get(character.getId()).setCraftEfficiency(material, efficiency);
+        getProfessionInfo(character.getId()).setCraftEfficiency(material, efficiency);
     }
 
     public boolean canGainCraftEfficency(Material material) {
@@ -95,19 +87,17 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
     @Override
     public int getMiningEfficiency(Character character, Material material) {
         if (!canGainMiningEfficiency(material)) return 0;
-        initialiseProfessionInfo(character);
-        return professionInfo.get(character.getId()).getMiningEfficiency(material);
+        return getProfessionInfo(character.getId()).getMiningEfficiency(material);
     }
 
     public void setMiningEfficiency(Character character, Material material, int efficiency) {
         if (!canGainMiningEfficiency(material)) return;
-        initialiseProfessionInfo(character);
         if (getMiningEfficiency(character, material) < efficiency && getMiningEfficiency(character, material) < 100) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getMiningEfficiency(character, material)) + " " + material.toString().toLowerCase().replace('_', ' ') + " mining efficiency");
             }
         }
-        professionInfo.get(character.getId()).setMiningEfficiency(material, efficiency);
+        getProfessionInfo(character.getId()).setMiningEfficiency(material, efficiency);
     }
 
     public boolean canGainMiningEfficiency(Material material) {
@@ -126,24 +116,16 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     @Override
     public int getBrewingEfficiency(Character character) {
-        initialiseProfessionInfo(character);
-        return professionInfo.get(character.getId()).getBrewingEfficiency();
+        return getProfessionInfo(character.getId()).getBrewingEfficiency();
     }
 
     public void setBrewingEfficiency(Character character, int efficiency) {
-        initialiseProfessionInfo(character);
         if (getBrewingEfficiency(character) < efficiency && getBrewingEfficiency(character) < 100) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getBrewingEfficiency(character)) + " brewing efficiency");
             }
         }
-        professionInfo.get(character.getId()).setBrewingEfficiency(efficiency);
-    }
-
-    private void initialiseProfessionInfo(Character character) {
-        if (professionInfo.get(character.getId()) == null) {
-            professionInfo.put(character.getId(), new ProfessionInfo());
-        }
+        getProfessionInfo(character.getId()).setBrewingEfficiency(efficiency);
     }
 
     @Override
@@ -185,12 +167,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
         }
         File characterDirectory = new File(getDataFolder(), "characters");
         if (characterDirectory.exists()) {
-            for (File file : characterDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.getPath().endsWith(".yml");
-                }
-            })) {
+            for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
                 YamlConfiguration characterConfig = new YamlConfiguration();
                 try {
                     characterConfig.load(file);
@@ -200,25 +177,22 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
                 ProfessionInfo professionInfo = (ProfessionInfo) characterConfig.get("profession-info");
                 try {
                     int characterId = Integer.parseInt(file.getName().replace(".yml", ""));
-                    this.professionInfo.put(characterId, professionInfo);
+                    professionInfo.setCharacterId(characterId);
+                    professionInfo.toNewProfessionInfo().save();
                 } catch (NumberFormatException ignore) {}
             }
+            characterDirectory.delete();
         }
     }
 
     @Override
     public void saveState() {
-        File characterDirectory = new File(getDataFolder(), "characters");
-        for (Map.Entry<Integer, ProfessionInfo> entry : professionInfo.entrySet()) {
-            File professionInfoFile = new File(characterDirectory, entry.getKey() + ".yml");
-            YamlConfiguration professionInfoConfig = new YamlConfiguration();
-            professionInfoConfig.set("profession-info", entry.getValue());
-            try {
-                professionInfoConfig.save(professionInfoFile);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
+
+    }
+
+    private NewProfessionInfo getProfessionInfo(int characterId) {
+        File characterDirectory = new File(getDataFolder(), "characters-new");
+        return new NewProfessionInfo(new File(characterDirectory, characterId + ".yml"));
     }
 
 }

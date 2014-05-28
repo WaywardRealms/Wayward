@@ -14,6 +14,8 @@ public class ChatGroup {
     private Set<String> players = new HashSet<>();
     private Set<String> invited = new HashSet<>();
 
+    private long lastUsed;
+
     public ChatGroup(WaywardChat plugin, String name, Player... players) {
         this.plugin = plugin;
         this.name = name.toLowerCase();
@@ -39,6 +41,7 @@ public class ChatGroup {
     }
 
     public void sendMessage(Player sender, String message) {
+        lastUsed = System.currentTimeMillis();
         String format = ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + (name.startsWith("_pm_") ? "private message" : name) + ChatColor.WHITE + "] " + ChatColor.GRAY + sender.getName() + ": " + message;
         for (String player : players) {
             if (plugin.getServer().getPlayerExact(player) != null) {
@@ -66,6 +69,18 @@ public class ChatGroup {
 
     public void uninvitePlayer(Player player) {
         invited.remove(player.getName());
+    }
+
+    public void disposeIfUnused() {
+        boolean playersOffline = true;
+        for (String player : players) {
+            if (plugin.getServer().getPlayerExact(player) != null) {
+                playersOffline = false;
+            }
+        }
+        if (playersOffline || System.currentTimeMillis() - lastUsed > 1800000) {
+            plugin.removeChatGroup(getName());
+        }
     }
 
 }

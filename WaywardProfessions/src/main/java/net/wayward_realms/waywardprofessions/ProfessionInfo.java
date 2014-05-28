@@ -1,14 +1,19 @@
 package net.wayward_realms.waywardprofessions;
 
+import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
+import java.io.File;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfessionInfo implements ConfigurationSerializable {
+
+    private int characterId;
 
     private Map<ToolType, Integer> maxToolDurability = new EnumMap<>(ToolType.class);
     private Map<Material, Integer> craftEfficiency = new EnumMap<>(Material.class);
@@ -50,6 +55,14 @@ public class ProfessionInfo implements ConfigurationSerializable {
         this.brewingEfficiency = Math.min(efficiency, 100);
     }
 
+    public void setCharacterId(int characterId) {
+        this.characterId = characterId;
+    }
+
+    public int getCharacterId() {
+        return characterId;
+    }
+
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
@@ -86,4 +99,11 @@ public class ProfessionInfo implements ConfigurationSerializable {
         deserialised.brewingEfficiency = (int) serialised.get("brewing-efficiency");
         return deserialised;
     }
+
+    public NewProfessionInfo toNewProfessionInfo() {
+        ProfessionsPlugin professionsPlugin = Bukkit.getServer().getServicesManager().getRegistration(ProfessionsPlugin.class).getProvider();
+        File newProfessionsDirectory = new File(professionsPlugin.getDataFolder(), "characters-new");
+        return new NewProfessionInfo(new File(newProfessionsDirectory, characterId + ".yml"));
+    }
+
 }

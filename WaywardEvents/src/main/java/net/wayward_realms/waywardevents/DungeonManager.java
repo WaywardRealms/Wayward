@@ -1,7 +1,7 @@
 package net.wayward_realms.waywardevents;
 
 import net.wayward_realms.waywardlib.events.Dungeon;
-import org.bukkit.configuration.InvalidConfigurationException;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -11,41 +11,37 @@ import java.util.Map;
 
 public class DungeonManager {
 
-    private Map<String, Dungeon> dungeons = new HashMap<>();
+    private WaywardEvents plugin;
+
+    public DungeonManager(WaywardEvents plugin) {
+        this.plugin = plugin;
+    }
 
     public Map<String, Dungeon> getDungeons() {
+        Map<String, Dungeon> dungeons = new HashMap<>();
+        File dungeonsDirectory = new File(plugin.getDataFolder(), "dungeons");
+        for (File file : dungeonsDirectory.listFiles(new YamlFileFilter())) {
+            Dungeon dungeon = new DungeonImpl(file);
+            dungeons.put(file.getName().replace(".yml", ""), dungeon);
+        }
         return dungeons;
     }
 
     public Dungeon getDungeon(String name) {
-        return dungeons.get(name);
+        File dungeonsDirectory = new File(plugin.getDataFolder(), "dungeons");
+        File dungeonFile = new File(dungeonsDirectory, name + ".yml");
+        return new DungeonImpl(dungeonFile);
     }
 
-    public void save(net.wayward_realms.waywardevents.WaywardEvents plugin) {
-        File file = new File(plugin.getDataFolder().getPath() + File.separator + "dungeons.yml");
-        YamlConfiguration config = new YamlConfiguration();
-        for (String dungeonName : dungeons.keySet()) {
-            config.set(dungeonName, dungeons.get(dungeonName));
-        }
+    public void addDungeon(String name, Dungeon dungeon) {
+        File dungeonsDirectory = new File(plugin.getDataFolder(), "dungeons");
+        File dungeonFile = new File(dungeonsDirectory, name + ".yml");
+        YamlConfiguration dungeonConfig = new YamlConfiguration();
+        dungeonConfig.set("dungeon", dungeon);
         try {
-            config.save(file);
+            dungeonConfig.save(dungeonFile);
         } catch (IOException exception) {
             exception.printStackTrace();
-        }
-    }
-
-    public void load(net.wayward_realms.waywardevents.WaywardEvents plugin) {
-        File file = new File(plugin.getDataFolder().getPath() + File.separator + "dungeons.yml");
-        if (file.exists()) {
-            YamlConfiguration config = new YamlConfiguration();
-            try {
-                config.load(file);
-            } catch (IOException | InvalidConfigurationException exception) {
-                exception.printStackTrace();
-            }
-            for (String dungeonName : config.getKeys(false)) {
-                dungeons.put(dungeonName, (Dungeon) config.get(dungeonName));
-            }
         }
     }
 

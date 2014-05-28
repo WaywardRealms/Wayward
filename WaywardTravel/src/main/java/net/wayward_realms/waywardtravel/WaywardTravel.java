@@ -2,13 +2,14 @@ package net.wayward_realms.waywardtravel;
 
 import net.wayward_realms.waywardlib.travel.Portal;
 import net.wayward_realms.waywardlib.travel.TravelPlugin;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
+import net.wayward_realms.waywardlib.util.location.LocationUtils;
 import net.wayward_realms.waywardtravel.boat.BoatPlayerInteractListener;
 import net.wayward_realms.waywardtravel.boat.BoatSignChangeListener;
 import net.wayward_realms.waywardtravel.horse.HorsePlayerInteractEntityListener;
 import net.wayward_realms.waywardtravel.portal.PlayerMoveListener;
 import net.wayward_realms.waywardtravel.portal.PortalCommand;
 import net.wayward_realms.waywardtravel.portal.PortalImpl;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -21,8 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class WaywardTravel extends JavaPlugin implements TravelPlugin {
-
-    private Set<Portal> portals = new HashSet<>();
 
     private Set<String> untaming = new HashSet<>();
 
@@ -53,52 +52,46 @@ public class WaywardTravel extends JavaPlugin implements TravelPlugin {
 
     @Override
     public void loadState() {
-        File portalFile = new File(getDataFolder(), "portals.yml");
-        if (portalFile.exists()) {
-            YamlConfiguration portalConfig = new YamlConfiguration();
-            try {
-                portalConfig.load(portalFile);
-            } catch (IOException | InvalidConfigurationException exception) {
-                exception.printStackTrace();
-            }
-            if (portalConfig.getConfigurationSection("portals") != null) {
-                for (String portalCode : portalConfig.getConfigurationSection("portals").getKeys(false)) {
-                    portals.add((Portal) portalConfig.get("portals." + portalCode));
-                }
-            }
-        }
+
     }
 
     @Override
     public void saveState() {
-        File portalFile = new File(getDataFolder(), "portals.yml");
-        if (portalFile.exists()) {
-            portalFile.delete();
-        }
-        YamlConfiguration portalConfig = new YamlConfiguration();
-        for (Portal portal : portals) {
-            portalConfig.set("portals." + portal.hashCode(), portal);
-        }
-        try {
-            portalConfig.save(portalFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
     }
 
     @Override
     public Set<Portal> getPortals() {
+        Set<Portal> portals = new HashSet<>();
+        File portalsDirectory = new File(getDataFolder(), "portals");
+        if (portalsDirectory.exists()) {
+            for (File file : portalsDirectory.listFiles(new YamlFileFilter())) {
+                YamlConfiguration portalConfig = YamlConfiguration.loadConfiguration(file);
+                portals.add((Portal) portalConfig.get("portal"));
+            }
+        }
         return portals;
     }
 
     @Override
     public void removePortal(Portal portal) {
-        portals.remove(portal);
+        File portalDirectory = new File(getDataFolder(), "portals");
+        File portalFile = new File(portalDirectory, "l1" + LocationUtils.toString(portal.getMinLocation()) + "l2" + LocationUtils.toString(portal.getMaxLocation()));
+        if (portalFile.exists()) {
+            portalFile.delete();
+        }
     }
 
     @Override
     public void addPortal(Portal portal) {
-        portals.add(portal);
+        File portalDirectory = new File(getDataFolder(), "portals");
+        File portalFile = new File(portalDirectory, "l1" + LocationUtils.toString(portal.getMinLocation()) + "l2" + LocationUtils.toString(portal.getMaxLocation()));
+        YamlConfiguration portalSave = new YamlConfiguration();
+        portalSave.set("portal", portal);
+        try {
+            portalSave.save(portalFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public boolean isUntaming(Player player) {

@@ -1,13 +1,13 @@
 package net.wayward_realms.waywardeconomy.auction;
 
-import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardeconomy.WaywardEconomy;
+import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.economy.Auction;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,12 +41,7 @@ public class AuctionManager {
     public void loadState() {
         File auctionDirectory = new File(plugin.getDataFolder(), "auctions");
         if (auctionDirectory.exists()) {
-            for (File currencyFile : auctionDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.getName().endsWith(".yml");
-                }
-            })) {
+            for (File currencyFile : auctionDirectory.listFiles(new YamlFileFilter())) {
                 YamlConfiguration auctionConfig = new YamlConfiguration();
                 try {
                     auctionConfig.load(currencyFile);

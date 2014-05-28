@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,7 +18,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.*;
 
@@ -192,12 +192,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         // Old character conversion
         File oldCharacterDirectory = new File(getDataFolder(), "characters");
         if (oldCharacterDirectory.exists()) {
-            for (File file : oldCharacterDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.getName().endsWith(".yml");
-                }
-            })) {
+            for (File file : oldCharacterDirectory.listFiles(new YamlFileFilter())) {
                 YamlConfiguration oldcharacterSave = YamlConfiguration.loadConfiguration(file);
                 if (oldcharacterSave.get("character") != null) {
                     if (oldcharacterSave.get("character") instanceof CharacterImpl) {
@@ -210,12 +205,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
         File characterDirectory = new File(getDataFolder(), "characters-new");
         if (characterDirectory.exists()) {
-            for (File file : characterDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.getPath().endsWith(".yml");
-                }
-            })) {
+            for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
                 int id = Integer.parseInt(file.getName().replace(".yml", ""));
                 if (id > CharacterImpl.getNextId()) CharacterImpl.setNextId(id);
             }

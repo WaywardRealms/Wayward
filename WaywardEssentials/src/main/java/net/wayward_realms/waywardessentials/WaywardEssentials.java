@@ -76,7 +76,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     @Override
     public void onDisable() {
-        warpManager.save();
         kitManager.save();
     }
 
@@ -127,13 +126,11 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     @Override
     public void loadState() {
-        warpManager.load();
         kitManager.load();
     }
 
     @Override
     public void saveState() {
-        warpManager.save();
         kitManager.save();
     }
 

@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class KitImpl implements Kit, ConfigurationSerializable {
 
+    private String name;
     private Collection<ItemStack> items = new ArrayList<>();
 
     @Override
@@ -19,6 +20,16 @@ public class KitImpl implements Kit, ConfigurationSerializable {
         for (ItemStack item : items) {
             player.getInventory().addItem(item);
         }
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

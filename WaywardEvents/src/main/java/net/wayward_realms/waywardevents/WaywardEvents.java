@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class WaywardEvents extends JavaPlugin implements EventsPlugin {
 
-    private net.wayward_realms.waywardevents.DungeonManager dungeonManager = new net.wayward_realms.waywardevents.DungeonManager();
+    private net.wayward_realms.waywardevents.DungeonManager dungeonManager = new net.wayward_realms.waywardevents.DungeonManager(this);
 
     @Override
     public void onEnable() {
@@ -21,11 +21,6 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
     }
 
     @Override
-    public void onDisable() {
-        dungeonManager.save(this);
-    }
-
-    @Override
     public String getPrefix() {
         //return "" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "|" + ChatColor.RESET + ChatColor.BLUE + "WaywardEvents" + ChatColor.DARK_GRAY + ChatColor.MAGIC + "| " + ChatColor.RESET;
         return "";
@@ -33,12 +28,12 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
 
     @Override
     public void loadState() {
-        dungeonManager.load(this);
+
     }
 
     @Override
     public void saveState() {
-        dungeonManager.save(this);
+
     }
 
     @Override

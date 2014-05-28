@@ -60,12 +60,12 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
 
     @Override
     public void loadState() {
-        entityLevelManager.loadState();
+
     }
 
     @Override
     public void saveState() {
-        entityLevelManager.saveState();
+
     }
 
     public EntityLevelManager getEntityLevelManager() {
