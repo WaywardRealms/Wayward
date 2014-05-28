@@ -1,15 +1,12 @@
 package net.wayward_realms.waywardeconomy;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.economy.Currency;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class MoneyCommand implements CommandExecutor {
 
@@ -109,30 +106,15 @@ public class MoneyCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
                 }
             } else if (args[0].equalsIgnoreCase("top")) {
-                int[] topCharacters = new int[5];
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Top balances: ");
                 int i = 1;
-                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                if (characterPluginProvider != null) {
-                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                    while (characterPlugin.getCharacter(i) != null) {
-                        for (int j = 0; j < 5; j++) {
-                            if (topCharacters[j] == 0 || plugin.getMoney(characterPlugin.getCharacter(i)) > plugin.getMoney(characterPlugin.getCharacter(topCharacters[j]))) {
-                                System.arraycopy(topCharacters, j, topCharacters, j + 1, 4 - j);
-                                topCharacters[j] = i;
-                                break;
-                            }
-                        }
-                        i++;
+                for (Character character : plugin.getRichestCharacters()) {
+                    if (character != null) {
+                        sender.sendMessage(ChatColor.GRAY + "" + i + ". " + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + "): " + plugin.getMoney(character) + " " + (plugin.getMoney(character) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                    } else {
+                        break;
                     }
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Top balances: ");
-                    i = 1;
-                    for (int cid : topCharacters) {
-                        if (cid != 0) {
-                            Character character = characterPlugin.getCharacter(cid);
-                            sender.sendMessage(ChatColor.GRAY + "" + i + ". " + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + "): " + plugin.getMoney(character) + " " + (plugin.getMoney(character) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
-                        }
-                        i++;
-                    }
+                    i++;
                 }
             } else if (plugin.getCurrency(args[0]) != null) {
                 Currency currency = plugin.getCurrency(args[0]);

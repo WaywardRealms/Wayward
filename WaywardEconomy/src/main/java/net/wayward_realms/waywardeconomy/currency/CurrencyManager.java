@@ -84,6 +84,7 @@ public class CurrencyManager {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+        plugin.checkRichest(character);
     }
 
     public void addMoney(Character character, Currency currency, int amount) {
