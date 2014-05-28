@@ -324,6 +324,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void setDead(boolean dead) {
         setFieldValue("dead", dead);
+        if (dead) setHealth(0D); else setHealth(1D);
     }
 
     @Override
