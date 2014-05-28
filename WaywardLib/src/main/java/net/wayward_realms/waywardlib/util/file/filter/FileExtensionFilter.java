@@ -3,6 +3,9 @@ package net.wayward_realms.waywardlib.util.file.filter;
 import java.io.File;
 import java.io.FileFilter;
 
+/**
+ * Filters files by extension
+ */
 public class FileExtensionFilter implements FileFilter {
 
     private String extension;

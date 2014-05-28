@@ -12,6 +12,16 @@ import org.bukkit.World;
 public class LocationUtils {
 
     /**
+     * Converts a location to a string parsable with {@link #parseLocation}
+     *
+     * @param location the location
+     * @return the location as a string
+     */
+    public static String toString(Location location) {
+        return location.getWorld().getName() + "," + location.getX() + "," + location.getY() + "," + location.getZ() + "," + location.getYaw() + "," + location.getPitch();
+    }
+
+    /**
      * Parses a location from a string argument
      *
      * @param locationString the location as a string, with each part separated by commas. May either be in the format world,x,y,z or world,x,y,z,yaw,pitch

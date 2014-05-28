@@ -2,13 +2,13 @@ package net.wayward_realms.waywardtravel.portal;
 
 import net.wayward_realms.waywardlib.travel.Portal;
 import net.wayward_realms.waywardtravel.WaywardTravel;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import static net.wayward_realms.waywardlib.util.location.LocationUtils.parseLocation;
 
 public class PortalCommand implements CommandExecutor {
 
@@ -51,21 +51,6 @@ public class PortalCommand implements CommandExecutor {
             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /portal [create]");
         }
         return true;
-    }
-
-    private Location parseLocation(String locationString) {
-        if (StringUtils.countMatches(locationString, ",") >= 3) {
-            World world = plugin.getServer().getWorld(locationString.split(",")[0]);
-            if (world != null) {
-                try {
-                    int x = Integer.parseInt(locationString.split(",")[1]);
-                    int y = Integer.parseInt(locationString.split(",")[2]);
-                    int z = Integer.parseInt(locationString.split(",")[3]);
-                    return new Location(world, x, y, z);
-                } catch (NumberFormatException ignored) {}
-            }
-        }
-        return null;
     }
 
 }
