@@ -3,48 +3,71 @@ package net.wayward_realms.waywardeconomy.currency;
 import net.wayward_realms.waywardeconomy.WaywardEconomy;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.economy.Currency;
-import org.bukkit.configuration.InvalidConfigurationException;
+import net.wayward_realms.waywardlib.util.YamlFileFilter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CurrencyManager {
 
     private WaywardEconomy plugin;
-    private Currency primaryCurrency;
-    private Map<String, Currency> currencies = new HashMap<>();
 
     public CurrencyManager(WaywardEconomy plugin) {
         this.plugin = plugin;
     }
 
     public Currency getPrimaryCurrency() {
-        return primaryCurrency;
+        return getCurrency(plugin.getConfig().getString("currency.primary"));
     }
 
     public void setPrimaryCurrency(Currency primaryCurrency) {
-        this.primaryCurrency = primaryCurrency;
+        plugin.getConfig().set("currency.primary", primaryCurrency.getName());
+        plugin.saveConfig();
     }
 
     public Collection<? extends Currency> getCurrencies() {
-        return currencies.values();
+        Set<Currency> currencies = new HashSet<>();
+        File currencyDirectory = new File(plugin.getDataFolder(), "currency");
+        for (File file : currencyDirectory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.getName().endsWith(".yml");
+            }
+        })) {
+            YamlConfiguration currencyConfig = YamlConfiguration.loadConfiguration(file);
+            currencies.add((Currency) currencyConfig.get("currency"));
+        }
+        return currencies;
     }
 
     public void removeCurrency(Currency currency) {
-        currencies.remove(currency.getName());
+        File currencyDirectory = new File(plugin.getDataFolder(), "currency");
+        File currencyFile = new File(currencyDirectory, currency.getName() + ".yml");
+        currencyFile.delete();
     }
 
     public void addCurrency(Currency currency) {
-        currencies.put(currency.getName(), currency);
+        File currencyDirectory = new File(plugin.getDataFolder(), "currency");
+        File currencyFile = new File(currencyDirectory, currency.getName() + ".yml");
+        YamlConfiguration currencyConfig = new YamlConfiguration();
+        currencyConfig.set("currency", currency);
+        try {
+            currencyConfig.save(currencyFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public Currency getCurrency(String name) {
-        return currencies.get(name);
+        File currencyDirectory = new File(plugin.getDataFolder(), "currency");
+        File currencyFile = new File(currencyDirectory, name + ".yml");
+        YamlConfiguration currencyConfig = YamlConfiguration.loadConfiguration(currencyFile);
+        return (Currency) currencyConfig.get("currency");
     }
 
     public int getMoney(Character character, Currency currency) {
@@ -80,51 +103,17 @@ public class CurrencyManager {
 
     public void loadState() {
         File currencyDirectory = new File(plugin.getDataFolder(), "currency");
-        if (currencyDirectory.exists()) {
-            for (File currencyFile : currencyDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.getName().endsWith(".yml");
-                }
-            })) {
-                YamlConfiguration currencyConfig = new YamlConfiguration();
-                try {
-                    currencyConfig.load(currencyFile);
-                } catch (IOException | InvalidConfigurationException exception) {
-                    exception.printStackTrace();
-                }
-                Currency currency = (Currency) currencyConfig.get("currency");
-                currencies.put(currency.getName(), currency);
-            }
-        }
-        if (currencies.isEmpty()) {
+        if (!currencyDirectory.exists() || currencyDirectory.listFiles(new YamlFileFilter()).length == 0) {
             Currency currency = new CurrencyImpl();
             currency.setDefaultAmount(50);
             currency.setName("gc");
             currency.setNameSingular("Gold coin");
             currency.setNamePlural("Gold coins");
             currency.setRate(100);
-            currencies.put(currency.getName(), currency);
+            addCurrency(currency);
         }
-        setPrimaryCurrency(getCurrency(plugin.getConfig().getString("currency.primary")));
     }
 
     public void saveState() {
-        File currencyDirectory = new File(plugin.getDataFolder(), "currency");
-        if (!currencyDirectory.isDirectory()) {
-            currencyDirectory.delete();
-        }
-        if (!currencyDirectory.exists()) {
-            currencyDirectory.mkdir();
-        }
-        for (Currency currency : currencies.values()) {
-            YamlConfiguration currencyConfig = new YamlConfiguration();
-            currencyConfig.set("currency", currency);
-            try {
-                currencyConfig.save(new File(currencyDirectory, currency.getName() + ".yml"));
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
     }
 }
