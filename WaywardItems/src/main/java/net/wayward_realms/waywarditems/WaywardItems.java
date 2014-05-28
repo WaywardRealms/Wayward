@@ -4,7 +4,7 @@ import net.wayward_realms.waywarditems.recipe.RecipeManager;
 import net.wayward_realms.waywardlib.items.CustomItemStack;
 import net.wayward_realms.waywardlib.items.CustomMaterial;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
-import net.wayward_realms.waywardlib.util.YamlFileFilter;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

@@ -3,7 +3,7 @@ package net.wayward_realms.waywardskills;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Spell;
-import net.wayward_realms.waywardlib.util.YamlFileFilter;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.spell.SpellManager;
 import org.bukkit.event.Listener;

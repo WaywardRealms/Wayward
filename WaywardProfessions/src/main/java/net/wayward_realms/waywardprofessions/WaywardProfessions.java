@@ -3,7 +3,7 @@ package net.wayward_realms.waywardprofessions;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
-import net.wayward_realms.waywardlib.util.YamlFileFilter;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;

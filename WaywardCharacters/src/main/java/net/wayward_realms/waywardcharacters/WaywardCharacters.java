@@ -6,7 +6,7 @@ import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
-import net.wayward_realms.waywardlib.util.YamlFileFilter;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

@@ -3,7 +3,7 @@ package net.wayward_realms.waywardeconomy.currency;
 import net.wayward_realms.waywardeconomy.WaywardEconomy;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.economy.Currency;
-import net.wayward_realms.waywardlib.util.YamlFileFilter;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
