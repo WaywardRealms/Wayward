@@ -3,6 +3,7 @@ package net.wayward_realms.waywardprofessions;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
+import net.wayward_realms.waywardlib.util.YamlFileFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -12,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -185,12 +185,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
         }
         File characterDirectory = new File(getDataFolder(), "characters");
         if (characterDirectory.exists()) {
-            for (File file : characterDirectory.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.getPath().endsWith(".yml");
-                }
-            })) {
+            for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
                 YamlConfiguration characterConfig = new YamlConfiguration();
                 try {
                     characterConfig.load(file);

@@ -7,7 +7,6 @@ import net.wayward_realms.waywardlib.util.YamlFileFilter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,12 +32,7 @@ public class CurrencyManager {
     public Collection<? extends Currency> getCurrencies() {
         Set<Currency> currencies = new HashSet<>();
         File currencyDirectory = new File(plugin.getDataFolder(), "currency");
-        for (File file : currencyDirectory.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return file.getName().endsWith(".yml");
-            }
-        })) {
+        for (File file : currencyDirectory.listFiles(new YamlFileFilter())) {
             YamlConfiguration currencyConfig = YamlConfiguration.loadConfiguration(file);
             currencies.add((Currency) currencyConfig.get("currency"));
         }
