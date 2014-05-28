@@ -62,7 +62,7 @@ public class EntityLevelManager {
         int minimumLevel = -1;
         for (Location zeroPoint : zeroPoints) {
             if (zeroPoint.getWorld().equals(entity.getWorld())) {
-                int possibleLevel = (int) Math.floor((entity.getLocation().distance(zeroPoint) / 32D));
+                int possibleLevel = (int) Math.floor((entity.getLocation().distance(zeroPoint) / plugin.getConfig().getDouble("mob-level-scale", 32D)));
                 minimumLevel = possibleLevel < minimumLevel || minimumLevel == -1 ? possibleLevel : minimumLevel;
             }
         }
