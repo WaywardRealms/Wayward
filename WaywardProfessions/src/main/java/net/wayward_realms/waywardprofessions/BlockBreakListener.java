@@ -35,7 +35,7 @@ public class BlockBreakListener implements Listener {
                 List<ItemStack> drops = new ArrayList<>();
                 Random random = new Random();
                 
-                if (material == null || !plugin.canGainCraftEfficency)
+                if (material == null || !plugin.canGainCraftEfficency(material))
                     return;
                 
                 for (ItemStack drop : event.getBlock().getDrops(event.getPlayer().getItemInHand())) {
