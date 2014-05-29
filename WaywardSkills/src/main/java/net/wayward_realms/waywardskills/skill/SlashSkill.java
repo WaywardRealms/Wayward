@@ -36,6 +36,7 @@ public class SlashSkill extends AttackSkillBase {
     @Override
     public boolean use(Player player) {
         for (LivingEntity livingEntity : player.getWorld().getLivingEntities()) {
+            if (livingEntity == player) continue;
             if (player.getLocation().distanceSquared(livingEntity.getLocation()) <= 64) {
                 livingEntity.damage(4D, player);
             }
