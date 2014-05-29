@@ -25,7 +25,7 @@ public class BlockBreakListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        
+
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
             if (characterPluginProvider != null) {
@@ -35,8 +35,7 @@ public class BlockBreakListener implements Listener {
                 List<ItemStack> drops = new ArrayList<>();
                 Random random = new Random();
                 
-                if (material == null || !plugin.canGainCraftEfficency(material))
-                    return;
+                if (material == null || !plugin.canGainMiningEfficiency(material)) return;
                 
                 for (ItemStack drop : event.getBlock().getDrops(event.getPlayer().getItemInHand())) {
                     int miningEfficiency = plugin.getMiningEfficiency(character, event.getBlock().getType());

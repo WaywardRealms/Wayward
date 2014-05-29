@@ -38,6 +38,7 @@ public class InventoryClickListener implements Listener {
                             || event.getAction() == InventoryAction.PICKUP_SOME
                             || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         if (event.getCurrentItem() != null) {
+                            if (!plugin.canGainCraftEfficiency(event.getCurrentItem().getType())) return;
                             if (ToolType.getToolType(event.getCurrentItem().getType()) != null) {
                                 ToolType type = ToolType.getToolType(event.getCurrentItem().getType());
                                 if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
