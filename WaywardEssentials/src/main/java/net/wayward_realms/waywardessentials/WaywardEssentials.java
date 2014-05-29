@@ -74,11 +74,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         drinkManager.setupRecipes();
     }
 
-    @Override
-    public void onDisable() {
-        kitManager.save();
-    }
-
     private void registerListeners(Listener... listeners) {
         for (Listener listener : listeners) {
             this.getServer().getPluginManager().registerEvents(listener, this);
@@ -126,12 +121,12 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     @Override
     public void loadState() {
-        kitManager.load();
+
     }
 
     @Override
     public void saveState() {
-        kitManager.save();
+
     }
 
     @Override
