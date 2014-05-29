@@ -21,7 +21,7 @@ public class DeleteWarpCommand implements CommandExecutor {
             if (sender instanceof Player) {
                 if (args.length >= 1) {
                     if (plugin.getWarps().containsKey(args[0].toLowerCase())) {
-                        plugin.getWarps().remove(args[0].toLowerCase());
+                        plugin.removeWarp(args[0].toLowerCase());
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Deleted warp " + args[0].toLowerCase());
                     }
                 } else {
