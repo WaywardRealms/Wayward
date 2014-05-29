@@ -18,25 +18,25 @@ public class SmiteCommand implements CommandExecutor {
     }
 
     @Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender.hasPermission("wayward.essentials.command.smite")) {
-			if (args.length == 0) {
-				sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Incorrect usage: /smite [Player]");
-			} else {
-				if (plugin.getServer().getPlayer(args[0]) == null) {
-					sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Could not find a player by that name");
-				} else {
-					Player player = plugin.getServer().getPlayer(args[0]);
-					World world = player.getWorld();
-					Location location = player.getLocation();
-					world.strikeLightning(location);
-					player.setFireTicks(100);
-					sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Opening the heavens on " + player.getName());
-				}
-			}
-		} else {
-			sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission");
-		}
-		return true;
-	}
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (sender.hasPermission("wayward.essentials.command.smite")) {
+            if (args.length == 0) {
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Incorrect usage: /smite [Player]");
+            } else {
+                if (plugin.getServer().getPlayer(args[0]) == null) {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Could not find a player by that name");
+                } else {
+                    Player player = plugin.getServer().getPlayer(args[0]);
+                    World world = player.getWorld();
+                    Location location = player.getLocation();
+                    world.strikeLightning(location);
+                    player.setFireTicks(100);
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Opening the heavens on " + player.getName());
+                }
+            }
+        } else {
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission");
+        }
+        return true;
+    }
 }

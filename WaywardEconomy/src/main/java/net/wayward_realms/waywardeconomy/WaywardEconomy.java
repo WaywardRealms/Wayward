@@ -5,18 +5,22 @@ import net.wayward_realms.waywardeconomy.auction.AuctionManager;
 import net.wayward_realms.waywardeconomy.auction.BidImpl;
 import net.wayward_realms.waywardeconomy.currency.CurrencyImpl;
 import net.wayward_realms.waywardeconomy.currency.CurrencyManager;
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.economy.Auction;
 import net.wayward_realms.waywardlib.economy.Currency;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
 
@@ -223,6 +227,46 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
     @Override
     public void transferMoney(Character takeFrom, Character giveTo, Currency currency, int amount) {
         currencyManager.transferMoney(takeFrom, giveTo, currency, amount);
+    }
+
+    public Character[] getRichestCharacters() {
+        File richestFile = new File(getDataFolder(), "richest.yml");
+        YamlConfiguration richestSave = YamlConfiguration.loadConfiguration(richestFile);
+        List<Integer> richestIds = richestSave.getIntegerList("richest");
+        Character[] richestCharacters = new Character[5];
+        int i = 0;
+        for (int id : richestIds) {
+            if (i < 5) richestCharacters[i] = characterPlugin.getCharacter(id); else break;
+        }
+        return richestCharacters;
+    }
+
+    public void checkRichest(Character check) {
+        File richestFile = new File(getDataFolder(), "richest.yml");
+        YamlConfiguration richestSave = YamlConfiguration.loadConfiguration(richestFile);
+        List<Integer> richestIds = richestSave.getIntegerList("richest");
+        Character[] richestCharacters = new Character[5];
+        int i = 0;
+        for (int id : richestIds) {
+            if (i < 5) richestCharacters[i] = characterPlugin.getCharacter(id); else break;
+        }
+        for (int j = 0; j < 5; j++) {
+            if (richestCharacters[j] == null || getMoney(check) > getMoney(richestCharacters[j])) {
+                System.arraycopy(richestCharacters, j, richestCharacters, j + 1, 4 - j);
+                richestCharacters[j] = check;
+                break;
+            }
+        }
+        richestIds.clear();
+        for (i = 0; i < 5; i++) {
+            if (richestCharacters[i] != null) richestIds.add(richestCharacters[i].getId());
+        }
+        richestSave.set("richest", richestIds);
+        try {
+            richestSave.save(richestFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }

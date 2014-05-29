@@ -4,6 +4,7 @@ import net.wayward_realms.waywarditems.recipe.RecipeManager;
 import net.wayward_realms.waywardlib.items.CustomItemStack;
 import net.wayward_realms.waywardlib.items.CustomMaterial;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -80,12 +80,7 @@ public class WaywardItems extends JavaPlugin implements ItemsPlugin {
         File customMaterialDirectory = new File(getDataFolder(), "materials");
         if (customMaterialDirectory.exists()) {
             if (customMaterialDirectory.isDirectory()) {
-                for (File file : customMaterialDirectory.listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        return pathname.getPath().endsWith(".yml");
-                    }
-                })) {
+                for (File file : customMaterialDirectory.listFiles(new YamlFileFilter())) {
                     YamlConfiguration materialConfig = new YamlConfiguration();
                     try {
                         materialConfig.load(file);

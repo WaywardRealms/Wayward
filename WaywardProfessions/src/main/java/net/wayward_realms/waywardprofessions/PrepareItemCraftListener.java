@@ -23,6 +23,7 @@ public class PrepareItemCraftListener implements Listener {
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event) {
         if (event.getViewers().size() > 0 && event.getViewers().get(0).getGameMode() != GameMode.CREATIVE) {
+            if (plugin.canGainCraftEfficiency(event.getRecipe().getResult().getType())) return;
             if (ToolType.getToolType(event.getInventory().getResult().getType()) != null) {
                 ToolType type = ToolType.getToolType(event.getInventory().getResult().getType());
                 RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);

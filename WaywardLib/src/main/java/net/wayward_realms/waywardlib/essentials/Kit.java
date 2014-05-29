@@ -13,6 +13,20 @@ import java.util.Collection;
 public interface Kit extends ConfigurationSerializable {
 
     /**
+     * Gets the name of the kit
+     *
+     * @return the name
+     */
+    public String getName();
+
+    /**
+     * Sets the name of the kit
+     *
+     * @param name the name to set
+     */
+    public void setName(String name);
+
+    /**
      * Gets the items in the kit
      *
      * @return the items contained in the kit

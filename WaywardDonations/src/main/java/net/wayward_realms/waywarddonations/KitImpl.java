@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class KitImpl implements Kit, ConfigurationSerializable {
 
+    private String name;
     private Collection<ItemStack> items = new ArrayList<>();
 
     @Override
@@ -19,6 +20,16 @@ public class KitImpl implements Kit, ConfigurationSerializable {
         for (ItemStack item : items) {
             player.getInventory().addItem(item);
         }
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -39,6 +50,7 @@ public class KitImpl implements Kit, ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
+        serialised.put("name", name);
         serialised.put("items", items);
         return serialised;
     }
@@ -47,6 +59,7 @@ public class KitImpl implements Kit, ConfigurationSerializable {
     public static KitImpl deserialize(Map<String, Object> serialised) {
         KitImpl deserialised = new KitImpl();
         deserialised.items = (Collection<ItemStack>) serialised.get("items");
+        deserialised.name = serialised.containsKey("name") ? (String) serialised.get("name") : "unknownkit";
         return deserialised;
     }
 

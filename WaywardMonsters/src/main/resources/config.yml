@@ -30,3 +30,4 @@ experience-multiplier:
     VILLAGER: 1
     ENDER_CRYSTAL: 4
     PLAYER: 0
+mob-level-scale: 32.0

@@ -18,8 +18,7 @@ public class EntityDamageByEntityListener implements Listener {
                 if (snowball.getMetadata("isIcebolt") != null) {
                     if (!snowball.getMetadata("isIcebolt").isEmpty()) {
                         if (event.getEntity() instanceof LivingEntity) {
-                            LivingEntity livingEntity = (LivingEntity) event.getEntity();
-                            livingEntity.damage(4.0D);
+                            event.setDamage(4.0D);
                         }
                     }
                 }
@@ -31,8 +30,7 @@ public class EntityDamageByEntityListener implements Listener {
                 if (snowball.getMetadata("isMagicMissile") != null) {
                     if (!snowball.getMetadata("isMagicMissile").isEmpty()) {
                         if (event.getEntity() instanceof LivingEntity) {
-                            LivingEntity livingEntity = (LivingEntity) event.getEntity();
-                            livingEntity.damage(4.0D);
+                            event.setDamage(4.0D);
                         }
                     }
                 }

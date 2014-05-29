@@ -20,11 +20,11 @@ public class PlayerItemConsumeListener implements Listener {
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
         if (event.getItem().getType() == Material.POTION) {
-        	Player player = event.getPlayer();
-        	Character character = plugin.getActiveCharacter(player);
-        	character.setThirst(character.getThirst() + 5);
+            Player player = event.getPlayer();
+            Character character = plugin.getActiveCharacter(player);
+            character.setThirst(character.getThirst() + 5);
             player.sendMessage(ChatColor.GREEN + "Thirst: +5" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
-            if (event.getItem().hasItemMeta()) {	
+            if (event.getItem().hasItemMeta()) {
                 if (event.getItem().getItemMeta().hasDisplayName()) {
                     if (event.getItem().getItemMeta().getDisplayName().equals("Masheek")) {
                         if (event.getItem().getItemMeta().hasLore()) {

@@ -40,8 +40,8 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     }
 
     private File file;
-	private static final int MAX_THIRST = 20;
-	private static final int MIN_THIRST = 0;
+    private static final int MAX_THIRST = 20;
+    private static final int MIN_THIRST = 0;
 
     private CharacterImpl() {}
 
@@ -276,7 +276,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
             setThirst(MAX_THIRST);
         }
         if (getThirst() < MIN_THIRST) {
-        	setThirst(MIN_THIRST);
+            setThirst(MIN_THIRST);
         }
         
     }
@@ -324,6 +324,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void setDead(boolean dead) {
         setFieldValue("dead", dead);
+        if (dead) setHealth(0D); else setHealth(1D);
     }
 
     @Override

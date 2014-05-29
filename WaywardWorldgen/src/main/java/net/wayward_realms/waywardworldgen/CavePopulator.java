@@ -10,8 +10,13 @@ import java.util.Random;
 
 public class CavePopulator extends BlockPopulator {
 
-    private static final int MAX_CAVE_HEIGHT = 192;
-    private static final int CAVE_CENTRE = 128;
+    private int maxCaveHeight;
+    private int caveCentre;
+
+    public CavePopulator(WaywardWorldgen plugin) {
+        this.maxCaveHeight = plugin.getConfig().getInt("cave-height", 192);
+        this.caveCentre = plugin.getConfig().getInt("cave-centre", 128);
+    }
 
     @Override
     public void populate(World world, Random random, Chunk source) {
@@ -22,12 +27,12 @@ public class CavePopulator extends BlockPopulator {
         noiseGenerator.setScale(1 / 32.0);
         for (x = worldChunkX; x < worldChunkX + 16; x++) {
             for (z = worldChunkZ; z < worldChunkZ + 16; z++) {
-                for (y = world.getMaxHeight() - CAVE_CENTRE; y > world.getMaxHeight() - (CAVE_CENTRE + (noiseGenerator.noise(x, z, 0.5, 0.5) * (MAX_CAVE_HEIGHT / 2))); y--) {
+                for (y = world.getMaxHeight() - caveCentre; y > world.getMaxHeight() - (caveCentre + (noiseGenerator.noise(x, z, 0.5, 0.5) * (maxCaveHeight / 2))); y--) {
                     if (world.getBlockAt(x, y, z).getType() != Material.AIR) {
                         world.getBlockAt(x, y, z).setType(source.getX() % 4 == 0 && source.getZ() % 4 == 0 && (x - worldChunkX == 12 || x - worldChunkX == 15) && (z - worldChunkZ == 12 || z - worldChunkZ == 15) ? Material.LOG : Material.AIR);
                     }
                 }
-                for (y = world.getMaxHeight() - CAVE_CENTRE; y < world.getMaxHeight() - (CAVE_CENTRE - (noiseGenerator.noise(x, z, 0.5, 0.5) * (MAX_CAVE_HEIGHT / 2))); y++) {
+                for (y = world.getMaxHeight() - caveCentre; y < world.getMaxHeight() - (caveCentre - (noiseGenerator.noise(x, z, 0.5, 0.5) * (maxCaveHeight / 2))); y++) {
                     if (world.getBlockAt(x, y, z).getType() != Material.AIR) {
                         world.getBlockAt(x, y, z).setType(source.getX() % 4 == 0 && source.getZ() % 4 == 0 && (x - worldChunkX == 12 || x - worldChunkX == 15) && (z - worldChunkZ == 12 || z - worldChunkZ == 15) && y < 144 ? Material.LOG : Material.AIR);
                     }

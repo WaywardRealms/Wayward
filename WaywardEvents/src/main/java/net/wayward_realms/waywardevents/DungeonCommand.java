@@ -23,7 +23,7 @@ public class DungeonCommand implements CommandExecutor {
                     if (args.length >= 3) {
                         Dungeon dungeon = new DungeonImpl();
                         dungeon.addDungeonMaster((Player) sender);
-                        plugin.getDungeonManager().getDungeons().put(args[1], dungeon);
+                        plugin.getDungeonManager().addDungeon(args[1], dungeon);
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Dungeon " + args[1] + " successfully created");
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /dungeon create [name]");
