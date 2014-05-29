@@ -3,9 +3,11 @@ package net.wayward_realms.waywardworldgen;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
+import java.io.File;
 import java.util.Random;
 
 public class CavePopulator extends BlockPopulator {
@@ -14,8 +16,10 @@ public class CavePopulator extends BlockPopulator {
     private int caveCentre;
 
     public CavePopulator(WaywardWorldgen plugin) {
-        this.maxCaveHeight = plugin.getConfig().getInt("cave-height", 192);
-        this.caveCentre = plugin.getConfig().getInt("cave-centre", 128);
+        File miningFile = new File(plugin.getDataFolder(), "mining.yml");
+        YamlConfiguration miningConfig = YamlConfiguration.loadConfiguration(miningFile);
+        this.maxCaveHeight = miningConfig.getInt("cave-height", 192);
+        this.caveCentre = miningConfig.getInt("cave-centre", 128);
     }
 
     @Override
