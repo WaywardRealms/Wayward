@@ -48,6 +48,9 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
         ItemStack lockpickItem = new ItemStack(Material.IRON_INGOT);
         ItemMeta lockpickMeta = lockpickItem.getItemMeta();
         lockpickMeta.setDisplayName("Lockpick");
+        List<String> lockpickLore = new ArrayList<>();
+        lockpickLore.add("Used for breaking through locks");
+        lockpickMeta.setLore(lockpickLore);
         lockpickItem.setItemMeta(lockpickMeta);
         ShapedRecipe lockpickRecipe = new ShapedRecipe(lockpickItem);
         lockpickRecipe.shape("L", "I", "I").setIngredient('L', Material.LEVER).setIngredient('I', Material.IRON_INGOT);
@@ -55,9 +58,9 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
         ItemStack lockItem = new ItemStack(Material.IRON_INGOT);
         ItemMeta lockMeta = lockItem.getItemMeta();
         lockMeta.setDisplayName("Lock");
-        List<String> lore = new ArrayList<>();
-        lore.add("Used for locking chests");
-        lockMeta.setLore(lore);
+        List<String> lockLore = new ArrayList<>();
+        lockLore.add("Used for locking chests");
+        lockMeta.setLore(lockLore);
         lockItem.setItemMeta(lockMeta);
         ShapedRecipe lockRecipe = new ShapedRecipe(lockItem);
         lockRecipe.shape("I", "B").setIngredient('I', Material.IRON_INGOT).setIngredient('B', Material.IRON_BLOCK);
