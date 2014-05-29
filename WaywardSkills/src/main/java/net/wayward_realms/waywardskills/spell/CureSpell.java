@@ -56,6 +56,7 @@ public class CureSpell extends SpellBase {
                 }
                 double healthRestore = potency / (double) players.size();
                 Character target = characterPlugin.getActiveCharacter(player1);
+                player1.setHealth(target.getHealth());
                 double initialHealth = player1.getHealth();
                 target.setHealth(Math.min(target.getHealth() + healthRestore, target.getMaxHealth()));
                 player1.setHealth(target.getHealth());
@@ -63,7 +64,7 @@ public class CureSpell extends SpellBase {
                 RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
                 if (classesPluginProvider != null) {
                     ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                    classesPlugin.giveExperience(player, (int) Math.round(newHealth - initialHealth));
+                    classesPlugin.giveExperience(player, (int) Math.round(Math.max(newHealth - initialHealth, 0) * 4));
                 }
             }
         }
