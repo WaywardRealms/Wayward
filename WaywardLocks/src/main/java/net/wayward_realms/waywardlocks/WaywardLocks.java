@@ -3,6 +3,7 @@ package net.wayward_realms.waywardlocks;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.lock.LockPlugin;
+import net.wayward_realms.waywardlib.util.location.LocationUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import net.wayward_realms.waywardlocks.keyring.KeyringManager;
 import org.bukkit.Bukkit;
@@ -61,11 +62,23 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
         ShapedRecipe lockRecipe = new ShapedRecipe(lockItem);
         lockRecipe.shape("I", "B").setIngredient('I', Material.IRON_INGOT).setIngredient('B', Material.IRON_BLOCK);
         getServer().addRecipe(lockRecipe);
-    }
 
-    @Override
-    public void onDisable() {
-        saveState();
+        File oldLocksFile = new File(getDataFolder(), "locks.yml");
+        if (oldLocksFile.exists()) {
+            YamlConfiguration oldLocksConfig = YamlConfiguration.loadConfiguration(oldLocksFile);
+            File newLocksFile = new File(getDataFolder(), "locks-new.yml");
+            YamlConfiguration newLocksConfig = new YamlConfiguration();
+            List<String> locationStrings = new ArrayList<>();
+            for (SerialisableLocation location : (List<SerialisableLocation>) oldLocksConfig.getList("locks")) {
+                locationStrings.add(LocationUtils.toString(location.toLocation()));
+            }
+            newLocksConfig.set("locks", locationStrings);
+            try {
+                newLocksConfig.save(newLocksFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -105,19 +118,19 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
 
     @Override
     public boolean isLocked(Block block) {
-        File locksFile = new File(getDataFolder(), "locks.yml");
+        File locksFile = new File(getDataFolder(), "locks-new.yml");
         YamlConfiguration lockConfig = YamlConfiguration.loadConfiguration(locksFile);
-        List<SerialisableLocation> locked = (List<SerialisableLocation>) lockConfig.getList("locks");
-        return locked.contains(new SerialisableLocation(block.getLocation()));
+        List<String> locked = lockConfig.getStringList("locks");
+        return locked.contains(LocationUtils.toString(block.getLocation()));
     }
 
     @Override
     public ItemStack lock(Block block) {
         ItemStack key = new ItemStack(Material.IRON_INGOT);
-        File locksFile = new File(getDataFolder(), "locks.yml");
+        File locksFile = new File(getDataFolder(), "locks-new.yml");
         YamlConfiguration lockConfig = YamlConfiguration.loadConfiguration(locksFile);
-        List<SerialisableLocation> locked = (List<SerialisableLocation>) lockConfig.getList("locks");
-        locked.add(new SerialisableLocation(block.getLocation()));
+        List<String> locked = lockConfig.getStringList("locks");
+        locked.add(LocationUtils.toString(block.getLocation()));
         lockConfig.set("locks", locked);
         try {
             lockConfig.save(locksFile);
@@ -135,10 +148,10 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
 
     @Override
     public void unlock(Block block) {
-        File locksFile = new File(getDataFolder(), "locks.yml");
+        File locksFile = new File(getDataFolder(), "locks-new.yml");
         YamlConfiguration lockConfig = YamlConfiguration.loadConfiguration(locksFile);
-        List<SerialisableLocation> locked = (List<SerialisableLocation>) lockConfig.getList("locks");
-        locked.remove(new SerialisableLocation(block.getLocation()));
+        List<String> locked = lockConfig.getStringList("locks");
+        locked.remove(LocationUtils.toString(block.getLocation()));
         lockConfig.set("locks", locked);
         try {
             lockConfig.save(locksFile);
