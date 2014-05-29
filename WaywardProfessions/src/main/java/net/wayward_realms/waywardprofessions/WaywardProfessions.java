@@ -56,12 +56,12 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     @Override
     public int getCraftEfficiency(Character character, Material material) {
-        if (!canGainCraftEfficency(material)) return 0;
+        if (!canGainCraftEfficiency(material)) return 0;
         return getProfessionInfo(character.getId()).getCraftEfficiency(material);
     }
 
     public void setCraftEfficiency(Character character, Material material, int efficiency) {
-        if (!canGainCraftEfficency(material)) return;
+        if (!canGainCraftEfficiency(material)) return;
         if (getCraftEfficiency(character, material) < efficiency && getCraftEfficiency(character, material) < 100) {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.GREEN + "+" + (efficiency - getCraftEfficiency(character, material)) + " " + material.toString().toLowerCase().replace('_', ' ') + " crafting efficiency");
@@ -70,7 +70,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
         getProfessionInfo(character.getId()).setCraftEfficiency(material, efficiency);
     }
 
-    public boolean canGainCraftEfficency(Material material) {
+    public boolean canGainCraftEfficiency(Material material) {
         File professionsWhitelistFile = new File(getDataFolder(), "whitelist.yml");
         if (professionsWhitelistFile.exists()) {
             YamlConfiguration professionsWhitelist = new YamlConfiguration();
