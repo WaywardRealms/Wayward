@@ -22,10 +22,12 @@ public class WarpManager {
     public Map<String, Location> getWarps() {
         Map<String, Location> warps = new HashMap<>();
         File warpDirectory = new File(plugin.getDataFolder(), "warps");
-        for (File file : warpDirectory.listFiles(new YamlFileFilter())) {
-            YamlConfiguration warpConfig = YamlConfiguration.loadConfiguration(file);
-            Location warp = ((SerialisableLocation) warpConfig.get("location")).toLocation();
-            warps.put(file.getName().replace(".yml", ""), warp);
+        if (warpDirectory.exists()) {
+            for (File file : warpDirectory.listFiles(new YamlFileFilter())) {
+                YamlConfiguration warpConfig = YamlConfiguration.loadConfiguration(file);
+                Location warp = ((SerialisableLocation) warpConfig.get("location")).toLocation();
+                warps.put(file.getName().replace(".yml", ""), warp);
+            }
         }
         return warps;
     }
