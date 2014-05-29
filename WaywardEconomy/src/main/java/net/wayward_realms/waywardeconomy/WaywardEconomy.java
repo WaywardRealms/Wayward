@@ -10,6 +10,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.economy.Auction;
 import net.wayward_realms.waywardlib.economy.Currency;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -19,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -237,6 +239,7 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         int i = 0;
         for (int id : richestIds) {
             if (i < 5) richestCharacters[i] = characterPlugin.getCharacter(id); else break;
+            i++;
         }
         return richestCharacters;
     }
@@ -245,21 +248,19 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         File richestFile = new File(getDataFolder(), "richest.yml");
         YamlConfiguration richestSave = YamlConfiguration.loadConfiguration(richestFile);
         List<Integer> richestIds = richestSave.getIntegerList("richest");
-        Character[] richestCharacters = new Character[5];
-        int i = 0;
-        for (int id : richestIds) {
-            if (i < 5) richestCharacters[i] = characterPlugin.getCharacter(id); else break;
-        }
-        for (int j = 0; j < 5; j++) {
-            if (richestCharacters[j] == null || getMoney(check) > getMoney(richestCharacters[j])) {
-                System.arraycopy(richestCharacters, j, richestCharacters, j + 1, 4 - j);
-                richestCharacters[j] = check;
-                break;
+        if (!richestIds.contains(check.getId())) richestIds.add(check.getId());
+        List<Character> characters = new ArrayList<>();
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            for (int id : richestIds) {
+                characters.add(characterPlugin.getCharacter(id));
             }
         }
+        quickSort(characters);
         richestIds.clear();
-        for (i = 0; i < 5; i++) {
-            if (richestCharacters[i] != null) richestIds.add(richestCharacters[i].getId());
+        for (int i = 0; i < Math.min(5, characters.size()); i++) {
+            richestIds.add(characters.get(i).getId());
         }
         richestSave.set("richest", richestIds);
         try {
@@ -267,6 +268,35 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    private int partition(List<Character> characters, int left, int right) {
+        int i = left, j = right;
+        Character tmp;
+        Character pivot = characters.get((left + right) / 2);
+        while (i <= j) {
+            while (getMoney(characters.get(i)) > getMoney(pivot)) i++;
+            while (getMoney(characters.get(j)) < getMoney(pivot)) j--;
+            if (i <= j) {
+                tmp = characters.get(i);
+                characters.set(i, characters.get(j));
+                characters.set(j, tmp);
+                i++;
+                j--;
+            }
+        }
+        return i;
+    }
+
+
+    private void quickSort(List<Character> characters, int left, int right) {
+        int index = partition(characters, left, right);
+        if (left < index - 1) quickSort(characters, left, index - 1);
+        if (index < right) quickSort(characters, index, right);
+    }
+
+    private void quickSort(List<Character> characters) {
+        quickSort(characters, 0, characters.size() - 1);
     }
 
 }
