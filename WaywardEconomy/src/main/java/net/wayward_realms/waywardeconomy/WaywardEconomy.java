@@ -259,7 +259,7 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         }
         richestIds.clear();
         for (i = 0; i < 5; i++) {
-            richestIds.add(richestCharacters[i].getId());
+            if (richestCharacters[i] != null) richestIds.add(richestCharacters[i].getId());
         }
         richestSave.set("richest", richestIds);
         try {
