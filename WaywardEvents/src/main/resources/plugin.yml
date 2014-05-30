@@ -14,6 +14,10 @@ commands:
     createeffect:
         description: Creates a visual or sound effect for a player or at a location
         usage: /<command> [location|player] [effect]
+    eventcharacter:
+        description: Manages event characters
+        usage: /<command>
+        aliases: [ec, echar, eventchar, echaracter]
 permissions:
     wayward.events.command.radiusemote:
         description: Allows you to broadcast world emotes with a radius
@@ -30,4 +34,6 @@ permissions:
     wayward.events.command.createeffect:
         description: Allows you to create effects
         default: op
-        
+    wayward.events.command.eventcharacter:
+        description: Allows you to use event characters
+        default: op
