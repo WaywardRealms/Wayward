@@ -99,15 +99,17 @@ public class EventCharacterCommand implements CommandExecutor {
                                         character.setRace(race);
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race set to new race '" + race.getName() + "'.");
                                     }
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a race.");
                                 }
                             } else {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana]");
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana|race]");
                             }
                         } else {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
                         }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana]");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana|race]");
                     }
                 } else if (args[0].equalsIgnoreCase("createtemplate")) {
                     Character character = characterPlugin.getActiveCharacter((Player) sender);
