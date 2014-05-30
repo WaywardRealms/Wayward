@@ -314,6 +314,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public void setActiveCharacter(Player player, Character character) {
         if (getActiveCharacter(player) != null) {
             Character activeCharacter = getActiveCharacter(player);
+            activeCharacter.setHelmet(player.getInventory().getHelmet());
+            activeCharacter.setChestplate(player.getInventory().getChestplate());
+            activeCharacter.setLeggings(player.getInventory().getLeggings());
+            activeCharacter.setBoots(player.getInventory().getBoots());
             activeCharacter.setInventoryContents(player.getInventory().getContents());
             activeCharacter.setLocation(player.getLocation());
             activeCharacter.setHealth(player.getHealth());
@@ -329,6 +333,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+        player.getInventory().setHelmet(character.getHelmet());
+        player.getInventory().setChestplate(character.getChestplate());
+        player.getInventory().setLeggings(character.getLeggings());
+        player.getInventory().setBoots(character.getBoots());
         player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());

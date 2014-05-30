@@ -275,6 +275,62 @@ public interface Character extends Combatant, ConfigurationSerializable {
     public void setLocation(Location location);
 
     /**
+     * Gets the helmet the character is wearing
+     *
+     * @return the helmet
+     */
+    public ItemStack getHelmet();
+
+    /**
+     * Sets the helmet the character is wearing
+     *
+     * @param helmet the helmet to set
+     */
+    public void setHelmet(ItemStack helmet);
+
+    /**
+     * Gets the chestplate the character is wearing
+     *
+     * @return the chestplate
+     */
+    public ItemStack getChestplate();
+
+    /**
+     * Sets the chestplate the character is wearing
+     *
+     * @param chestplate the chestplate to set
+     */
+    public void setChestplate(ItemStack chestplate);
+
+    /**
+     * Gets the leggings the character is wearing
+     *
+     * @return the leggings
+     */
+    public ItemStack getLeggings();
+
+    /**
+     * Sets the leggings the character is wearing
+     *
+     * @param leggings the leggings to set
+     */
+    public void setLeggings(ItemStack leggings);
+
+    /**
+     * Gets the boots the character is wearing
+     *
+     * @return the boots
+     */
+    public ItemStack getBoots();
+
+    /**
+     * Sets the boots the character is wearing
+     *
+     * @param boots the boots to set
+     */
+    public void setBoots(ItemStack boots);
+
+    /**
      * Gets the inventory contents of this character
      *
      * @return an array of itemstacks containing the inventory contents of this character
