@@ -389,6 +389,21 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     }
 
     @Override
+    public int getNextAvailableId() {
+        return CharacterImpl.getNextId();
+    }
+
+    @Override
+    public void setNextAvailableId(int id) {
+        CharacterImpl.setNextId(id);
+    }
+
+    @Override
+    public void incrementNextAvailableId() {
+        CharacterImpl.nextAvailableId();
+    }
+
+    @Override
     public Collection<Race> getRaces() {
         return races.values();
     }

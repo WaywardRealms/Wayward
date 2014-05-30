@@ -36,7 +36,7 @@ public class EventCharacterImpl implements EventCharacter {
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             characterPlugin.incrementNextAvailableId();
-            long id = characterPlugin.getNextAvailableId();
+            int id = characterPlugin.getNextAvailableId();
             this.file = new File(new File(plugin.getDataFolder(), "event-characters"), id + ".yml");
             setId(id);
             setPlayer(player);
@@ -103,11 +103,11 @@ public class EventCharacterImpl implements EventCharacter {
     }
 
     @Override
-    public long getId() {
+    public int getId() {
         return getFieldIntValue("id");
     }
 
-    private void setId(long id) {
+    private void setId(int id) {
         setFieldValue("id", id);
     }
 
