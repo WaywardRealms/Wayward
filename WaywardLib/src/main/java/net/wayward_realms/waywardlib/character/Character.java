@@ -28,7 +28,6 @@ public interface Character extends Combatant, ConfigurationSerializable {
      */
     public String getName();
 
-
     /**
      * Sets the name of the character
      *
@@ -231,13 +230,6 @@ public interface Character extends Combatant, ConfigurationSerializable {
      * @return the max health
      */
     public double getMaxHealth();
-
-    /**
-     * Sets the max health of the character
-     *
-     * @param maxHealth the max health to set
-     */
-    public void setMaxHealth(double maxHealth);
 
     /**
      * Gets the character's mana

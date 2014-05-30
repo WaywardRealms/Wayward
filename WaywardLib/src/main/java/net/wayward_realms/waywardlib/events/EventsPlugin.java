@@ -1,6 +1,8 @@
 package net.wayward_realms.waywardlib.events;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
+import net.wayward_realms.waywardlib.character.Race;
+import org.bukkit.OfflinePlayer;
 
 import java.util.Collection;
 
@@ -38,5 +40,65 @@ public interface EventsPlugin extends WaywardPlugin {
      * @param dungeon the dungeon to add
      */
     public void addDungeon(Dungeon dungeon);
+
+    /**
+     * Gets the event character with the given ID
+     *
+     * @param id the id
+     * @return the event character if there is one by the ID, otherwise null if the character doesn't exist, or is a normal character
+     */
+    public EventCharacter getEventCharacter(long id);
+
+    /**
+     * Creates a new event character for the given player
+     *
+     * @param player the player
+     * @return the event character created
+     */
+    public EventCharacter createNewEventCharacter(OfflinePlayer player);
+
+    /**
+     * Gets an event character template by name
+     *
+     * @param name the name of the template
+     * @return the event character template
+     */
+    public EventCharacterTemplate getEventCharacterTemplate(String name);
+
+    /**
+     * Adds an event character template
+     *
+     * @param template the template to add
+     */
+    public void addEventCharacterTemplate(EventCharacterTemplate template);
+
+    /**
+     * Removes an event character template
+     *
+     * @param template the template to remove
+     */
+    public void removeEventCharacterTemplate(EventCharacterTemplate template);
+
+    /**
+     * Gets an event race by name
+     *
+     * @param name the name
+     * @return the race
+     */
+    public Race getRace(String name);
+
+    /**
+     * Adds an event race
+     *
+     * @param race the race to add
+     */
+    public void addRace(Race race);
+
+    /**
+     * Removes an event race
+     *
+     * @param race the race to remove
+     */
+    public void removeRace(Race race);
 
 }

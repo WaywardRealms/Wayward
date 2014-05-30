@@ -1,18 +1,19 @@
-package net.wayward_realms.waywardcharacters;
+package net.wayward_realms.waywardevents;
 
-import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.events.EventCharacter;
+import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
+import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -22,49 +23,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CharacterImpl implements Character, ConfigurationSerializable {
-
-    private static long nextId = 0;
-
-    public static long nextAvailableId() {
-        nextId++;
-        return nextId;
-    }
-
-    public static long getNextId() {
-        return nextId;
-    }
-
-    public static void setNextId(long id) {
-        CharacterImpl.nextId = id;
-    }
+public class EventCharacterImpl implements EventCharacter {
 
     private File file;
     private static final int MAX_THIRST = 20;
-    private static final int MIN_THIRST = 0;
+    private static final int MIN_THIRST = 20;
 
-    private CharacterImpl() {}
+    private EventCharacterImpl() {}
 
-    public CharacterImpl(CharacterPlugin plugin, OfflinePlayer player) {
-        long id = CharacterImpl.nextAvailableId();
-        this.file = new File(new File(plugin.getDataFolder(), "characters-new"), id + ".yml");
-        setId(id);
-        setPlayer(player);
-        setName("Unknown");
-        setGender(plugin.getGender("UNKNOWN"));
-        setAge(0);
-        setRace(plugin.getRace("UNKNOWN"));
-        setDescription(player.getName() + "'s character");
-        setDead(false);
-        setLocation(Bukkit.getServer().getWorlds().get(0).getSpawnLocation());
-        setInventoryContents(new ItemStack[36]);
-        setHealth(getMaxHealth());
-        setFoodLevel(20);
-        setMana(getMaxMana());
-        setThirst(20);
+    public EventCharacterImpl(EventsPlugin plugin, OfflinePlayer player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            characterPlugin.incrementNextAvailableId();
+            long id = characterPlugin.getNextAvailableId();
+            this.file = new File(new File(plugin.getDataFolder(), "event-characters"), id + ".yml");
+            setId(id);
+            setPlayer(player);
+            setName("Unknown");
+            setGender(characterPlugin.getGender("UNKNOWN"));
+            setAge(0);
+            setRace(plugin.getRace("UNKNOWN"));
+            setDescription(player.getName() + "'s character");
+            setDead(false);
+            setLocation(Bukkit.getServer().getWorlds().get(0).getSpawnLocation());
+            setInventoryContents(new ItemStack[36]);
+            setMaxHealth(20D);
+            setHealth(getMaxHealth());
+            setFoodLevel(20);
+            setMaxMana(20);
+            setMana(getMaxMana());
+            setThirst(20);
+        }
+
     }
 
-    public CharacterImpl(File file) {
+    public EventCharacterImpl(File file) {
         this.file = file;
     }
 
@@ -323,17 +317,67 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         if (getThirst() < MIN_THIRST) {
             setThirst(MIN_THIRST);
         }
-        
     }
 
     @Override
     public double getMaxHealth() {
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (2D * classesPlugin.getClass(this).getHpBonus() * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+        return getFieldValue("max-health") != null ? getFieldDoubleValue("max-health") : 20D;
+    }
+
+    @Override
+    public void setStatValue(Stat stat, int value) {
+        setFieldValue("stats." + stat.toString().toLowerCase(), value);
+    }
+
+    @Override
+    public void setSkillPoints(SkillType skillType, int points) {
+        setFieldValue("skill-points." + skillType.toString().toLowerCase(), points);
+    }
+
+    @Override
+    public void setMaxHealth(double maxHealth) {
+        setFieldValue("max-health", maxHealth);
+    }
+
+    @Override
+    public void setMaxMana(int maxMana) {
+        setFieldValue("max-mana", maxMana);
+    }
+
+    @Override
+    public EventCharacterTemplate createTemplate(String name) {
+        RegisteredServiceProvider<EventsPlugin> eventsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EventsPlugin.class);
+        if (eventsPluginProvider != null) {
+            EventsPlugin eventsPlugin = eventsPluginProvider.getProvider();
+            EventCharacterTemplate template = new EventCharacterTemplateImpl(this, name);
+            eventsPlugin.addEventCharacterTemplate(template);
+            return template;
         }
-        return 0;
+        return null;
+    }
+
+    @Override
+    public void assignTemplate(EventCharacterTemplate template) {
+        setName(template.getName());
+        setAge(template.getAge());
+        setGender(template.getGender());
+        setRace(template.getRace());
+        setDescription(template.getDescription());
+        setHelmet(template.getHelmet());
+        setChestplate(template.getChestplate());
+        setLeggings(template.getLeggings());
+        setBoots(template.getBoots());
+        setInventoryContents(template.getInventoryContents());
+        setMaxHealth(template.getMaxHealth());
+        setHealth(template.getMaxHealth());
+        for (Stat stat : Stat.values()) {
+            setStatValue(stat, template.getStatValue(stat));
+        }
+        for (SkillType skillType : SkillType.values()) {
+            setSkillPoints(skillType, template.getSkillPoints(skillType));
+        }
+        setMaxMana(template.getMaxMana());
+        setMana(template.getMaxMana());
     }
 
     @Override
@@ -369,22 +413,12 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public int getStatValue(Stat stat) {
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((150D + (2D * (double) classesPlugin.getClass(this).getStatBonus(stat) * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
-        }
-        return 0;
+        return getFieldIntValue("stats." + stat.toString().toLowerCase());
     }
 
     @Override
     public int getSkillPoints(SkillType type) {
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return classesPlugin.getClass(this).getSkillPointBonus(type) * classesPlugin.getLevel(this);
-        }
-        return 0;
+        return getFieldIntValue("skill-points." + type.toString().toLowerCase());
     }
 
     public boolean isClassHidden() {
@@ -400,12 +434,12 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         return new HashMap<>();
     }
 
-    public static CharacterImpl deserialize(Map<String, Object> serialised) {
+    public static EventCharacterImpl deserialize(Map<String, Object> serialised) {
         CharacterPlugin plugin = Bukkit.getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
-        CharacterImpl character = new CharacterImpl(new File(new File(plugin.getDataFolder(), "characters-new"), ((long) serialised.get("id")) + ".yml"));
+        EventCharacterImpl character = new EventCharacterImpl(new File(new File(plugin.getDataFolder(), "event-characters"), ((long) serialised.get("id")) + ".yml"));
         character.setId((int) serialised.get("id"));
-        if (character.getId() > nextId) {
-            nextId = character.getId();
+        if (character.getId() > plugin.getNextAvailableId()) {
+            plugin.setNextAvailableId(character.getId());
         }
         character.setPlayer(Bukkit.getOfflinePlayer((String) serialised.get("ign")));
         character.setName((String) serialised.get("name"));
