@@ -3,7 +3,6 @@ package net.wayward_realms.waywardevents;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
@@ -392,12 +391,7 @@ public class EventCharacterImpl implements EventCharacter {
 
     @Override
     public int getMaxMana() {
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (2D * classesPlugin.getClass(this).getManaBonus() * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
-        }
-        return 0;
+        return getFieldIntValue("max-mana");
     }
 
     @Override
