@@ -40,6 +40,17 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
 
     @Override
     public void loadState() {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            File characterDirectory = new File(getDataFolder(), "event-characters");
+            if (characterDirectory.exists()) {
+                for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
+                    int id = Integer.parseInt(file.getName().replace(".yml", ""));
+                    if (id > characterPlugin.getNextAvailableId()) characterPlugin.setNextAvailableId(id);
+                }
+            }
+        }
 
     }
 
