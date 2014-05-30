@@ -101,7 +101,7 @@ public class EventCharacterCommand implements CommandExecutor {
                         if (character instanceof EventCharacter) {
                             EventCharacter eventCharacter = (EventCharacter) character;
                             eventCharacter.createTemplate(args[1].toLowerCase());
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Template " + args[1].toLowerCase() + "created.");
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Template " + args[1].toLowerCase() + " created.");
                         } else {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
                         }
