@@ -17,7 +17,7 @@ public class RaceImpl implements Race {
     }
 
     public RaceImpl(WaywardEvents plugin, String name) {
-        this.file = new File(new File(plugin.getDataFolder(), "races"), name + ".yml");
+        this.file = new File(new File(plugin.getDataFolder(), "races"), name.toLowerCase() + ".yml");
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         config.set("name", name);
         try {

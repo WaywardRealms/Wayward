@@ -2,6 +2,7 @@ package net.wayward_realms.waywardevents;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
@@ -85,6 +86,19 @@ public class EventCharacterCommand implements CommandExecutor {
                                     }
                                 } else {
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + " [value]");
+                                }
+                            } else if (args[1].equalsIgnoreCase("race")) {
+                                if (args.length >= 3) {
+                                    Race race = plugin.getRace(args[2]);
+                                    if (race != null) {
+                                        character.setRace(race);
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race set.");
+                                    } else {
+                                        race = new RaceImpl(plugin, args[2]);
+                                        plugin.addRace(race);
+                                        character.setRace(race);
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race set to new race '" + race.getName() + "'.");
+                                    }
                                 }
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana]");

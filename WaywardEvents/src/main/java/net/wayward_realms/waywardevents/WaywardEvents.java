@@ -128,7 +128,7 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
             if (characterPlugin.getRace(name) != null) return characterPlugin.getRace(name);
         }
         File raceDirectory = new File(getDataFolder(), "races");
-        File raceFile = new File(raceDirectory, name + ".yml");
+        File raceFile = new File(raceDirectory, name.toLowerCase() + ".yml");
         if (raceFile.exists()) {
             return new RaceImpl(raceFile);
         }
