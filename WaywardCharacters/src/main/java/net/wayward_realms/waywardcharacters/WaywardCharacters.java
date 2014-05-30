@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
@@ -187,7 +188,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             races.put("HUMAN", new RaceImpl("Human"));
             RaceKit arrows = new RaceKit();
             arrows.addItem(new ItemStack(Material.ARROW, 4));
-            races.put("ELF", new RaceImpl("Elf", arrows));
+            Map<Stat, Integer> statBonuses = new EnumMap<>(Stat.class);
+            statBonuses.put(Stat.SPEED, 2);
+            statBonuses.put(Stat.MELEE_DEFENCE, -2);
+            races.put("ELF", new RaceImpl("Elf", arrows, statBonuses));
         }
         // Characters
         // Old character conversion

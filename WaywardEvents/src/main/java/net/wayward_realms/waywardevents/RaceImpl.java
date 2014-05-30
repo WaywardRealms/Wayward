@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardevents;
 
 import net.wayward_realms.waywardlib.character.Race;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,6 +39,11 @@ public class RaceImpl implements Race {
     public String getName() {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         return config.getString("name");
+    }
+
+    @Override
+    public int getStatBonus(Stat stat) {
+        return 0;
     }
 
     @Override
