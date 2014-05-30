@@ -19,7 +19,7 @@ public interface Character extends Combatant, ConfigurationSerializable {
      *
      * @return the ID
      */
-    public long getId();
+    public int getId();
 
     /**
      * Gets the name of the character

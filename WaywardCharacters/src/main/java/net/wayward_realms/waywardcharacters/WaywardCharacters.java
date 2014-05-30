@@ -207,7 +207,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         File characterDirectory = new File(getDataFolder(), "characters-new");
         if (characterDirectory.exists()) {
             for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
-                long id = Long.parseLong(file.getName().replace(".yml", ""));
+                int id = Integer.parseInt(file.getName().replace(".yml", ""));
                 if (id > CharacterImpl.getNextId()) CharacterImpl.setNextId(id);
             }
         }
@@ -256,17 +256,17 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         if (playerSave.get("active-character") == null) {
             return null;
         }
-        return getCharacter(playerSave.getLong("active-character"));
+        return getCharacter(playerSave.getInt("active-character"));
     }
 
     @Override
     public Set<Character> getCharacters(OfflinePlayer player) {
         YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
         if (playerSave.get("characters") == null) {
-            playerSave.set("characters", new HashSet<Long>());
+            playerSave.set("characters", new HashSet<Integer>());
         }
         Set<Character> characters = new HashSet<>();
-        for (long cid : (Set<Long>) playerSave.get("characters")) {
+        for (int cid : (Set<Integer>) playerSave.get("characters")) {
             characters.add(getCharacter(cid));
         }
         return characters;
@@ -277,9 +277,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
         character.setPlayer(player);
         if (playerSave.get("characters") == null) {
-            playerSave.set("characters", new HashSet<Long>());
+            playerSave.set("characters", new HashSet<Integer>());
         }
-        Set<Long> cids = (Set<Long>) playerSave.get("characters");
+        Set<Integer> cids = (Set<Integer>) playerSave.get("characters");
         cids.add(character.getId());
         playerSave.set("characters", cids);
         try {
@@ -294,9 +294,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
         character.setPlayer(player);
         if (playerSave.get("characters") == null) {
-            playerSave.set("characters", new HashSet<Long>());
+            playerSave.set("characters", new HashSet<Integer>());
         }
-        Set<Long> cids = (Set<Long>) playerSave.get("characters");
+        Set<Integer> cids = (Set<Integer>) playerSave.get("characters");
         cids.remove(character.getId());
         playerSave.set("characters", cids);
         try {
@@ -353,7 +353,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     }
 
     @Override
-    public Character getCharacter(long id) {
+    public Character getCharacter(int id) {
         File newCharacterDirectory = new File(getDataFolder(), "characters-new");
         File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
         if (newCharacterFile.exists()) {
@@ -386,21 +386,6 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void removeGender(Gender gender) {
         genders.remove(gender.getName());
-    }
-
-    @Override
-    public long getNextAvailableId() {
-        return CharacterImpl.getNextId();
-    }
-
-    @Override
-    public void setNextAvailableId(long id) {
-        CharacterImpl.setNextId(id);
-    }
-
-    @Override
-    public void incrementNextAvailableId() {
-        CharacterImpl.nextAvailableId();
     }
 
     @Override

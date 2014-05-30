@@ -74,7 +74,7 @@ public interface CharacterPlugin extends WaywardPlugin {
      * @param id the id of the character
      * @return the character
      */
-    public Character getCharacter(long id);
+    public Character getCharacter(int id);
 
     /**
      * Gets a collection of all the races
@@ -133,24 +133,5 @@ public interface CharacterPlugin extends WaywardPlugin {
      * @param gender the gender to remove
      */
     public void removeGender(Gender gender);
-
-    /**
-     * Gets the next available ID to assign characters
-     *
-     * @return the next available ID
-     */
-    public long getNextAvailableId();
-
-    /**
-     * Sets the next available ID to assign characters
-     *
-     * @param id the ID to set
-     */
-    public void setNextAvailableId(long id);
-
-    /**
-     * Increments the next ID to assign characters
-     */
-    public void incrementNextAvailableId();
 
 }
