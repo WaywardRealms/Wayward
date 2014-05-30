@@ -103,6 +103,11 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         return save.getString("character." + field);
     }
 
+    private ItemStack getFieldItemStackValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getItemStack("character." + field);
+    }
+
     @Override
     public int getId() {
         return getFieldIntValue("id");
@@ -228,6 +233,46 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void setLocation(Location location) {
         setFieldValue("location", new SerialisableLocation(location));
+    }
+
+    @Override
+    public ItemStack getHelmet() {
+        return getFieldItemStackValue("helmet");
+    }
+
+    @Override
+    public void setHelmet(ItemStack helmet) {
+        setFieldValue("helmet", helmet);
+    }
+
+    @Override
+    public ItemStack getChestplate() {
+        return getFieldItemStackValue("chestplate");
+    }
+
+    @Override
+    public void setChestplate(ItemStack chestplate) {
+        setFieldValue("chestplate", chestplate);
+    }
+
+    @Override
+    public ItemStack getLeggings() {
+        return getFieldItemStackValue("leggings");
+    }
+
+    @Override
+    public void setLeggings(ItemStack leggings) {
+        setFieldValue("leggings", leggings);
+    }
+
+    @Override
+    public ItemStack getBoots() {
+        return getFieldItemStackValue("boots");
+    }
+
+    @Override
+    public void setBoots(ItemStack boots) {
+        setFieldValue("boots", boots);
     }
 
     @Override
