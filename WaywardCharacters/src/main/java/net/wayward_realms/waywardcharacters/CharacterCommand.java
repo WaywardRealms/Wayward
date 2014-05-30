@@ -26,7 +26,7 @@ public class CharacterCommand implements CommandExecutor {
                 int livingCharacters = 0;
                 for (Character character : plugin.getCharacters((Player) sender)) {
                     if (character != null) {
-                        if (!character.isDead()) {
+                        if (!character.isDead() && !(character instanceof EventCharacter)) {
                             livingCharacters++;
                         }
                     }
