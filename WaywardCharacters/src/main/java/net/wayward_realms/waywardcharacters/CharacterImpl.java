@@ -24,18 +24,18 @@ import java.util.Map;
 
 public class CharacterImpl implements Character, ConfigurationSerializable {
 
-    private static int nextId = 0;
+    private static long nextId = 0;
 
-    public static int nextAvailableId() {
+    public static long nextAvailableId() {
         nextId++;
         return nextId;
     }
 
-    public static int getNextId() {
+    public static long getNextId() {
         return nextId;
     }
 
-    public static void setNextId(int id) {
+    public static void setNextId(long id) {
         CharacterImpl.nextId = id;
     }
 
@@ -46,7 +46,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     private CharacterImpl() {}
 
     public CharacterImpl(CharacterPlugin plugin, OfflinePlayer player) {
-        int id = CharacterImpl.nextAvailableId();
+        long id = CharacterImpl.nextAvailableId();
         this.file = new File(new File(plugin.getDataFolder(), "characters-new"), id + ".yml");
         setId(id);
         setPlayer(player);
@@ -109,11 +109,11 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return getFieldIntValue("id");
     }
 
-    private void setId(int id) {
+    private void setId(long id) {
         setFieldValue("id", id);
     }
 
