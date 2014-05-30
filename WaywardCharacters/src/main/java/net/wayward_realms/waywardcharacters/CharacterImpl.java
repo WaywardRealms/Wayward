@@ -331,7 +331,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (2D * classesPlugin.getClass(this).getHpBonus() * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getHpBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
         }
         return 0;
     }
@@ -351,7 +351,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (2D * classesPlugin.getClass(this).getManaBonus() * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
         }
         return 0;
     }
@@ -372,7 +372,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((150D + (2D * (double) classesPlugin.getClass(this).getStatBonus(stat) * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
+            return (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
         }
         return 0;
     }
@@ -393,6 +393,34 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     public void setClassHidden(boolean classHidden) {
         setFieldValue("class-hidden", classHidden);
+    }
+
+    public int getStatPoints(Stat stat) {
+        return getFieldIntValue("stat-points." + stat.toString().toLowerCase());
+    }
+
+    public void setStatPoints(Stat stat, int amount) {
+        setFieldValue("stat-points." + stat.toString().toLowerCase(), amount);
+    }
+
+    public int getAssignedStatPoints() {
+        int assigned = 0;
+        for (Stat stat : Stat.values()) {
+            assigned += getStatPoints(stat);
+        }
+        return assigned;
+    }
+
+    public int getUnassignedStatPoints() {
+        return getTotalStatPoints() - getAssignedStatPoints();
+    }
+
+    public int getTotalStatPoints() {
+        return 10;
+    }
+
+    public void assignStatPoint(Stat stat) {
+        setStatPoints(stat, getStatPoints(stat) + 1);
     }
 
     @Override
