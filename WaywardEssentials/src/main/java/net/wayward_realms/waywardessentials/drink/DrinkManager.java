@@ -22,7 +22,7 @@ public class DrinkManager {
 
     private WaywardEssentials plugin;
 
-    private Map<Long, Integer> drunkenness = new HashMap<>();
+    private Map<Integer, Integer> drunkenness = new HashMap<>();
 
     public DrinkManager(WaywardEssentials plugin) {
         this.plugin = plugin;

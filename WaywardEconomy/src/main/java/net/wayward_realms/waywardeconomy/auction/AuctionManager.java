@@ -16,7 +16,7 @@ import java.util.Map;
 public class AuctionManager {
 
     private WaywardEconomy plugin;
-    private Map<Long, Auction> auctions = new HashMap<>();
+    private Map<Integer, Auction> auctions = new HashMap<>();
 
     public AuctionManager(WaywardEconomy plugin) {
         this.plugin = plugin;

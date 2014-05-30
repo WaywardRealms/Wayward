@@ -192,7 +192,7 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     }
 
-    private NewProfessionInfo getProfessionInfo(long characterId) {
+    private NewProfessionInfo getProfessionInfo(int characterId) {
         File characterDirectory = new File(getDataFolder(), "characters-new");
         return new NewProfessionInfo(new File(characterDirectory, characterId + ".yml"));
     }
