@@ -1,7 +1,10 @@
 package net.wayward_realms.waywardevents;
 
 import net.wayward_realms.waywardlib.character.Race;
+import net.wayward_realms.waywardlib.events.EventsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,5 +45,16 @@ public class RaceImpl implements Race {
         Map<String, Object> serialised = new HashMap<>();
         serialised.put("name", getName());
         return serialised;
+    }
+
+    public static RaceImpl deserialize(Map<String, Object> serialised) {
+        RegisteredServiceProvider<EventsPlugin> eventsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EventsPlugin.class);
+        if (eventsPluginProvider != null) {
+            EventsPlugin eventsPlugin = eventsPluginProvider.getProvider();
+            if (eventsPlugin instanceof WaywardEvents) {
+                return new RaceImpl((WaywardEvents) eventsPlugin, (String) serialised.get("name"));
+            }
+        }
+        return null;
     }
 }

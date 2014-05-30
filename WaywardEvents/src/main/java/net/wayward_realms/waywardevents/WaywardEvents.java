@@ -145,7 +145,7 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
     @Override
     public void removeRace(Race race) {
         File raceDirectory = new File(getDataFolder(), "races");
-        File raceFile = new File(raceDirectory, race.getName() + ".yml");
+        File raceFile = new File(raceDirectory, race.getName().toLowerCase() + ".yml");
         if (raceFile.exists()) raceFile.delete();
     }
 

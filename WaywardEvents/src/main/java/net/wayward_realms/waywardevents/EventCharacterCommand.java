@@ -89,15 +89,16 @@ public class EventCharacterCommand implements CommandExecutor {
                                 }
                             } else if (args[1].equalsIgnoreCase("race")) {
                                 if (args.length >= 3) {
+                                    if (plugin.getRace(args[2]) == null) {
+                                        plugin.addRace(new RaceImpl(plugin, args[2]));
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "New race '" + args[2] + "' created.");
+                                    }
                                     Race race = plugin.getRace(args[2]);
                                     if (race != null) {
                                         character.setRace(race);
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race set.");
                                     } else {
-                                        race = new RaceImpl(plugin, args[2]);
-                                        plugin.addRace(race);
-                                        character.setRace(race);
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race set to new race '" + race.getName() + "'.");
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Failed to create a new race.");
                                     }
                                 } else {
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a race.");
