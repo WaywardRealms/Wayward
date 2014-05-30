@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
+import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -71,6 +72,37 @@ public class EventCharacterCommand implements CommandExecutor {
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat] [skill type|stat] [value]");
+                    }
+                } else if (args[0].equalsIgnoreCase("createtemplate")) {
+                    if (args.length >= 2) {
+                        Character character = characterPlugin.getActiveCharacter((Player) sender);
+                        if (character instanceof EventCharacter) {
+                            EventCharacter eventCharacter = (EventCharacter) character;
+                            eventCharacter.createTemplate(args[1].toLowerCase());
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Template " + args[1].toLowerCase() + "created.");
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " createtemplate [name]");
+                    }
+                } else if (args[0].equalsIgnoreCase("assigntemplate")) {
+                    if (args.length >= 2) {
+                        Character character = characterPlugin.getActiveCharacter((Player) sender);
+                        if (character instanceof EventCharacter) {
+                            EventCharacter eventCharacter = (EventCharacter) character;
+                            EventCharacterTemplate template = plugin.getEventCharacterTemplate(args[1].toLowerCase());
+                            if (template != null) {
+                                eventCharacter.assignTemplate(template);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Template " + args[1].toLowerCase() + ChatColor.GRAY + " (by " + template.getCreator().getName() + ")" + ChatColor.GREEN + " assigned.");
+                            } else {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Could not find a template by that name.");
+                            }
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " createtemplate [name]");
                     }
                 } else if (args[0].equalsIgnoreCase("list")) {
                     Player player = (Player) sender;
