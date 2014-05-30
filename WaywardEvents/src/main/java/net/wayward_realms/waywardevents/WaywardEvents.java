@@ -24,10 +24,11 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
 
     @Override
     public void onEnable() {
-        ConfigurationSerialization.registerClass(net.wayward_realms.waywardevents.DungeonImpl.class);
-        getCommand("dungeon").setExecutor(new net.wayward_realms.waywardevents.DungeonCommand(this));
-        getCommand("radiusemote").setExecutor(new net.wayward_realms.waywardevents.RadiusEmoteCommand(this));
-        getCommand("createeffect").setExecutor(new net.wayward_realms.waywardevents.CreateEffectCommand(this));
+        ConfigurationSerialization.registerClass(DungeonImpl.class);
+        ConfigurationSerialization.registerClass(RaceImpl.class);
+        getCommand("dungeon").setExecutor(new DungeonCommand(this));
+        getCommand("radiusemote").setExecutor(new RadiusEmoteCommand(this));
+        getCommand("createeffect").setExecutor(new CreateEffectCommand(this));
         getCommand("eventcharacter").setExecutor(new EventCharacterCommand(this));
     }
 
