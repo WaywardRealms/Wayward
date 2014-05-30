@@ -64,14 +64,36 @@ public class EventCharacterCommand implements CommandExecutor {
                                 } else {
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + "[skill type] [value]");
                                 }
+                            } else if (args[1].equalsIgnoreCase("health") || args[1].equalsIgnoreCase("hp")) {
+                                if (args.length >= 3) {
+                                    try {
+                                        eventCharacter.setMaxHealth(Double.parseDouble(args[2]));
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Health set.");
+                                    } catch (NumberFormatException exception) {
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + " [value]");
+                                    }
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + " [value]");
+                                }
+                            } else if (args[1].equalsIgnoreCase("mana")) {
+                                if (args.length >= 3) {
+                                    try {
+                                        eventCharacter.setMaxMana(Integer.parseInt(args[2]));
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Mana set.");
+                                    } catch (NumberFormatException exception) {
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + " [value]");
+                                    }
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + " [value]");
+                                }
                             } else {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat] [skill type|stat] [value]");
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana]");
                             }
                         } else {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character in order to set skill points or stats.");
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
                         }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat] [skill type|stat] [value]");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana]");
                     }
                 } else if (args[0].equalsIgnoreCase("createtemplate")) {
                     if (args.length >= 2) {
