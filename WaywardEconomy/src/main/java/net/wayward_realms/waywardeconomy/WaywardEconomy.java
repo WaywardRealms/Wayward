@@ -247,13 +247,13 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
     public void checkRichest(Character check) {
         File richestFile = new File(getDataFolder(), "richest.yml");
         YamlConfiguration richestSave = YamlConfiguration.loadConfiguration(richestFile);
-        List<Integer> richestIds = richestSave.getIntegerList("richest");
+        List<Long> richestIds = richestSave.getLongList("richest");
         if (!richestIds.contains(check.getId())) richestIds.add(check.getId());
         List<Character> characters = new ArrayList<>();
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            for (int id : richestIds) {
+            for (long id : richestIds) {
                 characters.add(characterPlugin.getCharacter(id));
             }
         }

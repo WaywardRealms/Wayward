@@ -22,12 +22,12 @@ import java.util.*;
 
 public class FightImpl implements Fight {
 
-    private Map<Integer, Location> characterLocations = new HashMap<>();
-    private List<Integer> turnOrder = new ArrayList<>();
+    private Map<Long, Location> characterLocations = new HashMap<>();
+    private List<Long> turnOrder = new ArrayList<>();
     private int turn = -1;
     private boolean active;
     private Turn activeTurn;
-    private Map<Integer, Turn> savedTurns = new HashMap<>();
+    private Map<Long, Turn> savedTurns = new HashMap<>();
 
     private Inventory turnOptions = Bukkit.createInventory(null, 18, "Skill type");
 
@@ -119,7 +119,7 @@ public class FightImpl implements Fight {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            for (int cid : characterLocations.keySet()) {
+            for (long cid : characterLocations.keySet()) {
                 Character character = characterPlugin.getCharacter(cid);
                 if (character.getPlayer().isOnline()) {
                     Player player = character.getPlayer().getPlayer();
@@ -213,7 +213,7 @@ public class FightImpl implements Fight {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            for (int cid : characterLocations.keySet()) {
+            for (long cid : characterLocations.keySet()) {
                 characters.add(characterPlugin.getCharacter(cid));
             }
         }
@@ -242,7 +242,7 @@ public class FightImpl implements Fight {
     }
 
     public void removeCharacter(Character character) {
-        turnOrder.remove((Integer) character.getId());
+        turnOrder.remove(character.getId());
         characterLocations.remove(character.getId());
     }
 
