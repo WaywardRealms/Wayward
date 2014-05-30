@@ -372,7 +372,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
+            return (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat) + getRace().getStatBonus(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
         }
         return 0;
     }
