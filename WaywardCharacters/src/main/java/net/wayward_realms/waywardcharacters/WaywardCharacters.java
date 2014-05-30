@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
+import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -355,7 +356,16 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public Character getCharacter(int id) {
         File newCharacterDirectory = new File(getDataFolder(), "characters-new");
         File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
-        return new CharacterImpl(newCharacterFile);
+        if (newCharacterFile.exists()) {
+            return new CharacterImpl(newCharacterFile);
+        } else {
+            RegisteredServiceProvider<EventsPlugin> eventsPluginProvider = getServer().getServicesManager().getRegistration(EventsPlugin.class);
+            if (eventsPluginProvider != null) {
+                EventsPlugin eventsPlugin = eventsPluginProvider.getProvider();
+                return eventsPlugin.getEventCharacter(id);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -376,6 +386,21 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void removeGender(Gender gender) {
         genders.remove(gender.getName());
+    }
+
+    @Override
+    public int getNextAvailableId() {
+        return CharacterImpl.getNextId();
+    }
+
+    @Override
+    public void setNextAvailableId(int id) {
+        CharacterImpl.setNextId(id);
+    }
+
+    @Override
+    public void incrementNextAvailableId() {
+        CharacterImpl.nextAvailableId();
     }
 
     @Override
