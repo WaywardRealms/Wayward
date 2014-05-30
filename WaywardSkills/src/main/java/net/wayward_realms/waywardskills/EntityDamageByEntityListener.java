@@ -5,8 +5,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class EntityDamageByEntityListener implements Listener {
 
@@ -31,19 +29,6 @@ public class EntityDamageByEntityListener implements Listener {
                     if (!snowball.getMetadata("isMagicMissile").isEmpty()) {
                         if (event.getEntity() instanceof LivingEntity) {
                             event.setDamage(4.0D);
-                        }
-                    }
-                }
-            }
-        }
-        if (event.getDamager() instanceof Arrow) {
-            Arrow arrow = (Arrow) event.getDamager();
-            if (arrow.getShooter() instanceof Player) {
-                if (arrow.getMetadata("isPoisonArrow") != null) {
-                    if (!arrow.getMetadata("isPoisonArrow").isEmpty()) {
-                        if (event.getEntity() instanceof LivingEntity) {
-                            LivingEntity livingEntity = (LivingEntity) event.getEntity();
-                            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 0));
                         }
                     }
                 }
