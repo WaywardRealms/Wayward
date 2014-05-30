@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.BlockIterator;
 
@@ -147,7 +148,11 @@ public class BlizzardSpell extends AttackSpellBase {
 
     @Override
     public ItemStack getIcon() {
-        return new ItemStack(Material.PACKED_ICE, 1);
+        ItemStack icon = new ItemStack(Material.PACKED_ICE);
+        ItemMeta meta = icon.getItemMeta();
+        meta.setDisplayName("Blizzard");
+        icon.setItemMeta(meta);
+        return icon;
     }
 
     @Override
