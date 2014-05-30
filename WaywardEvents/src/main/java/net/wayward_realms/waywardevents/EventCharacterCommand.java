@@ -96,17 +96,13 @@ public class EventCharacterCommand implements CommandExecutor {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana]");
                     }
                 } else if (args[0].equalsIgnoreCase("createtemplate")) {
-                    if (args.length >= 2) {
-                        Character character = characterPlugin.getActiveCharacter((Player) sender);
-                        if (character instanceof EventCharacter) {
-                            EventCharacter eventCharacter = (EventCharacter) character;
-                            eventCharacter.createTemplate(args[1].toLowerCase());
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Template " + args[1].toLowerCase() + " created.");
-                        } else {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
-                        }
+                    Character character = characterPlugin.getActiveCharacter((Player) sender);
+                    if (character instanceof EventCharacter) {
+                        EventCharacter eventCharacter = (EventCharacter) character;
+                        eventCharacter.createTemplate();
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Template " + character.getName() + " created.");
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " createtemplate [name]");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
                     }
                 } else if (args[0].equalsIgnoreCase("assigntemplate")) {
                     if (args.length >= 2) {

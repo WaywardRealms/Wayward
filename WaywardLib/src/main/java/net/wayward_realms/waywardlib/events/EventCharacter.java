@@ -41,10 +41,8 @@ public interface EventCharacter extends Character {
 
     /**
      * Creates a template from this event character
-     *
-     * @return a template from this event character
      */
-    public EventCharacterTemplate createTemplate(String name);
+    public EventCharacterTemplate createTemplate();
 
     /**
      * Assigns fields based on the template

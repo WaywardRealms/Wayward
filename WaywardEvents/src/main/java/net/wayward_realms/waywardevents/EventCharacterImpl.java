@@ -344,11 +344,11 @@ public class EventCharacterImpl implements EventCharacter {
     }
 
     @Override
-    public EventCharacterTemplate createTemplate(String name) {
+    public EventCharacterTemplate createTemplate() {
         RegisteredServiceProvider<EventsPlugin> eventsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EventsPlugin.class);
         if (eventsPluginProvider != null) {
             EventsPlugin eventsPlugin = eventsPluginProvider.getProvider();
-            EventCharacterTemplate template = new EventCharacterTemplateImpl(this, name);
+            EventCharacterTemplate template = new EventCharacterTemplateImpl(this);
             eventsPlugin.addEventCharacterTemplate(template);
             return template;
         }

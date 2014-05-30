@@ -20,12 +20,12 @@ public class EventCharacterTemplateImpl implements EventCharacterTemplate {
 
     private File file;
 
-    public EventCharacterTemplateImpl(EventCharacterImpl eventCharacter, String name) {
+    public EventCharacterTemplateImpl(EventCharacterImpl eventCharacter) {
         RegisteredServiceProvider<EventsPlugin> eventsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EventsPlugin.class);
         if (eventsPluginProvider != null) {
             EventsPlugin eventsPlugin = eventsPluginProvider.getProvider();
             File templateDirectory = new File(eventsPlugin.getDataFolder(), "event-character-templates");
-            this.file = new File(templateDirectory, name + ".yml");
+            this.file = new File(templateDirectory, eventCharacter.getName() + ".yml");
             setCreator(eventCharacter.getPlayer());
             setName(eventCharacter.getName());
             setAge(eventCharacter.getAge());
