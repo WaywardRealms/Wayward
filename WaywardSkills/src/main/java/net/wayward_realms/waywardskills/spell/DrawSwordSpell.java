@@ -22,19 +22,11 @@ import java.util.Map;
 
 public class DrawSwordSpell extends SpellBase {
 
-    private String name = "DrawSword";
-    private int manaCost = 50;
-    private int coolDown = 300;
-    private SkillType type = SkillType.MAGIC_SWORD;
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
+    public DrawSwordSpell() {
+        setName("DrawSword");
+        setManaCost(50);
+        setCoolDown(300);
+        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -96,36 +88,6 @@ public class DrawSwordSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
     }
 
     @Override
