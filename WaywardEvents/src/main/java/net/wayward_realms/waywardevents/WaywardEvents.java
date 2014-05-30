@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.events.Dungeon;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -13,7 +14,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class WaywardEvents extends JavaPlugin implements EventsPlugin {
 
@@ -104,6 +107,17 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
         File templateDirectory = new File(getDataFolder(), "event-character-templates");
         File templateFile = new File(templateDirectory, template.getName() + ".yml");
         if (templateFile.exists()) templateFile.delete();
+    }
+
+    public Collection<EventCharacterTemplate> getEventCharacterTemplates() {
+        File templateDirectory = new File(getDataFolder(), "event-character-templates");
+        Set<EventCharacterTemplate> templates = new HashSet<>();
+        if (templateDirectory.exists()) {
+            for (File file : templateDirectory.listFiles(new YamlFileFilter())) {
+                templates.add(new EventCharacterTemplateImpl(file));
+            }
+        }
+        return templates;
     }
 
     @Override

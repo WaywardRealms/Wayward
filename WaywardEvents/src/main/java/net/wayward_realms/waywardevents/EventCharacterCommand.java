@@ -139,11 +139,16 @@ public class EventCharacterCommand implements CommandExecutor {
                             sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
                         }
                     }
+                } else if (args[0].equalsIgnoreCase("listtemplates")) {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Templates: ");
+                    for (EventCharacterTemplate template : plugin.getEventCharacterTemplates()) {
+                        sender.sendMessage(ChatColor.GREEN + template.getName() + ChatColor.GRAY + " (by " + template.getCreator().getName() + ")");
+                    }
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|set|list]");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|set|list|createtemplate|assigntemplate|listtemplates]");
                 }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|set|list]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|set|list|createtemplate|assigntemplate|listtemplates]");
             }
         }
         return true;
