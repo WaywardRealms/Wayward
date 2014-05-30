@@ -32,6 +32,12 @@ public class EntityDamageByEntityListener implements Listener {
                         }
                     }
                 }
+                if (snowball.getMetadata("isIceBreath") != null) {
+                    if (!snowball.getMetadata("isIceBreath").isEmpty()) {
+                        event.setCancelled(true);
+                        freeze(event.getEntity());
+                    }
+                }
             }
         }
     }

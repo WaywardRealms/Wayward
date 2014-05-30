@@ -50,10 +50,10 @@ public abstract class AttackSpellBase extends SpellBase {
                 if (critical) {
                     fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
                 }
-                fight.sendMessage(getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
+                fight.sendMessage(ChatColor.YELLOW + getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
                 return true;
             } else {
-                fight.sendMessage(getFightFailManaMessage(attacking, defending));
+                fight.sendMessage(ChatColor.YELLOW + getFightFailManaMessage(attacking, defending));
             }
         }
         return false;

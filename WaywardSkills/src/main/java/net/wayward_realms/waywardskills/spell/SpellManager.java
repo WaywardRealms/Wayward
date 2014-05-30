@@ -37,6 +37,7 @@ public class SpellManager {
         addSpell(new SummonSkeletonSpell(plugin));
         addSpell(new SummonSpiderSpell(plugin));
         addSpell(new BlizzardSpell(plugin));
+        addSpell(new IceBreathSpell(plugin));
     }
 
     public Spell getSpell(String name) {
