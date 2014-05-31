@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.wayward-realms</groupId>
     <artifactId>wayward</artifactId>
-    <version>0.5.3-SNAPSHOT</version>
+    <version>0.6.0</version>
     <name>Wayward</name>
     <description>Plugins designed for Wayward Realms server</description>
     <url>http://wayward-realms.net/</url>
@@ -59,7 +59,7 @@
         <connection>scm:git:https://github.com/WaywardRealms/Wayward.git</connection>
         <url>https://github.com/WaywardRealms/Wayward</url>
         <developerConnection>scm:git:https://github.com/WaywardRealms/Wayward.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.6.0</tag>
     </scm>
     <repositories>
         <repository>
