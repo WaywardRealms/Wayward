@@ -26,6 +26,13 @@
                     <include>**/plugin.yml</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/music/canon.mid</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>

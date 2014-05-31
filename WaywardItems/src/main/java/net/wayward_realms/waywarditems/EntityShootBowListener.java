@@ -1,11 +1,15 @@
 package net.wayward_realms.waywarditems;
 
-import org.bukkit.Instrument;
-import org.bukkit.Note;
+import com.sk89q.jinglenote.MidiJingleSequencer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
+
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+import java.io.File;
+import java.io.IOException;
 
 public class EntityShootBowListener implements Listener {
 
@@ -22,7 +26,12 @@ public class EntityShootBowListener implements Listener {
                 event.setCancelled(true);
                 for (Player player : event.getEntity().getWorld().getPlayers()) {
                     if (player.getLocation().distanceSquared(event.getEntity().getLocation()) <= 64) {
-                        player.playNote(player.getLocation(), Instrument.PIANO, Note.natural(0, Note.Tone.C)); //TODO: Add some actual midi files we can play here!
+                        try {
+                            File musicDirectory = new File(plugin.getDataFolder(), "music");
+                            plugin.getJingleNoteManager().play(plugin, player.getName(), new MidiJingleSequencer(new File(musicDirectory, "canon.mid"), false));
+                        } catch (MidiUnavailableException | InvalidMidiDataException | IOException exception) {
+                            exception.printStackTrace();
+                        }
                     }
                 }
             }
