@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Aids in the serialisation of shaped recipes
+ *
+ */
 public class SerialisableShapedRecipe implements SerialisableRecipe {
 
     private String[] shape;

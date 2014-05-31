@@ -154,6 +154,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      * Gets the money owned by a player's active character in a given currency
      *
      * @param player the player
+     * @param currency the currency
      * @return the money owned by the player's active character
      */
     public int getMoney(OfflinePlayer player, Currency currency);
@@ -162,6 +163,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      * Sets the money owned by a player's active character in a given currency
      *
      * @param player the player
+     * @param currency the currency
      * @param amount the amount to set
      */
     public void setMoney(OfflinePlayer player, Currency currency, int amount);
@@ -170,6 +172,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      * Gives money to a player's active character in a given currency
      *
      * @param player the player
+     * @param currency the currency
      * @param amount the amount to add
      */
     public void addMoney(OfflinePlayer player, Currency currency, int amount);
@@ -179,6 +182,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      *
      * @param takeFrom the player whose character the money should be taken from
      * @param giveTo the player whose character the money should be given to
+     * @param currency the currency
      * @param amount the amount to transfer
      */
     public void transferMoney(OfflinePlayer takeFrom, OfflinePlayer giveTo, Currency currency, int amount);
@@ -187,6 +191,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      * Gets the money owned by a character in a given currency
      *
      * @param character the character
+     * @param currency the currency
      * @return the money owned by the character
      */
     public int getMoney(Character character, Currency currency);
@@ -195,6 +200,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      * Sets the money owned by a character in a given currency
      *
      * @param character the character
+     * @param currency the currency
      * @param amount the amount to set
      */
     public void setMoney(Character character, Currency currency, int amount);
@@ -203,6 +209,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      * Gives money to a character in a given currency
      *
      * @param character the character
+     * @param currency the currency
      * @param amount the amount to add
      */
     public void addMoney(Character character, Currency currency, int amount);
@@ -212,6 +219,7 @@ public interface EconomyPlugin extends WaywardPlugin {
      *
      * @param takeFrom the character to take the money from
      * @param giveTo the character to give the money to
+     * @param currency the currency
      * @param amount the amount to transfer
      */
     public void transferMoney(Character takeFrom, Character giveTo, Currency currency, int amount);
