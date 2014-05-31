@@ -1,18 +1,18 @@
 package com.sk89q.jinglenote.bukkit;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-
 import com.sk89q.jinglenote.Instrument;
 import com.sk89q.jinglenote.JingleNotePlayer;
 import com.sk89q.jinglenote.JingleSequencer;
 import com.sk89q.jinglenote.JingleSequencer.Note;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public class BukkitJingleNotePlayer extends JingleNotePlayer {
 
-    public BukkitJingleNotePlayer (String player, JingleSequencer seq) {
-        super(player, seq);
+    public BukkitJingleNotePlayer (Plugin plugin, String player, JingleSequencer seq) {
+        super(plugin, player, seq);
     }
 
     Player p = null;

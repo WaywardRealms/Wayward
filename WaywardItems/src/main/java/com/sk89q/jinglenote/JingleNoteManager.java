@@ -19,10 +19,11 @@
 
 package com.sk89q.jinglenote;
 
+import com.sk89q.jinglenote.bukkit.BukkitJingleNotePlayer;
+import org.bukkit.plugin.Plugin;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.sk89q.jinglenote.bukkit.BukkitJingleNotePlayer;
 
 /**
  * A manager of play instances.
@@ -36,7 +37,7 @@ public class JingleNoteManager {
      */
     protected final Map<String, JingleNotePlayer> instances = new HashMap<String, JingleNotePlayer>();
 
-    public void play(String player, JingleSequencer sequencer) {
+    public void play(Plugin plugin, String player, JingleSequencer sequencer) {
 
         // Existing player found!
         if (instances.containsKey(player)) {
@@ -45,7 +46,7 @@ public class JingleNoteManager {
             instances.remove(player);
         }
 
-        JingleNotePlayer notePlayer = new BukkitJingleNotePlayer(player, sequencer);
+        JingleNotePlayer notePlayer = new BukkitJingleNotePlayer(plugin, player, sequencer);
         Thread thread = new Thread(notePlayer);
         thread.setDaemon(true);
         thread.setPriority(Thread.MAX_PRIORITY);

@@ -25,6 +25,12 @@ public class WaywardItems extends JavaPlugin implements ItemsPlugin {
     public void onEnable() {
         recipeManager = new RecipeManager(this);
         recipeManager.setupRecipes();
+        Map<Character, ItemStack> harpIngredients = new HashMap<>();
+        harpIngredients.put('s', new ItemStack(Material.STRING));
+        harpIngredients.put('S', new ItemStack(Material.STICK));
+        CustomMaterial harp = new CustomMaterialImpl("Harp", Material.BOW, new String[] {"ssS", "ssS", "ssS"}, harpIngredients);
+        addMaterial(harp);
+        getServer().getPluginManager().registerEvents(new EntityShootBowListener(this), this);
     }
 
     private Map<String, CustomMaterial> customMaterials = new HashMap<>();
