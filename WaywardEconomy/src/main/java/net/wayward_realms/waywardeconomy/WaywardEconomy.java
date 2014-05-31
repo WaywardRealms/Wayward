@@ -43,7 +43,7 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         getCommand("wallet").setExecutor(new WalletCommand(this));
         getCommand("auction").setExecutor(new AuctionCommand(this));
         getCommand("bid").setExecutor(new BidCommand(this));
-        registerListeners(new SignChangeListener(this), new PlayerInteractListener(this), new InventoryClickListener(this), new InventoryCloseListener(this));
+        registerListeners(new SignChangeListener(this), new PlayerInteractListener(this), new InventoryClickListener(this), new InventoryCloseListener(this), new PlayerJoinListener(this));
     }
 
     @Override
@@ -296,6 +296,10 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
 
     private void quickSort(List<Character> characters) {
         quickSort(characters, 0, characters.size() - 1);
+    }
+
+    public int getMaximumMoney() {
+        return 1728;
     }
 
 }
