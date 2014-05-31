@@ -38,6 +38,7 @@ public class SpellManager {
         addSpell(new SummonSpiderSpell(plugin));
         addSpell(new BlizzardSpell(plugin));
         addSpell(new IceBreathSpell(plugin));
+        addSpell(new FireSwordSpell());
     }
 
     public Spell getSpell(String name) {
