@@ -37,6 +37,11 @@ public class PlayerItemConsumeListener implements Listener {
                 }
             }
         }
+        if (event.getItem().getType() == Material.MILK_BUCKET) {
+            Character character = plugin.getActiveCharacter(event.getPlayer());
+            character.setThirst(character.getThirst() + 5);
+            event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +5" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+        }
     }
 
 }
