@@ -67,4 +67,14 @@ public class WarningImpl implements Warning {
         return deserialised;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Warning)) return false;
+        Warning warning = (Warning) obj;
+        return warning.getPlayer().getName().equals(getPlayer().getName())
+                && warning.getReason().equals(getReason())
+                && warning.getIssuer().getName().equals(getIssuer().getName())
+                && warning.getTime().equals(getTime());
+    }
+
 }
