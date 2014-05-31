@@ -31,9 +31,12 @@ public class CustomMaterialImpl implements CustomMaterial {
         this.minecraftMaterial = minecraftMaterial;
         this.recipe = new ShapedRecipe(new CustomItemStackImpl(this, 1).toMinecraftItemStack());
         try {
-            Field field = recipe.getClass().getDeclaredField("ingredients");
-            field.setAccessible(true);
-            field.set(recipe, recipeIngredients);
+            Field shapeField = recipe.getClass().getDeclaredField("rows");
+            shapeField.setAccessible(true);
+            shapeField.set(recipe, recipeShape);
+            Field ingredientsField = recipe.getClass().getDeclaredField("ingredients");
+            ingredientsField.setAccessible(true);
+            ingredientsField.set(recipe, recipeIngredients);
         } catch (IllegalAccessException | NoSuchFieldException exception) {
             exception.printStackTrace();
         }
