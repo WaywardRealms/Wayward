@@ -67,7 +67,7 @@ public class EntityDamageByEntityListener implements Listener {
                 defence = plugin.getEntityLevelManager().getEntityStatValue(defender);
             }
         }
-        if (attacker != null && defender != null) {
+        if (attacker != null && defender != null && (defender instanceof Monster || defender instanceof Player)) {
             event.setDamage((Math.ceil((((attack + 1D) / 2D) + 5D) * event.getDamage())) / (defence + 1D) / 2D);
         }
         if (defender != null) {
