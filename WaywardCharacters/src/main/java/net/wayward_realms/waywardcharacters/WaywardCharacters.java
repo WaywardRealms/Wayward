@@ -40,6 +40,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
         getCommand("skillpoints").setExecutor(new SkillPointsCommand(this));
+        getCommand("togglethirst").setExecutor(new ToggleThirstCommand(this));
         setupRegen();
         setupHungerSlowdown();
     }
@@ -52,13 +53,15 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         Character character = getActiveCharacter(player);
-                        if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
-                            character.setThirst(character.getThirst() - 1);
-                            player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
-                        }
-                        if (character.getThirst() < 5 && character.getHealth() > 1) {
-                            character.setHealth(character.getHealth() - 1);
-                            player.sendMessage(getPrefix() + ChatColor.RED + "You are very thirsty, be sure to drink something soon! " + ChatColor.GRAY + "(Health: -1)");
+                        if (!isThirstDisabled(player)) {
+                            if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
+                                character.setThirst(character.getThirst() - 1);
+                                player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                            }
+                            if (character.getThirst() < 5 && character.getHealth() > 1) {
+                                character.setHealth(character.getHealth() - 1);
+                                player.sendMessage(getPrefix() + ChatColor.RED + "You are very thirsty, be sure to drink something soon! " + ChatColor.GRAY + "(Health: -1)");
+                            }
                         }
                         RegisteredServiceProvider<CombatPlugin> combatPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CombatPlugin.class);
                         if (combatPluginProvider != null) {
@@ -451,6 +454,25 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public boolean canClaimRaceKit(OfflinePlayer player) {
         YamlConfiguration raceKitClaimSave = YamlConfiguration.loadConfiguration(new File("racekitclaims.yml"));
         return raceKitClaimSave.get(player.getName()) == null || System.currentTimeMillis() - raceKitClaimSave.getLong(player.getName()) > 86400000L;
+    }
+
+    public boolean isThirstDisabled(OfflinePlayer player) {
+        File thirstDisabledFile = new File(getDataFolder(), "thirst-disabled.yml");
+        YamlConfiguration thirstDisabledConfig = YamlConfiguration.loadConfiguration(thirstDisabledFile);
+        return thirstDisabledConfig.getStringList("disabled").contains(player.getName());
+    }
+
+    public void setThirstDisabled(OfflinePlayer player, boolean disabled) {
+        File thirstDisabledFile = new File(getDataFolder(), "thirst-disabled.yml");
+        YamlConfiguration thirstDisabledConfig = YamlConfiguration.loadConfiguration(thirstDisabledFile);
+        List<String> thirstDisabled = thirstDisabledConfig.getStringList("disabled");
+        if (disabled) thirstDisabled.add(player.getName()); else thirstDisabled.remove(player.getName());
+        thirstDisabledConfig.set("disabled", thirstDisabled);
+        try {
+            thirstDisabledConfig.save(thirstDisabledFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }
