@@ -20,6 +20,9 @@ commands:
         description: Shows your skill points
         aliases: [sp]
         usage: /<command>
+    togglethirst:
+        description: Toggles thirst
+        usage: /<command>
 permissions:
     wayward.characters.createmasheekwell:
         default: op
