@@ -19,6 +19,8 @@
 package com.sk89q.jinglenote;
 
 
+import org.bukkit.plugin.Plugin;
+
 /**
  * Interface for a sequencer.
  *
@@ -26,7 +28,7 @@ package com.sk89q.jinglenote;
  */
 public interface JingleSequencer {
 
-    public void run(JingleNotePlayer player) throws InterruptedException;
+    public void run(Plugin plugin, JingleNotePlayer player) throws InterruptedException;
 
     public void stop();
 

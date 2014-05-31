@@ -18,12 +18,11 @@
 
 package com.sk89q.jinglenote;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.Bukkit;
-
-import com.sk89q.commandbook.CommandBook;
 
 /**
  * @author Me4502 with code borrowed from CraftBook Extra
@@ -45,7 +44,7 @@ public class StringJingleSequencer implements JingleSequencer {
     }
 
     @Override
-    public void run(final JingleNotePlayer player) throws InterruptedException {
+    public void run(Plugin plugin, final JingleNotePlayer player) throws InterruptedException {
         position = 0;
         if (song == null) {
             return;
@@ -53,7 +52,7 @@ public class StringJingleSequencer implements JingleSequencer {
 
         isPlaying = true;
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                CommandBook.inst(), new Runnable() {
+                plugin, new Runnable() {
                     @Override
                     public void run() {
                         if (position >= song.size()) {

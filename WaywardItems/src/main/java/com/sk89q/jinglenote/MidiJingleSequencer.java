@@ -18,19 +18,13 @@
 
 package com.sk89q.jinglenote;
 
+import org.bukkit.plugin.Plugin;
+
+import javax.sound.midi.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
-import javax.sound.midi.ShortMessage;
 
 /**
  * A sequencer that reads MIDI files.
@@ -102,7 +96,7 @@ public class MidiJingleSequencer implements JingleSequencer {
     }
 
     @Override
-    public void run(final JingleNotePlayer notePlayer) throws InterruptedException {
+    public void run(Plugin plugin, final JingleNotePlayer notePlayer) throws InterruptedException {
 
         final Map<Integer, Integer> patches = new HashMap<Integer, Integer>();
 
