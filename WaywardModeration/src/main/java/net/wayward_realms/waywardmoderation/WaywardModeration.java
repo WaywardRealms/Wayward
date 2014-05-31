@@ -33,13 +33,14 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         ConfigurationSerialization.registerClass(WarningImpl.class);
         logManager = new LogManager();
         vanishManager = new VanishManager(this);
-        warningManager = new WarningManager();
+        warningManager = new WarningManager(this);
         ticketManager = new TicketManager();
         reputationManager = new ReputationManager(new File(getDataFolder().getPath() + File.separator + "reputation.yml"));
         getCommand("reputation").setExecutor(new ReputationCommand(this));
         getCommand("ticket").setExecutor(new TicketCommand(this));
         getCommand("vanish").setExecutor(new VanishCommand(this));
         getCommand("warn").setExecutor(new WarnCommand(this));
+        getCommand("unwarn").setExecutor(new UnwarnCommand(this));
         getCommand("warnings").setExecutor(new WarningsCommand(this));
         getCommand("amivanished").setExecutor(new AmIVanishedCommand(this));
         registerListeners(new PlayerJoinListener(this));
