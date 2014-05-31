@@ -9,6 +9,9 @@ commands:
         description: Manages reputation
         usage: /<command> [view|set|plus|minus]
         aliases: [rep]
+    tempban:
+        description: Temporarily bans a user
+        usage: /<command> [player] [hours]
     ticket:
         description: Manages tickets
         usage: /<command> [create|close|teleport]
@@ -36,6 +39,9 @@ permissions:
         default: op
     wayward.moderation.command.reputation.minus:
         description: Allows you to take reputation
+        default: op
+    wayward.moderation.command.tempban:
+        description: Allows you to temporarily ban users
         default: op
     wayward.moderation.command.ticket.close:
         description: Allows you to close tickets that are not your own

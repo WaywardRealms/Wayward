@@ -13,6 +13,7 @@ import net.wayward_realms.waywardmoderation.warning.*;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -21,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -50,7 +52,8 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         getCommand("unwarn").setExecutor(new UnwarnCommand(this));
         getCommand("warnings").setExecutor(new WarningsCommand(this));
         getCommand("amivanished").setExecutor(new AmIVanishedCommand(this));
-        registerListeners(new PlayerJoinListener(this));
+        getCommand("tempban").setExecutor(new TempBanCommand(this));
+        registerListeners(new PlayerJoinListener(this), new PlayerLoginListener(this));
         for (Ticket ticket : getTickets()) {
             if (ticket.getId() > TicketImpl.getNextId()) {
                 TicketImpl.setNextId(ticket.getId());
@@ -193,6 +196,29 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
 
     public void setGivenReputation(OfflinePlayer setter, OfflinePlayer player, int amount) {
         reputationManager.setGivenReputation(setter, player, amount);
+    }
+
+    public boolean isTempBanned(OfflinePlayer player) {
+        File tempBanFile = new File(getDataFolder(), "temp-bans.yml");
+        YamlConfiguration tempBanConfig = YamlConfiguration.loadConfiguration(tempBanFile);
+        return tempBanConfig.getLong(player.getName()) > System.currentTimeMillis();
+    }
+
+    public long getRemainingBanTime(OfflinePlayer player) {
+        File tempBanFile = new File(getDataFolder(), "temp-bans.yml");
+        YamlConfiguration tempBanConfig = YamlConfiguration.loadConfiguration(tempBanFile);
+        return Math.max(0, tempBanConfig.getLong(player.getName()) - System.currentTimeMillis());
+    }
+
+    public void tempBan(OfflinePlayer player, long duration) {
+        File tempBanFile = new File(getDataFolder(), "temp-bans.yml");
+        YamlConfiguration tempBanConfig = YamlConfiguration.loadConfiguration(tempBanFile);
+        tempBanConfig.set(player.getName(), System.currentTimeMillis() + duration);
+        try {
+            tempBanConfig.save(tempBanFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }
