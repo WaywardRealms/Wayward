@@ -19,9 +19,11 @@
 package com.sk89q.jinglenote;
 
 import com.sk89q.jinglenote.JingleSequencer.Note;
+import org.bukkit.plugin.Plugin;
 
 public abstract class JingleNotePlayer implements Runnable {
 
+    private Plugin plugin;
     protected final String player;
     protected JingleSequencer sequencer;
 
@@ -31,7 +33,8 @@ public abstract class JingleNotePlayer implements Runnable {
      * @param player The player who is hearing this's name.
      * @param seq The JingleSequencer to play.
      */
-    public JingleNotePlayer(String player, JingleSequencer seq) {
+    public JingleNotePlayer(Plugin plugin, String player, JingleSequencer seq) {
+        this.plugin = plugin;
         this.player = player;
         sequencer = seq;
     }
@@ -43,7 +46,7 @@ public abstract class JingleNotePlayer implements Runnable {
             return;
         try {
             try {
-                sequencer.run(this);
+                sequencer.run(plugin, this);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
