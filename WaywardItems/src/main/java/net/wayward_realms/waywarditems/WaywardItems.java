@@ -11,6 +11,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -29,14 +30,21 @@ public class WaywardItems extends JavaPlugin implements ItemsPlugin {
     public void onEnable() {
         recipeManager = new RecipeManager(this);
         recipeManager.setupRecipes();
+        saveResource("music/canon.mid", false);
+        jingleNoteManager = new JingleNoteManager();
+        registerListeners(new EntityShootBowListener(this), new PlayerQuitListener(this));
         Map<Character, ItemStack> harpIngredients = new HashMap<>();
         harpIngredients.put('s', new ItemStack(Material.STRING));
         harpIngredients.put('S', new ItemStack(Material.STICK));
         CustomMaterial harp = new CustomMaterialImpl("Harp", Material.BOW, new String[] {"ssS", "ssS", "ssS"}, harpIngredients);
         addMaterial(harp);
-        registerListeners(new EntityShootBowListener(this), new PlayerQuitListener(this));
-        saveResource("music/canon.mid", false);
-        jingleNoteManager = new JingleNoteManager();
+        Map<Character, ItemStack> bandageIngredients = new HashMap<>();
+        bandageIngredients.put('w', new ItemStack(Material.WOOL, 1));
+        CustomMaterial bandage = new CustomMaterialImpl("Bandage", Material.PAPER, new String[] {"www"}, bandageIngredients);
+        addMaterial(bandage);
+        ShapelessRecipe bandageRecipe = new ShapelessRecipe(new CustomItemStackImpl(bandage, 3).toMinecraftItemStack());
+        bandageRecipe.addIngredient(Material.LEATHER_CHESTPLATE);
+        getServer().addRecipe(bandageRecipe);
     }
 
     public void registerListeners(Listener... listeners) {
