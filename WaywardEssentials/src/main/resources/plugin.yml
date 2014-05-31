@@ -14,6 +14,9 @@ commands:
     deletewarp:
         description: Deletes a warp
         usage: /<command> [name]
+    distance:
+        description: Calculates the distance to a player
+        usage: /<command> [player]
     enchant:
         description: Enchants the item in your hand
         usage: /<command> [enchantment] [level]
