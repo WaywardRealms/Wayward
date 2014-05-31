@@ -67,6 +67,15 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
+        } else {
+            Block targetBlock = getTargetBlock(event.getPlayer());
+            if (targetBlock != null) {
+                if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
+                    net.wayward_realms.waywardlib.character.Character character = plugin.getActiveCharacter(event.getPlayer());
+                    character.setThirst(character.getThirst() + 1);
+                    event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                }
+            }
         }
     }
 
