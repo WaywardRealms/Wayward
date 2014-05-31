@@ -123,6 +123,7 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
             if (character.getPlayer().isOnline()) {
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.RED + "Your injuries have caused you to fall unconscious.");
                 character.getPlayer().getPlayer().sendMessage(getPrefix() + ChatColor.RED + "You will wake after a short period of time has elapsed, or someone assists you.");
+                if (getServer().getPluginCommand("sleep") != null) getServer().dispatchCommand(character.getPlayer().getPlayer(), "sleep");
             }
             setDeathTime(character);
             getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
