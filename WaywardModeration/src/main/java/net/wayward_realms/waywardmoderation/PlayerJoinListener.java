@@ -25,7 +25,7 @@ public class PlayerJoinListener implements Listener {
                 if (!plugin.canSee(player, event.getPlayer())) player.hidePlayer(event.getPlayer());
             }
         }
-        event.getPlayer().sendMessage(plugin.getWarnings(event.getPlayer()).size() <= 0 ? ChatColor.GREEN + "You have no warnings." : ChatColor.RED + "You have " + plugin.getWarnings(event.getPlayer()) + " warnings. Use /warnings to view them.");
+        event.getPlayer().sendMessage(plugin.getWarnings(event.getPlayer()).size() <= 0 ? ChatColor.GREEN + "You have no warnings." : ChatColor.RED + "You have " + plugin.getWarnings(event.getPlayer()).size() + " warnings. Use /warnings to view them.");
     }
 
 }

@@ -24,11 +24,10 @@ public class UnwarnCommand implements CommandExecutor {
                 for (int i = 1; i < args.length; i++) {
                     warningReasonBuilder.append(args[i]).append(" ");
                 }
-                warningReasonBuilder.deleteCharAt(warningReasonBuilder.length() - 1);
-                String warningReason = warningReasonBuilder.toString();
+                String warningReason = warningReasonBuilder.toString().replace(" ", "");
                 boolean warningFound = false;
                 for (Warning warning : plugin.getWarnings(player)) {
-                    if (warning.getReason().equalsIgnoreCase(warningReason)) {
+                    if (warning.getReason().replace(" ", "").equalsIgnoreCase(warningReason)) {
                         plugin.removeWarning(player, warning);
                         warningFound = true;
                     }
