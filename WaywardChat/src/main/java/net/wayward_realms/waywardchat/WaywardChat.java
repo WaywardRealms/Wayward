@@ -22,13 +22,14 @@ import org.pircbotx.exception.IrcException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
-    private Map<String, Channel> channels = new HashMap<>();
-    private Map<String, ChatGroup> chatGroups = new HashMap<>();
-    private Map<String, ChatGroup> lastPrivateMessage = new HashMap<>();
-    private Set<String> snooping = new HashSet<>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<>();
+    private Map<String, ChatGroup> chatGroups = new ConcurrentHashMap<>();
+    private Map<String, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
+    private Set<String> snooping = Collections.synchronizedSet(new HashSet<String>());
 
     private PircBotX ircBot;
 
