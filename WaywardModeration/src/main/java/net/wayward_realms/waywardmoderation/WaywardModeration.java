@@ -3,6 +3,7 @@ package net.wayward_realms.waywardmoderation;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.moderation.Ticket;
 import net.wayward_realms.waywardlib.moderation.Warning;
+import net.wayward_realms.waywardmoderation.ticket.*;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -34,7 +35,7 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         logManager = new LogManager();
         vanishManager = new VanishManager(this);
         warningManager = new WarningManager(this);
-        ticketManager = new TicketManager();
+        ticketManager = new TicketManager(this);
         reputationManager = new ReputationManager(new File(getDataFolder().getPath() + File.separator + "reputation.yml"));
         getCommand("reputation").setExecutor(new ReputationCommand(this));
         getCommand("ticket").setExecutor(new TicketCommand(this));
@@ -44,6 +45,11 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         getCommand("warnings").setExecutor(new WarningsCommand(this));
         getCommand("amivanished").setExecutor(new AmIVanishedCommand(this));
         registerListeners(new PlayerJoinListener(this));
+        for (Ticket ticket : getTickets()) {
+            if (ticket.getId() > TicketImpl.getNextId()) {
+                TicketImpl.setNextId(ticket.getId());
+            }
+        }
     }
 
     @Override
@@ -138,7 +144,11 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
 
     @Override
     public Collection<Ticket> getTickets(OfflinePlayer player) {
-        return ticketManager.getTickets(player);
+        return ticketManager.getTickets(new IssuerTicketFilter(player));
+    }
+
+    public Collection<Ticket> getTickets(TicketFilter filter) {
+        return ticketManager.getTickets(filter);
     }
 
     public int getTicketId(Ticket ticket) {

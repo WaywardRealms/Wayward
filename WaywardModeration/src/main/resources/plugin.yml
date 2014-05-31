@@ -43,6 +43,9 @@ permissions:
     wayward.moderation.command.ticket.teleport:
         description: Allows you to teleport to ticket locations
         default: op
+    wayward.moderation.command.ticket.list:
+        description: Allows you to list tickets
+        default: op
     wayward.moderation.command.vanish:
         description: Allows you to toggle vanish
         default: op
