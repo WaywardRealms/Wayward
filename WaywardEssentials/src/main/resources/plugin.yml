@@ -96,6 +96,9 @@ commands:
         description: Toggles messages when players log in and out
         usage: /<command>
         aliases: [tlm]
+    track:
+        description: Tracks a player with your compass
+        usage: /<command> [player]
     unsign:
         description: Unsigns written books
         usage: /<command>
