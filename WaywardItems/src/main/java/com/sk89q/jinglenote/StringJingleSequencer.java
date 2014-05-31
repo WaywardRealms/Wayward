@@ -71,7 +71,7 @@ public class StringJingleSequencer implements JingleSequencer {
             return null;
         }
 
-        ArrayList<Note> musicKeys = new ArrayList<Note>();
+        ArrayList<Note> musicKeys = new ArrayList<>();
 
         byte instrument = -1;
         for (int i = 0; i < tune.length(); i++) {

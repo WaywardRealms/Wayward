@@ -79,7 +79,6 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
 
     @Override
     public void saveState() {
-        currencyManager.saveState();
         auctionManager.saveState();
     }
 

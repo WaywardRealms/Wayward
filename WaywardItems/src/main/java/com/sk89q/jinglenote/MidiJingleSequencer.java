@@ -77,17 +77,7 @@ public class MidiJingleSequencer implements JingleSequencer {
             if (loop) {
                 sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
             }
-        } catch (MidiUnavailableException e) {
-            if (sequencer != null && sequencer.isOpen()) {
-                sequencer.close();
-            }
-            throw e;
-        } catch (InvalidMidiDataException e) {
-            if (sequencer != null && sequencer.isOpen()) {
-                sequencer.close();
-            }
-            throw e;
-        } catch (IOException e) {
+        } catch (MidiUnavailableException | IOException | InvalidMidiDataException e) {
             if (sequencer != null && sequencer.isOpen()) {
                 sequencer.close();
             }
@@ -98,7 +88,7 @@ public class MidiJingleSequencer implements JingleSequencer {
     @Override
     public void run(Plugin plugin, final JingleNotePlayer notePlayer) throws InterruptedException {
 
-        final Map<Integer, Integer> patches = new HashMap<Integer, Integer>();
+        final Map<Integer, Integer> patches = new HashMap<>();
 
         try {
             if (sequencer.getSequence() == null) {
