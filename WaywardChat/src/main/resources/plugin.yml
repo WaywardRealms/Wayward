@@ -18,6 +18,9 @@ commands:
         description: Parent command for chat group commands
         usage: /<command> [create|disband|invite|join|leave|message|players]
         aliases: [cg]
+    emotemode:
+        description: Sets your emote mode
+        usage: /<command> [emote mode]
     message:
         description: Sends a private message to a group or individual
         usage: /<command> [player|group] [message]

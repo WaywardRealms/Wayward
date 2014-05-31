@@ -36,6 +36,7 @@ public class InventoryClickListener implements Listener {
                 if (skillsPluginProvider != null) {
                     SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
                     skills.addAll(skillsPlugin.getSkills());
+                    skills.addAll(skillsPlugin.getSpells());
                 }
                 Set<Skill> skillsToRemove = new HashSet<>();
                 SkillType skillType = null;

@@ -22,13 +22,14 @@ import org.pircbotx.exception.IrcException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
-    private Map<String, Channel> channels = new HashMap<>();
-    private Map<String, ChatGroup> chatGroups = new HashMap<>();
-    private Map<String, ChatGroup> lastPrivateMessage = new HashMap<>();
-    private Set<String> snooping = new HashSet<>();
+    private Map<String, Channel> channels = new ConcurrentHashMap<>();
+    private Map<String, ChatGroup> chatGroups = new ConcurrentHashMap<>();
+    private Map<String, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
+    private Set<String> snooping = Collections.synchronizedSet(new HashSet<String>());
 
     private PircBotX ircBot;
 
@@ -39,6 +40,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         getCommand("ch").setExecutor(new ChCommand(this));
         getCommand("chathelp").setExecutor(new ChatHelpCommand(this));
         getCommand("chatgroup").setExecutor(new ChatGroupCommand(this));
+        getCommand("emotemode").setExecutor(new EmoteModeCommand(this));
         getCommand("message").setExecutor(new MessageCommand(this));
         getCommand("reply").setExecutor(new ReplyCommand(this));
         getCommand("snoop").setExecutor(new SnoopCommand(this));
@@ -115,7 +117,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     public void handleChat(Player talking, String message) {
         if (!message.equals("")) {
             String format;
-            if (message.startsWith("*") && message.endsWith("*")) {
+            if (getEmoteMode(talking).isEmote(message)) {
                 getChannel(getConfig().getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
                     if (getConfig().getInt("emotes.radius") >= 0) {
@@ -470,6 +472,23 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 }
             }
         }, 0L, 900000L);
+    }
+
+    public EmoteMode getEmoteMode(OfflinePlayer player) {
+        File emoteModeFile = new File(getDataFolder(), "emote-mode.yml");
+        YamlConfiguration emoteModeConfig = YamlConfiguration.loadConfiguration(emoteModeFile);
+        if (emoteModeConfig.get(player.getName()) != null) return EmoteMode.valueOf(emoteModeConfig.getString(player.getName())); else return EmoteMode.TWO_ASTERISKS;
+    }
+
+    public void setEmoteMode(OfflinePlayer player, EmoteMode emoteMode) {
+        File emoteModeFile = new File(getDataFolder(), "emote-mode.yml");
+        YamlConfiguration emoteModeConfig = YamlConfiguration.loadConfiguration(emoteModeFile);
+        emoteModeConfig.set(player.getName(), emoteMode.toString());
+        try {
+            emoteModeConfig.save(emoteModeFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }

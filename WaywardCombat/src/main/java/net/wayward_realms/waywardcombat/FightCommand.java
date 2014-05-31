@@ -59,13 +59,17 @@ public class FightCommand implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("start")) {
                 Fight fight = plugin.getActiveFight(characterPlugin.getActiveCharacter((Player) sender));
-                if (fight.getCombatants() != null) {
-                    if (fight.getCombatants().size() > 1) {
-                        fight.start();
-                        fight.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has begun!");
-                        fight.sendMessage(ChatColor.YELLOW + "It's " + fight.getNextTurn().getName() + "'s turn.");
+                if (fight != null) {
+                    if (fight.getCombatants() != null) {
+                        if (fight.getCombatants().size() > 1) {
+                            fight.start();
+                            fight.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has begun!");
+                            fight.sendMessage(ChatColor.YELLOW + "It's " + fight.getNextTurn().getName() + "'s turn.");
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot fight with yourself! Please get any others to join the fight first.");
+                        }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot fight with yourself! Please get any others to join the fight first.");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are not currently in a fight.");
                     }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are not currently in a fight.");

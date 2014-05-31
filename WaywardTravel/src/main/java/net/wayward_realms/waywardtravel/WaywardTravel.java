@@ -7,6 +7,7 @@ import net.wayward_realms.waywardlib.util.location.LocationUtils;
 import net.wayward_realms.waywardtravel.boat.BoatPlayerInteractListener;
 import net.wayward_realms.waywardtravel.boat.BoatSignChangeListener;
 import net.wayward_realms.waywardtravel.horse.HorsePlayerInteractEntityListener;
+import net.wayward_realms.waywardtravel.horse.HorsePlayerQuitListener;
 import net.wayward_realms.waywardtravel.portal.PlayerMoveListener;
 import net.wayward_realms.waywardtravel.portal.PortalCommand;
 import net.wayward_realms.waywardtravel.portal.PortalImpl;
@@ -28,7 +29,7 @@ public class WaywardTravel extends JavaPlugin implements TravelPlugin {
     @Override
     public void onEnable() {
         ConfigurationSerialization.registerClass(PortalImpl.class);
-        registerListeners(new PlayerMoveListener(this), new HorsePlayerInteractEntityListener(this), new BoatPlayerInteractListener(this), new BoatSignChangeListener(this));
+        registerListeners(new PlayerMoveListener(this), new HorsePlayerInteractEntityListener(this), new HorsePlayerQuitListener(), new BoatPlayerInteractListener(this), new BoatSignChangeListener(this));
         getCommand("portal").setExecutor(new PortalCommand(this));
         getCommand("untame").setExecutor(new UntameCommand(this));
     }
@@ -36,6 +37,11 @@ public class WaywardTravel extends JavaPlugin implements TravelPlugin {
     @Override
     public void onDisable() {
         saveState();
+        for (Player player : getServer().getOnlinePlayers()) {
+            if (player.isInsideVehicle()) {
+                player.getVehicle().eject();
+            }
+        }
     }
 
     private void registerListeners(Listener... listeners) {

@@ -4,6 +4,8 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.events.EventCharacter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +27,7 @@ public class CharacterCommand implements CommandExecutor {
                 int livingCharacters = 0;
                 for (Character character : plugin.getCharacters((Player) sender)) {
                     if (character != null) {
-                        if (!character.isDead()) {
+                        if (!character.isDead() && !(character instanceof EventCharacter)) {
                             livingCharacters++;
                         }
                     }
@@ -188,6 +190,31 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " extenddescription [info]");
                 }
+            } else if (args[0].equalsIgnoreCase("assignstatpoint") || args[0].equalsIgnoreCase("asp")) {
+                if (args.length >= 2) {
+                    Character character = plugin.getActiveCharacter((Player) sender);
+                    if (character instanceof CharacterImpl) {
+                        CharacterImpl characterImpl = (CharacterImpl) character;
+                        if (characterImpl.getUnassignedStatPoints() >= 1) {
+                            try {
+                                Stat stat = Stat.valueOf(args[1].toUpperCase());
+                                characterImpl.assignStatPoint(stat);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Stat point assigned to " + stat.toString().toLowerCase().replace("_", " "));
+                            } catch (IllegalArgumentException exception) {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That stat doesn't exist! Try one of the following:");
+                                for (Stat stat : Stat.values()) {
+                                    sender.sendMessage(ChatColor.RED + stat.toString().toLowerCase());
+                                }
+                            }
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have any unassigned stat points.");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are using a non-default character implementation, stat points are unsupported for this character type.");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0].toLowerCase() + " [stat]");
+                }
             } else if (args[0].equalsIgnoreCase("list")) {
                 Player player = (Player) sender;
                 if (sender.hasPermission("wayward.characters.command.character.list.others")) {
@@ -200,7 +227,7 @@ public class CharacterCommand implements CommandExecutor {
                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getName() + "'s character list: ");
                 for (Character character : plugin.getCharacters(player)) {
                     if (character != null) {
-                        sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
+                        sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")" + (character instanceof EventCharacter ? ChatColor.GRAY + " [" + ChatColor.YELLOW + "EVENT" + ChatColor.GRAY + "]" : ""));
                     }
                 }
             } else if (args[0].equalsIgnoreCase("revive")) {
@@ -261,10 +288,10 @@ public class CharacterCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to unhide! This includes name, age, gender, race, or description.");
                 }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide]");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide]");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide]");
         }
         return true;
     }

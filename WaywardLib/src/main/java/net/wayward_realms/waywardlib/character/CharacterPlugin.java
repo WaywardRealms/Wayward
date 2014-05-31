@@ -134,4 +134,23 @@ public interface CharacterPlugin extends WaywardPlugin {
      */
     public void removeGender(Gender gender);
 
+    /**
+     * Gets the next available ID to assign characters
+     *
+     * @return the next available ID
+     */
+    public int getNextAvailableId();
+
+    /**
+     * Sets the next available ID to assign characters
+     *
+     * @param id the ID to set
+     */
+    public void setNextAvailableId(int id);
+
+    /**
+     * Increments the next ID to assign characters
+     */
+    public void incrementNextAvailableId();
+
 }

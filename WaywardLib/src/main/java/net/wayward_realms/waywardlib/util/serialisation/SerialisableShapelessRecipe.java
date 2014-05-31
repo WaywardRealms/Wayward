@@ -7,6 +7,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Aids in the serialisation of shapeless recipes
+ */
 public class SerialisableShapelessRecipe implements SerialisableRecipe {
 
     private List<ItemStack> ingredients;

@@ -3,7 +3,6 @@ package net.wayward_realms.waywardskills.skill;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ public class SkillManager {
 
     private Map<String, Skill> skills = new HashMap<>();
 
-    private Map<String, Map<Material, Skill>> boundSkills = new HashMap<>();
     private Map<String, Map<Skill, Long>> skillCooldowns = new HashMap<>();
 
     public SkillManager(WaywardSkills plugin) {
@@ -53,25 +51,35 @@ public class SkillManager {
     }
 
     public void bindSkill(Player player, Material type, Skill skill) {
-        if (boundSkills.get(player.getName()) == null) {
-            boundSkills.put(player.getName(), new HashMap<Material, Skill>());
+        File skillBindFile = new File(plugin.getDataFolder(), "skill-binds.yml");
+        YamlConfiguration skillBindConfig = YamlConfiguration.loadConfiguration(skillBindFile);
+        skillBindConfig.set(player.getName() + "." + type.toString(), skill.getName());
+        try {
+            skillBindConfig.save(skillBindFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-        boundSkills.get(player.getName()).put(type, skill);
     }
 
     public void unbindSkill(Player player, Material type) {
-        if (boundSkills.get(player.getName()) != null) {
-            boundSkills.get(player.getName()).remove(type);
+        File skillBindFile = new File(plugin.getDataFolder(), "skill-binds.yml");
+        YamlConfiguration skillBindConfig = YamlConfiguration.loadConfiguration(skillBindFile);
+        skillBindConfig.set(player.getName() + "." + type.toString(), null);
+        try {
+            skillBindConfig.save(skillBindFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
     public Skill getBoundSkill(Player player, Material type) {
-        if (boundSkills.get(player.getName()) != null) {
-            if (boundSkills.get(player.getName()).get(type) != null) {
-                return boundSkills.get(player.getName()).get(type);
-            }
+        File skillBindFile = new File(plugin.getDataFolder(), "skill-binds.yml");
+        YamlConfiguration skillBindConfig = YamlConfiguration.loadConfiguration(skillBindFile);
+        if (skillBindConfig.get(player.getName() + "." + type.toString()) != null) {
+            return getSkill(skillBindConfig.getString(player.getName() + "." + type.toString(), null));
+        } else {
+            return null;
         }
-        return null;
     }
 
     public void setSkillCooldownTime(Player player, Skill skill) {
@@ -92,42 +100,6 @@ public class SkillManager {
 
     public int getCooldownTime(Player player, Skill skill) {
         return (int) ((skillCooldowns.get(player.getName()).get(skill) - System.currentTimeMillis()) / 1000);
-    }
-
-    public void saveBinds() {
-        YamlConfiguration bindConfig = new YamlConfiguration();
-        for (Map.Entry<String, Map<Material, Skill>> player : boundSkills.entrySet()) {
-            for (Map.Entry<Material,Skill> skillBind : player.getValue().entrySet()) {
-                bindConfig.set(player.getKey() + "." + skillBind.getKey().toString(), skillBind.getValue().getName());
-            }
-        }
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
-        }
-        File bindFile = new File(plugin.getDataFolder(), "skill-binds.yml");
-        try {
-            bindConfig.save(bindFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    public void loadBinds() {
-        File bindFile = new File(plugin.getDataFolder(), "skill-binds.yml");
-        if (bindFile.exists()) {
-            YamlConfiguration bindConfig = new YamlConfiguration();
-            try {
-                bindConfig.load(bindFile);
-            } catch (IOException | InvalidConfigurationException exception) {
-                exception.printStackTrace();
-            }
-            for (String player : bindConfig.getKeys(false)) {
-                boundSkills.put(player, new HashMap<Material, Skill>());
-                for (String type : bindConfig.getConfigurationSection(player).getKeys(false)) {
-                    boundSkills.get(player).put(Material.getMaterial(type), getSkill(bindConfig.getString(player + "." + type)));
-                }
-            }
-        }
     }
 
 }

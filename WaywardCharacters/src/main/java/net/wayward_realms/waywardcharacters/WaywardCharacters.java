@@ -5,7 +5,9 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
+import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.*;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -38,6 +40,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
         getCommand("skillpoints").setExecutor(new SkillPointsCommand(this));
+        getCommand("togglethirst").setExecutor(new ToggleThirstCommand(this));
         setupRegen();
         setupHungerSlowdown();
     }
@@ -50,13 +53,15 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         Character character = getActiveCharacter(player);
-                        if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
-                            character.setThirst(character.getThirst() - 1);
-                            player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
-                        }
-                        if (character.getThirst() < 5 && character.getHealth() > 1) {
-                            character.setHealth(character.getHealth() - 1);
-                            player.sendMessage(getPrefix() + ChatColor.RED + "You are very thirsty, be sure to drink something soon! " + ChatColor.GRAY + "(Health: -1)");
+                        if (!isThirstDisabled(player)) {
+                            if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
+                                character.setThirst(character.getThirst() - 1);
+                                player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                            }
+                            if (character.getThirst() < 5 && character.getHealth() > 1) {
+                                character.setHealth(character.getHealth() - 1);
+                                player.sendMessage(getPrefix() + ChatColor.RED + "You are very thirsty, be sure to drink something soon! " + ChatColor.GRAY + "(Health: -1)");
+                            }
                         }
                         RegisteredServiceProvider<CombatPlugin> combatPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CombatPlugin.class);
                         if (combatPluginProvider != null) {
@@ -186,7 +191,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             races.put("HUMAN", new RaceImpl("Human"));
             RaceKit arrows = new RaceKit();
             arrows.addItem(new ItemStack(Material.ARROW, 4));
-            races.put("ELF", new RaceImpl("Elf", arrows));
+            Map<Stat, Integer> statBonuses = new EnumMap<>(Stat.class);
+            statBonuses.put(Stat.SPEED, 2);
+            statBonuses.put(Stat.MELEE_DEFENCE, -2);
+            races.put("ELF", new RaceImpl("Elf", arrows, statBonuses));
         }
         // Characters
         // Old character conversion
@@ -314,6 +322,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public void setActiveCharacter(Player player, Character character) {
         if (getActiveCharacter(player) != null) {
             Character activeCharacter = getActiveCharacter(player);
+            activeCharacter.setHelmet(player.getInventory().getHelmet());
+            activeCharacter.setChestplate(player.getInventory().getChestplate());
+            activeCharacter.setLeggings(player.getInventory().getLeggings());
+            activeCharacter.setBoots(player.getInventory().getBoots());
             activeCharacter.setInventoryContents(player.getInventory().getContents());
             activeCharacter.setLocation(player.getLocation());
             activeCharacter.setHealth(player.getHealth());
@@ -329,6 +341,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+        player.getInventory().setHelmet(character.getHelmet());
+        player.getInventory().setChestplate(character.getChestplate());
+        player.getInventory().setLeggings(character.getLeggings());
+        player.getInventory().setBoots(character.getBoots());
         player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
@@ -347,7 +363,16 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public Character getCharacter(int id) {
         File newCharacterDirectory = new File(getDataFolder(), "characters-new");
         File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
-        return new CharacterImpl(newCharacterFile);
+        if (newCharacterFile.exists()) {
+            return new CharacterImpl(newCharacterFile);
+        } else {
+            RegisteredServiceProvider<EventsPlugin> eventsPluginProvider = getServer().getServicesManager().getRegistration(EventsPlugin.class);
+            if (eventsPluginProvider != null) {
+                EventsPlugin eventsPlugin = eventsPluginProvider.getProvider();
+                return eventsPlugin.getEventCharacter(id);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -368,6 +393,21 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void removeGender(Gender gender) {
         genders.remove(gender.getName());
+    }
+
+    @Override
+    public int getNextAvailableId() {
+        return CharacterImpl.getNextId();
+    }
+
+    @Override
+    public void setNextAvailableId(int id) {
+        CharacterImpl.setNextId(id);
+    }
+
+    @Override
+    public void incrementNextAvailableId() {
+        CharacterImpl.nextAvailableId();
     }
 
     @Override
@@ -414,6 +454,25 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public boolean canClaimRaceKit(OfflinePlayer player) {
         YamlConfiguration raceKitClaimSave = YamlConfiguration.loadConfiguration(new File("racekitclaims.yml"));
         return raceKitClaimSave.get(player.getName()) == null || System.currentTimeMillis() - raceKitClaimSave.getLong(player.getName()) > 86400000L;
+    }
+
+    public boolean isThirstDisabled(OfflinePlayer player) {
+        File thirstDisabledFile = new File(getDataFolder(), "thirst-disabled.yml");
+        YamlConfiguration thirstDisabledConfig = YamlConfiguration.loadConfiguration(thirstDisabledFile);
+        return thirstDisabledConfig.getStringList("disabled").contains(player.getName());
+    }
+
+    public void setThirstDisabled(OfflinePlayer player, boolean disabled) {
+        File thirstDisabledFile = new File(getDataFolder(), "thirst-disabled.yml");
+        YamlConfiguration thirstDisabledConfig = YamlConfiguration.loadConfiguration(thirstDisabledFile);
+        List<String> thirstDisabled = thirstDisabledConfig.getStringList("disabled");
+        if (disabled) thirstDisabled.add(player.getName()); else thirstDisabled.remove(player.getName());
+        thirstDisabledConfig.set("disabled", thirstDisabled);
+        try {
+            thirstDisabledConfig.save(thirstDisabledFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }

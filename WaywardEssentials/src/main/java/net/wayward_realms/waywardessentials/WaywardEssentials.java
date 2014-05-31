@@ -84,6 +84,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("back").setExecutor(new BackCommand(this));
         getCommand("clone").setExecutor(new CloneCommand(this));
         getCommand("deletewarp").setExecutor(new DeleteWarpCommand(this));
+        getCommand("distance").setExecutor(new DistanceCommand(this));
         getCommand("enchant").setExecutor(new EnchantCommand(this));
         getCommand("feed").setExecutor(new FeedCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(this));
@@ -109,6 +110,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("speed").setExecutor(new SpeedCommand(this));
         getCommand("sudo").setExecutor(new SudoCommand(this));
         getCommand("togglelogmessages").setExecutor(new ToggleLogMessagesCommand(this));
+        getCommand("track").setExecutor(new TrackCommand(this));
         getCommand("unsign").setExecutor(new UnsignCommand(this));
         getCommand("warp").setExecutor(new WarpCommand(this));
     }

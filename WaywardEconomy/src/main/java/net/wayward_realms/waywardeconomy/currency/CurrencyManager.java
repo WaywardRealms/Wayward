@@ -109,6 +109,4 @@ public class CurrencyManager {
         }
     }
 
-    public void saveState() {
-    }
 }

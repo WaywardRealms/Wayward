@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardmoderation;
+package net.wayward_realms.waywardmoderation.warning;
 
 import net.wayward_realms.waywardlib.moderation.Warning;
 import org.bukkit.Bukkit;
@@ -65,6 +65,16 @@ public class WarningImpl implements Warning {
         deserialised.issuer = (String) serialised.get("issuer");
         deserialised.time = (Date) serialised.get("time");
         return deserialised;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Warning)) return false;
+        Warning warning = (Warning) obj;
+        return warning.getPlayer().getName().equals(getPlayer().getName())
+                && warning.getReason().equals(getReason())
+                && warning.getIssuer().getName().equals(getIssuer().getName())
+                && warning.getTime().equals(getTime());
     }
 
 }

@@ -23,10 +23,12 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
     @Override
     public void onEnable() {
         ConfigurationSerialization.registerClass(ProfessionInfo.class);
-        registerListeners(new BlockBreakListener(this), new EnchantItemListener(), new InventoryClickListener(this), new PrepareItemCraftListener(this));
+        saveDefaultConfig();
+        registerListeners(new BlockBreakListener(this), new EnchantItemListener(), new InventoryClickListener(this), new PlayerInteractListener(this), new PrepareItemCraftListener(this));
         getCommand("efficiency").setExecutor(new EfficiencyCommand(this));
         getCommand("durability").setExecutor(new DurabilityCommand(this));
         getCommand("profession").setExecutor(new ProfessionCommand(this));
+        getCommand("setprofession").setExecutor(new SetProfessionCommand(this));
     }
 
     @Override
@@ -193,6 +195,12 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
     private NewProfessionInfo getProfessionInfo(int characterId) {
         File characterDirectory = new File(getDataFolder(), "characters-new");
         return new NewProfessionInfo(new File(characterDirectory, characterId + ".yml"));
+    }
+
+    public void reset(Character character) {
+        File characterDirectory = new File(getDataFolder(), "characters-new");
+        File characterFile = new File(characterDirectory, character.getId() + ".yml");
+        characterFile.delete();
     }
 
 }

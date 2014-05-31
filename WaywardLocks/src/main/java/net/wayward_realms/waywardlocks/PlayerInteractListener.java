@@ -114,7 +114,6 @@ public class PlayerInteractListener implements Listener {
                         event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "That block is not locked.");
                     } else {
                         ItemStack key = new ItemStack(Material.IRON_INGOT, 1);
-                        //int lockId = plugin.getLockId(block);
                         ItemMeta keyMeta = key.getItemMeta();
                         keyMeta.setDisplayName("Key");
                         List<String> keyLore = new ArrayList<>();
@@ -145,7 +144,9 @@ public class PlayerInteractListener implements Listener {
                         if (event.getPlayer().getItemInHand() != null) {
                             if (event.getPlayer().getItemInHand().hasItemMeta()) {
                                 if (event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()) {
-                                    if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Lockpick")) {
+                                    if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Lockpick")
+                                            && event.getPlayer().getItemInHand().getItemMeta().hasLore()
+                                            && event.getPlayer().getItemInHand().getItemMeta().getLore().contains("Used for breaking through locks")) {
                                         if (event.getPlayer().getItemInHand().getAmount() > 1) {
                                             event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
                                         } else {

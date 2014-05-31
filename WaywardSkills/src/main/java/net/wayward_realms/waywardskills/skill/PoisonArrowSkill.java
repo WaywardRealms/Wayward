@@ -8,7 +8,10 @@ import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,8 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +40,11 @@ public class PoisonArrowSkill extends AttackSkillBase {
     public boolean use(Player player) {
         boolean containsBow = false;
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item.getType() == Material.BOW) {
-                containsBow = true;
-                break;
+            if (item != null) {
+                if (item.getType() == Material.BOW) {
+                    containsBow = true;
+                    break;
+                }
             }
         }
         if (containsBow) {
@@ -49,12 +52,6 @@ public class PoisonArrowSkill extends AttackSkillBase {
                 Plugin plugin = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class).getProvider();
                 final Arrow arrow = player.launchProjectile(Arrow.class);
                 arrow.setMetadata("isPoisonArrow", new FixedMetadataValue(plugin, true));
-                plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        arrow.getLocation().getWorld().playEffect(arrow.getLocation(), Effect.ENDER_SIGNAL, 0);
-                    }
-                }, 5L, 5L);
                 player.getInventory().removeItem(new ItemStack(Material.ARROW), new ItemStack(Material.FERMENTED_SPIDER_EYE));
                 return true;
             } else {
@@ -112,18 +109,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (skillsPluginProvider != null) {
-            SkillsPlugin plugin = skillsPluginProvider.getProvider();
-            final Arrow arrow = attacking.getPlayer().getPlayer().launchProjectile(Arrow.class);
-            plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    arrow.getLocation().getWorld().playEffect(arrow.getLocation(), Effect.ENDER_SIGNAL, 0);
-                }
-            }, 5L, 5L);
-        }
-        attacking.getPlayer().getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 200, 0), true);
+        attacking.getPlayer().getPlayer().launchProjectile(Arrow.class);
     }
 
     @Override

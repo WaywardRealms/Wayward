@@ -103,6 +103,11 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         return save.getString("character." + field);
     }
 
+    private ItemStack getFieldItemStackValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getItemStack("character." + field);
+    }
+
     @Override
     public int getId() {
         return getFieldIntValue("id");
@@ -231,6 +236,46 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     }
 
     @Override
+    public ItemStack getHelmet() {
+        return getFieldItemStackValue("helmet");
+    }
+
+    @Override
+    public void setHelmet(ItemStack helmet) {
+        setFieldValue("helmet", helmet);
+    }
+
+    @Override
+    public ItemStack getChestplate() {
+        return getFieldItemStackValue("chestplate");
+    }
+
+    @Override
+    public void setChestplate(ItemStack chestplate) {
+        setFieldValue("chestplate", chestplate);
+    }
+
+    @Override
+    public ItemStack getLeggings() {
+        return getFieldItemStackValue("leggings");
+    }
+
+    @Override
+    public void setLeggings(ItemStack leggings) {
+        setFieldValue("leggings", leggings);
+    }
+
+    @Override
+    public ItemStack getBoots() {
+        return getFieldItemStackValue("boots");
+    }
+
+    @Override
+    public void setBoots(ItemStack boots) {
+        setFieldValue("boots", boots);
+    }
+
+    @Override
     public ItemStack[] getInventoryContents() {
         if (getFieldValue("inventory-contents") instanceof List<?>) {
             return ((List<ItemStack>) getFieldValue("inventory-contents")).toArray(new ItemStack[36]);
@@ -286,14 +331,9 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (2D * classesPlugin.getClass(this).getHpBonus() * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getHpBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
         }
         return 0;
-    }
-
-    @Override
-    public void setMaxHealth(double maxHealth) {
-        throw new UnsupportedOperationException("You can't set a character's max health!");
     }
 
     @Override
@@ -311,7 +351,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (2D * classesPlugin.getClass(this).getManaBonus() * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
         }
         return 0;
     }
@@ -332,7 +372,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((150D + (2D * (double) classesPlugin.getClass(this).getStatBonus(stat) * 10D)) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
+            return (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat) + getRace().getStatBonus(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
         }
         return 0;
     }
@@ -355,6 +395,34 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         setFieldValue("class-hidden", classHidden);
     }
 
+    public int getStatPoints(Stat stat) {
+        return getFieldIntValue("stat-points." + stat.toString().toLowerCase());
+    }
+
+    public void setStatPoints(Stat stat, int amount) {
+        setFieldValue("stat-points." + stat.toString().toLowerCase(), amount);
+    }
+
+    public int getAssignedStatPoints() {
+        int assigned = 0;
+        for (Stat stat : Stat.values()) {
+            assigned += getStatPoints(stat);
+        }
+        return assigned;
+    }
+
+    public int getUnassignedStatPoints() {
+        return getTotalStatPoints() - getAssignedStatPoints();
+    }
+
+    public int getTotalStatPoints() {
+        return 10;
+    }
+
+    public void assignStatPoint(Stat stat) {
+        setStatPoints(stat, getStatPoints(stat) + 1);
+    }
+
     @Override
     public Map<String, Object> serialize() {
         return new HashMap<>();
@@ -362,7 +430,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     public static CharacterImpl deserialize(Map<String, Object> serialised) {
         CharacterPlugin plugin = Bukkit.getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
-        CharacterImpl character = new CharacterImpl(new File(new File(plugin.getDataFolder(), "characters-new"), ((int) serialised.get("id")) + ".yml"));
+        CharacterImpl character = new CharacterImpl(new File(new File(plugin.getDataFolder(), "characters-new"), ((long) serialised.get("id")) + ".yml"));
         character.setId((int) serialised.get("id"));
         if (character.getId() > nextId) {
             nextId = character.getId();
