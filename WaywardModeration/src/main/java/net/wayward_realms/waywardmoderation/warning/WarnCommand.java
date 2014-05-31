@@ -1,6 +1,8 @@
-package net.wayward_realms.waywardmoderation;
+package net.wayward_realms.waywardmoderation.warning;
 
 import net.wayward_realms.waywardlib.moderation.Warning;
+import net.wayward_realms.waywardmoderation.WaywardModeration;
+import net.wayward_realms.waywardmoderation.warning.WarningImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

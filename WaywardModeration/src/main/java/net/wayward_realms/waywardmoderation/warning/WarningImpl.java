@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardmoderation;
+package net.wayward_realms.waywardmoderation.warning;
 
 import net.wayward_realms.waywardlib.moderation.Warning;
 import org.bukkit.Bukkit;

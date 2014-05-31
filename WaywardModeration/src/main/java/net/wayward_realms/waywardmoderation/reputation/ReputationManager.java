@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardmoderation;
+package net.wayward_realms.waywardmoderation.reputation;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;

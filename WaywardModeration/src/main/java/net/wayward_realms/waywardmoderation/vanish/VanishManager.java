@@ -1,5 +1,6 @@
-package net.wayward_realms.waywardmoderation;
+package net.wayward_realms.waywardmoderation.vanish;
 
+import net.wayward_realms.waywardmoderation.WaywardModeration;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;

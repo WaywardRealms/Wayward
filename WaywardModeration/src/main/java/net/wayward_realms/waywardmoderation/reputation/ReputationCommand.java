@@ -1,5 +1,6 @@
-package net.wayward_realms.waywardmoderation;
+package net.wayward_realms.waywardmoderation.reputation;
 
+import net.wayward_realms.waywardmoderation.WaywardModeration;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
