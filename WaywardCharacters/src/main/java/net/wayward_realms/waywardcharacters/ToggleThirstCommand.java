@@ -17,7 +17,7 @@ public class ToggleThirstCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            plugin.setThirstDisabled((Player) sender, plugin.isThirstDisabled((Player) sender));
+            plugin.setThirstDisabled((Player) sender, !plugin.isThirstDisabled((Player) sender));
             sender.sendMessage(plugin.getPrefix() + (plugin.isThirstDisabled((Player) sender) ? ChatColor.GREEN + "Thirst disabled." : "Thirst enabled."));
         } else {
             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
