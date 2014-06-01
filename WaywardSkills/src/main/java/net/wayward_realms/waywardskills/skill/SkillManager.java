@@ -24,6 +24,7 @@ public class SkillManager {
     public SkillManager(WaywardSkills plugin) {
         this.plugin = plugin;
         addSkill(new ArrowSkill());
+        addSkill(new BandageSkill());
         addSkill(new DashSkill());
         addSkill(new ItemSkill());
         addSkill(new PoisonArrowSkill());
