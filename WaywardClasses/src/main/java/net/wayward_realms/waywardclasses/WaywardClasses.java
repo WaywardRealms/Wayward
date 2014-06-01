@@ -29,13 +29,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
     @Override
     public void onEnable() {
         ConfigurationSerialization.registerClass(ClassImpl.class);
-        getCommand("addexp").setExecutor(new AddExpCommand(this));
         getCommand("class").setExecutor(new ClassCommand(this));
-        getCommand("setclass").setExecutor(new SetClassCommand(this));
-        getCommand("setlevel").setExecutor(new SetLevelCommand(this));
-        getCommand("getclass").setExecutor(new GetClassCommand(this));
-        getCommand("getlevel").setExecutor(new GetLevelCommand(this));
-        getCommand("listclasses").setExecutor(new ListClassesCommand(this));
         registerListeners(new EntityDamageListener(this), new PlayerDeathListener(), new PlayerExpChangeListener(), new PlayerJoinListener(this));
     }
 
