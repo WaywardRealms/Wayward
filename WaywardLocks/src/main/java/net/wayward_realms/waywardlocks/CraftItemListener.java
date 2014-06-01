@@ -20,9 +20,11 @@ public class CraftItemListener implements Listener {
         for (ItemStack item : event.getInventory().getContents()) {
             if (item != null) {
                 if (item.hasItemMeta()) {
-                    if (item.getItemMeta().getDisplayName().equalsIgnoreCase("Key")) {
-                        event.setCancelled(true);
-                        ((Player) event.getWhoClicked()).sendMessage(plugin.getPrefix() + ChatColor.RED + "You may not use keys as a substitute for iron ingots! ;)");
+                    if (item.getItemMeta().hasDisplayName()) {
+                        if (item.getItemMeta().getDisplayName().equalsIgnoreCase("Key")) {
+                            event.setCancelled(true);
+                            ((Player) event.getWhoClicked()).sendMessage(plugin.getPrefix() + ChatColor.RED + "You may not use keys as a substitute for iron ingots! ;)");
+                        }
                     }
                 }
             }
