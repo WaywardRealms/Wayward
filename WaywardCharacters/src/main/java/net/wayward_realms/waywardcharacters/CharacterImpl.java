@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CharacterImpl implements Character, ConfigurationSerializable {
 
@@ -158,12 +159,18 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public OfflinePlayer getPlayer() {
-        return Bukkit.getOfflinePlayer(getFieldStringValue("ign"));
+        if (getFieldValue("uuid") != null) {
+            return Bukkit.getOfflinePlayer(UUID.fromString(getFieldStringValue("uuid")));
+        } else {
+            setFieldValue("uuid", Bukkit.getOfflinePlayer(getFieldStringValue("ign")).getUniqueId().toString());
+            setFieldValue("ign", null);
+            return getPlayer();
+        }
     }
 
     @Override
     public void setPlayer(OfflinePlayer player) {
-        setFieldValue("ign", player.getName());
+        setFieldValue("uuid", player.getUniqueId().toString());
     }
 
     @Override
@@ -435,7 +442,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         if (character.getId() > nextId) {
             nextId = character.getId();
         }
-        character.setPlayer(Bukkit.getOfflinePlayer((String) serialised.get("ign")));
+        character.setPlayer(serialised.containsKey("uuid") ? Bukkit.getOfflinePlayer(UUID.fromString((String) serialised.get("uuid"))) : Bukkit.getOfflinePlayer((String) serialised.get("ign")));
         character.setName((String) serialised.get("name"));
         character.setGender((Gender) serialised.get("gender"));
         character.setAge((int) serialised.get("age"));

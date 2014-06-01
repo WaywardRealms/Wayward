@@ -21,6 +21,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
@@ -197,26 +199,32 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             races.put("ELF", new RaceImpl("Elf", arrows, statBonuses));
         }
         // Characters
-        // Old character conversion
-        File oldCharacterDirectory = new File(getDataFolder(), "characters");
-        if (oldCharacterDirectory.exists()) {
-            for (File file : oldCharacterDirectory.listFiles(new YamlFileFilter())) {
-                YamlConfiguration oldcharacterSave = YamlConfiguration.loadConfiguration(file);
-                if (oldcharacterSave.get("character") != null) {
-                    if (oldcharacterSave.get("character") instanceof CharacterImpl) {
-                        oldcharacterSave.get("character");
-                    }
-                }
-            }
-            delete(oldCharacterDirectory);
-        }
-
         File characterDirectory = new File(getDataFolder(), "characters-new");
         if (characterDirectory.exists()) {
             for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
                 int id = Integer.parseInt(file.getName().replace(".yml", ""));
                 if (id > CharacterImpl.getNextId()) CharacterImpl.setNextId(id);
             }
+        }
+        // UUID conversion
+        File playerDirectory = new File(getDataFolder(), "players");
+        if (playerDirectory.exists()) {
+            File playerUUIDDirectory = new File(getDataFolder(), "players-uuid");
+            if (!playerUUIDDirectory.exists()) playerUUIDDirectory.mkdir();
+            for (File file : playerDirectory.listFiles(new YamlFileFilter())) {
+                String playerName = file.getName().replace(".yml", "");
+                OfflinePlayer player = getServer().getOfflinePlayer(playerName);
+                UUID uuid = player.getUniqueId();
+                File playerUUIDFile = new File(playerUUIDDirectory, uuid.toString() + ".yml");
+                if (!playerUUIDFile.exists()) {
+                    try {
+                        Files.copy(Paths.get(file.getPath()), Paths.get(playerUUIDFile.getPath()));
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+            delete(playerDirectory);
         }
     }
 
@@ -257,8 +265,8 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public Character getActiveCharacter(OfflinePlayer player) {
-        File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        File playerDirectory = new File(getDataFolder(), "players-uuid");
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString() + ".yml");
         YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(playerFile);
         if (playerSave.get("active-character") == null) {
             return null;
@@ -268,7 +276,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public Set<Character> getCharacters(OfflinePlayer player) {
-        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players-uuid"), player.getUniqueId().toString() + ".yml"));
         if (playerSave.get("characters") == null) {
             playerSave.set("characters", new HashSet<Integer>());
         }
@@ -281,7 +289,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public void addCharacter(OfflinePlayer player, Character character) {
-        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players-uuid"), player.getUniqueId().toString() + ".yml"));
         character.setPlayer(player);
         if (playerSave.get("characters") == null) {
             playerSave.set("characters", new HashSet<Integer>());
@@ -290,7 +298,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         cids.add(character.getId());
         playerSave.set("characters", cids);
         try {
-            playerSave.save(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+            playerSave.save(new File(new File(getDataFolder(), "players-uuid"), player.getUniqueId().toString() + ".yml"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -298,7 +306,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public void removeCharacter(OfflinePlayer player, Character character) {
-        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+        YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "players-uuid"), player.getUniqueId().toString() + ".yml"));
         character.setPlayer(player);
         if (playerSave.get("characters") == null) {
             playerSave.set("characters", new HashSet<Integer>());
@@ -307,7 +315,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         cids.remove(character.getId());
         playerSave.set("characters", cids);
         try {
-            playerSave.save(new File(new File(getDataFolder(), "players"), player.getName() + ".yml"));
+            playerSave.save(new File(new File(getDataFolder(), "players-uuid"), player.getUniqueId().toString() + ".yml"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -332,8 +340,8 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             activeCharacter.setFoodLevel(player.getFoodLevel());
         }
         addCharacter(player, character);
-        File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        File playerDirectory = new File(getDataFolder(), "players-uuid");
+        File playerFile = new File(playerDirectory, player.getUniqueId() + ".yml");
         YamlConfiguration playerSave = YamlConfiguration.loadConfiguration(playerFile);
         playerSave.set("active-character", character.getId());
         try {
@@ -364,7 +372,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         File newCharacterDirectory = new File(getDataFolder(), "characters-new");
         File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
         if (newCharacterFile.exists()) {
-            return new CharacterImpl(newCharacterFile);
+            Character character = new CharacterImpl(newCharacterFile);
+            character.getPlayer(); // UUID conversion
+            return character;
         } else {
             RegisteredServiceProvider<EventsPlugin> eventsPluginProvider = getServer().getServicesManager().getRegistration(EventsPlugin.class);
             if (eventsPluginProvider != null) {
