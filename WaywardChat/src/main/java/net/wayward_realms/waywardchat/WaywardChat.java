@@ -29,7 +29,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     private Map<String, Channel> channels = new ConcurrentHashMap<>();
     private Map<String, ChatGroup> chatGroups = new ConcurrentHashMap<>();
     private Map<UUID, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
-    private Set<String> snooping = Collections.synchronizedSet(new HashSet<String>());
+    private Set<UUID> snooping = Collections.synchronizedSet(new HashSet<UUID>());
 
     private PircBotX ircBot;
 
@@ -439,19 +439,19 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         }
     }
 
-    public Set<String> getSnooping() {
+    public Set<UUID> getSnooping() {
         return snooping;
     }
 
     public boolean isSnooping(OfflinePlayer player) {
-        return snooping.contains(player.getName());
+        return snooping.contains(player.getUniqueId());
     }
 
     public void setSnooping(OfflinePlayer player, boolean snoop) {
         if (snoop) {
-            snooping.add(player.getName());
+            snooping.add(player.getUniqueId());
         } else {
-            snooping.remove(player.getName());
+            snooping.remove(player.getUniqueId());
         }
     }
 

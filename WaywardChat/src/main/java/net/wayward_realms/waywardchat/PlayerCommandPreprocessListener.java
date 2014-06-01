@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import java.util.UUID;
+
 public class PlayerCommandPreprocessListener implements Listener {
 
     private WaywardChat plugin;
@@ -16,9 +18,9 @@ public class PlayerCommandPreprocessListener implements Listener {
 
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        for (String player : plugin.getSnooping()) {
-            if (plugin.getServer().getPlayerExact(player) != null) {
-                plugin.getServer().getPlayerExact(player).sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "command" + ChatColor.WHITE + "] " + event.getPlayer().getName() + ": " + event.getMessage());
+        for (UUID player : plugin.getSnooping()) {
+            if (plugin.getServer().getPlayer(player) != null) {
+                plugin.getServer().getPlayer(player).sendMessage(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "command" + ChatColor.WHITE + "] " + event.getPlayer().getName() + ": " + event.getMessage());
             }
         }
         for (Channel channel : plugin.getChannels()) {
