@@ -28,7 +28,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     private Map<String, Channel> channels = new ConcurrentHashMap<>();
     private Map<String, ChatGroup> chatGroups = new ConcurrentHashMap<>();
-    private Map<String, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
+    private Map<UUID, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
     private Set<String> snooping = Collections.synchronizedSet(new HashSet<String>());
 
     private PircBotX ircBot;
@@ -422,7 +422,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public void removeChatGroup(String name) {
         chatGroups.remove(name.toLowerCase());
-        for (Iterator<Map.Entry<String, ChatGroup>> iterator = lastPrivateMessage.entrySet().iterator(); iterator.hasNext(); ) {
+        for (Iterator<Map.Entry<String, ChatGroup>> iterator = chatGroups.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, ChatGroup> entry = iterator.next();
             if (entry.getValue().getName().equalsIgnoreCase(name)) iterator.remove();
         }
@@ -434,7 +434,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public void sendPrivateMessage(Player sender, ChatGroup recipients, String message) {
         recipients.sendMessage(sender, message);
-        for (String recipient : recipients.getPlayers()) {
+        for (UUID recipient : recipients.getPlayers()) {
             lastPrivateMessage.put(recipient, recipients);
         }
     }
@@ -456,7 +456,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     }
 
     public ChatGroup getLastPrivateMessage(Player player) {
-        return lastPrivateMessage.get(player.getName());
+        return lastPrivateMessage.get(player.getUniqueId());
     }
 
     public Collection<ChatGroup> getChatGroups() {

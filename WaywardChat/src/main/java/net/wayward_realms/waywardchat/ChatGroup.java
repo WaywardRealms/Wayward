@@ -5,14 +5,15 @@ import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class ChatGroup {
 
     private WaywardChat plugin;
 
     private String name;
-    private Set<String> players = new HashSet<>();
-    private Set<String> invited = new HashSet<>();
+    private Set<UUID> players = new HashSet<>();
+    private Set<UUID> invited = new HashSet<>();
 
     private long lastUsed;
 
@@ -20,7 +21,7 @@ public class ChatGroup {
         this.plugin = plugin;
         this.name = name.toLowerCase();
         for (Player player : players) {
-            this.players.add(player.getName());
+            this.players.add(player.getUniqueId());
         }
     }
 
@@ -28,24 +29,24 @@ public class ChatGroup {
         return name;
     }
 
-    public Set<String> getPlayers() {
+    public Set<UUID> getPlayers() {
         return players;
     }
 
-    public Set<String> getInvited() {
+    public Set<UUID> getInvited() {
         return invited;
     }
 
     public boolean isInvited(Player player) {
-        return invited.contains(player.getName());
+        return invited.contains(player.getUniqueId());
     }
 
     public void sendMessage(Player sender, String message) {
         lastUsed = System.currentTimeMillis();
         String format = ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + (name.startsWith("_pm_") ? "private message" : name) + ChatColor.WHITE + "] " + ChatColor.GRAY + sender.getName() + ": " + message;
-        for (String player : players) {
-            if (plugin.getServer().getPlayerExact(player) != null) {
-                plugin.getServer().getPlayerExact(player).sendMessage(format);
+        for (UUID player : players) {
+            if (plugin.getServer().getPlayer(player) != null) {
+                plugin.getServer().getPlayer(player).sendMessage(format);
             }
         }
         for (Player player : plugin.getServer().getOnlinePlayers()) {
@@ -54,27 +55,27 @@ public class ChatGroup {
     }
 
     public void addPlayer(Player player) {
-        players.add(player.getName());
-        invited.remove(player.getName());
+        players.add(player.getUniqueId());
+        invited.remove(player.getUniqueId());
     }
 
     public void removePlayer(Player player) {
-        players.remove(player.getName());
-        invited.add(player.getName());
+        players.remove(player.getUniqueId());
+        invited.add(player.getUniqueId());
     }
 
     public void invitePlayer(Player player) {
-        invited.add(player.getName());
+        invited.add(player.getUniqueId());
     }
 
     public void uninvitePlayer(Player player) {
-        invited.remove(player.getName());
+        invited.remove(player.getUniqueId());
     }
 
     public void disposeIfUnused() {
         boolean playersOffline = true;
-        for (String player : players) {
-            if (plugin.getServer().getPlayerExact(player) != null) {
+        for (UUID player : players) {
+            if (plugin.getServer().getPlayer(player) != null) {
                 playersOffline = false;
             }
         }
