@@ -1,109 +1,81 @@
 package net.wayward_realms.waywardprofessions;
 
-import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
-public class ProfessionInfo implements ConfigurationSerializable {
+public class ProfessionInfo {
 
-    private int characterId;
+    private File file;
 
-    private Map<ToolType, Integer> maxToolDurability = new EnumMap<>(ToolType.class);
-    private Map<Material, Integer> craftEfficiency = new EnumMap<>(Material.class);
-    private Map<Material, Integer> miningEfficiency = new EnumMap<>(Material.class);
-    private int brewingEfficiency;
+    public ProfessionInfo(File file) {
+        this.file = file;
+    }
 
     public int getMaxToolDurability(ToolType type) {
-        if (maxToolDurability.get(type) == null) return 10;
-        return Math.max(maxToolDurability.get(type), 10);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        if (config.get("max-tool-durability." + type.toString().toLowerCase()) == null) return 10;
+        return Math.max(config.getInt("max-tool-durability." + type), 10);
     }
 
     public void setMaxToolDurability(ToolType type, int durability) {
-        maxToolDurability.put(type, durability);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("max-tool-durability." + type.toString().toLowerCase(), durability);
+        try {
+            config.save(file);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public int getCraftEfficiency(Material material) {
-        if (craftEfficiency.get(material) == null) return 0;
-        return craftEfficiency.get(material);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        if (config.get("craft-efficiency." + material.toString().toLowerCase()) == null) return 0;
+        return config.getInt("craft-efficiency." + material.toString().toLowerCase());
     }
 
     public void setCraftEfficiency(Material material, int efficiency) {
-        craftEfficiency.put(material, Math.min(efficiency, 100));
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("craft-efficiency." + material.toString().toLowerCase(), Math.min(efficiency, 100));
+        try {
+            config.save(file);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public int getMiningEfficiency(Material material) {
-        if (miningEfficiency.get(material) == null) return 0;
-        return miningEfficiency.get(material);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        if (config.get("mining-efficiency." + material.toString().toLowerCase()) == null) return 0;
+        return config.getInt("mining-efficiency." + material.toString().toLowerCase());
     }
 
     public void setMiningEfficiency(Material material, int efficiency) {
-        miningEfficiency.put(material, Math.min(efficiency, 100));
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("mining-efficiency." + material.toString().toLowerCase(), Math.min(efficiency, 100));
+        try {
+            config.save(file);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public int getBrewingEfficiency() {
-        return brewingEfficiency;
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        return config.getInt("brewing-efficiency");
     }
 
     public void setBrewingEfficiency(int efficiency) {
-        this.brewingEfficiency = Math.min(efficiency, 100);
-    }
-
-    public void setCharacterId(int characterId) {
-        this.characterId = characterId;
-    }
-
-    public int getCharacterId() {
-        return characterId;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        Map<String, Integer> maxToolDurabilityNames = new HashMap<>();
-        for (Map.Entry<ToolType, Integer> entry : maxToolDurability.entrySet()) {
-            maxToolDurabilityNames.put(entry.getKey().toString(), entry.getValue());
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        config.set("brewing-efficiency", Math.min(efficiency, 100));
+        try {
+            config.save(file);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-        serialised.put("max-tool-durability", maxToolDurabilityNames);
-        Map<String, Integer> craftEfficiencyNames = new HashMap<>();
-        for (Map.Entry<Material, Integer> entry : craftEfficiency.entrySet()) {
-            craftEfficiencyNames.put(entry.getKey().toString(), entry.getValue());
-        }
-        serialised.put("craft-efficiency", craftEfficiencyNames);
-        Map<String, Integer> miningEfficiencyNames = new HashMap<>();
-        for (Map.Entry<Material, Integer> entry : miningEfficiency.entrySet()) {
-            miningEfficiencyNames.put(entry.getKey().toString(), entry.getValue());
-        }
-        serialised.put("mining-efficiency", miningEfficiencyNames);
-        serialised.put("brewing-efficiency", brewingEfficiency);
-        return serialised;
-    }
-
-    public static ProfessionInfo deserialize(Map<String, Object> serialised) {
-        ProfessionInfo deserialised = new ProfessionInfo();
-        for (Map.Entry<String, Integer> entry : ((Map<String, Integer>) serialised.get("max-tool-durability")).entrySet()) {
-            deserialised.maxToolDurability.put(ToolType.valueOf(entry.getKey()), entry.getValue());
-        }
-        for (Map.Entry<String, Integer> entry : ((Map<String, Integer>) serialised.get("craft-efficiency")).entrySet()) {
-            deserialised.craftEfficiency.put(Material.getMaterial(entry.getKey()), entry.getValue());
-        }
-        for (Map.Entry<String, Integer> entry : ((Map<String, Integer>) serialised.get("mining-efficiency")).entrySet()) {
-            deserialised.miningEfficiency.put(Material.getMaterial(entry.getKey()), entry.getValue());
-        }
-        deserialised.brewingEfficiency = (int) serialised.get("brewing-efficiency");
-        return deserialised;
-    }
-
-    public NewProfessionInfo toNewProfessionInfo() {
-        ProfessionsPlugin professionsPlugin = Bukkit.getServer().getServicesManager().getRegistration(ProfessionsPlugin.class).getProvider();
-        File newProfessionsDirectory = new File(professionsPlugin.getDataFolder(), "characters-new");
-        return new NewProfessionInfo(new File(newProfessionsDirectory, characterId + ".yml"));
     }
 
 }

@@ -3,12 +3,10 @@ package net.wayward_realms.waywardprofessions;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
-import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,7 +20,6 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     @Override
     public void onEnable() {
-        ConfigurationSerialization.registerClass(ProfessionInfo.class);
         saveDefaultConfig();
         registerListeners(new BlockBreakListener(this), new EnchantItemListener(), new InventoryClickListener(this), new PlayerInteractListener(this), new PrepareItemCraftListener(this));
         getCommand("efficiency").setExecutor(new EfficiencyCommand(this));
@@ -167,24 +164,6 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
                 exception.printStackTrace();
             }
         }
-        File characterDirectory = new File(getDataFolder(), "characters");
-        if (characterDirectory.exists()) {
-            for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
-                YamlConfiguration characterConfig = new YamlConfiguration();
-                try {
-                    characterConfig.load(file);
-                } catch (IOException | InvalidConfigurationException exception) {
-                    exception.printStackTrace();
-                }
-                ProfessionInfo professionInfo = (ProfessionInfo) characterConfig.get("profession-info");
-                try {
-                    int characterId = Integer.parseInt(file.getName().replace(".yml", ""));
-                    professionInfo.setCharacterId(characterId);
-                    professionInfo.toNewProfessionInfo().save();
-                } catch (NumberFormatException ignore) {}
-            }
-            characterDirectory.delete();
-        }
     }
 
     @Override
@@ -192,9 +171,9 @@ public class WaywardProfessions extends JavaPlugin implements ProfessionsPlugin 
 
     }
 
-    private NewProfessionInfo getProfessionInfo(int characterId) {
+    private ProfessionInfo getProfessionInfo(int characterId) {
         File characterDirectory = new File(getDataFolder(), "characters-new");
-        return new NewProfessionInfo(new File(characterDirectory, characterId + ".yml"));
+        return new ProfessionInfo(new File(characterDirectory, characterId + ".yml"));
     }
 
     public void reset(Character character) {
