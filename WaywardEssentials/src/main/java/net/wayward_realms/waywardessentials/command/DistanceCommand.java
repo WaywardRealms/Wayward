@@ -21,7 +21,11 @@ public class DistanceCommand implements CommandExecutor {
             if (args.length > 0) {
                 Player player = plugin.getServer().getPlayer(args[0]);
                 if (player != null) {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Distance to " + player.getName() + "/" + player.getDisplayName() + ": " + player.getLocation().distance(((Player) sender).getLocation()));
+                    if (player.getWorld() == ((Player) sender).getWorld()) {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Distance to " + player.getName() + "/" + player.getDisplayName() + ": " + player.getLocation().distance(((Player) sender).getLocation()));
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is in a different world.");
+                    }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not online");
                 }
