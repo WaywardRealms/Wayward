@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.Random;
@@ -30,7 +31,9 @@ public class PrepareItemCraftListener implements Listener {
                 if (characterPluginProvider != null) {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) event.getViewers().get(0));
-                    event.getInventory().getResult().setDurability((short) (event.getInventory().getResult().getType().getMaxDurability() - (0.75D * (double) plugin.getMaxToolDurability(character, type))));
+                    ItemStack itemWithAdjustedDurability = event.getInventory().getResult();
+                    itemWithAdjustedDurability.setDurability((short) (event.getInventory().getResult().getType().getMaxDurability() - (0.75D * (double) plugin.getMaxToolDurability(character, type))));
+                    event.getInventory().setResult(itemWithAdjustedDurability);
                     //Random random = new Random();
                     //plugin.setMaxToolDurability(character, type, Math.min(plugin.getMaxToolDurability(character, type) + (random.nextInt(100) <= 30 ? random.nextInt(3) : 0), event.getInventory().getResult().getType().getMaxDurability()));
                 }
@@ -48,5 +51,4 @@ public class PrepareItemCraftListener implements Listener {
             }
         }
     }
-
 }
