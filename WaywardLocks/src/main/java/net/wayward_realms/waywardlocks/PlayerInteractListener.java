@@ -75,13 +75,7 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     if (block != null) {
-                        if (event.getPlayer().getItemInHand() != null
-                                && event.getPlayer().getItemInHand().getType() == Material.IRON_INGOT
-                                && event.getPlayer().getItemInHand().hasItemMeta()
-                                && event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()
-                                && event.getPlayer().getItemInHand().getItemMeta().hasLore()
-                                && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Key")
-                                && event.getPlayer().getItemInHand().getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                        if (hasKey(event.getPlayer(), event.getClickedBlock())) {
                             plugin.unlock(block);
                             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The lock was successfully removed from the " + block.getType().toString().toLowerCase().replace('_', ' '));
                             event.getPlayer().setItemInHand(null);
@@ -219,7 +213,7 @@ public class PlayerInteractListener implements Listener {
     }
 
 
-    public boolean hasKey(Character character, Block block) {
+    public boolean hasKey(Player character, Block block) {
     	int blockX, blockY, blockZ;
     	String world = block.getLocation().getWorld().toString();
     	blockX = (int) block.getLocation().getX();
