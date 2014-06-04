@@ -1,12 +1,8 @@
 package net.wayward_realms.waywardlocks;
 
-import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlocks.keyring.KeyringManager;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -188,9 +184,7 @@ public class PlayerInteractListener implements Listener {
                                         }
                                         return;
                                     }
-                                    if (!event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Key")
-                                            || !event.getPlayer().getItemInHand().getItemMeta().hasLore()
-                                            || !event.getPlayer().getItemInHand().getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                                    if (!hasKey(event.getPlayer(), block)) {
                                         event.setCancelled(true);
                                         event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "The " + block.getType().toString().toLowerCase().replace('_', ' ') + " seems to be locked. You would need the key or a lockpick to get in.");
                                     }
@@ -213,18 +207,29 @@ public class PlayerInteractListener implements Listener {
     }
 
 
-    public boolean hasKey(Player character, Block block) {
-    	int blockX, blockY, blockZ;
-    	String world = block.getLocation().getWorld().toString();
-    	blockX = (int) block.getLocation().getX();
-    	blockY = (int) block.getLocation().getY();
-    	blockZ = (int) block.getLocation().getZ();
-    	
-    	for (ItemStack key : plugin.getKeyringManager().getKeyring(character)) {
-    		if (key.getItemMeta().getLore().contains(world + "," + blockX + "," + blockY + "," + blockZ))
-    			return true;
+    public boolean hasKey(Player player, Block block) {
+    	for (ItemStack key : plugin.getKeyringManager().getKeyring(player)) {
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                return true;
+            }
     	}
-    	
+        for (ItemStack key : player.getInventory().getContents()) {
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                return true;
+            }
+        }
     	return false;
     }
     
