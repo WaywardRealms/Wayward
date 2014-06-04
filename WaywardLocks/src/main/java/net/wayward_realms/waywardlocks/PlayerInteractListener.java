@@ -1,8 +1,12 @@
 package net.wayward_realms.waywardlocks;
 
+import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlocks.keyring.KeyringManager;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -215,6 +219,21 @@ public class PlayerInteractListener implements Listener {
     }
 
 
+    public boolean hasKey(Character character, Block block) {
+    	int blockX, blockY, blockZ;
+    	String world = block.getLocation().getWorld().toString();
+    	blockX = (int) block.getLocation().getX();
+    	blockY = (int) block.getLocation().getY();
+    	blockZ = (int) block.getLocation().getZ();
+    	
+    	for (ItemStack key : plugin.getKeyringManager().getKeyring(character)) {
+    		if (key.getItemMeta().getLore().contains(world + "," + blockX + "," + blockY + "," + blockZ))
+    			return true;
+    	}
+    	
+    	return false;
+    }
+    
     public boolean isDoorClosed(Block block) {
         if (block.getType() == Material.TRAP_DOOR) {
             TrapDoor trapdoor = (TrapDoor)block.getState().getData();
