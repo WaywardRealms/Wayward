@@ -81,6 +81,7 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
+            oldLocksFile.delete();
         }
     }
 

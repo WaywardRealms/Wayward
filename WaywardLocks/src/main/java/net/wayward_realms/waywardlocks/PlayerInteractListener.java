@@ -71,13 +71,7 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     if (block != null) {
-                        if (event.getPlayer().getItemInHand() != null
-                                && event.getPlayer().getItemInHand().getType() == Material.IRON_INGOT
-                                && event.getPlayer().getItemInHand().hasItemMeta()
-                                && event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()
-                                && event.getPlayer().getItemInHand().getItemMeta().hasLore()
-                                && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Key")
-                                && event.getPlayer().getItemInHand().getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                        if (hasKey(event.getPlayer(), event.getClickedBlock())) {
                             plugin.unlock(block);
                             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The lock was successfully removed from the " + block.getType().toString().toLowerCase().replace('_', ' '));
                             event.getPlayer().setItemInHand(null);
@@ -190,9 +184,7 @@ public class PlayerInteractListener implements Listener {
                                         }
                                         return;
                                     }
-                                    if (!event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Key")
-                                            || !event.getPlayer().getItemInHand().getItemMeta().hasLore()
-                                            || !event.getPlayer().getItemInHand().getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                                    if (!hasKey(event.getPlayer(), block)) {
                                         event.setCancelled(true);
                                         event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "The " + block.getType().toString().toLowerCase().replace('_', ' ') + " seems to be locked. You would need the key or a lockpick to get in.");
                                     }
@@ -215,6 +207,32 @@ public class PlayerInteractListener implements Listener {
     }
 
 
+    public boolean hasKey(Player player, Block block) {
+    	for (ItemStack key : plugin.getKeyringManager().getKeyring(player)) {
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                return true;
+            }
+    	}
+        for (ItemStack key : player.getInventory().getContents()) {
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                return true;
+            }
+        }
+    	return false;
+    }
+    
     public boolean isDoorClosed(Block block) {
         if (block.getType() == Material.TRAP_DOOR) {
             TrapDoor trapdoor = (TrapDoor)block.getState().getData();
