@@ -9,7 +9,9 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
+
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -53,8 +55,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         Character character = getActiveCharacter(player);
+                        int decreaseChance = checkBiome(player.getLocation().getBlock().getBiome());
                         if (!isThirstDisabled(player)) {
-                            if (character.getThirst() > 0 && random.nextInt(100) <= 5) {
+                            if (character.getThirst() > 0 && random.nextInt(100) <= decreaseChance) {
                                 character.setThirst(character.getThirst() - 1);
                                 player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
                             }
@@ -93,6 +96,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                     }
                 }
             }
+
         }, 500L, 500L);
     }
 
@@ -474,5 +478,37 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             exception.printStackTrace();
         }
     }
+    
+	private int checkBiome(Biome biome) {
+		switch (biome) {
+		case DESERT:
+		case DESERT_HILLS:
+		case DESERT_MOUNTAINS:
+			return 8;
+		case HELL:
+			return 16;
+		case JUNGLE:
+		case JUNGLE_EDGE:
+		case JUNGLE_EDGE_MOUNTAINS:
+		case JUNGLE_HILLS:
+		case JUNGLE_MOUNTAINS:
+			return 6;
+		case MESA:
+		case MESA_BRYCE:
+		case MESA_PLATEAU:
+		case MESA_PLATEAU_FOREST:
+		case MESA_PLATEAU_FOREST_MOUNTAINS:
+		case MESA_PLATEAU_MOUNTAINS:
+			return 8;
+		case SAVANNA:
+		case SAVANNA_MOUNTAINS:
+		case SAVANNA_PLATEAU:
+		case SAVANNA_PLATEAU_MOUNTAINS:
+			return 6;
+		default:
+			return 4;
+		}
+		
+	}
 
 }
