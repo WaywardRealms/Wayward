@@ -510,12 +510,27 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 		}
 	}
 
-    public Biome convertBiomeFromString(String biomeString){
+    public Biome convertBiomeFromString(String biomeString) {
         for (Biome biome: Biome.values()) {
             if (biomeString.contains(biome.toString()))
             	return biome;
         }
         return null;
+    }
+    
+    public boolean isSafeWater(Biome biome) {
+    	switch (biome) {
+    	case BEACH:
+    	case COLD_BEACH:
+    	case FROZEN_OCEAN:
+    	case OCEAN:
+    	case SWAMPLAND:
+    	case SWAMPLAND_MOUNTAINS:
+    		return false;
+    	default:
+    		return true;
+    	}
+    	
     }
 
 }

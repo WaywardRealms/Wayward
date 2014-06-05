@@ -8,9 +8,12 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 
 import java.util.ArrayList;
@@ -71,11 +74,26 @@ public class PlayerInteractListener implements Listener {
                 Block targetBlock = getTargetBlock(event.getPlayer());
                 if (targetBlock != null) {
                     if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
-                        net.wayward_realms.waywardlib.character.Character character = plugin.getActiveCharacter(event.getPlayer());
-                        character.setThirst(character.getThirst() + 1);
-                        event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                    	net.wayward_realms.waywardlib.character.Character character = plugin.getActiveCharacter(event.getPlayer());
+                    	if (plugin.isSafeWater(targetBlock.getBiome())) {
+	                        character.setThirst(character.getThirst() + 1);
+	                        event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                    	}else{
+                    		event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 1500, 2), true);
+                    		event.getPlayer().sendMessage(ChatColor.RED + "You feel sick. Perhaps it was the water.");
+                    		if (targetBlock.getBiome().toString().contains("OCEAN") || targetBlock.getBiome().toString().contains("BEACH")) {
+                    			character.setThirst(character.getThirst() - 2);
+                    			event.getPlayer().sendMessage(ChatColor.RED + "You suddenly feel dehydrated from drinking salt water.");
+                    			event.getPlayer().sendMessage(ChatColor.RED + "Thirst: -2" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                    		}
+                    	}
                     }
                 }
+            } else if (event.getPlayer().getItemInHand().getType() == Material.GLASS_BOTTLE) {
+            	if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    //TODO: Give player waterbottle with biome in lore if not a safe water biome.
+            	}
+            	
             }
         }
     }
