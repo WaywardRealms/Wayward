@@ -8,7 +8,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.bukkit.block.Biome.*;
+import static org.bukkit.event.block.Action.*;
 
 public class PlayerInteractListener implements Listener {
 
@@ -80,7 +80,7 @@ public class PlayerInteractListener implements Listener {
                         if (plugin.isSafeWater(targetBlock.getBiome())) {
                             character.setThirst(character.getThirst() + 1);
                             event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
-                        }else{
+                        } else {
                             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 1500, 2), true);
                             event.getPlayer().sendMessage(ChatColor.RED + "You feel sick. Perhaps it was the water.");
                             if (targetBlock.getBiome() == OCEAN || targetBlock.getBiome() == DEEP_OCEAN || targetBlock.getBiome() == FROZEN_OCEAN || targetBlock.getBiome() == BEACH || targetBlock.getBiome() == COLD_BEACH || targetBlock.getBiome() == STONE_BEACH) {
@@ -92,8 +92,22 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             } else if (event.getPlayer().getItemInHand().getType() == Material.GLASS_BOTTLE) {
-                if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    //TODO: Give player waterbottle with biome in lore if not a safe water biome.
+                if (event.getAction() == RIGHT_CLICK_BLOCK || event.getAction() == RIGHT_CLICK_AIR) {
+                    event.setCancelled(true);
+                    if (event.getPlayer().getItemInHand().getAmount() > 1) {
+                        event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
+                    } else {
+                        event.getPlayer().setItemInHand(null);
+                    }
+                    ItemStack water = new ItemStack(Material.POTION);
+                    ItemMeta meta = water.getItemMeta();
+                    List<String> lore = new ArrayList<>();
+                    Block targetBlock = getTargetBlock(event.getPlayer());
+                    lore.add(targetBlock.getWorld().getBiome(targetBlock.getX(), targetBlock.getY()).toString());
+                    meta.setLore(lore);
+                    water.setItemMeta(meta);
+                    event.getPlayer().getInventory().addItem(water);
+                    event.getPlayer().updateInventory();
                 }
             }
         }
