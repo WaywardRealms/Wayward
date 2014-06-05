@@ -512,7 +512,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     public Biome convertBiomeFromString(String biomeString){
         for (Biome biome: Biome.values()) {
-            if (biome.toString().equals(biomeString))
+            if (biomeString.contains(biome.toString()))
             	return biome;
         }
         return null;
