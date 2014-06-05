@@ -479,58 +479,58 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         }
     }
     
-	private int checkBiome(Biome biome) {
-		switch (biome) {
-		case DESERT:
-		case DESERT_HILLS:
-		case DESERT_MOUNTAINS:
-			return 8;
-		case HELL:
-			return 16;
-		case JUNGLE:
-		case JUNGLE_EDGE:
-		case JUNGLE_EDGE_MOUNTAINS:
-		case JUNGLE_HILLS:
-		case JUNGLE_MOUNTAINS:
-			return 6;
-		case MESA:
-		case MESA_BRYCE:
-		case MESA_PLATEAU:
-		case MESA_PLATEAU_FOREST:
-		case MESA_PLATEAU_FOREST_MOUNTAINS:
-		case MESA_PLATEAU_MOUNTAINS:
-			return 8;
-		case SAVANNA:
-		case SAVANNA_MOUNTAINS:
-		case SAVANNA_PLATEAU:
-		case SAVANNA_PLATEAU_MOUNTAINS:
-			return 6;
-		default:
-			return 4;
-		}
-	}
+    private int checkBiome(Biome biome) {
+        switch (biome) {
+            case DESERT:
+            case DESERT_HILLS:
+            case DESERT_MOUNTAINS:
+                return 8;
+            case HELL:
+                return 16;
+            case JUNGLE:
+            case JUNGLE_EDGE:
+            case JUNGLE_EDGE_MOUNTAINS:
+            case JUNGLE_HILLS:
+            case JUNGLE_MOUNTAINS:
+                return 6;
+            case MESA:
+            case MESA_BRYCE:
+            case MESA_PLATEAU:
+            case MESA_PLATEAU_FOREST:
+            case MESA_PLATEAU_FOREST_MOUNTAINS:
+            case MESA_PLATEAU_MOUNTAINS:
+                return 8;
+            case SAVANNA:
+            case SAVANNA_MOUNTAINS:
+            case SAVANNA_PLATEAU:
+            case SAVANNA_PLATEAU_MOUNTAINS:
+                return 6;
+            default:
+                return 4;
+        }
+    }
 
     public Biome convertBiomeFromString(String biomeString) {
-        for (Biome biome: Biome.values()) {
-            if (biomeString.contains(biome.toString()))
-            	return biome;
+        try {
+            return Biome.valueOf(biomeString.toUpperCase().replace(' ', '_'));
+        } catch (IllegalArgumentException | NullPointerException exception) {
+            return null;
         }
-        return null;
     }
     
     public boolean isSafeWater(Biome biome) {
-    	switch (biome) {
-    	case BEACH:
-    	case COLD_BEACH:
-    	case FROZEN_OCEAN:
-    	case OCEAN:
-    	case SWAMPLAND:
-    	case SWAMPLAND_MOUNTAINS:
-    		return false;
-    	default:
-    		return true;
-    	}
-    	
+        switch (biome) {
+            case BEACH:
+            case COLD_BEACH:
+            case FROZEN_OCEAN:
+            case OCEAN:
+            case SWAMPLAND:
+            case SWAMPLAND_MOUNTAINS:
+                return false;
+            default:
+                return true;
+        }
+
     }
 
 }
