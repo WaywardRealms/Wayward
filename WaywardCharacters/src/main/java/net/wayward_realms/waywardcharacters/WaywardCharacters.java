@@ -508,7 +508,73 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 		default:
 			return 4;
 		}
-		
 	}
+
+    private Biome convertBiomeFromString(String biome){
+        switch (biome){
+            default: return Biome.PLAINS;
+            case "BEACH": return Biome.BEACH;
+            case "BIRCH_FOREST": return Biome.BIRCH_FOREST;
+            case "BIRCH_FOREST_HILLS": return Biome.BIRCH_FOREST_HILLS;
+            case "BIRCH_FOREST_HILLS_MOUNTAINS": return Biome.BIRCH_FOREST_HILLS_MOUNTAINS;
+            case "BIRCH_FOREST_MOUNTAINS": return Biome.BIRCH_FOREST_MOUNTAINS;
+            case "COLD_BEACH": return Biome.COLD_BEACH;
+            case "COLD_TAIGA": return Biome.COLD_TAIGA;
+            case "COLD_TAIGA_HILLS": return Biome.COLD_TAIGA_HILLS;
+            case "COLD_TAIGA_MOUNTAINS": return Biome.COLD_TAIGA_MOUNTAINS;
+            case "DEEP_OCEAN": return Biome.DEEP_OCEAN;
+            case "DESERT": return Biome.DESERT;
+            case "DESERT_HILLS": return Biome.DESERT_HILLS;
+            case "DESERT_MOUNTAINS": return Biome.DESERT_MOUNTAINS;
+            case "EXTREME_HILLS": return Biome.EXTREME_HILLS;
+            case "EXTREME_HILLS_MOUNTAINS": return Biome.EXTREME_HILLS_MOUNTAINS;
+            case "EXTREME_HILLS_PLUS": return Biome.EXTREME_HILLS_PLUS;
+            case "EXTREME_HILLS_PLUS_MOUNTAINS": return Biome.EXTREME_HILLS_PLUS_MOUNTAINS;
+            case "FLOWER_FOREST": return Biome.FLOWER_FOREST;
+            case "FOREST": return Biome.FOREST;
+            case "FOREST_HILLS": return Biome.FOREST_HILLS;
+            case "FROZEN_OCEAN": return Biome.FROZEN_OCEAN;
+            case "FROZEN_RIVER": return Biome.FROZEN_RIVER;
+            case "HELL": return Biome.HELL;
+            case "ICE_MOUNTAINS": return Biome.ICE_MOUNTAINS;
+            case "ICE_PLAINS": return Biome.ICE_PLAINS;
+            case "ICE_PLAINS_SPIKES": return Biome.ICE_PLAINS_SPIKES;
+            case "JUNGLE": return Biome.JUNGLE;
+            case "JUNGLE_EDGE": return Biome.JUNGLE_EDGE;
+            case "JUNGLE_EDGE_MOUNTAINS": return Biome.JUNGLE_EDGE_MOUNTAINS;
+            case "JUNGLE_HILLS": return Biome.JUNGLE_HILLS;
+            case "JUNGLE_MOUNTAINS": return Biome.JUNGLE_MOUNTAINS;
+            case "MEGA_SPRUCE_TAIGA": return Biome.MEGA_SPRUCE_TAIGA;
+            case "MEGA_SPRUCE_TAIGA_HILLS": return Biome.MEGA_SPRUCE_TAIGA_HILLS;
+            case "MEGA_TAIGA": return Biome.MEGA_TAIGA;
+            case "MEGA_TAIGA_HILLS": return Biome.MEGA_TAIGA_HILLS;
+            case "MESA": return Biome.MESA;
+            case "MESA_BRYCE": return Biome.MESA_BRYCE;
+            case "MESA_PLATEAU": return Biome.MESA_PLATEAU;
+            case "MESA_PLATEAU_FOREST": return Biome.MESA_PLATEAU_FOREST;
+            case "MESA_PLATEAU_FOREST_MOUNTAINS": return Biome.MESA_PLATEAU_FOREST_MOUNTAINS;
+            case "MESA_PLATEAU_MOUNTAINS": return Biome.MESA_PLATEAU_MOUNTAINS;
+            case "MUSHROOM_ISLAND": return Biome.MUSHROOM_ISLAND;
+            case "MUSHROOM_SHORE": return Biome.MUSHROOM_SHORE;
+            case "OCEAN": return Biome.OCEAN;
+            case "PLAINS": return Biome.PLAINS;
+            case "RIVER": return Biome.RIVER;
+            case "ROOFED_FOREST": return Biome.ROOFED_FOREST;
+            case "ROOFED_FOREST_MOUNTAINS": return Biome.ROOFED_FOREST_MOUNTAINS;
+            case "SAVANNA": return Biome.SAVANNA;
+            case "SAVANNA_MOUNTAINS": return Biome.SAVANNA_MOUNTAINS;
+            case "SAVANNA_PLATEAU": return Biome.SAVANNA_PLATEAU;
+            case "SAVANNA_PLATEAU_MOUNTAINS": return Biome.SAVANNA_PLATEAU_MOUNTAINS;
+            case "SKY": return Biome.SKY;
+            case "SMALL_MOUNTAINS": return Biome.SMALL_MOUNTAINS;
+            case "STONE_BEACH": return Biome.STONE_BEACH;
+            case "SUNFLOWER_PLAINS": return Biome.SUNFLOWER_PLAINS;
+            case "SWAMPLAND": return Biome.SWAMPLAND;
+            case "SWAMPLAND_MOUNTAINS": return Biome.SWAMPLAND_MOUNTAINS;
+            case "TAIGA": return Biome.TAIGA;
+            case "TAIGA_HILLS": return Biome.TAIGA_HILLS;
+            case "TAIGA_MOUNTAINS": return Biome.TAIGA_MOUNTAINS;
+        }
+    }
 
 }
