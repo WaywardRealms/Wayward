@@ -511,69 +511,130 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 	}
 
     private Biome convertBiomeFromString(String biome){
-        switch (biome){
-            default: return Biome.PLAINS;
-            case "BEACH": return Biome.BEACH;
-            case "BIRCH_FOREST": return Biome.BIRCH_FOREST;
-            case "BIRCH_FOREST_HILLS": return Biome.BIRCH_FOREST_HILLS;
-            case "BIRCH_FOREST_HILLS_MOUNTAINS": return Biome.BIRCH_FOREST_HILLS_MOUNTAINS;
-            case "BIRCH_FOREST_MOUNTAINS": return Biome.BIRCH_FOREST_MOUNTAINS;
-            case "COLD_BEACH": return Biome.COLD_BEACH;
-            case "COLD_TAIGA": return Biome.COLD_TAIGA;
-            case "COLD_TAIGA_HILLS": return Biome.COLD_TAIGA_HILLS;
-            case "COLD_TAIGA_MOUNTAINS": return Biome.COLD_TAIGA_MOUNTAINS;
-            case "DEEP_OCEAN": return Biome.DEEP_OCEAN;
-            case "DESERT": return Biome.DESERT;
-            case "DESERT_HILLS": return Biome.DESERT_HILLS;
-            case "DESERT_MOUNTAINS": return Biome.DESERT_MOUNTAINS;
-            case "EXTREME_HILLS": return Biome.EXTREME_HILLS;
-            case "EXTREME_HILLS_MOUNTAINS": return Biome.EXTREME_HILLS_MOUNTAINS;
-            case "EXTREME_HILLS_PLUS": return Biome.EXTREME_HILLS_PLUS;
-            case "EXTREME_HILLS_PLUS_MOUNTAINS": return Biome.EXTREME_HILLS_PLUS_MOUNTAINS;
-            case "FLOWER_FOREST": return Biome.FLOWER_FOREST;
-            case "FOREST": return Biome.FOREST;
-            case "FOREST_HILLS": return Biome.FOREST_HILLS;
-            case "FROZEN_OCEAN": return Biome.FROZEN_OCEAN;
-            case "FROZEN_RIVER": return Biome.FROZEN_RIVER;
-            case "HELL": return Biome.HELL;
-            case "ICE_MOUNTAINS": return Biome.ICE_MOUNTAINS;
-            case "ICE_PLAINS": return Biome.ICE_PLAINS;
-            case "ICE_PLAINS_SPIKES": return Biome.ICE_PLAINS_SPIKES;
-            case "JUNGLE": return Biome.JUNGLE;
-            case "JUNGLE_EDGE": return Biome.JUNGLE_EDGE;
-            case "JUNGLE_EDGE_MOUNTAINS": return Biome.JUNGLE_EDGE_MOUNTAINS;
-            case "JUNGLE_HILLS": return Biome.JUNGLE_HILLS;
-            case "JUNGLE_MOUNTAINS": return Biome.JUNGLE_MOUNTAINS;
-            case "MEGA_SPRUCE_TAIGA": return Biome.MEGA_SPRUCE_TAIGA;
-            case "MEGA_SPRUCE_TAIGA_HILLS": return Biome.MEGA_SPRUCE_TAIGA_HILLS;
-            case "MEGA_TAIGA": return Biome.MEGA_TAIGA;
-            case "MEGA_TAIGA_HILLS": return Biome.MEGA_TAIGA_HILLS;
-            case "MESA": return Biome.MESA;
-            case "MESA_BRYCE": return Biome.MESA_BRYCE;
-            case "MESA_PLATEAU": return Biome.MESA_PLATEAU;
-            case "MESA_PLATEAU_FOREST": return Biome.MESA_PLATEAU_FOREST;
-            case "MESA_PLATEAU_FOREST_MOUNTAINS": return Biome.MESA_PLATEAU_FOREST_MOUNTAINS;
-            case "MESA_PLATEAU_MOUNTAINS": return Biome.MESA_PLATEAU_MOUNTAINS;
-            case "MUSHROOM_ISLAND": return Biome.MUSHROOM_ISLAND;
-            case "MUSHROOM_SHORE": return Biome.MUSHROOM_SHORE;
-            case "OCEAN": return Biome.OCEAN;
-            case "PLAINS": return Biome.PLAINS;
-            case "RIVER": return Biome.RIVER;
-            case "ROOFED_FOREST": return Biome.ROOFED_FOREST;
-            case "ROOFED_FOREST_MOUNTAINS": return Biome.ROOFED_FOREST_MOUNTAINS;
-            case "SAVANNA": return Biome.SAVANNA;
-            case "SAVANNA_MOUNTAINS": return Biome.SAVANNA_MOUNTAINS;
-            case "SAVANNA_PLATEAU": return Biome.SAVANNA_PLATEAU;
-            case "SAVANNA_PLATEAU_MOUNTAINS": return Biome.SAVANNA_PLATEAU_MOUNTAINS;
-            case "SKY": return Biome.SKY;
-            case "SMALL_MOUNTAINS": return Biome.SMALL_MOUNTAINS;
-            case "STONE_BEACH": return Biome.STONE_BEACH;
-            case "SUNFLOWER_PLAINS": return Biome.SUNFLOWER_PLAINS;
-            case "SWAMPLAND": return Biome.SWAMPLAND;
-            case "SWAMPLAND_MOUNTAINS": return Biome.SWAMPLAND_MOUNTAINS;
-            case "TAIGA": return Biome.TAIGA;
-            case "TAIGA_HILLS": return Biome.TAIGA_HILLS;
-            case "TAIGA_MOUNTAINS": return Biome.TAIGA_MOUNTAINS;
+        if (biome.equals("BEACH")) {
+            return Biome.BEACH;
+        } else if (biome.equals("BIRCH_FOREST")) {
+            return Biome.BIRCH_FOREST;
+        } else if (biome.equals("BIRCH_FOREST_HILLS")) {
+            return Biome.BIRCH_FOREST_HILLS;
+        } else if (biome.equals("BIRCH_FOREST_HILLS_MOUNTAINS")) {
+            return Biome.BIRCH_FOREST_HILLS_MOUNTAINS;
+        } else if (biome.equals("BIRCH_FOREST_MOUNTAINS")) {
+            return Biome.BIRCH_FOREST_MOUNTAINS;
+        } else if (biome.equals("COLD_BEACH")) {
+            return Biome.COLD_BEACH;
+        } else if (biome.equals("COLD_TAIGA")) {
+            return Biome.COLD_TAIGA;
+        } else if (biome.equals("COLD_TAIGA_HILLS")) {
+            return Biome.COLD_TAIGA_HILLS;
+        } else if (biome.equals("COLD_TAIGA_MOUNTAINS")) {
+            return Biome.COLD_TAIGA_MOUNTAINS;
+        } else if (biome.equals("DEEP_OCEAN")) {
+            return Biome.DEEP_OCEAN;
+        } else if (biome.equals("DESERT")) {
+            return Biome.DESERT;
+        } else if (biome.equals("DESERT_HILLS")) {
+            return Biome.DESERT_HILLS;
+        } else if (biome.equals("DESERT_MOUNTAINS")) {
+            return Biome.DESERT_MOUNTAINS;
+        } else if (biome.equals("EXTREME_HILLS")) {
+            return Biome.EXTREME_HILLS;
+        } else if (biome.equals("EXTREME_HILLS_MOUNTAINS")) {
+            return Biome.EXTREME_HILLS_MOUNTAINS;
+        } else if (biome.equals("EXTREME_HILLS_PLUS")) {
+            return Biome.EXTREME_HILLS_PLUS;
+        } else if (biome.equals("EXTREME_HILLS_PLUS_MOUNTAINS")) {
+            return Biome.EXTREME_HILLS_PLUS_MOUNTAINS;
+        } else if (biome.equals("FLOWER_FOREST")) {
+            return Biome.FLOWER_FOREST;
+        } else if (biome.equals("FOREST")) {
+            return Biome.FOREST;
+        } else if (biome.equals("FOREST_HILLS")) {
+            return Biome.FOREST_HILLS;
+        } else if (biome.equals("FROZEN_OCEAN")) {
+            return Biome.FROZEN_OCEAN;
+        } else if (biome.equals("FROZEN_RIVER")) {
+            return Biome.FROZEN_RIVER;
+        } else if (biome.equals("HELL")) {
+            return Biome.HELL;
+        } else if (biome.equals("ICE_MOUNTAINS")) {
+            return Biome.ICE_MOUNTAINS;
+        } else if (biome.equals("ICE_PLAINS")) {
+            return Biome.ICE_PLAINS;
+        } else if (biome.equals("ICE_PLAINS_SPIKES")) {
+            return Biome.ICE_PLAINS_SPIKES;
+        } else if (biome.equals("JUNGLE")) {
+            return Biome.JUNGLE;
+        } else if (biome.equals("JUNGLE_EDGE")) {
+            return Biome.JUNGLE_EDGE;
+        } else if (biome.equals("JUNGLE_EDGE_MOUNTAINS")) {
+            return Biome.JUNGLE_EDGE_MOUNTAINS;
+        } else if (biome.equals("JUNGLE_HILLS")) {
+            return Biome.JUNGLE_HILLS;
+        } else if (biome.equals("JUNGLE_MOUNTAINS")) {
+            return Biome.JUNGLE_MOUNTAINS;
+        } else if (biome.equals("MEGA_SPRUCE_TAIGA")) {
+            return Biome.MEGA_SPRUCE_TAIGA;
+        } else if (biome.equals("MEGA_SPRUCE_TAIGA_HILLS")) {
+            return Biome.MEGA_SPRUCE_TAIGA_HILLS;
+        } else if (biome.equals("MEGA_TAIGA")) {
+            return Biome.MEGA_TAIGA;
+        } else if (biome.equals("MEGA_TAIGA_HILLS")) {
+            return Biome.MEGA_TAIGA_HILLS;
+        } else if (biome.equals("MESA")) {
+            return Biome.MESA;
+        } else if (biome.equals("MESA_BRYCE")) {
+            return Biome.MESA_BRYCE;
+        } else if (biome.equals("MESA_PLATEAU")) {
+            return Biome.MESA_PLATEAU;
+        } else if (biome.equals("MESA_PLATEAU_FOREST")) {
+            return Biome.MESA_PLATEAU_FOREST;
+        } else if (biome.equals("MESA_PLATEAU_FOREST_MOUNTAINS")) {
+            return Biome.MESA_PLATEAU_FOREST_MOUNTAINS;
+        } else if (biome.equals("MESA_PLATEAU_MOUNTAINS")) {
+            return Biome.MESA_PLATEAU_MOUNTAINS;
+        } else if (biome.equals("MUSHROOM_ISLAND")) {
+            return Biome.MUSHROOM_ISLAND;
+        } else if (biome.equals("MUSHROOM_SHORE")) {
+            return Biome.MUSHROOM_SHORE;
+        } else if (biome.equals("OCEAN")) {
+            return Biome.OCEAN;
+        } else if (biome.equals("PLAINS")) {
+            return Biome.PLAINS;
+        } else if (biome.equals("RIVER")) {
+            return Biome.RIVER;
+        } else if (biome.equals("ROOFED_FOREST")) {
+            return Biome.ROOFED_FOREST;
+        } else if (biome.equals("ROOFED_FOREST_MOUNTAINS")) {
+            return Biome.ROOFED_FOREST_MOUNTAINS;
+        } else if (biome.equals("SAVANNA")) {
+            return Biome.SAVANNA;
+        } else if (biome.equals("SAVANNA_MOUNTAINS")) {
+            return Biome.SAVANNA_MOUNTAINS;
+        } else if (biome.equals("SAVANNA_PLATEAU")) {
+            return Biome.SAVANNA_PLATEAU;
+        } else if (biome.equals("SAVANNA_PLATEAU_MOUNTAINS")) {
+            return Biome.SAVANNA_PLATEAU_MOUNTAINS;
+        } else if (biome.equals("SKY")) {
+            return Biome.SKY;
+        } else if (biome.equals("SMALL_MOUNTAINS")) {
+            return Biome.SMALL_MOUNTAINS;
+        } else if (biome.equals("STONE_BEACH")) {
+            return Biome.STONE_BEACH;
+        } else if (biome.equals("SUNFLOWER_PLAINS")) {
+            return Biome.SUNFLOWER_PLAINS;
+        } else if (biome.equals("SWAMPLAND")) {
+            return Biome.SWAMPLAND;
+        } else if (biome.equals("SWAMPLAND_MOUNTAINS")) {
+            return Biome.SWAMPLAND_MOUNTAINS;
+        } else if (biome.equals("TAIGA")) {
+            return Biome.TAIGA;
+        } else if (biome.equals("TAIGA_HILLS")) {
+            return Biome.TAIGA_HILLS;
+        } else if (biome.equals("TAIGA_MOUNTAINS")) {
+            return Biome.TAIGA_MOUNTAINS;
+        } else {
+            return Biome.PLAINS;
         }
     }
 
