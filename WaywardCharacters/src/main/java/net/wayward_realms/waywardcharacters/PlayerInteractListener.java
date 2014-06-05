@@ -83,7 +83,7 @@ public class PlayerInteractListener implements Listener {
                         }else{
                             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 1500, 2), true);
                             event.getPlayer().sendMessage(ChatColor.RED + "You feel sick. Perhaps it was the water.");
-                            if (targetBlock.getBiome() == OCEAN || targetBlock.getBiome() == BEACH) {
+                            if (targetBlock.getBiome() == OCEAN || targetBlock.getBiome() == DEEP_OCEAN || targetBlock.getBiome() == FROZEN_OCEAN || targetBlock.getBiome() == BEACH || targetBlock.getBiome() == COLD_BEACH || targetBlock.getBiome() == STONE_BEACH) {
                                 character.setThirst(character.getThirst() - 2);
                                 event.getPlayer().sendMessage(ChatColor.RED + "You suddenly feel dehydrated from drinking salt water.");
                                 event.getPlayer().sendMessage(ChatColor.RED + "Thirst: -2" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
