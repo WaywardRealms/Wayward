@@ -15,6 +15,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class EventCharacterTemplateImpl implements EventCharacterTemplate {
 
@@ -122,12 +123,12 @@ public class EventCharacterTemplateImpl implements EventCharacterTemplate {
 
     @Override
     public OfflinePlayer getCreator() {
-        return Bukkit.getOfflinePlayer(getFieldStringValue("creator"));
+        return Bukkit.getOfflinePlayer(UUID.fromString(getFieldStringValue("creator")));
     }
 
     @Override
     public void setCreator(OfflinePlayer creator) {
-        setFieldValue("creator", creator.getName());
+        setFieldValue("creator", creator.getUniqueId().toString());
     }
 
     @Override
