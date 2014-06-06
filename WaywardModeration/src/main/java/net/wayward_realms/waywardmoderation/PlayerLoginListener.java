@@ -19,7 +19,7 @@ public class PlayerLoginListener implements Listener {
             long millis = plugin.getRemainingBanTime(event.getPlayer());
             long second = (millis / 1000) % 60;
             long minute = (millis / (1000 * 60)) % 60;
-            long hour = (millis / (1000 * 60 * 60)) % 24;
+            long hour = (millis / (1000 * 60 * 60));
             event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + "You are temporarily banned. Please wait " + (hour > 0 ? hour + " hours, " : "") + (minute > 0 ? minute + " minutes, " : "") + (second > 0 ? second + " seconds " : "") + "before you can rejoin.");
         }
     }
