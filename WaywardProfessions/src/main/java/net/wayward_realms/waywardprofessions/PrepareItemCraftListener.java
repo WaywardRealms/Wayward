@@ -27,27 +27,27 @@ public class PrepareItemCraftListener implements Listener {
 
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event) {
-        if (event.getViewers().size() > 0 && event.getViewers().get(0).getGameMode() != GameMode.CREATIVE) {
-            if (plugin.canGainCraftEfficiency(event.getRecipe().getResult().getType())) return;
-            if (ToolType.getToolType(event.getInventory().getResult().getType()) != null) {
-                ToolType type = ToolType.getToolType(event.getInventory().getResult().getType());
-                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                if (characterPluginProvider != null) {
-                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                    net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) event.getViewers().get(0));
-                    ItemStack itemWithAdjustedDurability = event.getInventory().getResult();
-                    itemWithAdjustedDurability.setDurability((short) (event.getInventory().getResult().getType().getMaxDurability() - (0.75D * (double) plugin.getMaxToolDurability(character, type))));
-                    event.getInventory().setResult(itemWithAdjustedDurability);
+        for (HumanEntity viewer : event.getViewers()) {
+            if (viewer.getGameMode() != GameMode.CREATIVE) {
+                if(viewer instanceof Player) {
+                    RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                    if (characterPluginProvider != null) {
+                        ItemStack craftedItem = event.getInventory().getResult();
+                        if (plugin.canGainCraftEfficiency(craftedItem.getType())) {
+                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                            net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) viewer);
+                            Random random = new Random();
+                            int craftEfficiency = plugin.getCraftEfficiency(character, craftedItem.getType());
+                            int amount = (int) ((double) (random.nextInt(100) <= 30 ? (craftEfficiency > 10 ? random.nextInt(craftEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) craftedItem.getAmount());
+                            craftedItem.setAmount(amount);
+                            if (ToolType.getToolType(event.getInventory().getResult().getType()) != null) {
+                                ToolType type = ToolType.getToolType(event.getInventory().getResult().getType());
+                                craftedItem.setDurability((short) (craftedItem.getType().getMaxDurability() - (0.75D * (double) plugin.getMaxToolDurability(character, type))));
+                            }
+                            event.getInventory().setResult(craftedItem);
+                        }
+                    }
                 }
-            }
-            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-            if (characterPluginProvider != null) {
-                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) event.getViewers().get(0));
-                Random random = new Random();
-                int craftEfficiency = plugin.getCraftEfficiency(character, event.getInventory().getResult().getType());
-                int amount = (int) ((double) (random.nextInt(100) <= 30 ? (craftEfficiency > 10 ? random.nextInt(craftEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) event.getInventory().getResult().getAmount());
-                event.getInventory().getResult().setAmount(amount);
             }
         }
     }
