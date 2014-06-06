@@ -43,7 +43,7 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         getCommand("wallet").setExecutor(new WalletCommand(this));
         getCommand("auction").setExecutor(new AuctionCommand(this));
         getCommand("bid").setExecutor(new BidCommand(this));
-        registerListeners(new SignChangeListener(this), new PlayerInteractListener(this), new InventoryClickListener(this), new InventoryCloseListener(this), new PlayerJoinListener(this));
+        registerListeners(new SignChangeListener(this), new PlayerInteractListener(this), new InventoryClickListener(this), new InventoryCloseListener(this), new PlayerJoinListener(this), new BlockPlacedOnShopSignListener(this));
     }
 
     @Override
