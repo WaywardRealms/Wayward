@@ -17,6 +17,7 @@ public class PlayerJoinListener implements Listener {
         if (plugin.getActiveCharacter(event.getPlayer()) == null) {
             plugin.setActiveCharacter(event.getPlayer(), new CharacterImpl(plugin, event.getPlayer()));
         }
+        plugin.getActiveCharacter(event.getPlayer());
         event.getPlayer().setDisplayName(plugin.getActiveCharacter(event.getPlayer()).getName());
     }
 

@@ -6,6 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class ChatGroupCommand implements CommandExecutor {
 
     private WaywardChat plugin;
@@ -41,8 +43,8 @@ public class ChatGroupCommand implements CommandExecutor {
                 if (args.length >= 2) {
                     if (sender instanceof Player) {
                         if (plugin.getChatGroup(args[1]) != null) {
-                            for (String player : plugin.getChatGroup(args[1]).getPlayers()) {
-                                plugin.getServer().getPlayerExact(player).sendMessage(plugin.getPrefix() + ChatColor.RED + "");
+                            for (UUID player : plugin.getChatGroup(args[1]).getPlayers()) {
+                                plugin.getServer().getPlayer(player).sendMessage(plugin.getPrefix() + ChatColor.RED + "");
                             }
                             plugin.removeChatGroup(args[1]);
                             sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + args[1].toLowerCase() + " disbanded.");
@@ -58,7 +60,7 @@ public class ChatGroupCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("invite")) {
                 if (args.length >= 3) {
                     if (plugin.getChatGroup(args[1]) != null) {
-                        if (plugin.getChatGroup(args[1]).getPlayers().contains(sender.getName())) {
+                        if (plugin.getChatGroup(args[1]).getPlayers().contains(((Player) sender).getUniqueId())) {
                             if (plugin.getServer().getPlayer(args[2]) != null) {
                                 Player player = plugin.getServer().getPlayer(args[2]);
                                 plugin.getChatGroup(args[1]).invitePlayer(player);
@@ -99,7 +101,7 @@ public class ChatGroupCommand implements CommandExecutor {
                 if (args.length >= 2) {
                     if (plugin.getChatGroup(args[1]) != null) {
                         if (sender instanceof Player) {
-                            if (plugin.getChatGroup(args[1]).getPlayers().contains(sender.getName())) {
+                            if (plugin.getChatGroup(args[1]).getPlayers().contains(((Player) sender).getUniqueId())) {
                                 plugin.getChatGroup(args[1]).removePlayer((Player) sender);
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Left " + args[1].toLowerCase());
                             } else {
@@ -118,7 +120,7 @@ public class ChatGroupCommand implements CommandExecutor {
                 if (args.length >= 3) {
                     if (plugin.getChatGroup(args[1]) != null) {
                         if (sender instanceof Player) {
-                            if (plugin.getChatGroup(args[1]).getPlayers().contains(sender.getName())) {
+                            if (plugin.getChatGroup(args[1]).getPlayers().contains(((Player) sender).getUniqueId())) {
                                 StringBuilder message = new StringBuilder();
                                 for (int i = 2; i < args.length; i++) {
                                     message.append(args[i]).append(" ");
@@ -140,12 +142,12 @@ public class ChatGroupCommand implements CommandExecutor {
                 if (args.length >= 2) {
                     if (plugin.getChatGroup(args[1]) != null) {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Members of " + args[1].toLowerCase() + ": ");
-                        for (String player : plugin.getChatGroup(args[1]).getPlayers()) {
-                            sender.sendMessage(ChatColor.GREEN + player);
+                        for (UUID player : plugin.getChatGroup(args[1]).getPlayers()) {
+                            sender.sendMessage(ChatColor.GREEN + plugin.getServer().getPlayer(player).getName());
                         }
                         sender.sendMessage(ChatColor.GREEN + "Pending invitations: ");
-                        for (String player : plugin.getChatGroup(args[1]).getInvited()) {
-                            sender.sendMessage(ChatColor.GREEN + player);
+                        for (UUID player : plugin.getChatGroup(args[1]).getInvited()) {
+                            sender.sendMessage(ChatColor.GREEN + plugin.getServer().getPlayer(player).getName());
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That chat group does not exist.");

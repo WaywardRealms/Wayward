@@ -7,12 +7,13 @@ import org.bukkit.OfflinePlayer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class WarningImpl implements Warning {
 
     private String reason;
-    private String player;
-    private String issuer;
+    private UUID player;
+    private UUID issuer;
     private Date time;
 
     private WarningImpl() {}
@@ -23,8 +24,8 @@ public class WarningImpl implements Warning {
 
     public WarningImpl(String reason, OfflinePlayer player, OfflinePlayer issuer, Date time) {
         this.reason = reason;
-        this.player = player.getName();
-        this.issuer = issuer.getName();
+        this.player = player.getUniqueId();
+        this.issuer = issuer.getUniqueId();
         this.time = time;
     }
 
@@ -52,8 +53,8 @@ public class WarningImpl implements Warning {
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
         serialised.put("reason", reason);
-        serialised.put("player", player);
-        serialised.put("issuer", issuer);
+        serialised.put("player-uuid", player.toString());
+        serialised.put("issuer-uuid", issuer.toString());
         serialised.put("time", time);
         return serialised;
     }
@@ -61,8 +62,8 @@ public class WarningImpl implements Warning {
     public static WarningImpl deserialize(Map<String, Object> serialised) {
         WarningImpl deserialised = new WarningImpl();
         deserialised.reason = (String) serialised.get("reason");
-        deserialised.player = (String) serialised.get("player");
-        deserialised.issuer = (String) serialised.get("issuer");
+        deserialised.player = serialised.containsKey("player-uuid") ? Bukkit.getOfflinePlayer((String) serialised.get("player")).getUniqueId() : UUID.fromString((String) serialised.get("player-uuid"));
+        deserialised.issuer = serialised.containsKey("issuer-uuid") ? Bukkit.getOfflinePlayer((String) serialised.get("issuer")).getUniqueId() : UUID.fromString((String) serialised.get("issuer-uuid"));
         deserialised.time = (Date) serialised.get("time");
         return deserialised;
     }

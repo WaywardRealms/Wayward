@@ -14,8 +14,8 @@ public class DungeonImpl implements Dungeon, ConfigurationSerializable {
 
     private File file;
 
-    private Set<String> dungeonMasters = new HashSet<>();
-    private Set<String> players = new HashSet<>();
+    private Set<UUID> dungeonMasters = new HashSet<>();
+    private Set<UUID> players = new HashSet<>();
     private boolean active;
 
     public DungeonImpl() {}
@@ -28,42 +28,42 @@ public class DungeonImpl implements Dungeon, ConfigurationSerializable {
     @Override
     public Collection<OfflinePlayer> getDungeonMasters() {
         Set<OfflinePlayer> dungeonMasters = new HashSet<>();
-        for (String dungeonMasterName : this.dungeonMasters) {
-            dungeonMasters.add(Bukkit.getServer().getOfflinePlayer(dungeonMasterName));
+        for (UUID uuid : this.dungeonMasters) {
+            dungeonMasters.add(Bukkit.getServer().getOfflinePlayer(uuid));
         }
         return dungeonMasters;
     }
 
     @Override
     public void addDungeonMaster(OfflinePlayer dungeonMaster) {
-        dungeonMasters.add(dungeonMaster.getName());
+        dungeonMasters.add(dungeonMaster.getUniqueId());
         save();
     }
 
     @Override
     public void removeDungeonMaster(OfflinePlayer dungeonMaster) {
-        dungeonMasters.remove(dungeonMaster.getName());
+        dungeonMasters.remove(dungeonMaster.getUniqueId());
         save();
     }
 
     @Override
     public Collection<OfflinePlayer> getPlayers() {
         Set<OfflinePlayer> players = new HashSet<>();
-        for (String playerName : this.players) {
-            players.add(Bukkit.getServer().getOfflinePlayer(playerName));
+        for (UUID uuid : this.players) {
+            players.add(Bukkit.getServer().getOfflinePlayer(uuid));
         }
         return players;
     }
 
     @Override
     public void addPlayer(OfflinePlayer player) {
-        players.add(player.getName());
+        players.add(player.getUniqueId());
         save();
     }
 
     @Override
     public void removePlayer(OfflinePlayer player) {
-        players.remove(player.getName());
+        players.remove(player.getUniqueId());
         save();
     }
 
@@ -81,8 +81,16 @@ public class DungeonImpl implements Dungeon, ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
-        serialised.put("dungeon-masters", dungeonMasters);
-        serialised.put("players", players);
+        Set<String> dungeonMasterUUIDStrings = new HashSet<>();
+        for (UUID uuid : dungeonMasters) {
+            dungeonMasterUUIDStrings.add(uuid.toString());
+        }
+        serialised.put("dungeon-masters", dungeonMasterUUIDStrings);
+        Set<String> playerUUIDStrings = new HashSet<>();
+        for (UUID uuid : players) {
+            playerUUIDStrings.add(uuid.toString());
+        }
+        serialised.put("players", playerUUIDStrings);
         serialised.put("active", active);
         return serialised;
     }
@@ -90,8 +98,14 @@ public class DungeonImpl implements Dungeon, ConfigurationSerializable {
     @SuppressWarnings("unchecked")
     public static DungeonImpl deserialize(Map<String, Object> serialised) {
         DungeonImpl deserialised = new DungeonImpl();
-        deserialised.dungeonMasters.addAll((Set<String>) serialised.get("dungeon-masters"));
-        deserialised.players.addAll((Set<String>) serialised.get("players"));
+        Set<String> dungeonMasterUUIDs = (Set<String>) serialised.get("dungeon-masters");
+        for (String dungeonMasterUUIDString : dungeonMasterUUIDs) {
+            deserialised.dungeonMasters.add(UUID.fromString(dungeonMasterUUIDString));
+        }
+        Set<String> playerUUIDs = (Set<String>) serialised.get("players");
+        for (String playerUUIDString : playerUUIDs) {
+            deserialised.players.add(UUID.fromString(playerUUIDString));
+        }
         deserialised.active = (Boolean) serialised.get("active");
         return deserialised;
     }
@@ -114,10 +128,10 @@ public class DungeonImpl implements Dungeon, ConfigurationSerializable {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         Dungeon dungeon = (Dungeon) config.get("dungeon");
         for (OfflinePlayer dungeonMaster : dungeon.getDungeonMasters()) {
-            dungeonMasters.add(dungeonMaster.getName());
+            dungeonMasters.add(dungeonMaster.getUniqueId());
         }
         for (OfflinePlayer player : dungeon.getPlayers()) {
-            dungeonMasters.add(player.getName());
+            dungeonMasters.add(player.getUniqueId());
         }
         active = dungeon.isActive();
     }

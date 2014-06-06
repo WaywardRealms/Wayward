@@ -12,10 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ChannelImpl implements Channel {
 
@@ -23,8 +20,8 @@ public class ChannelImpl implements Channel {
     private String name;
     private ChatColor colour;
     private String format;
-    private Set<String> speakers;
-    private Set<String> listeners;
+    private Set<UUID> speakers;
+    private Set<UUID> listeners;
     private int radius;
     private boolean garbleEnabled;
     private boolean ircEnabled;
@@ -59,7 +56,7 @@ public class ChannelImpl implements Channel {
     @Override
     public Set<Player> getListeners() {
         Set<Player> listeners = new HashSet<>();
-        for (String listener : this.listeners) {
+        for (UUID listener : this.listeners) {
             listeners.add(Bukkit.getOfflinePlayer(listener).getPlayer());
         }
         return listeners;
@@ -78,7 +75,7 @@ public class ChannelImpl implements Channel {
     @Override
     public Collection<Player> getSpeakers() {
         Set<Player> speakers = new HashSet<>();
-        for (String speaker : this.speakers) {
+        for (UUID speaker : this.speakers) {
             speakers.add(Bukkit.getOfflinePlayer(speaker).getPlayer());
         }
         return speakers;
@@ -124,22 +121,22 @@ public class ChannelImpl implements Channel {
 
     @Override
     public void addListener(Player listener) {
-        listeners.add(listener.getName());
+        listeners.add(listener.getUniqueId());
     }
 
     @Override
     public void addSpeaker(Player speaker) {
-        speakers.add(speaker.getName());
+        speakers.add(speaker.getUniqueId());
     }
 
     @Override
     public void removeListener(Player listener) {
-        listeners.remove(listener.getName());
+        listeners.remove(listener.getUniqueId());
     }
 
     @Override
     public void removeSpeaker(Player speaker) {
-        speakers.remove(speaker.getName());
+        speakers.remove(speaker.getUniqueId());
     }
 
     @Override
