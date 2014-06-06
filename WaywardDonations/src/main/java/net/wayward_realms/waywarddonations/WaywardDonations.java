@@ -71,7 +71,7 @@ public class WaywardDonations extends JavaPlugin implements DonationPlugin {
     @Override
     public List<DonationRank> getDonationRanks(OfflinePlayer player) {
         File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName());
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString());
         YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         List<DonationRank> ranks = new ArrayList<>();
         for (String rankName : playerConfig.getStringList("donation-ranks")) {
@@ -83,7 +83,7 @@ public class WaywardDonations extends JavaPlugin implements DonationPlugin {
     @Override
     public void addDonationRank(OfflinePlayer player, DonationRank rank) {
         File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName());
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString());
         YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         List<String> rankNames = playerConfig.getStringList("donation-ranks");
         rankNames.add(rank.getName());
@@ -98,7 +98,7 @@ public class WaywardDonations extends JavaPlugin implements DonationPlugin {
     @Override
     public void removeDonationRank(OfflinePlayer player, DonationRank rank) {
         File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName());
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString());
         YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         List<String> rankNames = playerConfig.getStringList("donation-ranks");
         rankNames.remove(rank.getName());
@@ -129,28 +129,28 @@ public class WaywardDonations extends JavaPlugin implements DonationPlugin {
 
     public int getMoneyClaimed(OfflinePlayer player) {
         File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString() + ".yml");
         YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         return playerConfig.getInt("money-claimed");
     }
 
     public void setMoneyClaimed(OfflinePlayer player, int money) {
         File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString() + ".yml");
         YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         playerConfig.set("money-claimed", money);
     }
 
     public int getItemsClaimed(OfflinePlayer player, Material type) {
         File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString() + ".yml");
         YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         return playerConfig.getInt("items-claimed." + type.toString().toLowerCase());
     }
 
     public void setItemsClaimed(OfflinePlayer player, Material type, int amount) {
         File playerDirectory = new File(getDataFolder(), "players");
-        File playerFile = new File(playerDirectory, player.getName() + ".yml");
+        File playerFile = new File(playerDirectory, player.getUniqueId().toString() + ".yml");
         YamlConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         playerConfig.set("items-claimed." + type.toString().toLowerCase(), amount);
         try {
