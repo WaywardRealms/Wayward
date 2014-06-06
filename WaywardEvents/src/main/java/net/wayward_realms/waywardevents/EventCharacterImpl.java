@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class EventCharacterImpl implements EventCharacter {
 
@@ -151,12 +152,16 @@ public class EventCharacterImpl implements EventCharacter {
 
     @Override
     public OfflinePlayer getPlayer() {
-        return Bukkit.getOfflinePlayer(getFieldStringValue("ign"));
+        if (getFieldValue("uuid") == null) {
+            setFieldValue("uuid", Bukkit.getOfflinePlayer(getFieldStringValue("ign")).getUniqueId().toString());
+            setFieldValue("ign", null);
+        }
+        return Bukkit.getOfflinePlayer(UUID.fromString(getFieldStringValue("uuid")));
     }
 
     @Override
     public void setPlayer(OfflinePlayer player) {
-        setFieldValue("ign", player.getName());
+        setFieldValue("uuid", player.getUniqueId().toString());
     }
 
     @Override
@@ -435,7 +440,7 @@ public class EventCharacterImpl implements EventCharacter {
         if (character.getId() > plugin.getNextAvailableId()) {
             plugin.setNextAvailableId(character.getId());
         }
-        character.setPlayer(Bukkit.getOfflinePlayer((String) serialised.get("ign")));
+        character.setPlayer(Bukkit.getOfflinePlayer(UUID.fromString((String) serialised.get("uuid"))));
         character.setName((String) serialised.get("name"));
         character.setGender((Gender) serialised.get("gender"));
         character.setAge((int) serialised.get("age"));
