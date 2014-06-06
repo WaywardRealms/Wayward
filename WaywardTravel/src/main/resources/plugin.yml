@@ -18,3 +18,6 @@ permissions:
     wayward.travel.boatsigns.create:
         description: Allows for the creation of boat signs
         default: op
+    wayward.travel.untame.any:
+        description: Allows untaming of any animals
+        default: op

@@ -29,7 +29,7 @@ public class HorsePlayerInteractEntityListener implements Listener {
         if (plugin.isUntaming(event.getPlayer())) {
             if (event.getRightClicked() instanceof Tameable) {
                 Tameable tameable = (Tameable) event.getRightClicked();
-                if (tameable.getOwner() == event.getPlayer()) {
+                if (tameable.getOwner() == event.getPlayer() || event.getPlayer().hasPermission("wayward.travel.untame.any")) {
                     tameable.setTamed(false);
                     event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your tameable creature was untamed.");
                 } else {
