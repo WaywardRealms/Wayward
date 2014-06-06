@@ -67,6 +67,9 @@ commands:
     runas:
         description: Runs a command as another player
         usage: /<command> [player] [command]
+    seen:
+        description: Shows when a player was last seen
+        usage: /<command> [player]
     smite:
         description: Smites the player
         usage: /<command> [player]

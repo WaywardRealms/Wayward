@@ -101,6 +101,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("repair").setExecutor(new RepairCommand(this));
         getCommand("roll").setExecutor(new RollCommand(this));
         getCommand("runas").setExecutor(new RunAsCommand(this));
+        getCommand("seen").setExecutor(new SeenCommand(this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getCommand("setwarp").setExecutor(new SetWarpCommand(this));
         getCommand("smite").setExecutor(new SmiteCommand(this));
