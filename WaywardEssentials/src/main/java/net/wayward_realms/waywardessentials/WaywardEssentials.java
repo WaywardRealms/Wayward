@@ -34,8 +34,8 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     private GitHub gitHub;
 
-    private Set<String> logMessagesEnabled = new HashSet<>();
-    private Map<String, Location> previousLocations = new HashMap<>();
+    private Set<UUID> logMessagesEnabled = new HashSet<>();
+    private Map<UUID, Location> previousLocations = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -200,31 +200,31 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     }
 
     public boolean isLogMessagesEnabled(OfflinePlayer player) {
-        return logMessagesEnabled.contains(player.getName());
+        return logMessagesEnabled.contains(player.getUniqueId());
     }
 
     public void setLogMessagesEnabled(OfflinePlayer player, boolean enable) {
         if (enable) {
-            logMessagesEnabled.add(player.getName());
+            logMessagesEnabled.add(player.getUniqueId());
         } else {
-            logMessagesEnabled.remove(player.getName());
+            logMessagesEnabled.remove(player.getUniqueId());
         }
     }
 
     public Set<Player> getPlayersWithLogMessagesEnabled() {
         Set<Player> players = new HashSet<>();
-        for (String playerName : logMessagesEnabled) {
-            players.add(getServer().getPlayer(playerName));
+        for (UUID uuid : logMessagesEnabled) {
+            players.add(getServer().getPlayer(uuid));
         }
         return players;
     }
 
     public Location getPreviousLocation(OfflinePlayer player) {
-        return previousLocations.get(player.getName());
+        return previousLocations.get(player.getUniqueId());
     }
 
     public void setPreviousLocation(OfflinePlayer player, Location location) {
-        previousLocations.put(player.getName(), location);
+        previousLocations.put(player.getUniqueId(), location);
     }
 
     public String getDailyMessage() {
