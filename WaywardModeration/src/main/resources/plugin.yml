@@ -70,3 +70,6 @@ permissions:
     wayward.moderation.vanish.see.tier3:
         description: Allows you to see vanished people tier 3 and below
         default: false
+    wayward.moderation.ticket.notification:
+        description: Notifies the player when a ticket is filed
+        default: op
