@@ -3,6 +3,7 @@ package net.wayward_realms.waywardmoderation.ticket;
 import net.wayward_realms.waywardlib.moderation.Ticket;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardmoderation.WaywardModeration;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.util.*;
@@ -37,6 +38,7 @@ public class TicketManager {
     }
 
     public void addTicket(Ticket ticket) {
+        plugin.getServer().broadcast(plugin.getPrefix() + ChatColor.GREEN + "New ticket filed: #" + ticket.getId() + " " + ticket.getReason() + " (by " + ticket.getIssuer().getName() + ")", "wayward.moderation.ticket.notification");
         if (!(ticket instanceof TicketImpl)) new TicketImpl(plugin, ticket);
     }
 
