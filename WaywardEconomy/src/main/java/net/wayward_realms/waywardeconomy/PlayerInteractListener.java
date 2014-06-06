@@ -31,35 +31,36 @@ public class PlayerInteractListener implements Listener {
                 if (event.getClickedBlock().getRelative(BlockFace.DOWN).getState() instanceof Chest) {
                     Chest chest = (Chest) event.getClickedBlock().getRelative(BlockFace.DOWN).getState();
                     if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_PURPLE + "[shop]")) {
-                        validateShopSign(sign, event.getPlayer());
-                        if (sign.getLine(1).toLowerCase().contains("buy")) {
-                            event.getPlayer().openInventory(chest.getInventory());
-                        } else if (sign.getLine(1).toLowerCase().contains("sell")) {
-                            if (event.getPlayer().getItemInHand().getType() == Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_'))) {
-                                if (event.getPlayer().getItemInHand().getAmount() >= Integer.parseInt(sign.getLine(1).split(" ")[2])) {
-                                    RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                                    if (characterPluginProvider != null) {
-                                        CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                                        try {
-                                            event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " " + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
-                                            plugin.transferMoney(characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), characterPlugin.getActiveCharacter(event.getPlayer()), Integer.parseInt(sign.getLine(2).replace("for ", "")));
-                                            ItemStack item = new ItemStack(event.getPlayer().getItemInHand());
-                                            item.setAmount(Integer.parseInt(sign.getLine(1).split(" ")[2]));
-                                            chest.getInventory().addItem(item);
-                                            if (event.getPlayer().getItemInHand().getAmount() > Integer.parseInt(sign.getLine(1).split(" ")[2])) {
-                                                event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - Integer.parseInt(sign.getLine(1).split(" ")[2]));
-                                            } else {
-                                                event.getPlayer().setItemInHand(null);
-                                            }
+                        if (validateShopSign(sign, event.getPlayer())) {
+                            if (sign.getLine(1).toLowerCase().contains("buy")) {
+                                event.getPlayer().openInventory(chest.getInventory());
+                            } else if (sign.getLine(1).toLowerCase().contains("sell")) {
+                                if (event.getPlayer().getItemInHand().getType() == Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_'))) {
+                                    if (event.getPlayer().getItemInHand().getAmount() >= Integer.parseInt(sign.getLine(1).split(" ")[2])) {
+                                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                                        if (characterPluginProvider != null) {
+                                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                            try {
+                                                event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " " + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                                plugin.transferMoney(characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), characterPlugin.getActiveCharacter(event.getPlayer()), Integer.parseInt(sign.getLine(2).replace("for ", "")));
+                                                ItemStack item = new ItemStack(event.getPlayer().getItemInHand());
+                                                item.setAmount(Integer.parseInt(sign.getLine(1).split(" ")[2]));
+                                                chest.getInventory().addItem(item);
+                                                if (event.getPlayer().getItemInHand().getAmount() > Integer.parseInt(sign.getLine(1).split(" ")[2])) {
+                                                    event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - Integer.parseInt(sign.getLine(1).split(" ")[2]));
+                                                } else {
+                                                    event.getPlayer().setItemInHand(null);
+                                                }
 
-                                        } catch (NumberFormatException ignored) {
+                                            } catch (NumberFormatException ignored) {
+                                            }
                                         }
+                                    } else {
+                                        event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + "s to sell");
                                     }
                                 } else {
-                                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + "s to sell");
+                                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding at least " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " " + Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_')).toString().toLowerCase().replace('_', ' ') + "s");
                                 }
-                            } else {
-                                event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding at least " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " " + Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_')).toString().toLowerCase().replace('_', ' ') + "s");
                             }
                         }
                     }
@@ -68,7 +69,7 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
-    private void validateShopSign(Sign sign, Player player) {
+    private boolean validateShopSign(Sign sign, Player player) {
         if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_PURPLE + "[shop]")) {
             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
             if (characterPluginProvider != null) {
@@ -78,22 +79,22 @@ public class PlayerInteractListener implements Listener {
                         String playerName = characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getName();
                         if (!(sign.getLine(1).toLowerCase().contains("buy ") || sign.getLine(1).toLowerCase().contains("sell "))) {
                             player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
-                            return;
+                            return false;
                         }
                         try {
                             Integer.parseInt(sign.getLine(1).split(" ")[sign.getLine(1).contains("buy") ? 1 : 2]);
                         } catch (NumberFormatException exception) {
                             player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
-                            return;
+                            return false;
                         }
                         if (sign.getLine(1).toLowerCase().contains("sell")) {
                             if (Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_')) == null) {
                                 player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
-                                return;
+                                return false;
                             }
                             if (StringUtils.countMatches(sign.getLine(1), " ") < 2) {
                                 player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
-                                return;
+                                return false;
                             }
                         }
                         try {
@@ -104,13 +105,16 @@ public class PlayerInteractListener implements Listener {
                             }
                         } catch (NumberFormatException exception) {
                             player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
+                            return false;
                         }
                     }
                 } catch (NumberFormatException exception) {
                     player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get the shop owner to update accordingly.");
+                    return false;
                 }
             }
         }
+        return true;
     }
 
 }
