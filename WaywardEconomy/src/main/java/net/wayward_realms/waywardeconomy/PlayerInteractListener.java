@@ -39,8 +39,8 @@ public class PlayerInteractListener implements Listener {
                                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                                 if (characterPlugin.getActiveCharacter(event.getPlayer()).getId() == Integer.parseInt(sign.getLine(3))) {
                                     event.getClickedBlock().setType(Material.AIR);
-                                    plugin.addMoney(characterPlugin.getActiveCharacter(event.getPlayer()), plugin.getConfig().getInt("shop.cost", 200));
-                                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold shop for " + plugin.getConfig().getInt("shop.cost", 200) + " " + plugin.getPrimaryCurrency().getNamePlural());
+                                    plugin.addMoney(characterPlugin.getActiveCharacter(event.getPlayer()), plugin.getConfig().getInt("shop.sell", 50));
+                                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold shop for " + plugin.getConfig().getInt("shop.sell", 50) + " " + plugin.getPrimaryCurrency().getNamePlural());
                                     return;
                                 }
                             }

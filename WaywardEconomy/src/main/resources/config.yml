@@ -2,5 +2,6 @@ accounts:
     initial-balance: 50
 shop:
     cost: 200
+    sell: 50
 currency:
     primary: gc
