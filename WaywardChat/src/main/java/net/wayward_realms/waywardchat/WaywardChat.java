@@ -4,6 +4,7 @@ import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
+import net.wayward_realms.waywardlib.util.math.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -121,7 +122,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 getChannel(getConfig().getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
                     if (getConfig().getInt("emotes.radius") >= 0) {
-                        if (talking.getLocation().distance(player.getLocation()) <= getConfig().getInt("emotes.radius")) {
+                        if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= getConfig().getInt("emotes.radius")) {
                             format = getConfig().getString("emotes.format").replace("%channel%", "emote").replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message.replace("*", ""));
                             player.sendMessage(format);
                         }
@@ -137,9 +138,9 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                         if (player != null) {
                             if (getPlayerChannel(talking).getRadius() >= 0) {
                                 if (talking.getWorld().equals(player.getWorld())) {
-                                    if (talking.getLocation().distance(player.getLocation()) <= (double) getPlayerChannel(talking).getRadius()) {
+                                    if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= (double) getPlayerChannel(talking).getRadius()) {
                                         if (getPlayerChannel(talking).isGarbleEnabled()) {
-                                            double distance = talking.getLocation().distance(player.getLocation());
+                                            double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation()));
                                             double clearRange = 0.75D * (double) getPlayerChannel(talking).getRadius();
                                             double hearingRange = (double) getPlayerChannel(talking).getRadius();
                                             double clarity = 1.0D - ((distance - clearRange) / hearingRange);

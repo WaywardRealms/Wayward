@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardessentials.command;
 
 import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardlib.util.math.MathUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,7 +23,7 @@ public class DistanceCommand implements CommandExecutor {
                 Player player = plugin.getServer().getPlayer(args[0]);
                 if (player != null) {
                     if (player.getWorld() == ((Player) sender).getWorld()) {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Distance to " + player.getName() + "/" + player.getDisplayName() + ": " + player.getLocation().distance(((Player) sender).getLocation()));
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Distance to " + player.getName() + "/" + player.getDisplayName() + ": " + MathUtils.fastsqrt(player.getLocation().distanceSquared(((Player) sender).getLocation())));
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is in a different world.");
                     }

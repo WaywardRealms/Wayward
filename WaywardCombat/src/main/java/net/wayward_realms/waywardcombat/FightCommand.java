@@ -30,7 +30,7 @@ public class FightCommand implements CommandExecutor {
                 if (args.length >= 2) {
                     if (plugin.getServer().getPlayer(args[1]) != null) {
                         Player player = plugin.getServer().getPlayer(args[1]);
-                        if (player.getLocation().distance(((Player) sender).getLocation()) <= 32) {
+                        if (player.getLocation().distanceSquared(((Player) sender).getLocation()) <= 1024) {
                             Character character = characterPlugin.getActiveCharacter(player);
                             if (plugin.getActiveFight(character) != null) {
                                 Fight fight = plugin.getActiveFight(character);

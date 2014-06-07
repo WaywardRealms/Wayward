@@ -38,7 +38,7 @@ public class CureSpell extends SpellBase {
     public boolean use(Player player) {
         Set<Player> players = new HashSet<>();
         for (Player player1 : player.getWorld().getPlayers()) {
-            if (player1.getLocation().distance(player.getLocation()) <= radius) {
+            if (player1.getLocation().distanceSquared(player.getLocation()) <= radius * radius) {
                 players.add(player1);
             }
         }
