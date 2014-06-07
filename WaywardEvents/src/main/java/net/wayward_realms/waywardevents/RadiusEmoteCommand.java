@@ -25,9 +25,11 @@ public class RadiusEmoteCommand implements CommandExecutor {
                 }
 
                 message = ChatColor.YELLOW + "" + ChatColor.ITALIC + ChatColor.BOLD + message.replaceAll("&", ChatColor.COLOR_CHAR + "");
+                int radius = Integer.parseInt(args[0]);
+                int radiusSquared = radius * radius;
 
                 for (Player player : ((Player) sender).getLocation().getWorld().getPlayers()) {
-                    if (((Player) sender).getLocation().distance(player.getLocation()) <= Integer.parseInt(args[0])) {
+                    if (((Player) sender).getLocation().distanceSquared(player.getLocation()) <= radiusSquared) {
                         player.sendMessage(message);
                     }
                 }

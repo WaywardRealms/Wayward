@@ -39,7 +39,7 @@ public class BurnSpell extends AttackSpellBase {
     @Override
     public boolean use(Player player) {
         for (Entity entity : player.getWorld().getEntities()) {
-            if (player.getLocation().distance(entity.getLocation()) <= radius) {
+            if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
                 if (entity != player) {
                     entity.setFireTicks(fireTicks);
                 }

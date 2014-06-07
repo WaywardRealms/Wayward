@@ -24,7 +24,7 @@ public class MoneyCommand implements CommandExecutor {
                     if (plugin.getServer().getPlayer(args[1]) != null) {
                         Player player = plugin.getServer().getPlayer(args[1]);
                         if (((Player) sender).getWorld().equals(player.getWorld())) {
-                            if (((Player) sender).getLocation().distance(player.getLocation()) <= 8) {
+                            if (((Player) sender).getLocation().distanceSquared(player.getLocation()) <= 64) {
                                 Currency currency = plugin.getPrimaryCurrency();
                                 if (args.length >= 4) {
                                     if (plugin.getCurrency(args[3]) != null) {

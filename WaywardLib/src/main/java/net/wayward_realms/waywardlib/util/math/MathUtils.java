@@ -12,7 +12,6 @@ public class MathUtils {
      * @return the square root.
      */
     public static double fastsqrt(double indouble) {
-        double sqrt = Double.longBitsToDouble(((Double.doubleToLongBits(indouble) - (1l << 52)) >> 1) + (1l << 61));
-        return sqrt;
+        return Double.longBitsToDouble(((Double.doubleToLongBits(indouble) - (1l << 52)) >> 1) + (1l << 61));
     }
 }
