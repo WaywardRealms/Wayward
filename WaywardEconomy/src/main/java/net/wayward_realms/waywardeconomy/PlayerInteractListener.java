@@ -11,6 +11,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -32,6 +33,16 @@ public class PlayerInteractListener implements Listener {
                     Chest chest = (Chest) event.getClickedBlock().getRelative(BlockFace.DOWN).getState();
                     if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_PURPLE + "[shop]")) {
                         event.setCancelled(true);
+                        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                            if (characterPluginProvider != null) {
+                                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                if (characterPlugin.getActiveCharacter(event.getPlayer()).getId() == Integer.parseInt(sign.getLine(3))) {
+                                    event.getClickedBlock().setType(Material.AIR);
+                                    plugin.addMoney(characterPlugin.getActiveCharacter(event.getPlayer()), plugin.getConfig().getInt("shop.cost", 200));
+                                }
+                            }
+                        }
                         validateShopSign(sign, event.getPlayer());
                         if (sign.getLine(1).toLowerCase().contains("buy")) {
                             event.getPlayer().openInventory(chest.getInventory());
