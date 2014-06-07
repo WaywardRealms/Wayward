@@ -18,7 +18,13 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         for (Player player : plugin.getVanishedPlayers()) {
-            if (!plugin.canSee(event.getPlayer(), player)) event.getPlayer().hidePlayer(player); else TagAPI.refreshPlayer(player, event.getPlayer());
+            if (event.getPlayer() != player) {
+                if (!plugin.canSee(event.getPlayer(), player)) {
+                    event.getPlayer().hidePlayer(player);
+                } else {
+                    TagAPI.refreshPlayer(player, event.getPlayer());
+                }
+            }
         }
         if (plugin.isVanished(event.getPlayer())) {
             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You are vanished.");
