@@ -71,6 +71,9 @@ public class InventoryClickListener implements Listener {
                                                     player.getInventory().addItem(item);
                                                     chest.getInventory().removeItem(item);
                                                     player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bought " + item.getAmount() + " x " + item.getType().toString().toLowerCase().replace('_', ' ') + " for " + sign.getLine(2).split(" ")[1] + " " + (Integer.parseInt(sign.getLine(1).split(" ")[1]) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                                    if (characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().isOnline()) {
+                                                        characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + " bought " + item.getAmount() + " x " + item.getType().toString().toLowerCase().replace('_', ' ') + " for " + sign.getLine(2).split(" ")[1] + " " + (Integer.parseInt(sign.getLine(1).split(" ")[1]) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()) + " from your shop.");
+                                                    }
                                                 } else {
                                                     player.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough money.");
                                                 }
