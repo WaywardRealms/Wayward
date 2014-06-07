@@ -31,6 +31,7 @@ public class SkillManager {
         addSkill(new SharpenSkill());
         addSkill(new SlashSkill());
         addSkill(new StabSkill());
+        addSkill(new SpinningSweepSkill(plugin));
     }
 
     public Skill getSkill(String name) {
