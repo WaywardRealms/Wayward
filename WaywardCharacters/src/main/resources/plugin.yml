@@ -8,7 +8,7 @@ commands:
     character:
         description: Character management commands
         aliases: [char]
-        usage: /<command> [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer]
+        usage: /<command> [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]
     racekit:
         description: Claims your races kit, if any
         usage: /<command>
@@ -36,3 +36,6 @@ permissions:
     wayward.characters.command.character.list.others:
         default: op
         description: Allows you to list other players characters
+    wayward.characters.command.character.resetstatpoints:
+        default: op
+        description: Allows you to reset character stat points

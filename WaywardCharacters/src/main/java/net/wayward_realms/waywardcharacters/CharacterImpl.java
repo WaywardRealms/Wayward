@@ -430,6 +430,10 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
         setStatPoints(stat, getStatPoints(stat) + 1);
     }
 
+    public void resetStatPoints() {
+        setFieldValue("stat-points", null);
+    }
+
     @Override
     public Map<String, Object> serialize() {
         return new HashMap<>();
