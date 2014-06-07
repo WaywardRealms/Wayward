@@ -61,9 +61,6 @@ commands:
     repair:
         description: Repairs the item in your hand
         usage: /<command>
-    roll:
-        description: Rolls
-        usage: /<command> [roll]
     runas:
         description: Runs a command as another player
         usage: /<command> [player] [command]
