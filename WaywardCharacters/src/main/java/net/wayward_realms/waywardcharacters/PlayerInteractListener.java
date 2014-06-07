@@ -8,6 +8,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -68,12 +69,14 @@ public class PlayerInteractListener implements Listener {
                 }
             }
             if (event.getPlayer().getItemInHand().getType() == Material.AIR) {
-                Block targetBlock = getTargetBlock(event.getPlayer());
-                if (targetBlock != null) {
-                    if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
-                        net.wayward_realms.waywardlib.character.Character character = plugin.getActiveCharacter(event.getPlayer());
-                        character.setThirst(character.getThirst() + 1);
-                        event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+                    Block targetBlock = getTargetBlock(event.getPlayer());
+                    if (targetBlock != null) {
+                        if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
+                            net.wayward_realms.waywardlib.character.Character character = plugin.getActiveCharacter(event.getPlayer());
+                            character.setThirst(character.getThirst() + 1);
+                            event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                        }
                     }
                 }
             }
