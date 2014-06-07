@@ -57,9 +57,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         Character character = getActiveCharacter(player);
-                        int decreaseChance = checkBiome(player.getLocation().getBlock().getBiome());
                         if (!isThirstDisabled(player)) {
-                            if (character.getThirst() > 0 && random.nextInt(100) <= decreaseChance) {
+                            //Disabled until biomes are fixed.
+                            //int decreaseChance = checkBiome(player.getLocation().getBlock().getBiome());
+                            if (character.getThirst() > 0 && random.nextInt(100) <= 4) {
                                 character.setThirst(character.getThirst() - 1);
                                 player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
                             }
