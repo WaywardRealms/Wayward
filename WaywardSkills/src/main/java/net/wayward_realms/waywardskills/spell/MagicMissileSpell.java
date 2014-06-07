@@ -9,10 +9,12 @@ import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -40,7 +42,11 @@ public class MagicMissileSpell extends AttackSpellBase {
 
     @Override
     public ItemStack getIcon() {
-        return null;
+        ItemStack icon = new ItemStack(Material.SNOW_BALL);
+        ItemMeta meta = icon.getItemMeta();
+        meta.setDisplayName("Magic Missile");
+        icon.setItemMeta(meta);
+        return icon;
     }
 
     @Override
