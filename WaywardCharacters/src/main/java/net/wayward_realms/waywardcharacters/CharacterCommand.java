@@ -7,6 +7,7 @@ import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -273,13 +274,32 @@ public class CharacterCommand implements CommandExecutor {
                     if (sender instanceof Player) {
                         Character character = plugin.getActiveCharacter((Player) sender);
                         switch (args[1].toLowerCase()) {
-                            case "name": character.setNameHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Name unhidden."); break;
-                            case "age": character.setAgeHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Age unhidden."); break;
-                            case "gender": character.setGenderHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender unidden."); break;
-                            case "race": character.setRaceHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race unhidden."); break;
-                            case "description": character.setDescriptionHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description unhidden."); break;
-                            case "class": character.setClassHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Class unhidden."); break;
-                            default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to unhide! This includes name, age, gender, race, description or class.");
+                            case "name":
+                                character.setNameHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Name unhidden.");
+                                break;
+                            case "age":
+                                character.setAgeHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Age unhidden.");
+                                break;
+                            case "gender":
+                                character.setGenderHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender unidden.");
+                                break;
+                            case "race":
+                                character.setRaceHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race unhidden.");
+                                break;
+                            case "description":
+                                character.setDescriptionHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description unhidden.");
+                                break;
+                            case "class":
+                                character.setClassHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Class unhidden.");
+                                break;
+                            default:
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to unhide! This includes name, age, gender, race, description or class.");
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
@@ -287,11 +307,40 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to unhide! This includes name, age, gender, race, or description.");
                 }
+            } else if (args[0].equalsIgnoreCase("transfer")) {
+                if (sender.hasPermission("wayward.characters.command.character.transfer")) {
+                    if (args.length > 2) {
+                        try {
+                            int cid = Integer.parseInt(args[1]);
+                            OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[2]);
+                            if (player.getLastPlayed() != 0) {
+                                Character character = plugin.getCharacter(cid);
+                                if (character != null) {
+                                    OfflinePlayer originalPlayer = character.getPlayer();
+                                    plugin.removeCharacter(originalPlayer, character);
+                                    character.setPlayer(player);
+                                    plugin.addCharacter(player, character);
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Transferred " + character.getName() + " from " + originalPlayer.getName() + " to " + player.getName());
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character does not exist.");
+                                }
+                            } else {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player has never played before.");
+                            }
+                        } catch (NumberFormatException exception) {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " transfer [character id] [player]");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " transfer [character id] [player]");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
+                }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer]");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide]");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer]");
         }
         return true;
     }
