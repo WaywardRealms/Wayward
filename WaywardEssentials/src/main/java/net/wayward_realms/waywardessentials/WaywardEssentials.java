@@ -99,7 +99,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("kit").setExecutor(new KitCommand(this));
         getCommand("msg").setExecutor(new MsgCommand(this));
         getCommand("repair").setExecutor(new RepairCommand(this));
-        getCommand("roll").setExecutor(new RollCommand(this));
         getCommand("runas").setExecutor(new RunAsCommand(this));
         getCommand("seen").setExecutor(new SeenCommand(this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
