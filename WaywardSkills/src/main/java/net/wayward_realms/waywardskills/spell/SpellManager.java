@@ -43,6 +43,7 @@ public class SpellManager {
         addSpell(new OvergrowthSpell());
         addSpell(new LightningSwordSpell());
         addSpell(new BlizzardSpell(plugin));
+        addSpell(new LightningSpell());
     }
 
     public Spell getSpell(String name) {
