@@ -11,6 +11,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -31,6 +32,7 @@ public class PlayerInteractListener implements Listener {
                 if (event.getClickedBlock().getRelative(BlockFace.DOWN).getState() instanceof Chest) {
                     Chest chest = (Chest) event.getClickedBlock().getRelative(BlockFace.DOWN).getState();
                     if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_PURPLE + "[shop]")) {
+<<<<<<< HEAD
                         if (validateShopSign(sign, event.getPlayer())) {
                             if (sign.getLine(1).toLowerCase().contains("buy")) {
                                 event.getPlayer().openInventory(chest.getInventory());
@@ -55,6 +57,38 @@ public class PlayerInteractListener implements Listener {
                                                     event.getPlayer().setItemInHand(null);
                                                 }
                                             } catch (NumberFormatException ignored) {
+=======
+                        event.setCancelled(true);
+                        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                            if (characterPluginProvider != null) {
+                                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                if (characterPlugin.getActiveCharacter(event.getPlayer()).getId() == Integer.parseInt(sign.getLine(3))) {
+                                    event.getClickedBlock().setType(Material.AIR);
+                                    plugin.addMoney(characterPlugin.getActiveCharacter(event.getPlayer()), plugin.getConfig().getInt("shop.cost", 200));
+                                }
+                            }
+                        }
+                        validateShopSign(sign, event.getPlayer());
+                        if (sign.getLine(1).toLowerCase().contains("buy")) {
+                            event.getPlayer().openInventory(chest.getInventory());
+                        } else if (sign.getLine(1).toLowerCase().contains("sell")) {
+                            if (event.getPlayer().getItemInHand().getType() == Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_'))) {
+                                if (event.getPlayer().getItemInHand().getAmount() >= Integer.parseInt(sign.getLine(1).split(" ")[2])) {
+                                    RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                                    if (characterPluginProvider != null) {
+                                        CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                        try {
+                                            event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " " + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                            plugin.transferMoney(characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), characterPlugin.getActiveCharacter(event.getPlayer()), Integer.parseInt(sign.getLine(2).replace("for ", "")));
+                                            ItemStack item = new ItemStack(event.getPlayer().getItemInHand());
+                                            item.setAmount(Integer.parseInt(sign.getLine(1).split(" ")[2]));
+                                            chest.getInventory().addItem(item);
+                                            if (event.getPlayer().getItemInHand().getAmount() > Integer.parseInt(sign.getLine(1).split(" ")[2])) {
+                                                event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - Integer.parseInt(sign.getLine(1).split(" ")[2]));
+                                            } else {
+                                                event.getPlayer().setItemInHand(null);
+>>>>>>> bugfix/shopSignIssues
                                             }
                                         }
                                     } else {
