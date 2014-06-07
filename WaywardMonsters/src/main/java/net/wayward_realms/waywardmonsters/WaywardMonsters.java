@@ -2,8 +2,10 @@ package net.wayward_realms.waywardmonsters;
 
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
+import net.wayward_realms.waywardmonsters.drops.MobDrop;
 import net.wayward_realms.waywardmonsters.drops.MobDropManager;
 import org.bukkit.Location;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,6 +20,7 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
 
     @Override
     public void onEnable() {
+        ConfigurationSerialization.registerClass(MobDrop.class);
         saveDefaultConfig();
         entityLevelManager = new EntityLevelManager(this);
         mobDropManager = new MobDropManager(this);
