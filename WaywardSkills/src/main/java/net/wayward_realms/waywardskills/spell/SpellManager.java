@@ -41,6 +41,7 @@ public class SpellManager {
         addSpell(new LevitationSpell(plugin));
         addSpell(new CloakOfShadowsSpell(plugin));
         addSpell(new OvergrowthSpell());
+        addSpell(new LightningSwordSpell());
     }
 
     public Spell getSpell(String name) {
