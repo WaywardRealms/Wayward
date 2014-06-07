@@ -23,3 +23,7 @@ commands:
     roll:
         description: Rolls
         usage: /<command> [roll|stat]
+permissions:
+    wayward.combat.command.rolls.other:
+        description: Allows viewing other peoples rolls
+        default: op
