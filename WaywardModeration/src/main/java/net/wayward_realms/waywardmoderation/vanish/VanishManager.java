@@ -2,7 +2,9 @@ package net.wayward_realms.waywardmoderation.vanish;
 
 import net.wayward_realms.waywardmoderation.WaywardModeration;
 import org.bukkit.entity.Player;
+import org.kitteh.tag.TagAPI;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -10,7 +12,7 @@ import java.util.UUID;
 public class VanishManager {
 
     private WaywardModeration plugin;
-    private Set<UUID> vanished = new HashSet<>();
+    private Set<UUID> vanished = Collections.synchronizedSet(new HashSet<UUID>());
 
     public VanishManager(WaywardModeration plugin) {
         this.plugin = plugin;
@@ -32,6 +34,7 @@ public class VanishManager {
                 player1.showPlayer(player);
             }
         }
+        TagAPI.refreshPlayer(player);
     }
 
     public Set<Player> getVanishedPlayers() {
