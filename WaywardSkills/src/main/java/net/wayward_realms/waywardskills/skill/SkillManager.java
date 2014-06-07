@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -24,6 +23,7 @@ public class SkillManager {
     public SkillManager(WaywardSkills plugin) {
         this.plugin = plugin;
         addSkill(new ArrowSkill());
+        addSkill(new BandageSkill());
         addSkill(new DashSkill());
         addSkill(new ItemSkill());
         addSkill(new PoisonArrowSkill());
@@ -31,6 +31,7 @@ public class SkillManager {
         addSkill(new SharpenSkill());
         addSkill(new SlashSkill());
         addSkill(new StabSkill());
+        addSkill(new SpinningSweepSkill(plugin));
     }
 
     public Skill getSkill(String name) {
@@ -38,7 +39,6 @@ public class SkillManager {
     }
 
     public void addSkill(Skill skill) {
-        ConfigurationSerialization.registerClass(skill.getClass());
         skills.put(skill.getName().toUpperCase(), skill);
     }
 

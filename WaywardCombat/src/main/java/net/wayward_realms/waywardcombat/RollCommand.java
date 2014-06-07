@@ -1,11 +1,13 @@
-package net.wayward_realms.waywardessentials.command;
+package net.wayward_realms.waywardcombat;
 
-import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +15,9 @@ import java.util.Random;
 
 public class RollCommand implements CommandExecutor {
 
-    private WaywardEssentials plugin;
+    private WaywardCombat plugin;
 
-    public RollCommand(WaywardEssentials plugin) {
+    public RollCommand(WaywardCombat plugin) {
         this.plugin = plugin;
     }
 
@@ -23,7 +25,18 @@ public class RollCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             if (args.length > 0) {
-                roll((Player) sender, args[0]);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                if (characterPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    try {
+                        Stat stat = Stat.valueOf(args[0].toUpperCase());
+                        roll((Player) sender, plugin.getRollsManager().getRoll(characterPlugin.getActiveCharacter((Player) sender), stat));
+                    } catch (IllegalArgumentException exception) {
+                        roll((Player) sender, args[0]);
+                    }
+                } else {
+                    roll((Player) sender, args[0]);
+                }
             } else {
                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a roll string.");
             }
@@ -77,7 +90,7 @@ public class RollCommand implements CommandExecutor {
         rollTotal += plus;
         output += plus + ") = " + rollTotal;
         for (Player player : roller.getWorld().getPlayers()) {
-            if (player.getLocation().distance(roller.getLocation()) <= 16) {
+            if (player.getLocation().distanceSquared(roller.getLocation()) <= 256) {
                 if (plus > 0) {
                     player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + roller.getName() + ChatColor.GRAY + "/" + ChatColor.GREEN + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll + "+" + plus);
                 } else if (plus < 0) {

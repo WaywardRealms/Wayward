@@ -3,16 +3,27 @@
     <parent>
         <groupId>net.wayward-realms</groupId>
         <artifactId>wayward</artifactId>
-        <version>0.6.3-SNAPSHOT</version>
+        <version>0.7.1-SNAPSHOT</version>
     </parent>
     <artifactId>waywardmoderation</artifactId>
     <name>WaywardModeration</name>
     <description>Tools for moderators</description>
+    <repositories>
+        <repository>
+            <id>kitteh-repo</id>
+            <url>http://repo.kitteh.org/content/groups/public</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>net.wayward-realms</groupId>
             <artifactId>waywardlib</artifactId>
-            <version>0.6.3-SNAPSHOT</version>
+            <version>0.7.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kitteh</groupId>
+            <artifactId>tagapi</artifactId>
+            <version>3.0.4</version>
         </dependency>
     </dependencies>
     <build>

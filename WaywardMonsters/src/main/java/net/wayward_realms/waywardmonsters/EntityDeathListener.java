@@ -49,7 +49,8 @@ public class EntityDeathListener implements Listener {
                 int exp;
                 int money;
                 int expScale = plugin.getConfig().getInt("experience-multiplier." + event.getEntityType().toString(), 0);
-                exp = (int) Math.ceil(((double) plugin.getEntityLevelManager().getEntityLevel(event.getEntity()) * (double) expScale));
+                int entityLevel = plugin.getEntityLevelManager().getEntityLevel(event.getEntity());
+                exp = (int) Math.ceil(((double) entityLevel * (double) expScale));
                 money = random.nextInt(100) < 5 ? random.nextInt(5) : 0;
                 if (exp > 0) {
                     RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
@@ -57,6 +58,10 @@ public class EntityDeathListener implements Listener {
                         ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
                         classesPlugin.giveExperience(player, exp);
                     }
+                }
+                if (!(event.getEntity() instanceof Player)) {
+                    event.getDrops().clear();
+                    event.getDrops().addAll(plugin.getMobDropManager().getDrops(event.getEntity().getType(), entityLevel));
                 }
                 if (money > 0) {
                     RegisteredServiceProvider<EconomyPlugin> economyPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EconomyPlugin.class);
@@ -66,10 +71,20 @@ public class EntityDeathListener implements Listener {
                         ItemMeta coinMeta = coins.getItemMeta();
                         coinMeta.setDisplayName(economyPlugin.getPrimaryCurrency().getNameSingular());
                         coins.setItemMeta(coinMeta);
-                        event.getEntity().getLocation().getWorld().dropItem(event.getEntity().getLocation(), coins);
+                        event.getDrops().add(coins);
                     }
                 }
                 event.setDroppedExp(0);
+            } else {
+                if (!(event.getEntity() instanceof Player)) {
+                    event.getDrops().clear();
+                    event.getDrops().addAll(plugin.getMobDropManager().getDrops(event.getEntity().getType(), plugin.getEntityLevel(event.getEntity())));
+                }
+            }
+        } else {
+            if (!(event.getEntity() instanceof Player)) {
+                event.getDrops().clear();
+                event.getDrops().addAll(plugin.getMobDropManager().getDrops(event.getEntity().getType(), plugin.getEntityLevel(event.getEntity())));
             }
         }
     }

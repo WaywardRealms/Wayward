@@ -29,13 +29,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
     @Override
     public void onEnable() {
         ConfigurationSerialization.registerClass(ClassImpl.class);
-        getCommand("addexp").setExecutor(new AddExpCommand(this));
         getCommand("class").setExecutor(new ClassCommand(this));
-        getCommand("setclass").setExecutor(new SetClassCommand(this));
-        getCommand("setlevel").setExecutor(new SetLevelCommand(this));
-        getCommand("getclass").setExecutor(new GetClassCommand(this));
-        getCommand("getlevel").setExecutor(new GetLevelCommand(this));
-        getCommand("listclasses").setExecutor(new ListClassesCommand(this));
         registerListeners(new EntityDamageListener(this), new PlayerDeathListener(), new PlayerExpChangeListener(), new PlayerJoinListener(this));
     }
 
@@ -318,7 +312,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
                 for (int x = player.getLocation().getBlockX() - 4; x < player.getLocation().getBlockX() + 4; x++) {
                     for (int z = player.getLocation().getBlockZ() - 4; z < player.getLocation().getBlockZ() + 4; z++) {
                         Location location = player.getWorld().getBlockAt(x, player.getLocation().getBlockY(), z).getLocation();
-                        if (player.getLocation().distance(location) > 3 && player.getLocation().distance(location) < 5) {
+                        if (player.getLocation().distanceSquared(location) > 9 && player.getLocation().distanceSquared(location) < 25) {
                             Firework firework = (Firework) player.getWorld().spawnEntity(location, EntityType.FIREWORK);
                             FireworkMeta meta = firework.getFireworkMeta();
                             meta.setPower(0);

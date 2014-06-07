@@ -1,7 +1,7 @@
 package net.wayward_realms.waywardskills.skill;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
@@ -9,6 +9,7 @@ import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
+import net.wayward_realms.waywardlib.util.vector.VectorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,9 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StabSkill extends AttackSkillBase {
 
@@ -58,21 +56,12 @@ public class StabSkill extends AttackSkillBase {
             Vector3D targetPos = new Vector3D(target.getLocation());
             Vector3D minimum = targetPos.add(-0.5, 0, -0.5);
             Vector3D maximum = targetPos.add(0.5, 1.67, 0.5);
-            if (target != player && hasIntersection(observerStart, observerEnd, minimum, maximum)) {
+            if (target != player && VectorUtils.hasIntersection(observerStart, observerEnd, minimum, maximum)) {
                 player.teleport(target);
                 target.damage(10D, player);
             }
         }
         return true;
-    }
-
-    private boolean hasIntersection(Vector3D p1, Vector3D p2, Vector3D min, Vector3D max) {
-        final double epsilon = 0.0001f;
-        Vector3D d = p2.subtract(p1).multiply(0.5);
-        Vector3D e = max.subtract(min).multiply(0.5);
-        Vector3D c = p1.add(d).subtract(min.add(max).multiply(0.5));
-        Vector3D ad = d.abs();
-        return !(Math.abs(c.x) > e.x + ad.x || Math.abs(c.y) > e.y + ad.y || Math.abs(c.z) > e.z + ad.z || Math.abs(d.y * c.z - d.z * c.y) > e.y * ad.z + e.z * ad.y + epsilon || Math.abs(d.z * c.x - d.x * c.z) > e.z * ad.x + e.x * ad.z + epsilon || Math.abs(d.x * c.y - d.y * c.x) > e.x * ad.y + e.y * ad.x + epsilon);
     }
 
     @Override
@@ -125,23 +114,6 @@ public class StabSkill extends AttackSkillBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("reach", getReach());
-        return serialised;
-    }
-
-    public static StabSkill deserialize(Map<String, Object> serialised) {
-        StabSkill deserialised = new StabSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.setReach((int) serialised.get("reach"));
-        return deserialised;
     }
 
 }

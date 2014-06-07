@@ -4,14 +4,13 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents a skill
  */
-public interface Skill extends ConfigurationSerializable {
+public interface Skill {
 
     /**
      * Uses the skill in a PvE situation

@@ -13,14 +13,20 @@ import java.util.Set;
 
 public class WaywardCombat extends JavaPlugin implements CombatPlugin {
 
+    private RollsManager rollsManager;
+
     private Set<Fight> fights = new HashSet<>();
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        rollsManager = new RollsManager(this);
         registerListeners(new InventoryClickListener(this));
         getCommand("fight").setExecutor(new FightCommand(this));
         getCommand("turn").setExecutor(new TurnCommand(this));
         getCommand("flee").setExecutor(new FleeCommand(this));
+        getCommand("rolls").setExecutor(new RollsCommand(this));
+        getCommand("roll").setExecutor(new RollCommand(this));
     }
 
     @Override
@@ -78,4 +84,7 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
         return combatant instanceof Character ? getActiveFight((Character) combatant) : null;
     }
 
+    public RollsManager getRollsManager() {
+        return rollsManager;
+    }
 }

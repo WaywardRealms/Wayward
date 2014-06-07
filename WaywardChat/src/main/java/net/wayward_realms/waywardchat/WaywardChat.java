@@ -4,6 +4,7 @@ import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
+import net.wayward_realms.waywardlib.util.math.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -28,8 +29,8 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     private Map<String, Channel> channels = new ConcurrentHashMap<>();
     private Map<String, ChatGroup> chatGroups = new ConcurrentHashMap<>();
-    private Map<String, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
-    private Set<String> snooping = Collections.synchronizedSet(new HashSet<String>());
+    private Map<UUID, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
+    private Set<UUID> snooping = Collections.synchronizedSet(new HashSet<UUID>());
 
     private PircBotX ircBot;
 
@@ -121,7 +122,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 getChannel(getConfig().getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
                     if (getConfig().getInt("emotes.radius") >= 0) {
-                        if (talking.getLocation().distance(player.getLocation()) <= getConfig().getInt("emotes.radius")) {
+                        if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= getConfig().getInt("emotes.radius")) {
                             format = getConfig().getString("emotes.format").replace("%channel%", "emote").replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message.replace("*", ""));
                             player.sendMessage(format);
                         }
@@ -137,9 +138,9 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                         if (player != null) {
                             if (getPlayerChannel(talking).getRadius() >= 0) {
                                 if (talking.getWorld().equals(player.getWorld())) {
-                                    if (talking.getLocation().distance(player.getLocation()) <= (double) getPlayerChannel(talking).getRadius()) {
+                                    if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= (double) getPlayerChannel(talking).getRadius()) {
                                         if (getPlayerChannel(talking).isGarbleEnabled()) {
-                                            double distance = talking.getLocation().distance(player.getLocation());
+                                            double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation()));
                                             double clearRange = 0.75D * (double) getPlayerChannel(talking).getRadius();
                                             double hearingRange = (double) getPlayerChannel(talking).getRadius();
                                             double clarity = 1.0D - ((distance - clearRange) / hearingRange);
@@ -422,7 +423,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public void removeChatGroup(String name) {
         chatGroups.remove(name.toLowerCase());
-        for (Iterator<Map.Entry<String, ChatGroup>> iterator = lastPrivateMessage.entrySet().iterator(); iterator.hasNext(); ) {
+        for (Iterator<Map.Entry<String, ChatGroup>> iterator = chatGroups.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, ChatGroup> entry = iterator.next();
             if (entry.getValue().getName().equalsIgnoreCase(name)) iterator.remove();
         }
@@ -434,29 +435,29 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public void sendPrivateMessage(Player sender, ChatGroup recipients, String message) {
         recipients.sendMessage(sender, message);
-        for (String recipient : recipients.getPlayers()) {
+        for (UUID recipient : recipients.getPlayers()) {
             lastPrivateMessage.put(recipient, recipients);
         }
     }
 
-    public Set<String> getSnooping() {
+    public Set<UUID> getSnooping() {
         return snooping;
     }
 
     public boolean isSnooping(OfflinePlayer player) {
-        return snooping.contains(player.getName());
+        return snooping.contains(player.getUniqueId());
     }
 
     public void setSnooping(OfflinePlayer player, boolean snoop) {
         if (snoop) {
-            snooping.add(player.getName());
+            snooping.add(player.getUniqueId());
         } else {
-            snooping.remove(player.getName());
+            snooping.remove(player.getUniqueId());
         }
     }
 
     public ChatGroup getLastPrivateMessage(Player player) {
-        return lastPrivateMessage.get(player.getName());
+        return lastPrivateMessage.get(player.getUniqueId());
     }
 
     public Collection<ChatGroup> getChatGroups() {

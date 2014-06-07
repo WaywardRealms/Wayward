@@ -5,27 +5,9 @@ description: ${project.description}
 main: net.wayward_realms.waywardclasses.WaywardClasses
 depend: [WaywardLib]
 commands:
-    addexp:
-        description: Adds exp to a player
-        usage: /<command> [ign] [amount]
     class:
         description: Parent command for all class commands
         usage: /<command> [set|info|list|setlevel|addexp]
-    getclass:
-        description: Gets someones class
-        usage: /<command> (ign)
-    getlevel:
-        description: Gets someones level
-        usage: /<command> (ign)
-    listclasses:
-        description: Lists the available classes
-        usage: /<command>
-    setclass:
-        description: Sets your or someone elses class
-        usage: /<command> (player) [class]
-    setlevel:
-        description: Sets your or someone elses level
-        usage: /<command> (player) [level]
 permissions:
     wayward.classes.command.addexp:
         description: Old node that allows you to add exp

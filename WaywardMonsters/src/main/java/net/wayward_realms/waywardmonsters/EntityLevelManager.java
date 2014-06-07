@@ -1,9 +1,14 @@
 package net.wayward_realms.waywardmonsters;
 
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.util.math.MathUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,12 +62,23 @@ public class EntityLevelManager {
     }
 
     public int getEntityLevel(Entity entity) {
+        if (entity instanceof Player) {
+            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+            if (characterPluginProvider != null) {
+                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                if (classesPluginProvider != null) {
+                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                    return classesPlugin.getLevel(characterPlugin.getActiveCharacter((Player) entity));
+                }
+            }
+        }
         Collection<Location> zeroPoints = getZeroPoints();
         if (zeroPoints.size() == 0) return 1;
         int minimumLevel = -1;
         for (Location zeroPoint : zeroPoints) {
             if (zeroPoint.getWorld().equals(entity.getWorld())) {
-                int possibleLevel = (int) Math.floor((entity.getLocation().distance(zeroPoint) / plugin.getConfig().getDouble("mob-level-scale", 32D)));
+                int possibleLevel = (int) Math.floor((MathUtils.fastsqrt(entity.getLocation().distanceSquared(zeroPoint)) / plugin.getConfig().getDouble("mob-level-scale", 32D)));
                 minimumLevel = possibleLevel < minimumLevel || minimumLevel == -1 ? possibleLevel : minimumLevel;
             }
         }

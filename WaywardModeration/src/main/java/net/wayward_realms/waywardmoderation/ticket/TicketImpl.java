@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class TicketImpl implements Ticket {
 
@@ -135,22 +136,30 @@ public class TicketImpl implements Ticket {
 
     @Override
     public OfflinePlayer getIssuer() {
-        return Bukkit.getOfflinePlayer(getFieldStringValue("issuer"));
+        if (getFieldValue("issuer-uuid") == null) {
+            setFieldValue("issuer-uuid", Bukkit.getOfflinePlayer(getFieldStringValue("issuer")).getUniqueId().toString());
+            setFieldValue("issuer", null);
+        }
+        return Bukkit.getOfflinePlayer(UUID.fromString(getFieldStringValue("issuer-uuid")));
     }
 
     @Override
     public void setIssuer(OfflinePlayer issuer) {
-        setFieldValue("issuer", issuer.getName());
+        setFieldValue("issuer-uuid", issuer.getUniqueId());
     }
 
     @Override
     public OfflinePlayer getResolver() {
-        return Bukkit.getOfflinePlayer(getFieldStringValue("resolver"));
+        if (getFieldValue("resolver-uuid") == null) {
+            setFieldValue("resolver-uuid", Bukkit.getOfflinePlayer(getFieldStringValue("resolver")).getUniqueId().toString());
+            setFieldValue("resolver", null);
+        }
+        return Bukkit.getOfflinePlayer(UUID.fromString(getFieldStringValue("resolver-uuid")));
     }
 
     @Override
     public void setResolver(OfflinePlayer resolver) {
-        setFieldValue("resolver", resolver.getName());
+        setFieldValue("resolver-uuid", resolver.getUniqueId().toString());
     }
 
     @Override
@@ -204,8 +213,8 @@ public class TicketImpl implements Ticket {
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
         serialised.put("reason", getReason());
-        serialised.put("issuer", getIssuer().getName());
-        serialised.put("resolver", getResolver().getName());
+        serialised.put("issuer", getIssuer().getUniqueId().toString());
+        serialised.put("resolver", getResolver().getUniqueId().toString());
         serialised.put("open-date", getOpenDate());
         serialised.put("close-date", getCloseDate());
         serialised.put("location", new SerialisableLocation(getLocation()));
@@ -218,8 +227,8 @@ public class TicketImpl implements Ticket {
             nextId = deserialised.getId();
         }
         deserialised.setReason((String) serialised.get("reason"));
-        deserialised.setIssuer(Bukkit.getOfflinePlayer((String) serialised.get("issuer")));
-        deserialised.setResolver(Bukkit.getOfflinePlayer((String) serialised.get("resolver")));
+        deserialised.setIssuer(Bukkit.getOfflinePlayer(UUID.fromString((String) serialised.get("issuer"))));
+        deserialised.setResolver(Bukkit.getOfflinePlayer(UUID.fromString((String) serialised.get("resolver"))));
         deserialised.setOpenDate((Date) serialised.get("open-date"));
         deserialised.setCloseDate((Date) serialised.get("close-date"));
         deserialised.setLocation(((SerialisableLocation) serialised.get("location")).toLocation());

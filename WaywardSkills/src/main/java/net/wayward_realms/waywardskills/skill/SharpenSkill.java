@@ -16,9 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SharpenSkill extends SkillBase {
 
     public SharpenSkill() {
@@ -82,21 +79,6 @@ public class SharpenSkill extends SkillBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 1;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static SharpenSkill deserialize(Map<String, Object> serialised) {
-        SharpenSkill deserialised = new SharpenSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

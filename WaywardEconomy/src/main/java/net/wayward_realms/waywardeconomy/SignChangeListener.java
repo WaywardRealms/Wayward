@@ -60,8 +60,9 @@ public class SignChangeListener implements Listener {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Third line format must be: for [price]");
             }
-            if (plugin.getMoney(event.getPlayer()) >= plugin.getConfig().getInt("shop.chest", 200)) {
-                plugin.addMoney(event.getPlayer(), - plugin.getConfig().getInt("shop.chest", 200));
+            if (plugin.getMoney(event.getPlayer()) >= plugin.getConfig().getInt("shop.cost", 200)) {
+                plugin.addMoney(event.getPlayer(), - plugin.getConfig().getInt("shop.cost", 200));
+                event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bought a shop for " + plugin.getConfig().getInt("shop.cost", 200) + " " + plugin.getPrimaryCurrency().getNamePlural());
             } else if (!event.getPlayer().hasPermission("wayward.economy.shop.free")) {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough money for a shop.");

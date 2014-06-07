@@ -5,9 +5,7 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardskills.WaywardSkills;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -15,10 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.BlockIterator;
-
-import java.util.Map;
 
 public class BlizzardSpell extends AttackSpellBase {
 
@@ -158,25 +153,6 @@ public class BlizzardSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 40;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        return null;
-    }
-
-    public static BlizzardSpell deserialize(Map<String, Object> serialised) {
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (skillsPluginProvider != null) {
-            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            if (skillsPlugin instanceof WaywardSkills) {
-                BlizzardSpell deserialised = new BlizzardSpell((WaywardSkills) skillsPlugin);
-                deserialised.setName((String) serialised.get("name"));
-                deserialised.setManaCost((int) serialised.get("mana-cost"));
-                deserialised.setCoolDown((int) serialised.get("cooldown"));
-            }
-        }
-        return null;
     }
 
 }

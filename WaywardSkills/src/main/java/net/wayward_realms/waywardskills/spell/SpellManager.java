@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.skills.Spell;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -39,6 +38,12 @@ public class SpellManager {
         addSpell(new BlizzardSpell(plugin));
         addSpell(new IceBreathSpell(plugin));
         addSpell(new FireSwordSpell());
+        addSpell(new LevitationSpell(plugin));
+        addSpell(new CloakOfShadowsSpell(plugin));
+        addSpell(new OvergrowthSpell());
+        addSpell(new LightningSwordSpell());
+        addSpell(new BlizzardSpell(plugin));
+        addSpell(new LightningSpell());
     }
 
     public Spell getSpell(String name) {
@@ -46,7 +51,6 @@ public class SpellManager {
     }
 
     public void addSpell(Spell spell) {
-        ConfigurationSerialization.registerClass(spell.getClass());
         spells.put(spell.getName().toUpperCase(), spell);
     }
 

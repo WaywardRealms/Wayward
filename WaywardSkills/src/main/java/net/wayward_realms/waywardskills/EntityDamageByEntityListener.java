@@ -1,7 +1,11 @@
 package net.wayward_realms.waywardskills;
 
+import net.wayward_realms.waywardlib.professions.ToolType;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -36,6 +40,28 @@ public class EntityDamageByEntityListener implements Listener {
                     if (!snowball.getMetadata("isIceBreath").isEmpty()) {
                         event.setCancelled(true);
                         freeze(event.getEntity());
+                    }
+                }
+            }
+        } else if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+            if (player.getItemInHand() != null) {
+                if (ToolType.getToolType(player.getItemInHand().getType()) == ToolType.SWORD) {
+                    if (player.getItemInHand().getItemMeta().hasLore()) {
+                        for (String lore : player.getItemInHand().getItemMeta().getLore()) {
+                            if (lore.startsWith("lightning:")) {
+                                long endTime = Long.parseLong(lore.split(":")[1]);
+                                if (endTime >= System.currentTimeMillis()) {
+                                    event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
+                                }
+                            } else if (lore.startsWith("blizzard:")) {
+                                long endTime = Long.parseLong(lore.split(":")[1]);
+                                if (endTime >= System.currentTimeMillis()) {
+                                    event.setDamage(event.getDamage() + 6);
+                                    freeze(event.getEntity());
+                                }
+                            }
+                        }
                     }
                 }
             }
