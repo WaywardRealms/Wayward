@@ -42,6 +42,9 @@ public class PlayerInteractListener implements Listener {
                                             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                                             try {
                                                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " " + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                                if (characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().isOnline()) {
+                                                    characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your shop bought " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " from " + event.getPlayer().getDisplayName());
+                                                }
                                                 plugin.transferMoney(characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), characterPlugin.getActiveCharacter(event.getPlayer()), Integer.parseInt(sign.getLine(2).replace("for ", "")));
                                                 ItemStack item = new ItemStack(event.getPlayer().getItemInHand());
                                                 item.setAmount(Integer.parseInt(sign.getLine(1).split(" ")[2]));
@@ -51,7 +54,6 @@ public class PlayerInteractListener implements Listener {
                                                 } else {
                                                     event.getPlayer().setItemInHand(null);
                                                 }
-
                                             } catch (NumberFormatException ignored) {
                                             }
                                         }
