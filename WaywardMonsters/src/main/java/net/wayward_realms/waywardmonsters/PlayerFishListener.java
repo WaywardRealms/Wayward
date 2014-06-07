@@ -121,7 +121,7 @@ public class PlayerFishListener implements Listener {
         return fishingConfig;
     }
 
-    public void reloadFishingConfig() {
+    private void reloadFishingConfig() {
         if (fishingConfigFile == null) {
             fishingConfigFile = new File(plugin.getDataFolder(), "fishing.yml");
             if (!fishingConfigFile.exists()) {
