@@ -4,10 +4,11 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
+
+import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
 
 public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
 
@@ -17,7 +18,7 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
     public void onEnable() {
         saveDefaultConfig();
         entityLevelManager = new EntityLevelManager(this);
-        registerListeners(new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener());
+        registerListeners(this, new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener(), new PlayerFishListener(this));
         getCommand("zeropoint").setExecutor(new ZeroPointCommand(this));
         getCommand("viewzeropoints").setExecutor(new ViewZeroPointsCommand(this));
     }
@@ -25,12 +26,6 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
     @Override
     public void onDisable() {
         saveState();
-    }
-
-    public void registerListeners(Listener... listeners) {
-        for (Listener listener : listeners) {
-            getServer().getPluginManager().registerEvents(listener, this);
-        }
     }
 
     @Override
