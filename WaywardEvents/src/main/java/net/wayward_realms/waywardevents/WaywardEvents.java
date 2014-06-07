@@ -7,16 +7,22 @@ import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
+import net.wayward_realms.waywardlib.util.location.LocationUtils;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
 
 public class WaywardEvents extends JavaPlugin implements EventsPlugin {
 
@@ -24,12 +30,15 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
 
     @Override
     public void onEnable() {
+        ConfigurationSerialization.registerClass(BlockDescriptor.class);
         ConfigurationSerialization.registerClass(DungeonImpl.class);
         ConfigurationSerialization.registerClass(RaceImpl.class);
         getCommand("dungeon").setExecutor(new DungeonCommand(this));
         getCommand("radiusemote").setExecutor(new RadiusEmoteCommand(this));
         getCommand("createeffect").setExecutor(new CreateEffectCommand(this));
         getCommand("eventcharacter").setExecutor(new EventCharacterCommand(this));
+        getCommand("blockdescription").setExecutor(new BlockDescriptionCommand(this));
+        registerListeners(this, new PlayerInteractListener(this));
     }
 
     @Override
@@ -159,6 +168,43 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
         File raceDirectory = new File(getDataFolder(), "races");
         File raceFile = new File(raceDirectory, race.getName().toLowerCase() + ".yml");
         if (raceFile.exists()) raceFile.delete();
+    }
+
+    public boolean hasBlockDescription(Block block) {
+        File blockDescriptionDirectory = new File(getDataFolder(), "block-descriptors");
+        File blockDescriptionFile = new File(blockDescriptionDirectory, LocationUtils.toString(block.getLocation()) + ".yml");
+        return blockDescriptionFile.exists();
+    }
+
+    public BlockDescriptor getBlockDescription(Block block) {
+        File blockDescriptionDirectory = new File(getDataFolder(), "block-descriptors");
+        File blockDescriptionFile = new File(blockDescriptionDirectory, LocationUtils.toString(block.getLocation()) + ".yml");
+        if (blockDescriptionFile.exists()) {
+            YamlConfiguration blockDescriptorConfig = YamlConfiguration.loadConfiguration(blockDescriptionFile);
+            return (BlockDescriptor) blockDescriptorConfig.get("description");
+        } else {
+            return null;
+        }
+    }
+
+    public void setBlockDescription(Block block, BlockDescriptor descriptor) {
+        File blockDescriptionDirectory = new File(getDataFolder(), "block-descriptors");
+        File blockDescriptionFile = new File(blockDescriptionDirectory, LocationUtils.toString(block.getLocation()) + ".yml");
+        YamlConfiguration blockDescriptorConfig = new YamlConfiguration();
+        blockDescriptorConfig.set("description", descriptor);
+        try {
+            blockDescriptorConfig.save(blockDescriptionFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void removeBlockDescription(Block block) {
+        File blockDescriptionDirectory = new File(getDataFolder(), "block-descriptors");
+        File blockDescriptionFile = new File(blockDescriptionDirectory, LocationUtils.toString(block.getLocation()) + ".yml");
+        if (blockDescriptionFile.exists()) {
+            blockDescriptionFile.delete();
+        }
     }
 
 }

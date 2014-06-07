@@ -18,6 +18,10 @@ commands:
         description: Manages event characters
         usage: /<command>
         aliases: [ec, echar, eventchar, echaracter]
+    blockdescription:
+        description: Modifies block descriptions
+        usage: /<command>
+        aliases: [blockdesc, blockdescriptor, bdesc]
 permissions:
     wayward.events.command.radiusemote:
         description: Allows you to broadcast world emotes with a radius
@@ -36,4 +40,7 @@ permissions:
         default: op
     wayward.events.command.eventcharacter:
         description: Allows you to use event characters
+        default: op
+    wayward.events.command.blockdescription:
+        description: Allows you to modify block descriptions
         default: op
