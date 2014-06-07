@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.kitteh.tag.TagAPI;
 
 public class PlayerJoinListener implements Listener {
 
@@ -17,13 +18,14 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         for (Player player : plugin.getVanishedPlayers()) {
-            if (!plugin.canSee(event.getPlayer(), player)) event.getPlayer().hidePlayer(player);
+            if (!plugin.canSee(event.getPlayer(), player)) event.getPlayer().hidePlayer(player); else TagAPI.refreshPlayer(player, event.getPlayer());
         }
         if (plugin.isVanished(event.getPlayer())) {
             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You are vanished.");
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 if (!plugin.canSee(player, event.getPlayer())) player.hidePlayer(event.getPlayer());
             }
+            TagAPI.refreshPlayer(event.getPlayer());
         }
         event.getPlayer().sendMessage(plugin.getWarnings(event.getPlayer()).size() <= 0 ? ChatColor.GREEN + "You have no warnings." : ChatColor.RED + "You have " + plugin.getWarnings(event.getPlayer()).size() + " warnings. Use /warnings to view them.");
     }
