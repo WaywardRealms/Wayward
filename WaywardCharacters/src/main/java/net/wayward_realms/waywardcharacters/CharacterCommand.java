@@ -336,11 +336,36 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
                 }
+            } else if (args[0].equalsIgnoreCase("resetstatpoints") || args[0].equalsIgnoreCase("rsp")) {
+                if (sender.hasPermission("wayward.characters.command.character.resetstatpoints")) {
+                    if (args.length > 1) {
+                        try {
+                            int cid = Integer.parseInt(args[1]);
+                            Character character = plugin.getCharacter(cid);
+                            if (character != null) {
+                                if (character instanceof CharacterImpl) {
+                                    ((CharacterImpl) character).resetStatPoints();
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Reset " + character.getName() + "'s stat points.");
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character is using a non-default character implementation, and cannot use stat points.");
+                                }
+                            } else {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character does not exist.");
+                            }
+                        } catch (NumberFormatException exception) {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
+                }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer]");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
         }
         return true;
     }
