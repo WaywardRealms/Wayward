@@ -3,6 +3,7 @@ package net.wayward_realms.waywardcombat;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.Turn;
@@ -127,6 +128,7 @@ public class FightImpl implements Fight {
                 }
             }
         }
+        sortTurns();
         incrementTurn();
         if (getNextTurn().getPlayer().isOnline()) {
             activeTurn = new TurnImpl(this);
@@ -139,6 +141,39 @@ public class FightImpl implements Fight {
                     (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
                     (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
         }
+    }
+
+    private int partition(int left, int right) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            int i = left, j = right;
+            int tmp;
+            Character pivot = characterPlugin.getCharacter(turnOrder.get((left + right) / 2));
+            while (i <= j) {
+                while (characterPlugin.getCharacter(turnOrder.get(i)).getStatValue(Stat.SPEED) > pivot.getStatValue(Stat.SPEED)) i++;
+                while (characterPlugin.getCharacter(turnOrder.get(j)).getStatValue(Stat.SPEED) < pivot.getStatValue(Stat.SPEED)) j--;
+                if (i <= j) {
+                    tmp = turnOrder.get(i);
+                    turnOrder.set(i, turnOrder.get(j));
+                    turnOrder.set(j, tmp);
+                    i++;
+                    j--;
+                }
+            }
+            return i;
+        }
+        return 0;
+    }
+
+    private void quickSort(int left, int right) {
+        int index = partition(left, right);
+        if (left < index - 1) quickSort(left, index - 1);
+        if (index < right) quickSort(index, right);
+    }
+
+    private void sortTurns() {
+        quickSort(0, turnOrder.size() - 1);
     }
 
     @Override
