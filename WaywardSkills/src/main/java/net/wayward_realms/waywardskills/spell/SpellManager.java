@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.skills.Spell;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -48,7 +47,6 @@ public class SpellManager {
     }
 
     public void addSpell(Spell spell) {
-        ConfigurationSerialization.registerClass(spell.getClass());
         spells.put(spell.getName().toUpperCase(), spell);
     }
 

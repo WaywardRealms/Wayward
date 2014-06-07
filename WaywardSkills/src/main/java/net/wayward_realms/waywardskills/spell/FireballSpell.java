@@ -16,9 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_DEFENCE;
 
@@ -91,23 +88,6 @@ public class FireballSpell extends AttackSpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static FireballSpell deserialize(Map<String, Object> serialised) {
-        FireballSpell deserialised = new FireballSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

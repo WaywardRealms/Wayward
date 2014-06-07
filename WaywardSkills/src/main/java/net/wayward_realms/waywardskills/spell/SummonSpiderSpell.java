@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,9 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SummonSpiderSpell extends AttackSpellBase {
 
@@ -86,30 +82,6 @@ public class SummonSpiderSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 10;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static SummonSpiderSpell deserialize(Map<String, Object> serialised) {
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (skillsPluginProvider != null) {
-            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            if (skillsPlugin instanceof WaywardSkills) {
-                SummonSpiderSpell deserialised = new SummonSpiderSpell((WaywardSkills) skillsPlugin);
-                deserialised.setName((String) serialised.get("name"));
-                deserialised.setManaCost((int) serialised.get("mana-cost"));
-                deserialised.setCoolDown((int) serialised.get("cooldown"));
-                return deserialised;
-            }
-        }
-        return null;
     }
 
 }

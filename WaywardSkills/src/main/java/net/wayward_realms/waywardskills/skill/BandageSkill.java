@@ -17,9 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class BandageSkill extends SkillBase {
 
     private int reach = 16;
@@ -133,25 +130,6 @@ public class BandageSkill extends SkillBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_HEALING) > 0;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("reach", getReach());
-        serialised.put("health-restore", getHealthRestore());
-        return serialised;
-    }
-
-    public static BandageSkill deserialize(Map<String, Object> serialised) {
-        BandageSkill deserialised = new BandageSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.setReach((int) serialised.get("reach"));
-        deserialised.setHealthRestore((double) serialised.get("health-restore"));
-        return deserialised;
     }
 
 }

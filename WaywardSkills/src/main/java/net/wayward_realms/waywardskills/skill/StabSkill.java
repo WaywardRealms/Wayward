@@ -1,7 +1,7 @@
 package net.wayward_realms.waywardskills.skill;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
@@ -18,9 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StabSkill extends AttackSkillBase {
 
@@ -125,23 +122,6 @@ public class StabSkill extends AttackSkillBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("reach", getReach());
-        return serialised;
-    }
-
-    public static StabSkill deserialize(Map<String, Object> serialised) {
-        StabSkill deserialised = new StabSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.setReach((int) serialised.get("reach"));
-        return deserialised;
     }
 
 }

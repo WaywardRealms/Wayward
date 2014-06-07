@@ -18,9 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class CureSpell extends SpellBase {
@@ -120,25 +118,6 @@ public class CureSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("radius", radius);
-        return serialised;
-    }
-
-    public static CureSpell deserialize(Map<String, Object> serialised) {
-        CureSpell deserialised = new CureSpell();
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.radius = (int) serialised.get("radius");
-        return deserialised;
     }
 
 }

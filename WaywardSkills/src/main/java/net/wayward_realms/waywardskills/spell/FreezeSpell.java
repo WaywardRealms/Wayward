@@ -18,9 +18,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FreezeSpell extends SpellBase {
 
     public FreezeSpell() {
@@ -84,23 +81,6 @@ public class FreezeSpell extends SpellBase {
 
             }, delay);
         }
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static FreezeSpell deserialize(Map<String, Object> serialised) {
-        FreezeSpell deserialised = new FreezeSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

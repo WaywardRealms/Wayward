@@ -11,9 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FireSwordSpell extends SpellBase {
 
     public FireSwordSpell() {
@@ -55,23 +52,6 @@ public class FireSwordSpell extends SpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 25;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("mana-cost", getManaCost());
-        return serialised;
-    }
-
-    public static FireSwordSpell deserialize(Map<String, Object> serialised) {
-        FireSwordSpell deserialised = new FireSwordSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        return deserialised;
     }
 
 }

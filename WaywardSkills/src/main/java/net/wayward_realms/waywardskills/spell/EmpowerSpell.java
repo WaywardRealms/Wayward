@@ -14,9 +14,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class EmpowerSpell extends SpellBase {
 
     public EmpowerSpell() {
@@ -70,23 +67,6 @@ public class EmpowerSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("mana-cost", getManaCost());
-        return serialised;
-    }
-
-    public static EmpowerSpell deserialize(Map<String, Object> serialised) {
-        EmpowerSpell deserialised = new EmpowerSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        return deserialised;
     }
 
 }

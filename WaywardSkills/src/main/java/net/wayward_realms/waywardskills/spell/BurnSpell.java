@@ -16,9 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class BurnSpell extends AttackSpellBase {
 
     private int radius = 8;
@@ -75,27 +72,6 @@ public class BurnSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 20;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("radius", radius);
-        serialised.put("fire-ticks", fireTicks);
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public BurnSpell deserialize(Map<String, Object> serialised) {
-        BurnSpell deserialised = new BurnSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.radius = (int) serialised.get("radius");
-        deserialised.fireTicks = (int) serialised.get("fire-ticks");
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
     @Override

@@ -12,8 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Map;
-
 public class CloakOfShadowsSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -68,8 +66,4 @@ public class CloakOfShadowsSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 45;
     }
 
-    @Override
-    public Map<String, Object> serialize() {
-        return null;
-    }
 }

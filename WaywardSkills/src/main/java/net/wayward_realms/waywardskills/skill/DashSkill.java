@@ -17,9 +17,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class DashSkill extends SkillBase {
 
     public DashSkill() {
@@ -68,21 +65,6 @@ public class DashSkill extends SkillBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.SPEED_NIMBLE) >= 1;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static DashSkill deserialize(Map<String, Object> serialised) {
-        DashSkill deserialised = new DashSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

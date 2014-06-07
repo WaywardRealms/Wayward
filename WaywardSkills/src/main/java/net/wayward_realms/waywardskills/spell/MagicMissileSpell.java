@@ -17,9 +17,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MagicMissileSpell extends AttackSpellBase {
 
     public MagicMissileSpell() {
@@ -64,23 +61,6 @@ public class MagicMissileSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 1;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static MagicMissileSpell deserialize(Map<String, Object> serialised) {
-        MagicMissileSpell deserialised = new MagicMissileSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
     @Override
