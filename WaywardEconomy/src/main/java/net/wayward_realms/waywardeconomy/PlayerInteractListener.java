@@ -31,6 +31,7 @@ public class PlayerInteractListener implements Listener {
                 if (event.getClickedBlock().getRelative(BlockFace.DOWN).getState() instanceof Chest) {
                     Chest chest = (Chest) event.getClickedBlock().getRelative(BlockFace.DOWN).getState();
                     if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_PURPLE + "[shop]")) {
+                        event.setCancelled(true);
                         validateShopSign(sign, event.getPlayer());
                         if (sign.getLine(1).toLowerCase().contains("buy")) {
                             event.getPlayer().openInventory(chest.getInventory());
