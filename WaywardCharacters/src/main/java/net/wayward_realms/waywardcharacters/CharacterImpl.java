@@ -403,7 +403,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     }
 
     public int getStatPoints(Stat stat) {
-        return getFieldValue("stat-points." + stat.toString()) != null ? getFieldIntValue("stat-points." + stat.toString().toLowerCase()) : 0;
+        return getFieldValue("stat-points." + stat.toString().toLowerCase()) != null ? getFieldIntValue("stat-points." + stat.toString().toLowerCase()) : 0;
     }
 
     public void setStatPoints(Stat stat, int amount) {
