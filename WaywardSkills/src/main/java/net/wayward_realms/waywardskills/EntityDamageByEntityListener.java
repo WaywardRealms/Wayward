@@ -54,6 +54,12 @@ public class EntityDamageByEntityListener implements Listener {
                                 if (endTime >= System.currentTimeMillis()) {
                                     event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
                                 }
+                            } else if (lore.startsWith("blizzard:")) {
+                                long endTime = Long.parseLong(lore.split(":")[1]);
+                                if (endTime >= System.currentTimeMillis()) {
+                                    event.setDamage(event.getDamage() + 6);
+                                    freeze(event.getEntity());
+                                }
                             }
                         }
                     }
