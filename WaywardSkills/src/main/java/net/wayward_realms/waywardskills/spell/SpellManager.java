@@ -40,6 +40,7 @@ public class SpellManager {
         addSpell(new IceBreathSpell(plugin));
         addSpell(new FireSwordSpell());
         addSpell(new LevitationSpell(plugin));
+        addSpell(new CloakOfShadowsSpell(plugin));
     }
 
     public Spell getSpell(String name) {
