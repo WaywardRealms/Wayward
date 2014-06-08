@@ -5,9 +5,11 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -56,13 +58,17 @@ public class OvergrowthSpell extends AttackSpellBase {
     @Override
     public boolean use(Player player) {
         Block targetBlock = getTargetBlock(player, null, 32);
-        targetBlock.getWorld().generateTree(targetBlock.getLocation(), TreeType.JUNGLE);
-        for (LivingEntity entity : player.getWorld().getLivingEntities()) {
-            if (entity.getLocation().distanceSquared(targetBlock.getLocation()) <= 256) {
-                entity.damage(15D, player);
+        boolean successful = targetBlock.getWorld().generateTree(targetBlock.getRelative(BlockFace.UP).getLocation(), TreeType.JUNGLE);
+        if (successful) {
+            for (LivingEntity entity : player.getWorld().getLivingEntities()) {
+                if (entity.getLocation().distanceSquared(targetBlock.getLocation()) <= 256) {
+                    entity.damage(15D, player);
+                }
             }
+        } else {
+            player.sendMessage(ChatColor.RED + "Could not grow a tree there.");
         }
-        return true;
+        return successful;
     }
 
     @Override
