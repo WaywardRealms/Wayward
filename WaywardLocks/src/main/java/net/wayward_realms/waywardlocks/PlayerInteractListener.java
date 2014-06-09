@@ -251,15 +251,14 @@ public class PlayerInteractListener implements Listener {
     }
 
     public boolean hasLockpick(Player player) {
-        for (ItemStack lockpick : player.getInventory().getContents()) {
-            if (lockpick != null) {
-                if (lockpick.hasItemMeta()) {
-                    if (lockpick.getItemMeta().hasDisplayName()) {
-                        if (lockpick.getItemMeta().getDisplayName().equals("Lockpick")
-                                && lockpick.getItemMeta().hasLore()
-                                && lockpick.getItemMeta().getLore().contains("Used for breaking through locks")) {
-                            return true;
-                        }
+        ItemStack lockpick = player.getItemInHand();
+        if (lockpick != null) {
+            if (lockpick.hasItemMeta()) {
+                if (lockpick.getItemMeta().hasDisplayName()) {
+                    if (lockpick.getItemMeta().getDisplayName().equals("Lockpick")
+                            && lockpick.getItemMeta().hasLore()
+                            && lockpick.getItemMeta().getLore().contains("Used for breaking through locks")) {
+                        return true;
                     }
                 }
             }
