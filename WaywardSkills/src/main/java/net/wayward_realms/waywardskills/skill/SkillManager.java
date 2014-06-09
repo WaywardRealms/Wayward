@@ -32,6 +32,7 @@ public class SkillManager {
         addSkill(new SlashSkill());
         addSkill(new StabSkill());
         addSkill(new SpinningSweepSkill(plugin));
+        addSkill(new MultiShotSkill());
     }
 
     public Skill getSkill(String name) {
