@@ -24,7 +24,22 @@
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.5</version>
         </dependency>
+        <dependency>
+            <groupId>mkremins</groupId>
+            <artifactId>fanciful</artifactId>
+            <version>0.1.5</version>
+        </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>fanciful-mvn-repo</id>
+            <url>https://raw.github.com/mkremins/fanciful/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <sourceDirectory>src/main/java</sourceDirectory>
