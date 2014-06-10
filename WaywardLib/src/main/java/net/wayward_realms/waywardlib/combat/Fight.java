@@ -89,4 +89,13 @@ public interface Fight {
      */
     public void sendMessage(String message);
 
+    /**
+     * Gets the amount of turns a combatant has a status effect for
+     *
+     * @param combatant the combatant
+     * @param statusEffect the status effects
+     * @return the amount of turns remaining of the status effect
+     */
+    public int getStatusTurns(Combatant combatant, StatusEffect statusEffect);
+
 }
