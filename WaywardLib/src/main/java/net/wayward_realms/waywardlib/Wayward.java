@@ -16,8 +16,9 @@ import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import net.wayward_realms.waywardlib.permissions.PermissionsPlugin;
 import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
-import net.wayward_realms.waywardlib.travel.TravelPlugin;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
+import net.wayward_realms.waywardlib.travel.TravelPlugin;
+import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableChunk;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import net.wayward_realms.waywardlib.worldgen.WorldgenPlugin;
@@ -39,6 +40,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
 
     @Override
     public void onEnable() {
+        PlayerNamePlateUtils.init(this);
         ConfigurationSerialization.registerClass(SerialisableLocation.class);
         ConfigurationSerialization.registerClass(SerialisableChunk.class);
         loadState();

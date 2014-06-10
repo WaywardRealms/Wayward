@@ -10,6 +10,7 @@ import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 
+import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -361,6 +362,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
+        PlayerNamePlateUtils.refreshPlayer(player);
         player.setMaxHealth(character.getMaxHealth());
         player.setHealth(Math.max(character.getHealth(), 0));
         player.setFoodLevel(character.getFoodLevel());
