@@ -11,6 +11,20 @@
     <properties>
         <github.global.server>github</github.global.server>
     </properties>
+    <repositories>
+        <repository>
+            <id>comphenix-repo</id>
+            <name>Comphenix Repository</name>
+            <url>http://repo.comphenix.net/content/groups/public</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+    </dependencies>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <sourceDirectory>src/main/java</sourceDirectory>
