@@ -155,7 +155,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                         getIrcBot().sendIRC().message(getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
                     }
                 } else {
-                    talking.sendRawMessage(getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
+                    talking.sendMessage(getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
                 }
             }
         }
