@@ -140,21 +140,13 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                             if (getPlayerChannel(talking).getRadius() >= 0) {
                                 if (talking.getWorld().equals(player.getWorld())) {
                                     if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= (double) getPlayerChannel(talking).getRadius()) {
-                                        if (getPlayerChannel(talking).isGarbleEnabled()) {
-                                            double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation()));
-                                            double clearRange = 0.75D * (double) getPlayerChannel(talking).getRadius();
-                                            double hearingRange = (double) getPlayerChannel(talking).getRadius();
-                                            double clarity = 1.0D - ((distance - clearRange) / hearingRange);
-                                            format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", garbleMessage(drunkify(player, message), clarity));
-                                        } else {
-                                            format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                                        }
-                                        player.sendMessage(format);
+                                        format = formatByChannel(getPlayerChannel(talking), talking, player, message);
+                                        player.sendRawMessage(format);
                                     }
                                 }
                             } else {
-                                format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                                player.sendMessage(format);
+                                format = formatByChannel(getPlayerChannel(talking), talking, player, message);
+                                player.sendRawMessage(format);
                             }
                         }
                     }
@@ -163,13 +155,13 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                         getIrcBot().sendIRC().message(getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
                     }
                 } else {
-                    talking.sendMessage(getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
+                    talking.sendRawMessage(getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
                 }
             }
         }
     }
 
-    public String formatByChannel(Channel channel, Player talking, String message){
+    public String formatByChannel(Channel channel, Player talking, Player recieving, String message){
         FancyMessage builder = new FancyMessage();
         String out;
         String colormode = "g";
@@ -403,9 +395,14 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             } else if(in.contains("message")){
                 if(channel.isGarbleEnabled())
                 {
-                    String outmessage = message;
-                    //garble(outmessage)
-                    builder.then(in.replace("message", outmessage));
+                    if(recieving != null) {
+                        double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(recieving.getLocation()));
+                        double clearRange = 0.75D * (double) getPlayerChannel(talking).getRadius();
+                        double hearingRange = (double) getPlayerChannel(talking).getRadius();
+                        double clarity = 1.0D - ((distance - clearRange) / hearingRange);
+                        String outmessage = garbleMessage(drunkify(recieving, message), clarity);
+                        builder.then(in.replace("message", outmessage));
+                    }
                 }
                 else{
                     builder.then(in.replace("message", message));
