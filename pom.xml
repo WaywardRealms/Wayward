@@ -22,6 +22,7 @@
         <module>WaywardDonations</module>
         <module>WaywardEvents</module>
         <module>WaywardEconomy</module>
+        <module>WaywardEnvironment</module>
         <module>WaywardEssentials</module>
         <module>WaywardTravel</module>
         <module>WaywardItems</module>
