@@ -140,13 +140,13 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                             if (getPlayerChannel(talking).getRadius() >= 0) {
                                 if (talking.getWorld().equals(player.getWorld())) {
                                     if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= (double) getPlayerChannel(talking).getRadius()) {
-                                        format = formatByChannel(getPlayerChannel(talking), talking, player, message);
-                                        player.sendRawMessage(format);
+                                        FancyMessage fancy = formatByChannel(getPlayerChannel(talking), talking, player, message);
+                                        fancy.send(player);
                                     }
                                 }
                             } else {
-                                format = formatByChannel(getPlayerChannel(talking), talking, player, message);
-                                player.sendRawMessage(format);
+                                FancyMessage fancy = formatByChannel(getPlayerChannel(talking), talking, player, message);
+                                fancy.send(player);
                             }
                         }
                     }
@@ -161,7 +161,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         }
     }
 
-    public String formatByChannel(Channel channel, Player talking, Player recieving, String message) {
+    public FancyMessage formatByChannel(Channel channel, Player talking, Player recieving, String message) {
         FancyMessage builder = new FancyMessage("");
         String out;
         String colormode = "g";
@@ -407,8 +407,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 }
             }
         }
-        out = builder.toJSONString();
-        return out;
+        return builder;
     }
 
     public void handleChat(User talking, org.pircbotx.Channel ircChannel, String message) {
