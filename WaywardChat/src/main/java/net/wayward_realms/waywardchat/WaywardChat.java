@@ -162,7 +162,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     }
 
     public String formatByChannel(Channel channel, Player talking, Player recieving, String message) {
-        FancyMessage builder = new FancyMessage();
+        FancyMessage builder = new FancyMessage("");
         String out;
         String colormode = "g";
         String format = channel.getFormat();
