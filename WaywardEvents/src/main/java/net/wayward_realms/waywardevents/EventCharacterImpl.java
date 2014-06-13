@@ -294,7 +294,7 @@ public class EventCharacterImpl implements EventCharacter {
 
     @Override
     public void setHealth(double health) {
-        setFieldValue("health", health);
+        setFieldValue("health", Math.max(Math.min(health, getMaxHealth()), 0));
     }
 
     @Override
