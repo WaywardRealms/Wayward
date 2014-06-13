@@ -1,0 +1,20 @@
+name: ${project.name}
+author: Xslare
+version: ${project.version}
+description: ${project.description}
+main: net.wayward_realms.waywardeconomy.WaywardEnvironment
+depend: [WaywardLib]
+commands:
+    weather:
+        description: Control the server weather
+        usage: /<command> [clear|rain|thunder]
+    time:
+        description: Control the server time
+        usage: /<command> [dawn|day|dusk|night|minecraft|hour]
+permissions:
+    wayward.environment.command.weather.set:
+        description: Allows you to set the server's weather
+        default: op
+    wayward.environment.command.time.set:
+        description: Allows you to set the server's time
+        default: op
