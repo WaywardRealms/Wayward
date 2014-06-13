@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
@@ -46,8 +47,8 @@ public class EsunaSpell extends SpellBase {
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         if (attacking.getMana() >= getManaCost()) {
-            for (PotionEffectType potionEffectType : PotionEffectType.values()) {
-                defending.getPlayer().getPlayer().addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
+            for (StatusEffect statusEffect : StatusEffect.values()) {
+                fight.setStatusTurns(defending, statusEffect, 0);
             }
             fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cured " + defending.getName() + "'s status effects");
             return true;

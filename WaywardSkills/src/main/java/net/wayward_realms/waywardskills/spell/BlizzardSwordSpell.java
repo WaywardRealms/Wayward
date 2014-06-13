@@ -2,6 +2,7 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.professions.ToolType;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
@@ -41,8 +42,14 @@ public class BlizzardSwordSpell extends SpellBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        //TODO Status effects, requires #37
-        return false;
+        if (attacking.getMana() >= getManaCost()) {
+            fight.setStatusTurns(defending, StatusEffect.FROZEN, 5);
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " hit " + defending.getName() + " with a " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " imbued with ice, freezing them.");
+            return true;
+        } else {
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to imbue their " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " with ice, but did not have enough mana.");
+            return false;
+        }
     }
 
     @Override

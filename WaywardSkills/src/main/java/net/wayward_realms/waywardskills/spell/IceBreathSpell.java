@@ -2,6 +2,7 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
@@ -34,12 +35,12 @@ public class IceBreathSpell extends SpellBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        //TODO: Status effects - freeze other players
         if (attacking.getMana() >= getManaCost()) {
             if (attacking.getPlayer().isOnline()) {
                 Player player = attacking.getPlayer().getPlayer();
                 player.launchProjectile(Snowball.class);
-                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed an ice cold wind at " + defending.getName() + ", not freezing them because status effects aren't implemented yet. Sorry!");
+                fight.setStatusTurns(attacking, StatusEffect.FROZEN, 5);
+                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed an ice cold wind at " + defending.getName() + ", freezing them.");
             }
             return true;
         } else {

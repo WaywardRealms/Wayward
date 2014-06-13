@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
@@ -15,6 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class BurnSpell extends AttackSpellBase {
 
@@ -94,4 +98,10 @@ public class BurnSpell extends AttackSpellBase {
         return attacking.getName() + " attempted to set " + defending.getName() + " alight with magic, but did not have enough mana.";
     }
 
+    @Override
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
+        statusEffects.put(StatusEffect.BURNED, 5);
+        return statusEffects;
+    }
 }
