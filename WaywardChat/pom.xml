@@ -83,6 +83,7 @@
                                     <include>commons-codec:commons-codec</include>
                                     <include>com.google.guava:guava</include>
                                     <include>org.slf4j:slf4j-nop</include>
+                                    <include>mkremins:fanciful</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
