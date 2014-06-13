@@ -122,15 +122,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             if (getEmoteMode(talking).isEmote(message)) {
                 getChannel(getConfig().getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
-                    if (getConfig().getInt("emotes.radius") >= 0) {
-                        if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= getConfig().getInt("emotes.radius")) {
-                            format = getConfig().getString("emotes.format").replace("%channel%", "emote").replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message.replace("*", ""));
-                            player.sendMessage(format);
-                        }
-                    } else {
-                        format = getConfig().getString("emotes.format").replace("%channel%", "emote").replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message.replace("*", ""));
-                        player.sendMessage(format);
-                    }
+                    formatEmote(talking, message).send(player);
                 }
             } else {
                 if (getPlayerChannel(talking) != null) {
@@ -140,13 +132,12 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                             if (getPlayerChannel(talking).getRadius() >= 0) {
                                 if (talking.getWorld().equals(player.getWorld())) {
                                     if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= (double) getPlayerChannel(talking).getRadius()) {
-                                        FancyMessage fancy = formatByChannel(getPlayerChannel(talking), talking, player, message);
+                                        FancyMessage fancy = formatChannel(getPlayerChannel(talking), talking, player, message);
                                         fancy.send(player);
                                     }
                                 }
                             } else {
-                                FancyMessage fancy = formatByChannel(getPlayerChannel(talking), talking, player, message);
-                                fancy.send(player);
+                                formatChannel(getPlayerChannel(talking), talking, player, message).send(player);
                             }
                         }
                     }
@@ -161,253 +152,109 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         }
     }
 
-    public FancyMessage formatByChannel(Channel channel, Player talking, Player recieving, String message) {
-        FancyMessage builder = new FancyMessage("");
-        String out;
-        String colormode = "g";
+    public FancyMessage formatChannel(Channel channel, Player talking, Player recipient, String message) {
+        FancyMessage fancy = new FancyMessage("");
         String format = channel.getFormat();
-        String [] parts = format.split("%|&");
-        for (String in : parts) {
-            if (in.matches("[a-fk-or0-9]") || colormode.matches("[a-fk-or0-9]")) {
-                boolean clean = true;
-                switch (in) {
-                    case "a":
-                        builder.color(ChatColor.GREEN);
-                        colormode = "a";
-                        clean = false;
-                        break;
-                    case "b":
-                        builder.color(ChatColor.AQUA);
-                        colormode = "b";
-                        clean = false;
-                        break;
-                    case "c":
-                        builder.color(ChatColor.RED);
-                        colormode = "c";
-                        clean = false;
-                        break;
-                    case "d":
-                        builder.color(ChatColor.LIGHT_PURPLE);
-                        colormode = "d";
-                        clean = false;
-                        break;
-                    case "e":
-                        builder.color(ChatColor.YELLOW);
-                        colormode = "e";
-                        clean = false;
-                        break;
-                    case "f":
-                        builder.color(ChatColor.WHITE);
-                        colormode = "f";
-                        clean = false;
-                        break;
-                    case "k":
-                        builder.color(ChatColor.MAGIC);
-                        colormode = "k";
-                        clean = false;
-                        break;
-                    case "l":
-                        builder.color(ChatColor.BOLD);
-                        colormode = "l";
-                        clean = false;
-                        break;
-                    case "m":
-                        builder.color(ChatColor.STRIKETHROUGH);
-                        colormode = "m";
-                        clean = false;
-                        break;
-                    case "n":
-                        builder.color(ChatColor.UNDERLINE);
-                        colormode = "n";
-                        clean = false;
-                        break;
-                    case "o":
-                        builder.color(ChatColor.ITALIC);
-                        colormode = "o";
-                        clean = false;
-                        break;
-                    case "r":
-                        builder.color(ChatColor.RESET);
-                        colormode = "r";
-                        clean = false;
-                        break;
-                    case "0":
-                        builder.color(ChatColor.BLACK);
-                        colormode = "0";
-                        clean = false;
-                        break;
-                    case "1":
-                        builder.color(ChatColor.DARK_BLUE);
-                        colormode = "1";
-                        clean = false;
-                        break;
-                    case "2":
-                        builder.color(ChatColor.DARK_GREEN);
-                        colormode = "2";
-                        clean = false;
-                        break;
-                    case "3":
-                        builder.color(ChatColor.DARK_AQUA);
-                        colormode = "3";
-                        clean = false;
-                        break;
-                    case "4":
-                        builder.color(ChatColor.DARK_RED);
-                        colormode = "4";
-                        clean = false;
-                        break;
-                    case "5":
-                        builder.color(ChatColor.DARK_PURPLE);
-                        colormode = "5";
-                        clean = false;
-                        break;
-                    case "6":
-                        builder.color(ChatColor.GOLD);
-                        colormode = "6";
-                        clean = false;
-                        break;
-                    case "7":
-                        builder.color(ChatColor.GRAY);
-                        colormode = "7";
-                        clean = false;
-                        break;
-                    case "8":
-                        builder.color(ChatColor.DARK_GRAY);
-                        colormode = "8";
-                        clean = false;
-                        break;
-                    case "9":
-                        builder.color(ChatColor.BLUE);
-                        colormode = "9";
-                        clean = false;
-                        break;
-                }
-                if (clean) {
-                    switch (colormode) {
-                        case "a":
-                            builder.color(ChatColor.GREEN);
-                            colormode = "a";
-                            break;
-                        case "b":
-                            builder.color(ChatColor.AQUA);
-                            colormode = "b";
-                            break;
-                        case "c":
-                            builder.color(ChatColor.RED);
-                            colormode = "c";
-                            break;
-                        case "d":
-                            builder.color(ChatColor.LIGHT_PURPLE);
-                            colormode = "d";
-                            break;
-                        case "e":
-                            builder.color(ChatColor.YELLOW);
-                            colormode = "e";
-                            break;
-                        case "f":
-                            builder.color(ChatColor.WHITE);
-                            colormode = "f";
-                            break;
-                        case "k":
-                            builder.color(ChatColor.MAGIC);
-                            colormode = "k";
-                            break;
-                        case "l":
-                            builder.color(ChatColor.BOLD);
-                            colormode = "l";
-                            break;
-                        case "m":
-                            builder.color(ChatColor.STRIKETHROUGH);
-                            colormode = "m";
-                            break;
-                        case "n":
-                            builder.color(ChatColor.UNDERLINE);
-                            colormode = "n";
-                            break;
-                        case "o":
-                            builder.color(ChatColor.ITALIC);
-                            colormode = "o";
-                            break;
-                        case "r":
-                            builder.color(ChatColor.RESET);
-                            colormode = "r";
-                            break;
-                        case "0":
-                            builder.color(ChatColor.BLACK);
-                            colormode = "0";
-                            break;
-                        case "1":
-                            builder.color(ChatColor.DARK_BLUE);
-                            colormode = "1";
-                            break;
-                        case "2":
-                            builder.color(ChatColor.DARK_GREEN);
-                            colormode = "2";
-                            break;
-                        case "3":
-                            builder.color(ChatColor.DARK_AQUA);
-                            colormode = "3";
-                            break;
-                        case "4":
-                            builder.color(ChatColor.DARK_RED);
-                            colormode = "4";
-                            break;
-                        case "5":
-                            builder.color(ChatColor.DARK_PURPLE);
-                            colormode = "5";
-                            break;
-                        case "6":
-                            builder.color(ChatColor.GOLD);
-                            colormode = "6";
-                            break;
-                        case "7":
-                            builder.color(ChatColor.GRAY);
-                            colormode = "7";
-                            break;
-                        case "8":
-                            builder.color(ChatColor.DARK_GRAY);
-                            colormode = "8";
-                            break;
-                        case "9":
-                            builder.color(ChatColor.BLUE);
-                            colormode = "9";
-                            break;
-                    }
-                }
-            }
-            //format = getPlayerChannel(talking).getFormat()
-            //.replace("%channel%", getPlayerChannel(talking).getName())
-            //.replace("%prefix%", getPlayerPrefix(talking))
-            //.replace("%player%", talking.getDisplayName())
-            //.replace("%ign%", talking.getName())
-            //.replace("&", ChatColor.COLOR_CHAR + "")
-            //.replace("%message%", garbleMessage(drunkify(player, message), clarity));
-            if (in.contains("channel")) {
-                builder.then(in.replace("channel", channel.getName()));
-            } else if (in.contains("player")) {
-                builder.then(in.replace("player", talking.getDisplayName()));
-                builder.tooltip(talking.getName());
-            } else if (in.contains("prefix")) {
-                builder.then(in.replace("prefix", getPlayerPrefix(talking)));
-            } else if (in.contains("ign")) {
-                builder.then(in.replace("ign", talking.getName()));
-                builder.tooltip(talking.getDisplayName());
-            } else if (in.contains("message")) {
+        ChatColor chatColour = null;
+        ChatColor chatFormat = null;
+        for (int i = 0; i < format.length(); i++) {
+            if (format.charAt(i) == '&') {
+                ChatColor colourOrFormat = ChatColor.getByChar(format.charAt(i + 1));
+                if (colourOrFormat.isColor()) chatColour = colourOrFormat;
+                if (colourOrFormat.isFormat()) chatFormat = colourOrFormat;
+                i += 1;
+            } else if (format.substring(i, i + ("%channel%").length()).equalsIgnoreCase("%channel%")) {
+                fancy.then(channel.getName());
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%channel%").length() - 1;
+            } else if (format.substring(i, i + ("%player%").length()).equalsIgnoreCase("%player%")) {
+                fancy.then(talking.getDisplayName());
+                fancy.tooltip(talking.getName());
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%player%").length() - 1;
+            } else if (format.substring(i, i + ("%prefix%").length()).equalsIgnoreCase("%prefix%")) {
+                fancy.then(getPlayerPrefix(talking));
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%prefix%").length() - 1;
+            } else if (format.substring(i, i + ("%ign%").length()).equalsIgnoreCase("%ign%")) {
+                fancy.then(talking.getName());
+                fancy.tooltip(talking.getDisplayName());
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%ign%").length() - 1;
+            } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
                 if (channel.isGarbleEnabled()) {
-                    if (recieving != null) {
-                        double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(recieving.getLocation()));
-                        double clearRange = 0.75D * (double) getPlayerChannel(talking).getRadius();
-                        double hearingRange = (double) getPlayerChannel(talking).getRadius();
+                    if (recipient != null) {
+                        double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(recipient.getLocation()));
+                        double clearRange = 0.75D * (double) channel.getRadius();
+                        double hearingRange = (double) channel.getRadius();
                         double clarity = 1.0D - ((distance - clearRange) / hearingRange);
-                        String outmessage = garbleMessage(drunkify(recieving, message), clarity);
-                        builder.then(in.replace("message", outmessage));
+                        String garbleMessage = garbleMessage(drunkify(talking, message), clarity);
+                        fancy.then(garbleMessage);
                     }
-                } else{
-                    builder.then(in.replace("message", message));
+                } else {
+                    fancy.then(message);
                 }
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%message%").length() - 1;
+            } else {
+                fancy.then(format.charAt(i));
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
             }
         }
-        return builder;
+        return fancy;
+    }
+
+    public FancyMessage formatEmote(Player talking, String message) {
+        FancyMessage fancy = new FancyMessage("");
+        String format = getConfig().getString("emotes.format");
+        ChatColor chatColour = null;
+        ChatColor chatFormat = null;
+        for (int i = 0; i < format.length(); i++) {
+            if (format.charAt(i) == '&') {
+                ChatColor colourOrFormat = ChatColor.getByChar(format.charAt(i + 1));
+                if (colourOrFormat.isColor()) chatColour = colourOrFormat;
+                if (colourOrFormat.isFormat()) chatFormat = colourOrFormat;
+                i += 1;
+            } else if (format.substring(i, i + ("%channel%").length()).equalsIgnoreCase("%channel%")) {
+                fancy.then("emote");
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%channel%").length() - 1;
+            } else if (format.substring(i, i + ("%player%").length()).equalsIgnoreCase("%player%")) {
+                fancy.then(talking.getDisplayName());
+                fancy.tooltip(talking.getName());
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%player%").length() - 1;
+            } else if (format.substring(i, i + ("%prefix%").length()).equalsIgnoreCase("%prefix%")) {
+                fancy.then(getPlayerPrefix(talking));
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%prefix%").length() - 1;
+            } else if (format.substring(i, i + ("%ign%").length()).equalsIgnoreCase("%ign%")) {
+                fancy.then(talking.getName());
+                fancy.tooltip(talking.getDisplayName());
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%ign%").length() - 1;
+            } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
+                fancy.then(message.replace("*", ""));
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%message%").length() - 1;
+            } else {
+                fancy.then(format.charAt(i));
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+            }
+        }
+        return fancy;
     }
 
     public void handleChat(User talking, org.pircbotx.Channel ircChannel, String message) {
