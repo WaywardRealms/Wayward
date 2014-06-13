@@ -161,14 +161,14 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         }
     }
 
-    public String formatByChannel(Channel channel, Player talking, Player recieving, String message){
+    public String formatByChannel(Channel channel, Player talking, Player recieving, String message) {
         FancyMessage builder = new FancyMessage();
         String out;
         String colormode = "g";
         String format = channel.getFormat();
         String [] parts = format.split("%|&");
-        for(String in: parts){
-            if(in.matches("[a-fk-or0-9]") || colormode.matches("[a-fk-or0-9]")){
+        for (String in : parts) {
+            if (in.matches("[a-fk-or0-9]") || colormode.matches("[a-fk-or0-9]")) {
                 boolean clean = true;
                 switch (in) {
                     case "a":
@@ -282,7 +282,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                         clean = false;
                         break;
                 }
-                if(clean) {
+                if (clean) {
                     switch (colormode) {
                         case "a":
                             builder.color(ChatColor.GREEN);
@@ -375,27 +375,26 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                     }
                 }
             }
-//format = getPlayerChannel(talking).getFormat()
-// .replace("%channel%", getPlayerChannel(talking).getName())
-// .replace("%prefix%", getPlayerPrefix(talking))
-// .replace("%player%", talking.getDisplayName())
-// .replace("%ign%", talking.getName())
-// .replace("&", ChatColor.COLOR_CHAR + "")
-// .replace("%message%", garbleMessage(drunkify(player, message), clarity));
-            if(in.contains("channel")){
+            //format = getPlayerChannel(talking).getFormat()
+            //.replace("%channel%", getPlayerChannel(talking).getName())
+            //.replace("%prefix%", getPlayerPrefix(talking))
+            //.replace("%player%", talking.getDisplayName())
+            //.replace("%ign%", talking.getName())
+            //.replace("&", ChatColor.COLOR_CHAR + "")
+            //.replace("%message%", garbleMessage(drunkify(player, message), clarity));
+            if (in.contains("channel")) {
                 builder.then(in.replace("channel", channel.getName()));
-            } else if(in.contains("player")){
+            } else if (in.contains("player")) {
                 builder.then(in.replace("player", talking.getDisplayName()));
                 builder.tooltip(talking.getName());
-            } else if(in.contains("prefix")){
+            } else if (in.contains("prefix")) {
                 builder.then(in.replace("prefix", getPlayerPrefix(talking)));
-            } else if(in.contains("ign")){
+            } else if (in.contains("ign")) {
                 builder.then(in.replace("ign", talking.getName()));
                 builder.tooltip(talking.getDisplayName());
-            } else if(in.contains("message")){
-                if(channel.isGarbleEnabled())
-                {
-                    if(recieving != null) {
+            } else if (in.contains("message")) {
+                if (channel.isGarbleEnabled()) {
+                    if (recieving != null) {
                         double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(recieving.getLocation()));
                         double clearRange = 0.75D * (double) getPlayerChannel(talking).getRadius();
                         double hearingRange = (double) getPlayerChannel(talking).getRadius();
@@ -403,8 +402,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                         String outmessage = garbleMessage(drunkify(recieving, message), clarity);
                         builder.then(in.replace("message", outmessage));
                     }
-                }
-                else{
+                } else{
                     builder.then(in.replace("message", message));
                 }
             }
