@@ -18,7 +18,7 @@ public class ProfessionInfo {
     public int getMaxToolDurability(ToolType type) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         if (config.get("max-tool-durability." + type.toString().toLowerCase()) == null) return 10;
-        return Math.max(config.getInt("max-tool-durability." + type), 10);
+        return Math.max(config.getInt("max-tool-durability." + type.toString().toLowerCase()), 10);
     }
 
     public void setMaxToolDurability(ToolType type, int durability) {
