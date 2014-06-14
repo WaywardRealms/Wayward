@@ -5,7 +5,7 @@ import net.wayward_realms.waywardlib.WaywardPlugin;
 import java.util.Collection;
 
 /**
- * Represents a travel pluginWaywardPlugin
+ * Represents a travel plugin
  *
  */
 public interface TravelPlugin extends WaywardPlugin {

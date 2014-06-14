@@ -7,7 +7,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.Collection;
 
 /**
- * Represents a dungeon pluginWaywardPlugin
+ * Represents an events plugin
  *
  */
 public interface EventsPlugin extends WaywardPlugin {
