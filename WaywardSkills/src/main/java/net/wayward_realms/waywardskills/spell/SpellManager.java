@@ -29,7 +29,7 @@ public class SpellManager {
         addSpell(new EsunaSpell());
         addSpell(new MagicMissileSpell());
         addSpell(new CureSpell());
-        addSpell(new MageArmourSpell());
+        addSpell(new MageArmourSpell(plugin));
         addSpell(new DrawSwordSpell());
         addSpell(new EmpowerSpell());
         addSpell(new SummonZombieSpell(plugin));
