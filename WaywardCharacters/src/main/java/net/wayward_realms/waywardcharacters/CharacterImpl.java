@@ -306,7 +306,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public void setHealth(double health) {
-        setFieldValue("health", health);
+        setFieldValue("health", Math.max(Math.min(health, getMaxHealth()), 0));
     }
 
     @Override

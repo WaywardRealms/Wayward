@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
@@ -15,6 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_DEFENCE;
@@ -88,6 +92,18 @@ public class FireballSpell extends AttackSpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
+        statusEffects.put(StatusEffect.BURNED, 3);
+        return statusEffects;
+    }
+
+    @Override
+    public int getStatusEffectChance(StatusEffect statusEffect) {
+        return 30;
     }
 
 }

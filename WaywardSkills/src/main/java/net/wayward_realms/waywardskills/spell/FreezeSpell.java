@@ -4,10 +4,12 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -36,8 +38,14 @@ public class FreezeSpell extends SpellBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        //TODO Status effects, requires #37
-        return false;
+        if (attacking.getMana() >= getManaCost()) {
+            fight.setStatusTurns(defending, StatusEffect.FROZEN, 5);
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " froze " + defending.getName());
+            return true;
+        } else {
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to freeze " + defending.getName() + " but did not have enough mana.");
+            return false;
+        }
     }
 
     @Override
