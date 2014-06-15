@@ -8,7 +8,7 @@ public class WaywardEnvironment extends JavaPlugin implements EnvironmentPlugin 
 
     @Override
     public void onEnable(){
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new AdjustTimeRunnable(), 6000L, 6000L);
+        getServer().getScheduler().runTaskTimerAsynchronously(this, new AdjustTimeRunnable(this), 3000L, 3000L);
     }
 
     @Override
