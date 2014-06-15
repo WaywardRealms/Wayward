@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardenvironment;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,11 +18,11 @@ public class AdjustTimeRunnable extends BukkitRunnable{
 
     public AdjustTimeRunnable(WaywardEnvironment inplugin){
         plugin = inplugin;
-        Future<List<World>> futureWorlds = plugin.getServer().getScheduler().callSyncMethod(plugin, new Callable<List<World>>(){
-            public List<World> call() {
-                return plugin.getServer().getWorlds();
-            }
-        }
+        Future<List<World>> futureWorlds = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<List<World>>() {
+                    public List<World> call() {
+                        return plugin.getServer().getWorlds();
+                    }
+                }
         );
         try {
             worlds = futureWorlds.get();
@@ -30,7 +31,7 @@ public class AdjustTimeRunnable extends BukkitRunnable{
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        Future<FileConfiguration> futureConfig = plugin.getServer().getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>(){
+        Future<FileConfiguration> futureConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>(){
             public FileConfiguration call() {
                 return plugin.getConfig();
             }
@@ -51,13 +52,17 @@ public class AdjustTimeRunnable extends BukkitRunnable{
     @Override
     public void run() {
         long systime = System.currentTimeMillis();
-            for (World world : worlds) {
+            for (final World world : worlds) {
                 Object entry = config.get("worlds." + world.getName() + ".cycleMinuteLength");
                 if (entry != null) {
                     if (entry instanceof Number) {
                         double cycleLength = ((Number) entry).doubleValue() * 1200;
-                        long convertedPosition = ((long) ((systime % cycleLength) / cycleLength)) * 24000L;
-                        world.setTime(convertedPosition);
+                        final long convertedPosition = ((long) ((systime % cycleLength) / cycleLength)) * 24000L;
+                        Bukkit.getScheduler().runTask(plugin, new Runnable(){
+                            public void run(){
+                                world.setTime(convertedPosition);
+                            }
+                        });
                     }
                 }
             }
