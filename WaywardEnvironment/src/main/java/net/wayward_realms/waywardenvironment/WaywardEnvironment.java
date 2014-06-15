@@ -1,26 +1,14 @@
 package net.wayward_realms.waywardenvironment;
 
 import net.wayward_realms.waywardlib.environment.EnvironmentPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class WaywardEnvironment extends JavaPlugin implements EnvironmentPlugin {
 
     @Override
     public void onEnable(){
-
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new AdjustTimeRunnable(), 6000L, 6000L);
     }
 
     @Override
