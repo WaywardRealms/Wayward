@@ -19,6 +19,7 @@ public class AdjustTimeRunnable extends BukkitRunnable{
     public AdjustTimeRunnable(WaywardEnvironment inplugin){
         plugin = inplugin;
         Future<List<World>> futureWorlds = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<List<World>>() {
+                    @Override
                     public List<World> call() {
                         return plugin.getServer().getWorlds();
                     }
@@ -32,6 +33,7 @@ public class AdjustTimeRunnable extends BukkitRunnable{
             e.printStackTrace();
         }
         Future<FileConfiguration> futureConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>(){
+                    @Override
             public FileConfiguration call() {
                 return plugin.getConfig();
             }
@@ -60,7 +62,7 @@ public class AdjustTimeRunnable extends BukkitRunnable{
                         final long convertedPosition = ((long) ((systime % cycleLength) / cycleLength)) * 24000L;
                         Bukkit.getScheduler().runTask(plugin, new Runnable(){
                             public void run(){
-                                world.setTime(convertedPosition);
+                                Bukkit.getWorld(world.getName()).setTime(convertedPosition);
                             }
                         });
                     }
