@@ -13,8 +13,8 @@ import java.util.concurrent.Future;
 public class AdjustTimeRunnable extends BukkitRunnable{
 
     private WaywardEnvironment plugin;
-    List<World> worlds;
-    FileConfiguration config;
+    List<World> worlds = null;
+    FileConfiguration config = null;
 
     public AdjustTimeRunnable(WaywardEnvironment inplugin){
         plugin = inplugin;
@@ -29,8 +29,10 @@ public class AdjustTimeRunnable extends BukkitRunnable{
             worlds = futureWorlds.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
+            plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
         } catch (ExecutionException e) {
             e.printStackTrace();
+            plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
         }
         Future<FileConfiguration> futureConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>(){
                     @Override
@@ -54,19 +56,24 @@ public class AdjustTimeRunnable extends BukkitRunnable{
     @Override
     public void run() {
         long systime = System.currentTimeMillis();
+        if(worlds != null && config != null) {
             for (final World world : worlds) {
                 Object entry = config.get("worlds." + world.getName() + ".cycleMinuteLength");
                 if (entry != null) {
                     if (entry instanceof Number) {
                         double cycleLength = ((Number) entry).doubleValue() * 1200;
                         final long convertedPosition = ((long) ((systime % cycleLength) / cycleLength)) * 24000L;
-                        Bukkit.getScheduler().runTask(plugin, new Runnable(){
-                            public void run(){
+                        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                            public void run() {
                                 Bukkit.getWorld(world.getName()).setTime(convertedPosition);
                             }
                         });
                     }
                 }
             }
+        } else {
+            plugin.getLogger().info("[WaywardEnvironment.AdjustTimeRunnable] Worlds/Config weren't collected from main thread, canceling runnable");
+            this.cancel();
+        }
     }
 }

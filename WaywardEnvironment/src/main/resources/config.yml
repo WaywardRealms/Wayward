@@ -3,3 +3,7 @@ worlds:
     cycleMinuteLength:
     precipitationPercentile:
     thunderingPercentile:
+  otherWorldName:
+    cycleMinuteLength:
+    precipitationPercentile:
+    thunderingPercentile:
