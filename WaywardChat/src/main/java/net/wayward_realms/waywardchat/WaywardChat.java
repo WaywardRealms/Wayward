@@ -280,7 +280,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         return message;
     }
 
-    private String garbleMessage(String message, double clarity) {
+    public String garbleMessage(String message, double clarity) {
         StringBuilder newMessage = new StringBuilder();
         Random random = new Random();
         int i = 0;

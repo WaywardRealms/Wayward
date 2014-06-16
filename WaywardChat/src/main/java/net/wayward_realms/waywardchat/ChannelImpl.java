@@ -20,8 +20,8 @@ public class ChannelImpl implements Channel {
     private String name;
     private ChatColor colour;
     private String format;
-    private Set<UUID> speakers;
-    private Set<UUID> listeners;
+    private Set<UUID> speakers = Collections.synchronizedSet(new HashSet<UUID>());
+    private Set<UUID> listeners = Collections.synchronizedSet(new HashSet<UUID>());
     private int radius;
     private boolean garbleEnabled;
     private boolean ircEnabled;
