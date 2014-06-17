@@ -1,9 +1,11 @@
 package net.wayward_realms.waywardchat;
 
 import mkremins.fanciful.FancyMessage;
+
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.util.math.MathUtils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -32,6 +34,7 @@ import java.util.concurrent.Future;
 public class AsyncPlayerChatListener implements Listener {
 
     private WaywardChat plugin;
+    private RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider;
     private YamlConfiguration pluginConfig;
     private YamlConfiguration emoteModeConfig;
     private YamlConfiguration prefixConfig;
@@ -39,7 +42,7 @@ public class AsyncPlayerChatListener implements Listener {
 
     public AsyncPlayerChatListener(final WaywardChat plugin) {
         this.plugin = plugin;
-        // GET PLUGIN CONFIG
+    // GET PLUGIN CONFIG
         Future<FileConfiguration> futureConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>() {
                     @Override
                     public FileConfiguration call() {
@@ -49,13 +52,16 @@ public class AsyncPlayerChatListener implements Listener {
         );
         try {
             pluginConfig = (YamlConfiguration) futureConfig.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                public void run() {
+                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the config from Wayward Chat.  Shit srsly broke yo.");
+                }
+            });
             e.printStackTrace();
         }
-        // END
-        // GET emote-mode.yml FILE.
+    // END
+    // GET emote-mode.yml FILE.
         Future<File> futureEmoteModeFolder = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<File>() {
                     @Override
                     public File call() {
@@ -65,29 +71,55 @@ public class AsyncPlayerChatListener implements Listener {
         );
         try {
             emoteModeConfig = YamlConfiguration.loadConfiguration(futureEmoteModeFolder.get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | AssertionError e) {
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                public void run() {
+                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the file \"emote-mode.yml\".  ");
+                }
+            });
             e.printStackTrace();
         }
-        // END
-        // GET prefixes.yml FILE
+    // END
+    // GET prefixes.yml FILE
         Future<File> futurePrefixConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<File>() {
                     @Override
                     public File call() {
-                        return new File(plugin.getDataFolder(), "prefix.yml");
+                        return new File(plugin.getDataFolder(), "prefixes.yml");
                     }
                 }
         );
         try {
             prefixConfig = YamlConfiguration.loadConfiguration(futurePrefixConfig.get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            prefixConfig.set("admin", " &e[admin] ");
+        } catch (InterruptedException | ExecutionException e) {
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                public void run() {
+                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the file \"prefixes.yml\".  ");
+                }
+            });
             e.printStackTrace();
         }
-        // END
-        // SET UP FUCKING PLAYER LOCATION GETTER SHIT
+    // END
+    // GET THE ESSENTIALS PLUGIN
+        Future<RegisteredServiceProvider<EssentialsPlugin>> futureEssentialsPluginProvider = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<RegisteredServiceProvider<EssentialsPlugin>>(){
+                    @Override
+                    public RegisteredServiceProvider<EssentialsPlugin> call() {
+                        return Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
+                    }
+                }
+        );
+        try {
+            essentialsPluginProvider = futureEssentialsPluginProvider.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                public void run() {
+                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the EssentialsPluginProvider.");
+                }
+            });
+            e.printStackTrace();
+        }
+    // END
+    // SET UP FUCKING PLAYER LOCATION GETTER SHIT COLLECTION
         Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 new BukkitRunnable(){
@@ -97,11 +129,8 @@ public class AsyncPlayerChatListener implements Listener {
                     UUIDLocations.put(player.getUniqueId(), player.getLocation());
                         }
                     }
-                },
-                100L,
-                100L
-        );
-        // END THAT SHIT
+                },100L,100L);
+    // END THAT SHIT
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -147,11 +176,13 @@ public class AsyncPlayerChatListener implements Listener {
                                 .replace("%ign%", talking.getName())
                                 .replace("&", ChatColor.COLOR_CHAR + "")
                                 .replace("%message%", message);
+                    //SCHEDULE TASK TO PASS TO IRCBOT
                         Bukkit.getScheduler().runTask(plugin, new Runnable() {
                             public void run() {
                                 plugin.getIrcBot().sendIRC().message(plugin.getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
                             }
                         });
+                    //TASK FUCKING PASSED
                     }
                 } else {
                     talking.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
@@ -167,7 +198,7 @@ public class AsyncPlayerChatListener implements Listener {
             return EmoteMode.TWO_ASTERISKS;
     }
 
-    public String getPlayerPrefix(Permissible player) {
+    public String getPlayerPrefix(final Permissible player) {
         for (String key : prefixConfig.getKeys(false)) {
             if (player.hasPermission("wayward.chat.prefix." + key)) {
                 return ChatColor.translateAlternateColorCodes('&', prefixConfig.getString(key));
@@ -212,7 +243,7 @@ public class AsyncPlayerChatListener implements Listener {
             } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
                 if (channel.isGarbleEnabled()) {
                     if (recipient != null) {
-                        double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(recipient.getLocation()));
+                        double distance = MathUtils.fastsqrt(corelateUUIDtoLocation(talking.getUniqueId()).distanceSquared(corelateUUIDtoLocation(recipient.getUniqueId())));
                         double clearRange = 0.75D * (double) channel.getRadius();
                         double hearingRange = (double) channel.getRadius();
                         double clarity = 1.0D - ((distance - clearRange) / hearingRange);
@@ -282,38 +313,10 @@ public class AsyncPlayerChatListener implements Listener {
     }
 
     private String drunkify(final Player player, String message) {
-        Future<RegisteredServiceProvider<EssentialsPlugin>> futureEssentialsPluginProvider = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<RegisteredServiceProvider<EssentialsPlugin>>(){
-                    @Override
-                    public RegisteredServiceProvider<EssentialsPlugin> call() {
-                        return Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
-                    }
-                }
-        );
-        RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider = null;
-        try {
-            essentialsPluginProvider = futureEssentialsPluginProvider.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
         if (essentialsPluginProvider != null) {
-            final EssentialsPlugin essentialsPlugin = essentialsPluginProvider.getProvider();
-            Future<Number> futureDrunkenness = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<Number>(){
-                        @Override
-                        public Number call() {
-                            return essentialsPlugin.getDrunkenness(player);
-                        }
-                    }
-            );
-            try {
-                if (futureDrunkenness.get().intValue() >= 5) {
-                    return message.replaceAll("s([^h])", "sh$1");
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            EssentialsPlugin essentialsPlugin = essentialsPluginProvider.getProvider();
+            if (essentialsPlugin.getDrunkenness(player) >= 5) {
+                return message.replaceAll("s([^h])", "sh$1");
             }
         }
         return message;
