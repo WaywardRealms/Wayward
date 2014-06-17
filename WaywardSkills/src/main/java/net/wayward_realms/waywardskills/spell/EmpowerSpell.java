@@ -18,7 +18,7 @@ public class EmpowerSpell extends SpellBase {
 
     public EmpowerSpell() {
         setName("Empower");
-        setCoolDown(600);
+        setCoolDown(300);
         setManaCost(10);
         setType(SkillType.SUPPORT_PERFORM);
     }
@@ -27,7 +27,7 @@ public class EmpowerSpell extends SpellBase {
     public boolean use(Player player) {
         for (Player player1 : player.getWorld().getPlayers()) {
             if (player1.getLocation().distanceSquared(player.getLocation()) <= 64) {
-                player1.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 2));
+                player1.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0));
                 player1.getWorld().playEffect(player1.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
                 player1.sendMessage(ChatColor.GOLD + "You feel empowered!");
             }
