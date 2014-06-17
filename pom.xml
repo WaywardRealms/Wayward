@@ -70,6 +70,11 @@
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.7.9-R0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
             <version>1.7.9-R0.2</version>
         </dependency>
