@@ -4,6 +4,8 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import net.wayward_realms.waywardmonsters.drops.MobDrop;
 import net.wayward_realms.waywardmonsters.drops.MobDropManager;
+import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummyPlayerInteractListener;
+import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummySignChangeListener;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
@@ -24,7 +26,8 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
         saveDefaultConfig();
         entityLevelManager = new EntityLevelManager(this);
         mobDropManager = new MobDropManager(this);
-        registerListeners(this, new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener(), new PlayerFishListener(this));
+        registerListeners(this, new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener(), new PlayerFishListener(this),
+                new TrainingDummyPlayerInteractListener(this), new TrainingDummySignChangeListener(this));
         getCommand("zeropoint").setExecutor(new ZeroPointCommand(this));
         getCommand("viewzeropoints").setExecutor(new ViewZeroPointsCommand(this));
     }
