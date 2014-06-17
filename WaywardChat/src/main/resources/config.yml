@@ -10,12 +10,9 @@ channels:
       whitelist: false
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   say:
     colour: GREEN
     radius: 16
@@ -27,12 +24,9 @@ channels:
       whitelist: false
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   shout:
     colour: DARK_RED
     radius: 64
@@ -44,12 +38,9 @@ channels:
       whitelist: false
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   whisper:
     colour: AQUA
     radius: 4
@@ -61,12 +52,9 @@ channels:
       whitelist: false
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   staff:
     colour: DARK_PURPLE
     radius: -1
@@ -78,12 +66,9 @@ channels:
       whitelist: true
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   dev:
     colour: YELLOW
     radius: -1
@@ -95,12 +80,9 @@ channels:
       whitelist: false
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   support:
     colour: DARK_GREEN
     radius: -1
@@ -112,12 +94,9 @@ channels:
       whitelist: false
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   ooc:
     colour: BLUE
     radius: 16
@@ -129,12 +108,9 @@ channels:
       whitelist: false
     broadcasts:
       enabled: false
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
   info:
     colour: WHITE
     radius: -1
@@ -150,12 +126,9 @@ channels:
       - 'Remember to vote on PMC!'
       - 'Check out the forums daily for updates on news and general discussion.'
       - 'Drop into IRC at #wayward-general to talk in general chat even while offline!'
-    ops:
-      -
-    hops:
-      -
-    voice:
-      -
+    ops: []
+    hops: []
+    voice: []
 emotes:
   radius: 16
   format: '&e&o%player% &e&o%message%'
