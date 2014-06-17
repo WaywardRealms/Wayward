@@ -46,6 +46,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getCommand("stats").setExecutor(new StatsCommand(this));
         getCommand("skillpoints").setExecutor(new SkillPointsCommand(this));
         getCommand("togglethirst").setExecutor(new ToggleThirstCommand(this));
+        getCommand("togglehunger").setExecutor(new ToggleHungerCommand(this));
         setupRegen();
         setupHungerSlowdown();
     }
@@ -117,12 +118,17 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
             for (Player player : getServer().getOnlinePlayers()) {
-                float currentExhaustion = player.getExhaustion();
-                if (((currentExhaustion > -1.0F ? 1 : 0) & (currentExhaustion < 0.0F ? 1 : 0)) != 0) {
-                    player.setExhaustion(4.0F);
-                }
-                if (((currentExhaustion > 0.0F ? 1 : 0) & (currentExhaustion < 4.0F ? 1 : 0)) != 0) {
-                    player.setExhaustion(finalNewExhaustStartLevel);
+                if (isHungerDisabled(player)) {
+                    player.setFoodLevel(20);
+                    player.setExhaustion(0.0F);
+                } else {
+                    float currentExhaustion = player.getExhaustion();
+                    if (((currentExhaustion > -1.0F ? 1 : 0) & (currentExhaustion < 0.0F ? 1 : 0)) != 0) {
+                        player.setExhaustion(4.0F);
+                    }
+                    if (((currentExhaustion > 0.0F ? 1 : 0) & (currentExhaustion < 4.0F ? 1 : 0)) != 0) {
+                        player.setExhaustion(finalNewExhaustStartLevel);
+                    }
                 }
             }
             }
@@ -523,5 +529,24 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 		}
 		
 	}
+
+    public boolean isHungerDisabled(OfflinePlayer player) {
+        File hungerDisabledFile = new File(getDataFolder(), "hunger-disabled.yml");
+        YamlConfiguration hungerDisabledConfig = YamlConfiguration.loadConfiguration(hungerDisabledFile);
+        return hungerDisabledConfig.getStringList("disabled").contains(player.getName());
+    }
+
+    public void setHungerDisabled(OfflinePlayer player, boolean disabled) {
+        File hungerDisabledFile = new File(getDataFolder(), "hunger-disabled.yml");
+        YamlConfiguration hungerDisabledConfig = YamlConfiguration.loadConfiguration(hungerDisabledFile);
+        List<String> hungerDisabled = hungerDisabledConfig.getStringList("disabled");
+        if (disabled) hungerDisabled.add(player.getName()); else hungerDisabled.remove(player.getName());
+        hungerDisabledConfig.set("disabled", hungerDisabled);
+        try {
+            hungerDisabledConfig.save(hungerDisabledFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
 
 }
