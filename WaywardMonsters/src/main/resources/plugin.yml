@@ -20,3 +20,6 @@ permissions:
     wayward.monsters.command.viewzeropoints:
         description: Allows you to view the locations of zero points
         default: op
+    wayward.monsters.trainingdummy:
+        description: Allows you to create training dummies
+        default: op
