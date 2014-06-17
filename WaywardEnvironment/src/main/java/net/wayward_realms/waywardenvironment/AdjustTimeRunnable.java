@@ -29,10 +29,18 @@ public class AdjustTimeRunnable extends BukkitRunnable{
             worlds = futureWorlds.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                public void run() {
+                    plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
+                }
+            });
         } catch (ExecutionException e) {
             e.printStackTrace();
-            plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                public void run() {
+                    plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
+                }
+            });
         }
         Future<FileConfiguration> futureConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>(){
                     @Override
@@ -72,7 +80,11 @@ public class AdjustTimeRunnable extends BukkitRunnable{
                 }
             }
         } else {
-            plugin.getLogger().info("[WaywardEnvironment.AdjustTimeRunnable] Worlds/Config weren't collected from main thread, canceling runnable");
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                public void run() {
+                    plugin.getLogger().info("[WaywardEnvironment.AdjustTimeRunnable] Worlds/Config weren't collected from main thread, canceling runnable");
+                }
+            });
             this.cancel();
         }
     }
