@@ -23,6 +23,9 @@ commands:
     togglethirst:
         description: Toggles thirst
         usage: /<command>
+    togglehunger:
+        description: Toggles hunger
+        usage: /<command>
 permissions:
     wayward.characters.createmasheekwell:
         default: op
