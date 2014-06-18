@@ -47,7 +47,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         for (String section : getConfig().getConfigurationSection("channels").getKeys(false)) {
             ChannelImpl channel = new ChannelImpl(this, section.toLowerCase());
             channels.put(channel.getName(), channel);
-            channel.setCommand(new QuickChannelSwitchCommand(channel.getName(), "Allows you to talk in " + channel.getName() + " on-the-fly", Arrays.asList(channel.getName()), this, channel));
+            getCommand(section).setExecutor(new QuickChannelSwitchCommand(this));
         }
         setupIrc();
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
