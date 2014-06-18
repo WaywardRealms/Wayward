@@ -37,7 +37,7 @@ public class PlayerInteractListener implements Listener {
                             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                             if (characterPluginProvider != null) {
                                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                                if (characterPlugin.getActiveCharacter(event.getPlayer()).getId() == Integer.parseInt(sign.getLine(3))) {
+                                if ((sign.getLine(3).equalsIgnoreCase("admin") && event.getPlayer().hasPermission("wayward.economy.shop.admin")) || characterPlugin.getActiveCharacter(event.getPlayer()).getId() == Integer.parseInt(sign.getLine(3))) {
                                     event.getClickedBlock().setType(Material.AIR);
                                     plugin.addMoney(characterPlugin.getActiveCharacter(event.getPlayer()), plugin.getConfig().getInt("shop.sell", 50));
                                     event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold shop for " + plugin.getConfig().getInt("shop.sell", 50) + " " + plugin.getPrimaryCurrency().getNamePlural());
@@ -57,9 +57,13 @@ public class PlayerInteractListener implements Listener {
                                             try {
                                                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " " + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
                                                 if (characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().isOnline()) {
-                                                    characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your shop bought " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " from " + event.getPlayer().getDisplayName());
+                                                    characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your shop bought " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()) + " from " + event.getPlayer().getDisplayName());
                                                 }
-                                                plugin.transferMoney(characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), characterPlugin.getActiveCharacter(event.getPlayer()), Integer.parseInt(sign.getLine(2).replace("for ", "")));
+                                                if (sign.getLine(3).equalsIgnoreCase("admin")) {
+                                                    plugin.addMoney(event.getPlayer(), -Integer.parseInt(sign.getLine(2).split(" ")[1]));
+                                                } else {
+                                                    plugin.transferMoney(characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), characterPlugin.getActiveCharacter(event.getPlayer()), Integer.parseInt(sign.getLine(2).replace("for ", "")));
+                                                }
                                                 ItemStack item = new ItemStack(event.getPlayer().getItemInHand());
                                                 item.setAmount(Integer.parseInt(sign.getLine(1).split(" ")[2]));
                                                 chest.getInventory().addItem(item);
@@ -91,8 +95,8 @@ public class PlayerInteractListener implements Listener {
             if (characterPluginProvider != null) {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                 try {
-                    if (characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))) != null) {
-                        String playerName = characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getName();
+                    if (sign.getLine(3).equalsIgnoreCase("admin") || characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))) != null) {
+                        String playerName = sign.getLine(3).equalsIgnoreCase("admin") ? "an admin" : characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getName();
                         if (!(sign.getLine(1).toLowerCase().contains("buy ") || sign.getLine(1).toLowerCase().contains("sell "))) {
                             player.sendMessage(plugin.getPrefix() + ChatColor.RED + "The shop is formatted incorrectly. Please get " + playerName + " to update accordingly.");
                             return false;
