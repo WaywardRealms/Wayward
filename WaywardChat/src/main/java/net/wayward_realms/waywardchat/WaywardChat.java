@@ -408,6 +408,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 .addListener(new IrcRegisterCommand(this))
                 .addListener(new IrcVerifyCommand(this))
                 .addListener(new IrcMessageListener(this))
+                .addListener(new IrcChannelJoinListener(this))
                 .addListener(new IrcUserListListener(this))
                 .setAutoReconnect(true);
             getLogger().info("Setting up IRC bot:");
