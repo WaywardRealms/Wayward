@@ -1,9 +1,8 @@
+#place worlds within here.  Example:
+#  WorldName:
+#    modifyDayNightCycle:
+#    cycleMinuteLength:
+#    modifyWeather:
+#    precipitationPercentile:
+#    thunderingPercentile:
 worlds:
-  worldName:
-    cycleMinuteLength:
-    precipitationPercentile:
-    thunderingPercentile:
-  otherWorldName:
-    cycleMinuteLength:
-    precipitationPercentile:
-    thunderingPercentile:

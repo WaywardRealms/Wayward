@@ -9,35 +9,24 @@ public class WaywardEnvironment extends JavaPlugin implements EnvironmentPlugin 
 
     @Override
     public void onEnable(){
-        getServer().getScheduler().runTaskTimerAsynchronously(this, new AdjustTimeRunnable(this), 3000L, 3000L);
+        saveDefaultConfig();
+        for(World world: getServer().getWorlds()){
+            if(getConfig().getBoolean("worlds." + world.getName() + ".modifiedDayNightCycle")){
+                world.setGameRuleValue("doDaylightCycle", "false");
+                getServer().getScheduler().runTaskTimerAsynchronously(this, new AdjustTimeRunnable(this, world, this.getConfig()), 3000L, 3000L);
+            }
+        }
         registerListeners(new WeatherChangeListener(this));
     }
 
     @Override
     public void onDisable(){
-
     }
 
     private void registerListeners(Listener... listeners) {
         for (Listener listener : listeners) {
             this.getServer().getPluginManager().registerEvents(listener, this);
         }
-    }
-
-    public long getTime(World world){
-        return world.getTime();
-    }
-
-    public void setTime(World world, int time){
-
-    }
-
-    public String getWeather(World world){
-        return "";
-    }
-
-    public void setWeather(World world, String weather){
-
     }
 
     @Override

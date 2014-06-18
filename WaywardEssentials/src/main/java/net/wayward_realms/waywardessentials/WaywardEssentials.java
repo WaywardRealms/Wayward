@@ -5,7 +5,6 @@ import net.wayward_realms.waywardessentials.drink.DrinkManager;
 import net.wayward_realms.waywardessentials.drink.PlayerItemConsumeListener;
 import net.wayward_realms.waywardessentials.kit.KitImpl;
 import net.wayward_realms.waywardessentials.kit.KitManager;
-import net.wayward_realms.waywardessentials.time.TimeSlowRunnable;
 import net.wayward_realms.waywardessentials.warp.WarpManager;
 import net.wayward_realms.waywardessentials.warp.WarpPlayerInteractListener;
 import net.wayward_realms.waywardessentials.warp.WarpSignChangeListener;
@@ -41,7 +40,6 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     public void onEnable() {
         saveDefaultConfig();
         ConfigurationSerialization.registerClass(KitImpl.class);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new TimeSlowRunnable(this), 100L, 100L);
         registerListeners(new PlayerJoinListener(this), new PlayerQuitListener(this), new PlayerTeleportListener(this),
                 new PlayerItemConsumeListener(this),
                 new WarpSignChangeListener(this), new WarpPlayerInteractListener(this));

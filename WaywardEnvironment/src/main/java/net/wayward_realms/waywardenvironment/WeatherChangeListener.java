@@ -15,29 +15,28 @@ public class WeatherChangeListener implements Listener{
     }
 
     @EventHandler
-    public void onWeatherChange(WeatherChangeEvent event){
+public void onWeatherChange(WeatherChangeEvent event){
+    String worldname = event.getWorld().getName();
+    if(plugin.getConfig().getBoolean("worlds." + worldname + ".modifyWeather")) {
         Random randomizer = new Random();
-        Object entryPrecipitation = plugin.getConfig().get("worlds." + event.getWorld().getName() + ".precipitationPercentile");
-        Object entryThunder = plugin.getConfig().get("worlds." + event.getWorld().getName() + ".thunderingPercentile");
-        if(entryPrecipitation != null && entryPrecipitation instanceof Number){
-            if(((Number) entryPrecipitation).intValue() >= 0 && ((Number) entryPrecipitation).intValue() <= 100){
-                if(randomizer.nextInt(101) > ((Number) entryPrecipitation).intValue()){
+        int entryPrecipitation = plugin.getConfig().getInt("worlds." + worldname + ".precipitationPercentile");
+        int entryThunder = plugin.getConfig().getInt("worlds." + worldname + ".precipitationPercentile");
+            if (((Number) entryPrecipitation).intValue() >= 0 && ((Number) entryPrecipitation).intValue() <= 100) {
+                if (randomizer.nextInt(101) > ((Number) entryPrecipitation).intValue()) {
                     event.setCancelled(true);
                     event.getWorld().setStorm(false);
-                } else if(randomizer.nextInt(101) <= ((Number) entryPrecipitation).intValue()){
+                } else if (randomizer.nextInt(101) <= ((Number) entryPrecipitation).intValue()) {
                     event.setCancelled(true);
                     event.getWorld().setStorm(true);
-                    if(entryThunder != null && entryThunder instanceof Number){
-                        if(((Number) entryThunder).intValue() >= 0 && ((Number) entryThunder).intValue() <= 100){
-                            if(randomizer.nextInt(101) > ((Number) entryThunder).intValue()){
+                        if (((Number) entryThunder).intValue() >= 0 && ((Number) entryThunder).intValue() <= 100) {
+                            if (randomizer.nextInt(101) > ((Number) entryThunder).intValue()) {
                                 event.getWorld().setThundering(false);
-                            } else if(randomizer.nextInt(101) >= ((Number) entryThunder).intValue()){
+                            } else if (randomizer.nextInt(101) >= ((Number) entryThunder).intValue()) {
                                 event.getWorld().setThundering(true);
-                            } else {}
+                            }
                         }
                     }
-                } else {}
+                }
             }
         }
     }
-}

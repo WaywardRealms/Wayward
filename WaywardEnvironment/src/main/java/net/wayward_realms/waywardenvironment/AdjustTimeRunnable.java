@@ -5,57 +5,16 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 public class AdjustTimeRunnable extends BukkitRunnable{
 
-    private WaywardEnvironment plugin;
-    List<World> worlds = null;
-    FileConfiguration config = null;
+    private final WaywardEnvironment plugin;
+    private final String worldname;
+    private final FileConfiguration config;
 
-    public AdjustTimeRunnable(WaywardEnvironment inplugin){
+    public AdjustTimeRunnable(final WaywardEnvironment inplugin, final World inworld, final FileConfiguration inconfig){
         plugin = inplugin;
-        Future<List<World>> futureWorlds = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<List<World>>() {
-                    @Override
-                    public List<World> call() {
-                        return plugin.getServer().getWorlds();
-                    }
-                }
-        );
-        try {
-            worlds = futureWorlds.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                public void run() {
-                    plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
-                }
-            });
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                public void run() {
-                    plugin.getLogger().severe("[WaywardEnvironment.AdjustTimeRunnable] Couldn't retrieve the worlds from the main thread");
-                }
-            });
-        }
-        Future<FileConfiguration> futureConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>(){
-                    @Override
-            public FileConfiguration call() {
-                return plugin.getConfig();
-            }
-        }
-        );
-        try {
-            config = futureConfig.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        worldname = inworld.getName();
+        config = inconfig;
     }
 
     //Run as often as needed.  1/100th of the day length generally is a good idea
@@ -64,21 +23,17 @@ public class AdjustTimeRunnable extends BukkitRunnable{
     @Override
     public void run() {
         long systime = System.currentTimeMillis();
-        if(worlds != null && config != null) {
-            for (final World world : worlds) {
-                Object entry = config.get("worlds." + world.getName() + ".cycleMinuteLength");
+                Object entry = config.get("worlds." + worldname + ".cycleMinuteLength");
                 if (entry != null) {
                     if (entry instanceof Number) {
                         double cycleLength = ((Number) entry).doubleValue() * 1200;
                         final long convertedPosition = ((long) ((systime % cycleLength) / cycleLength)) * 24000L;
                         Bukkit.getScheduler().runTask(plugin, new Runnable() {
                             public void run() {
-                                Bukkit.getWorld(world.getName()).setTime(convertedPosition);
+                                Bukkit.getWorld(worldname).setTime(convertedPosition);
                             }
                         });
                     }
-                }
-            }
         } else {
             Bukkit.getScheduler().runTask(plugin, new Runnable() {
                 public void run() {
