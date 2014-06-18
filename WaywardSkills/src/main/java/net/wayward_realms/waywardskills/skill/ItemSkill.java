@@ -13,9 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ItemSkill extends SkillBase {
 
     public ItemSkill() {
@@ -92,21 +89,6 @@ public class ItemSkill extends SkillBase {
     @Override
     public boolean canUse(OfflinePlayer player) {
         return true;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static ItemSkill deserialize(Map<String, Object> serialised) {
-        ItemSkill deserialised = new ItemSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

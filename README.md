@@ -107,7 +107,7 @@ A bare-bones, easy-to-use, lightweight permissions plugin
 WaywardProfessions
 ------------------
 
-Still working on it...
+Allows efficiency in crafting and breaking items - characters with high efficiency craft more items with higher durability
 
 WaywardUnconsciousness
 ----------------------

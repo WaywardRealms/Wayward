@@ -26,13 +26,12 @@ public class ClaimItemsCommand implements CommandExecutor {
             items.addAll(rank.getKit().getItems());
         }
         for (ItemStack item : items) {
-            int amountToGive = item.getAmount() - plugin.getConfig().getInt("items-already-claimed." + sender.getName() + "." + item.getType().toString().toLowerCase());
+            int amountToGive = item.getAmount() - plugin.getItemsClaimed((Player) sender, item.getType());
             item.setAmount(amountToGive);
             if (item.getAmount() > 0) {
                 ((Player) sender).getInventory().addItem(item);
                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Claimed " + item.getAmount() + " x " + item.getType());
-                plugin.getConfig().set("items-already-claimed." + sender.getName() + "." + item.getType().toString().toLowerCase(), plugin.getConfig().getInt("items-already-claimed." + sender.getName() + "." + item.getType().toString().toLowerCase()) + amountToGive);
-                plugin.saveConfig();
+                plugin.setItemsClaimed((Player) sender, item.getType(), item.getAmount());
             }
         }
         return true;

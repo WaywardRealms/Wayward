@@ -16,7 +16,7 @@ public class PlayerLoginListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerLogin(PlayerLoginEvent event) {
         if (plugin.getActiveCharacter(event.getPlayer()) == null) {
-            plugin.setActiveCharacter(event.getPlayer(), new CharacterImpl(event.getPlayer()));
+            plugin.setActiveCharacter(event.getPlayer(), plugin.createNewCharacter(event.getPlayer()));
         }
     }
 

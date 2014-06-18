@@ -16,14 +16,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SharpenSkill extends SkillBase {
 
-    private String name = "Sharpen";
-    private int coolDown = 60;
-    private SkillType type = SkillType.MELEE_OFFENCE;
+    public SharpenSkill() {
+        setName("Sharpen");
+        setCoolDown(60);
+        setType(SkillType.MELEE_OFFENCE);
+    }
 
     @Override
     public boolean use(Player player) {
@@ -50,7 +49,7 @@ public class SharpenSkill extends SkillBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        return false;
+        return use(defending.getPlayer().getPlayer());
     }
 
     @Override
@@ -80,51 +79,6 @@ public class SharpenSkill extends SkillBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 1;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", name);
-        serialised.put("cooldown", coolDown);
-        return serialised;
-    }
-
-    public static SharpenSkill deserialize(Map<String, Object> serialised) {
-        SharpenSkill deserialised = new SharpenSkill();
-        deserialised.name = (String) serialised.get("name");
-        deserialised.coolDown = (int) serialised.get("cooldown");
-        return deserialised;
     }
 
 }

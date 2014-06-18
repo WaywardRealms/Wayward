@@ -8,82 +8,84 @@ import org.bukkit.event.Listener;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class WaywardPermissions extends JavaPlugin implements PermissionsPlugin {
 
-    public Map<String, PermissionAttachment> permissionAttachments = new HashMap<>();
+    public Map<UUID, PermissionAttachment> permissionAttachments = new HashMap<>();
 
     @Override
     public void onEnable() {
-        this.saveDefaultConfig();
-        this.getConfig().options().pathSeparator('/');
-        if (this.getServer().getOnlinePlayers().length != 0) {
-            for (Player player : this.getServer().getOnlinePlayers()) {
-                this.assignPermissions(player);
+        saveDefaultConfig();
+        getConfig().options().pathSeparator('/');
+        if (getServer().getOnlinePlayers().length != 0) {
+            for (Player player : getServer().getOnlinePlayers()) {
+                assignPermissions(player);
             }
         }
-        this.registerListeners(new PlayerJoinListener(this), new PlayerQuitListener(this));
-        this.getCommand("setgroup").setExecutor(new SetGroupCommand(this));
-        this.getCommand("addgroup").setExecutor(new AddGroupCommand(this));
-        this.getCommand("removegroup").setExecutor(new RemoveGroupCommand(this));
-        this.getCommand("listgroups").setExecutor(new ListGroupsCommand(this));
+        registerListeners(new PlayerJoinListener(this), new PlayerQuitListener(this));
+        getCommand("setgroup").setExecutor(new SetGroupCommand(this));
+        getCommand("addgroup").setExecutor(new AddGroupCommand(this));
+        getCommand("removegroup").setExecutor(new RemoveGroupCommand(this));
+        getCommand("listgroups").setExecutor(new ListGroupsCommand(this));
     }
 
     private void registerListeners(Listener... listeners) {
         for (Listener listener : listeners) {
-            this.getServer().getPluginManager().registerEvents(listener, this);
+            getServer().getPluginManager().registerEvents(listener, this);
         }
     }
 
     @Override
     public void onDisable() {
-        if (this.getServer().getOnlinePlayers().length != 0) {
-            for (Player player : this.getServer().getOnlinePlayers()) {
-                this.unassignPermissions(player);
+        if (getServer().getOnlinePlayers().length != 0) {
+            for (Player player : getServer().getOnlinePlayers()) {
+                unassignPermissions(player);
             }
         }
     }
 
     public void assignPermissions(Player player) {
-        if (permissionAttachments.get(player.getName()) == null) {
-            permissionAttachments.put(player.getName(), player.addAttachment(this));
+        if (permissionAttachments.get(player.getUniqueId()) == null) {
+            permissionAttachments.put(player.getUniqueId(), player.addAttachment(this));
         } else {
-            this.unassignPermissions(player);
-            permissionAttachments.put(player.getName(), player.addAttachment(this));
+            unassignPermissions(player);
+            permissionAttachments.put(player.getUniqueId(), player.addAttachment(this));
         }
-        if (this.getConfig().getConfigurationSection("users").contains(player.getName())) {
-            for (String group : this.getConfig().getStringList("users/" + player.getName())) {
-                this.assignGroupPermissions(player, group);
+        if (getConfig().getConfigurationSection("users").contains(player.getName())) {
+            getConfig().set("users/" + player.getUniqueId().toString(), new ArrayList<>(getConfig().getStringList("users/" + player.getName())));
+            getConfig().set("users/" + player.getName(), null);
+            saveConfig();
+        }
+        if (getConfig().getConfigurationSection("users").contains(player.getUniqueId().toString())) {
+            for (String group : getConfig().getStringList("users/" + player.getUniqueId().toString())) {
+                assignGroupPermissions(player, group);
             }
         } else {
-            this.assignGroupPermissions(player, "default");
+            assignGroupPermissions(player, "default");
         }
     }
 
     public void unassignPermissions(Player player) {
-        player.removeAttachment(this.permissionAttachments.get(player.getName()));
-        this.permissionAttachments.remove(player.getName());
+        player.removeAttachment(permissionAttachments.get(player.getUniqueId()));
+        permissionAttachments.remove(player.getUniqueId());
     }
 
     public void assignGroupPermissions(Player player, String group) {
-        if (this.getConfig().getString("groups/" + group + "/inheritsfrom") != null) {
-            this.assignGroupPermissions(player, this.getConfig().getString("groups/" + group + "/inheritsfrom"));
+        if (getConfig().getString("groups/" + group + "/inheritsfrom") != null) {
+            assignGroupPermissions(player, getConfig().getString("groups/" + group + "/inheritsfrom"));
         }
-        for (String node : this.getConfig().getStringList("groups/" + group + "/allow")) {
-            if (permissionAttachments.get(player.getName()).getPermissions().containsKey(node)) {
-                permissionAttachments.get(player.getName()).unsetPermission(node);
+        for (String node : getConfig().getStringList("groups/" + group + "/allow")) {
+            if (permissionAttachments.get(player.getUniqueId()).getPermissions().containsKey(node)) {
+                permissionAttachments.get(player.getUniqueId()).unsetPermission(node);
             }
-            permissionAttachments.get(player.getName()).setPermission(node, true);
+            permissionAttachments.get(player.getUniqueId()).setPermission(node, true);
         }
-        for (String node : this.getConfig().getStringList("groups/" + group + "/deny")) {
-            if (permissionAttachments.get(player.getName()).getPermissions().containsKey(node)) {
-                permissionAttachments.get(player.getName()).unsetPermission(node);
+        for (String node : getConfig().getStringList("groups/" + group + "/deny")) {
+            if (permissionAttachments.get(player.getUniqueId()).getPermissions().containsKey(node)) {
+                permissionAttachments.get(player.getUniqueId()).unsetPermission(node);
             }
-            permissionAttachments.get(player.getName()).setPermission(node, false);
+            permissionAttachments.get(player.getUniqueId()).setPermission(node, false);
         }
     }
 
@@ -107,56 +109,54 @@ public class WaywardPermissions extends JavaPlugin implements PermissionsPlugin 
     @Override
     public Set<String> getGroups(OfflinePlayer player) {
         Set<String> groups = new HashSet<>();
-        groups.addAll(getConfig().getStringList("users/" + player.getName()));
+        groups.addAll(getConfig().getStringList("users/" + player.getUniqueId().toString()));
         return groups;
     }
 
     @Override
     public Set<String> getGroups(OfflinePlayer player, World world) {
-        Set<String> groups = new HashSet<>();
-        groups.addAll(getConfig().getStringList("groups"));
-        return groups;
+        return getGroups(player);
     }
 
     @Override
     public void setGroup(OfflinePlayer player, String groupName) {
         Set<String> groups = new HashSet<>();
         groups.add(groupName);
-        getConfig().set("users/" + player.getName(), groups);
+        getConfig().set("users/" + player.getUniqueId().toString(), groups);
         saveConfig();
     }
 
     @Override
     public void setGroup(OfflinePlayer player, World world, String groupName) {
-
+        setGroup(player, groupName);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void addGroup(OfflinePlayer player, String groupName) {
-        Set<String> groups = (Set<String>) this.getConfig().get("users/" + player.getName());
+        Set<String> groups = (Set<String>) getConfig().get("users/" + player.getUniqueId().toString());
         groups.add(groupName);
-        getConfig().set("users/" + player.getName(), groups);
+        getConfig().set("users/" + player.getUniqueId().toString(), groups);
         saveConfig();
     }
 
     @Override
     public void addGroup(OfflinePlayer player, World world, String groupName) {
-
+        addGroup(player, groupName);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void removeGroup(OfflinePlayer player, String groupName) {
-        Set<String> groups = (Set<String>) this.getConfig().get("users/" + player.getName());
+        Set<String> groups = (Set<String>) getConfig().get("users/" + player.getUniqueId().toString());
         groups.remove(groupName);
-        getConfig().set("users/" + player.getName(), groups);
+        getConfig().set("users/" + player.getUniqueId().toString(), groups);
         saveConfig();
     }
 
     @Override
     public void removeGroup(OfflinePlayer player, World world, String groupName) {
-
+        removeGroup(player, groupName);
     }
 
 }

@@ -21,7 +21,7 @@ public class SetWarpCommand implements CommandExecutor {
             if (sender instanceof Player) {
                 if (args.length >= 1) {
                     Player player = (Player) sender;
-                    plugin.getWarps().put(args[0].toLowerCase(), player.getLocation());
+                    plugin.addWarp(args[0], player.getLocation());
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set warp " + args[0].toLowerCase() + " in " + player.getWorld().getName() + " at " + player.getLocation().getBlockX() + ", " + player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ());
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify the name of the warp.");

@@ -1,9 +1,9 @@
 package net.wayward_realms.waywardessentials.warp;
 
 import net.wayward_realms.waywardessentials.WaywardEssentials;
+import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Location;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -14,34 +14,39 @@ import java.util.Map;
 public class WarpManager {
 
     private WaywardEssentials plugin;
-    private Map<String, Location> warps = new HashMap<>();
 
     public WarpManager(WaywardEssentials plugin) {
         this.plugin = plugin;
     }
 
     public Map<String, Location> getWarps() {
+        Map<String, Location> warps = new HashMap<>();
+        File warpDirectory = new File(plugin.getDataFolder(), "warps");
+        if (warpDirectory.exists()) {
+            for (File file : warpDirectory.listFiles(new YamlFileFilter())) {
+                YamlConfiguration warpConfig = YamlConfiguration.loadConfiguration(file);
+                Location warp = ((SerialisableLocation) warpConfig.get("location")).toLocation();
+                warps.put(file.getName().replace(".yml", ""), warp);
+            }
+        }
         return warps;
     }
 
     public Location getWarp(String name) {
-        return warps.get(name.toLowerCase());
+        File warpDirectory = new File(plugin.getDataFolder(), "warps");
+        File warpFile = new File(warpDirectory, name.toLowerCase() + ".yml");
+        if (warpFile.exists()) {
+            YamlConfiguration warpConfig = YamlConfiguration.loadConfiguration(warpFile);
+            return ((SerialisableLocation) warpConfig.get("location")).toLocation();
+        }
+        return null;
     }
 
     public void addWarp(String name, Location location) {
-        warps.put(name.toLowerCase(), location);
-    }
-
-    public void removeWarp(String name) {
-        warps.remove(name.toLowerCase());
-    }
-
-    public void save() {
-        File warpFile = new File(plugin.getDataFolder().getPath() + File.separator + "warps.yml");
+        File warpDirectory = new File(plugin.getDataFolder(), "warps");
+        File warpFile = new File(warpDirectory, name.toLowerCase() + ".yml");
         YamlConfiguration warpConfig = new YamlConfiguration();
-        for (String warpName : warps.keySet()) {
-            warpConfig.set(warpName, new SerialisableLocation(warps.get(warpName)));
-        }
+        warpConfig.set("location", new SerialisableLocation(location));
         try {
             warpConfig.save(warpFile);
         } catch (IOException exception) {
@@ -49,18 +54,11 @@ public class WarpManager {
         }
     }
 
-    public void load() {
-        File warpFile = new File(plugin.getDataFolder().getPath() + File.separator + "warps.yml");
+    public void removeWarp(String name) {
+        File warpDirectory = new File(plugin.getDataFolder(), "warps");
+        File warpFile = new File(warpDirectory, name.toLowerCase() + ".yml");
         if (warpFile.exists()) {
-            YamlConfiguration warpConfig = new YamlConfiguration();
-            try {
-                warpConfig.load(warpFile);
-            } catch (IOException | InvalidConfigurationException exception) {
-                exception.printStackTrace();
-            }
-            for (String warpName : warpConfig.getKeys(false)) {
-                warps.put(warpName.toLowerCase(), ((SerialisableLocation) warpConfig.get(warpName)).toLocation());
-            }
+            warpFile.delete();
         }
     }
 

@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.wayward-realms</groupId>
         <artifactId>wayward</artifactId>
-        <version>0.1.5-SNAPSHOT</version>
+        <version>0.7.4-SNAPSHOT</version>
     </parent>
     <artifactId>waywarditems</artifactId>
     <name>WaywardItems</name>
@@ -13,7 +13,7 @@
         <dependency>
             <groupId>net.wayward-realms</groupId>
             <artifactId>waywardlib</artifactId>
-            <version>0.1.5-SNAPSHOT</version>
+            <version>0.7.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -24,6 +24,13 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>**/plugin.yml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/music/canon.mid</include>
                 </includes>
             </resource>
         </resources>

@@ -14,7 +14,9 @@ public class PlayerTeleportListener implements Listener {
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        plugin.setPreviousLocation(event.getPlayer(), event.getFrom());
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.COMMAND || event.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN) {
+            plugin.setPreviousLocation(event.getPlayer(), event.getFrom());
+        }
     }
 
 }

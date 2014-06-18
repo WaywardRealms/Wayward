@@ -17,24 +17,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class DrawSwordSpell extends SpellBase {
 
-    private String name = "DrawSword";
-    private int manaCost = 50;
-    private int coolDown = 300;
-    private SkillType type = SkillType.MAGIC_SWORD;
-
-    @Override
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    @Override
-    public void setManaCost(int cost) {
-        this.manaCost = cost;
+    public DrawSwordSpell() {
+        setName("DrawSword");
+        setManaCost(50);
+        setCoolDown(300);
+        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -54,7 +43,9 @@ public class DrawSwordSpell extends SpellBase {
         }
         if (sword != null) {
             block.setType(Material.AIR);
-            player.getWorld().dropItem(player.getLocation(), player.getItemInHand());
+            if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
+                player.getWorld().dropItem(player.getLocation(), player.getItemInHand());
+            }
             player.setItemInHand(sword);
             return true;
         }
@@ -94,53 +85,6 @@ public class DrawSwordSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
-    }
-
-    @Override
-    public int getCoolDown() {
-        return coolDown;
-    }
-
-    @Override
-    public void setCoolDown(int coolDown) {
-        this.coolDown = coolDown;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static DrawSwordSpell deserialize(Map<String, Object> serialised) {
-        DrawSwordSpell deserialised = new DrawSwordSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

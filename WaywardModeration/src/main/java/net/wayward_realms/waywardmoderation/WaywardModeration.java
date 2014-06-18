@@ -3,12 +3,21 @@ package net.wayward_realms.waywardmoderation;
 import net.wayward_realms.waywardlib.moderation.ModerationPlugin;
 import net.wayward_realms.waywardlib.moderation.Ticket;
 import net.wayward_realms.waywardlib.moderation.Warning;
+import net.wayward_realms.waywardmoderation.reputation.ReputationCommand;
+import net.wayward_realms.waywardmoderation.reputation.ReputationManager;
+import net.wayward_realms.waywardmoderation.ticket.*;
+import net.wayward_realms.waywardmoderation.vanish.AmIVanishedCommand;
+import net.wayward_realms.waywardmoderation.vanish.PlayerNamePlateChangeListener;
+import net.wayward_realms.waywardmoderation.vanish.VanishCommand;
+import net.wayward_realms.waywardmoderation.vanish.VanishManager;
+import net.wayward_realms.waywardmoderation.warning.*;
 import net.wayward_realms.waywardmoderation.logging.BlockChange;
 import net.wayward_realms.waywardmoderation.logging.BlockListener;
 import net.wayward_realms.waywardmoderation.logging.LogManager;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -18,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -38,15 +48,24 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         ConfigurationSerialization.registerClass(WarningImpl.class);
         logManager = new LogManager(this);
         vanishManager = new VanishManager(this);
-        warningManager = new WarningManager();
-        ticketManager = new TicketManager();
+        warningManager = new WarningManager(this);
+        ticketManager = new TicketManager(this);
         reputationManager = new ReputationManager(new File(getDataFolder().getPath() + File.separator + "reputation.yml"));
         getCommand("reputation").setExecutor(new ReputationCommand(this));
         getCommand("ticket").setExecutor(new TicketCommand(this));
         getCommand("vanish").setExecutor(new VanishCommand(this));
         getCommand("warn").setExecutor(new WarnCommand(this));
+        getCommand("unwarn").setExecutor(new UnwarnCommand(this));
         getCommand("warnings").setExecutor(new WarningsCommand(this));
-        registerListeners(new PlayerJoinListener(this), new BlockListener(this));
+        getCommand("amivanished").setExecutor(new AmIVanishedCommand(this));
+        getCommand("tempban").setExecutor(new TempBanCommand(this));
+        getCommand("onlinestaff").setExecutor(new OnlineStaffCommand(this));
+        registerListeners(new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerNamePlateChangeListener(this), new BlockListener(this));
+        for (Ticket ticket : getTickets()) {
+            if (ticket.getId() > TicketImpl.getNextId()) {
+                TicketImpl.setNextId(ticket.getId());
+            }
+        }
     }
 
     @Override
@@ -144,6 +163,10 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         return vanishManager.getVanishedPlayers();
     }
 
+    public boolean canSee(Player player, Player target) {
+        return vanishManager.canSee(player, target);
+    }
+
     @Override
     public Collection<Warning> getWarnings(OfflinePlayer player) {
         return warningManager.getWarnings(player);
@@ -166,7 +189,11 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
 
     @Override
     public Collection<Ticket> getTickets(OfflinePlayer player) {
-        return ticketManager.getTickets(player);
+        return ticketManager.getTickets(new IssuerTicketFilter(player));
+    }
+
+    public Collection<Ticket> getTickets(TicketFilter filter) {
+        return ticketManager.getTickets(filter);
     }
 
     public int getTicketId(Ticket ticket) {
@@ -205,6 +232,29 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
 
     public void setGivenReputation(OfflinePlayer setter, OfflinePlayer player, int amount) {
         reputationManager.setGivenReputation(setter, player, amount);
+    }
+
+    public boolean isTempBanned(OfflinePlayer player) {
+        File tempBanFile = new File(getDataFolder(), "temp-bans.yml");
+        YamlConfiguration tempBanConfig = YamlConfiguration.loadConfiguration(tempBanFile);
+        return tempBanConfig.getLong(player.getName()) > System.currentTimeMillis();
+    }
+
+    public long getRemainingBanTime(OfflinePlayer player) {
+        File tempBanFile = new File(getDataFolder(), "temp-bans.yml");
+        YamlConfiguration tempBanConfig = YamlConfiguration.loadConfiguration(tempBanFile);
+        return Math.max(0, tempBanConfig.getLong(player.getName()) - System.currentTimeMillis());
+    }
+
+    public void tempBan(OfflinePlayer player, long duration) {
+        File tempBanFile = new File(getDataFolder(), "temp-bans.yml");
+        YamlConfiguration tempBanConfig = YamlConfiguration.loadConfiguration(tempBanFile);
+        tempBanConfig.set(player.getName(), System.currentTimeMillis() + duration);
+        try {
+            tempBanConfig.save(tempBanFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 

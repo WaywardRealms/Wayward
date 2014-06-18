@@ -14,14 +14,11 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class EmpowerSpell extends SpellBase {
 
     public EmpowerSpell() {
         setName("Empower");
-        setCoolDown(600);
+        setCoolDown(300);
         setManaCost(10);
         setType(SkillType.SUPPORT_PERFORM);
     }
@@ -30,7 +27,7 @@ public class EmpowerSpell extends SpellBase {
     public boolean use(Player player) {
         for (Player player1 : player.getWorld().getPlayers()) {
             if (player1.getLocation().distanceSquared(player.getLocation()) <= 64) {
-                player1.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 2));
+                player1.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1200, 0));
                 player1.getWorld().playEffect(player1.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
                 player1.sendMessage(ChatColor.GOLD + "You feel empowered!");
             }
@@ -70,23 +67,6 @@ public class EmpowerSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("mana-cost", getManaCost());
-        return serialised;
-    }
-
-    public static EmpowerSpell deserialize(Map<String, Object> serialised) {
-        EmpowerSpell deserialised = new EmpowerSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        return deserialised;
     }
 
 }

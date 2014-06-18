@@ -5,12 +5,15 @@ import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Random;
 
 public abstract class AttackSpellBase extends SpellBase {
@@ -43,17 +46,51 @@ public abstract class AttackSpellBase extends SpellBase {
                 double weaponModifier = getWeaponModifier(weapon);
                 double armourModifier = getArmourModifier(defendingPlayer.getInventory().getHelmet(), defendingPlayer.getInventory().getChestplate(), defendingPlayer.getInventory().getLeggings(), defendingPlayer.getInventory().getBoots());
                 boolean critical = random.nextInt(100) < getCriticalChance();
-                double modifier = (critical ? criticalMultiplier : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
+                double modifier = (critical ? getCriticalMultiplier() : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
                 int damage = (int) Math.round((a * b * power) + 2D * modifier);
                 defending.setHealth(defending.getHealth() - damage);
                 defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
                 if (critical) {
                     fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
                 }
-                fight.sendMessage(getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
+                fight.sendMessage(ChatColor.YELLOW + getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
+                for (Map.Entry<StatusEffect, Integer> entry : getStatusEffects().entrySet()) {
+                    if (random.nextInt(100) + 1 < getStatusEffectChance(entry.getKey())) {
+                        fight.setStatusTurns(defending, entry.getKey(), entry.getValue());
+                        switch (entry.getKey()) {
+                            case POISON:
+                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was poisoned for " + entry.getValue() + " turns");
+                                break;
+                            case PARALYSIS:
+                                fight.sendMessage(ChatColor.GOLD + defending.getName() + " was paralysed for " + entry.getValue() + " turns");
+                                break;
+                            case BURNED:
+                                fight.sendMessage(ChatColor.DARK_RED + defending.getName() + " was burned for " + entry.getValue() + " turns");
+                                break;
+                            case FROZEN:
+                                fight.sendMessage(ChatColor.AQUA + defending.getName() + " was frozen for " + entry.getValue() + " turns");
+                                break;
+                            case CONFUSED:
+                                fight.sendMessage(ChatColor.YELLOW + defending.getName() + " was confused for " + entry.getValue() + " turns");
+                                break;
+                            case ASLEEP:
+                                fight.sendMessage(ChatColor.GRAY + defending.getName() + " was sent to sleep for " + entry.getValue() + " turns");
+                                break;
+                            case BLIND:
+                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was blinded for " + entry.getValue() + " turns");
+                                break;
+                            case DOOM:
+                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was doomed, and will die in " + entry.getValue() + " turns");
+                                break;
+                            case SILENCED:
+                                fight.sendMessage(ChatColor.GRAY + defending.getName() + " was silenced for " + entry.getValue() + " turns");
+                                break;
+                        }
+                    }
+                }
                 return true;
             } else {
-                fight.sendMessage(getFightFailManaMessage(attacking, defending));
+                fight.sendMessage(ChatColor.YELLOW + getFightFailManaMessage(attacking, defending));
             }
         }
         return false;
@@ -69,29 +106,73 @@ public abstract class AttackSpellBase extends SpellBase {
 
     public double getArmourModifier(ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots) {
         double armourModifier = 1D;
-        switch (helmet.getType()) {
-            case LEATHER_HELMET: armourModifier -= 0.05D; break;
-            case GOLD_HELMET:case CHAINMAIL_HELMET:case IRON_HELMET: armourModifier -= 0.1D; break;
-            case DIAMOND_HELMET: armourModifier -= 0.15D; break;
+        if (helmet != null) {
+            switch (helmet.getType()) {
+                case LEATHER_HELMET:
+                    armourModifier -= 0.05D;
+                    break;
+                case GOLD_HELMET:
+                case CHAINMAIL_HELMET:
+                case IRON_HELMET:
+                    armourModifier -= 0.1D;
+                    break;
+                case DIAMOND_HELMET:
+                    armourModifier -= 0.15D;
+                    break;
+            }
         }
-        switch (chestplate.getType()) {
-            case LEATHER_CHESTPLATE: armourModifier -= 0.15D; break;
-            case GOLD_CHESTPLATE: armourModifier -= 0.25D; break;
-            case CHAINMAIL_CHESTPLATE: armourModifier -= 0.25D; break;
-            case IRON_CHESTPLATE: armourModifier -= 0.3D; break;
-            case DIAMOND_CHESTPLATE: armourModifier -= 0.4D; break;
+        if (chestplate != null) {
+            switch (chestplate.getType()) {
+                case LEATHER_CHESTPLATE:
+                    armourModifier -= 0.15D;
+                    break;
+                case GOLD_CHESTPLATE:
+                    armourModifier -= 0.25D;
+                    break;
+                case CHAINMAIL_CHESTPLATE:
+                    armourModifier -= 0.25D;
+                    break;
+                case IRON_CHESTPLATE:
+                    armourModifier -= 0.3D;
+                    break;
+                case DIAMOND_CHESTPLATE:
+                    armourModifier -= 0.4D;
+                    break;
+            }
         }
-        switch (leggings.getType()) {
-            case LEATHER_LEGGINGS: armourModifier -= 0.1D; break;
-            case GOLD_LEGGINGS: armourModifier -= 0.15D; break;
-            case CHAINMAIL_LEGGINGS: armourModifier -= 0.2D; break;
-            case IRON_LEGGINGS: armourModifier -= 0.25D; break;
-            case DIAMOND_LEGGINGS: armourModifier -= 0.3D; break;
+        if (leggings != null) {
+            switch (leggings.getType()) {
+                case LEATHER_LEGGINGS:
+                    armourModifier -= 0.1D;
+                    break;
+                case GOLD_LEGGINGS:
+                    armourModifier -= 0.15D;
+                    break;
+                case CHAINMAIL_LEGGINGS:
+                    armourModifier -= 0.2D;
+                    break;
+                case IRON_LEGGINGS:
+                    armourModifier -= 0.25D;
+                    break;
+                case DIAMOND_LEGGINGS:
+                    armourModifier -= 0.3D;
+                    break;
+            }
         }
-        switch (boots.getType()) {
-            case LEATHER_BOOTS:case GOLD_BOOTS:case CHAINMAIL_BOOTS: armourModifier -= 0.05D; break;
-            case IRON_BOOTS: armourModifier -= 0.1D; break;
-            case DIAMOND_BOOTS: armourModifier -= 0.15D; break;
+        if (boots != null) {
+            switch (boots.getType()) {
+                case LEATHER_BOOTS:
+                case GOLD_BOOTS:
+                case CHAINMAIL_BOOTS:
+                    armourModifier -= 0.05D;
+                    break;
+                case IRON_BOOTS:
+                    armourModifier -= 0.1D;
+                    break;
+                case DIAMOND_BOOTS:
+                    armourModifier -= 0.15D;
+                    break;
+            }
         }
         return Math.max(armourModifier, 0.01D);
     }
@@ -146,6 +227,14 @@ public abstract class AttackSpellBase extends SpellBase {
 
     public void setHitChance(int hitChance) {
         this.hitChance = hitChance;
+    }
+
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        return new EnumMap<>(StatusEffect.class);
+    }
+
+    public int getStatusEffectChance(StatusEffect statusEffect) {
+        return 100;
     }
 
 }

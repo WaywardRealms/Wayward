@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
@@ -35,14 +36,14 @@ public class FireballSpell extends AttackSpellBase {
         setDefenceStat(MAGIC_DEFENCE);
     }
 
-	@Override
-	public ItemStack getIcon() {
-		ItemStack icon = new ItemStack(Material.BLAZE_POWDER, 1);
-		ItemMeta iconMeta = icon.getItemMeta();
-		iconMeta.setDisplayName("Fireball");
-		icon.setItemMeta(iconMeta);
-		return icon;
-	}
+    @Override
+    public ItemStack getIcon() {
+        ItemStack icon = new ItemStack(Material.BLAZE_POWDER, 1);
+        ItemMeta iconMeta = icon.getItemMeta();
+        iconMeta.setDisplayName("Fireball");
+        icon.setItemMeta(iconMeta);
+        return icon;
+    }
 
     @Override
     public boolean use(Player player) {
@@ -57,14 +58,7 @@ public class FireballSpell extends AttackSpellBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case STICK: return 1.1D;
-                case BLAZE_ROD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMagicWeaponModifier(weapon);
     }
 
     @Override
@@ -78,43 +72,38 @@ public class FireballSpell extends AttackSpellBase {
     }
 
     public boolean canUse(Class clazz, int level) {
-		return clazz.getSkillPointBonus(SkillType.MAGIC_OFFENCE) * level >= 30;
-	}
+        return clazz.getSkillPointBonus(SkillType.MAGIC_OFFENCE) * level >= 30;
+    }
 
     @Override
     public boolean canUse(Combatant combatant) {
         return canUse((Character) combatant);
     }
 
-	public boolean canUse(Character character) {
-		return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 30;
-	}
+    public boolean canUse(Character character) {
+        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 30;
+    }
 
-	@Override
-	public boolean canUse(OfflinePlayer player) {
+    @Override
+    public boolean canUse(OfflinePlayer player) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             return canUse(characterPlugin.getActiveCharacter(player));
         }
-		return false;
-	}
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
+        return false;
     }
 
-    public static FireballSpell deserialize(Map<String, Object> serialised) {
-        FireballSpell deserialised = new FireballSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
+    @Override
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
+        statusEffects.put(StatusEffect.BURNED, 3);
+        return statusEffects;
+    }
+
+    @Override
+    public int getStatusEffectChance(StatusEffect statusEffect) {
+        return 30;
     }
 
 }

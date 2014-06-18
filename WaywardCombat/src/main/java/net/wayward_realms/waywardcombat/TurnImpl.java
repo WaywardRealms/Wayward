@@ -7,51 +7,51 @@ import net.wayward_realms.waywardlib.skills.Skill;
 import org.bukkit.inventory.ItemStack;
 
 public class TurnImpl implements Turn {
-	
-	private Fight fight;
-	private Combatant attacking;
-	private Combatant defending;
-	private ItemStack weapon;
-	private Skill skill;
-	
-	public TurnImpl(Fight fight) {
-		this.fight = fight;
-	}
 
-	@Override
-	public Fight getFight() {
-		return fight;
-	}
+    private Fight fight;
+    private Combatant attacking;
+    private Combatant defending;
+    private ItemStack weapon;
+    private Skill skill;
 
-	@Override
-	public Combatant getAttacker() {
-		return attacking;
-	}
+    public TurnImpl(Fight fight) {
+        this.fight = fight;
+    }
 
-	@Override
-	public void setAttacker(Combatant attacker) {
-		this.attacking = attacker;
-	}
+    @Override
+    public Fight getFight() {
+        return fight;
+    }
 
-	@Override
-	public Combatant getDefender() {
-		return defending;
-	}
+    @Override
+    public Combatant getAttacker() {
+        return attacking;
+    }
 
-	@Override
-	public void setDefender(Combatant defender) {
-		this.defending = defender;
-	}
+    @Override
+    public void setAttacker(Combatant attacker) {
+        this.attacking = attacker;
+    }
 
-	@Override
-	public ItemStack getWeapon() {
-		return weapon;
-	}
+    @Override
+    public Combatant getDefender() {
+        return defending;
+    }
 
-	@Override
-	public void setWeapon(ItemStack weapon) {
-		this.weapon = weapon;
-	}
+    @Override
+    public void setDefender(Combatant defender) {
+        this.defending = defender;
+    }
+
+    @Override
+    public ItemStack getWeapon() {
+        return weapon;
+    }
+
+    @Override
+    public void setWeapon(ItemStack weapon) {
+        this.weapon = weapon;
+    }
 
     @Override
     public Skill getSkill() {

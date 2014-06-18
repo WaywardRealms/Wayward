@@ -34,8 +34,8 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     private GitHub gitHub;
 
-    private Set<String> logMessagesEnabled = new HashSet<>();
-    private Map<String, Location> previousLocations = new HashMap<>();
+    private File logMessagesEnabledFile;
+    private Map<UUID, Location> previousLocations = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -72,12 +72,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
             exception.printStackTrace();
         }
         drinkManager.setupRecipes();
-    }
-
-    @Override
-    public void onDisable() {
-        warpManager.save();
-        kitManager.save();
+        logMessagesEnabledFile = new File(getDataFolder(), "log-messages-enabled.yml");
     }
 
     private void registerListeners(Listener... listeners) {
@@ -90,6 +85,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("back").setExecutor(new BackCommand(this));
         getCommand("clone").setExecutor(new CloneCommand(this));
         getCommand("deletewarp").setExecutor(new DeleteWarpCommand(this));
+        getCommand("distance").setExecutor(new DistanceCommand(this));
         getCommand("enchant").setExecutor(new EnchantCommand(this));
         getCommand("feed").setExecutor(new FeedCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(this));
@@ -104,17 +100,18 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("kit").setExecutor(new KitCommand(this));
         getCommand("msg").setExecutor(new MsgCommand(this));
         getCommand("repair").setExecutor(new RepairCommand(this));
-        getCommand("roll").setExecutor(new RollCommand(this));
         getCommand("runas").setExecutor(new RunAsCommand(this));
+        getCommand("seen").setExecutor(new SeenCommand(this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getCommand("setwarp").setExecutor(new SetWarpCommand(this));
-        getCommand("smite").setExecutor(new SmiteCommand());
+        getCommand("smite").setExecutor(new SmiteCommand(this));
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("spawner").setExecutor(new SpawnerCommand(this));
         getCommand("spawnmob").setExecutor(new SpawnMobCommand(this));
         getCommand("speed").setExecutor(new SpeedCommand(this));
         getCommand("sudo").setExecutor(new SudoCommand(this));
         getCommand("togglelogmessages").setExecutor(new ToggleLogMessagesCommand(this));
+        getCommand("track").setExecutor(new TrackCommand(this));
         getCommand("unsign").setExecutor(new UnsignCommand(this));
         getCommand("warp").setExecutor(new WarpCommand(this));
     }
@@ -127,14 +124,12 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     @Override
     public void loadState() {
-        warpManager.load();
-        kitManager.load();
+
     }
 
     @Override
     public void saveState() {
-        warpManager.save();
-        kitManager.save();
+
     }
 
     @Override
@@ -206,31 +201,45 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     }
 
     public boolean isLogMessagesEnabled(OfflinePlayer player) {
-        return logMessagesEnabled.contains(player.getName());
+        YamlConfiguration logMessagesEnabledConfig = YamlConfiguration.loadConfiguration(logMessagesEnabledFile);
+        return logMessagesEnabledConfig.getStringList("enabled").contains(player.getUniqueId().toString());
     }
 
     public void setLogMessagesEnabled(OfflinePlayer player, boolean enable) {
+        YamlConfiguration logMessagesEnabledConfig = YamlConfiguration.loadConfiguration(logMessagesEnabledFile);
+        List<String> logMessagesEnabled = logMessagesEnabledConfig.getStringList("enabled");
         if (enable) {
-            logMessagesEnabled.add(player.getName());
+            logMessagesEnabled.add(player.getUniqueId().toString());
         } else {
-            logMessagesEnabled.remove(player.getName());
+            logMessagesEnabled.remove(player.getUniqueId().toString());
+        }
+        logMessagesEnabledConfig.set("enabled", logMessagesEnabled);
+        try {
+            logMessagesEnabledConfig.save(logMessagesEnabledFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
     public Set<Player> getPlayersWithLogMessagesEnabled() {
+        YamlConfiguration logMessagesEnabledConfig = YamlConfiguration.loadConfiguration(logMessagesEnabledFile);
+        List<String> logMessagesEnabled = logMessagesEnabledConfig.getStringList("enabled");
         Set<Player> players = new HashSet<>();
-        for (String playerName : logMessagesEnabled) {
-            players.add(getServer().getPlayer(playerName));
+        for (String uuidString : logMessagesEnabled) {
+            UUID uuid = UUID.fromString(uuidString);
+            if (getServer().getPlayer(uuid) != null) {
+                players.add(getServer().getPlayer(uuid));
+            }
         }
         return players;
     }
 
     public Location getPreviousLocation(OfflinePlayer player) {
-        return previousLocations.get(player.getName());
+        return previousLocations.get(player.getUniqueId());
     }
 
     public void setPreviousLocation(OfflinePlayer player, Location location) {
-        previousLocations.put(player.getName(), location);
+        previousLocations.put(player.getUniqueId(), location);
     }
 
     public String getDailyMessage() {

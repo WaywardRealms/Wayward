@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class BurnSpell extends AttackSpellBase {
@@ -39,7 +40,7 @@ public class BurnSpell extends AttackSpellBase {
     @Override
     public boolean use(Player player) {
         for (Entity entity : player.getWorld().getEntities()) {
-            if (player.getLocation().distance(entity.getLocation()) <= radius) {
+            if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
                 if (entity != player) {
                     entity.setFireTicks(fireTicks);
                 }
@@ -78,41 +79,13 @@ public class BurnSpell extends AttackSpellBase {
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("radius", radius);
-        serialised.put("fire-ticks", fireTicks);
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public BurnSpell deserialize(Map<String, Object> serialised) {
-        BurnSpell deserialised = new BurnSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.radius = (int) serialised.get("radius");
-        deserialised.fireTicks = (int) serialised.get("fire-ticks");
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
-    }
-
-    @Override
     public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         defending.getPlayer().getPlayer().setFireTicks(fireTicks);
     }
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case STICK: return 1.1D;
-                case BLAZE_ROD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMagicWeaponModifier(weapon);
     }
 
     @Override
@@ -125,4 +98,10 @@ public class BurnSpell extends AttackSpellBase {
         return attacking.getName() + " attempted to set " + defending.getName() + " alight with magic, but did not have enough mana.";
     }
 
+    @Override
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
+        statusEffects.put(StatusEffect.BURNED, 5);
+        return statusEffects;
+    }
 }

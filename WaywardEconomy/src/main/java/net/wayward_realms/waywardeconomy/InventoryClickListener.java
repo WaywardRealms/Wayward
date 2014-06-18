@@ -50,21 +50,30 @@ public class InventoryClickListener implements Listener {
                         if (event.getSlot() == event.getRawSlot()) {
                             Chest chest = (Chest) event.getInventory().getHolder();
                             Player player = (Player) event.getWhoClicked();
-                            ItemStack item = event.getCurrentItem();
+                            ItemStack item = new ItemStack(event.getCurrentItem());
                             if (chest.getBlock().getRelative(BlockFace.UP).getState() instanceof Sign) {
                                 Sign sign = (Sign) chest.getBlock().getRelative(BlockFace.UP).getState();
                                 if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_PURPLE + "[shop]")) {
+                                    if (sign.getLine(1).contains("sell ")) {
+                                        ((Player) event.getWhoClicked()).sendMessage(plugin.getPrefix() + ChatColor.RED + "This is a sell shop, you may not steal items.");
+                                        event.setCancelled(true);
+                                        return;
+                                    }
                                     RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                                     if (characterPluginProvider != null) {
                                         CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                                         try {
                                             if (characterPlugin.getActiveCharacter(player).getId() != Integer.parseInt(sign.getLine(3))) {
                                                 event.setCancelled(true);
-                                                if (plugin.getMoney(player) >= Integer.parseInt(sign.getLine(1).split(":")[1])) {
-                                                    plugin.transferMoney(characterPlugin.getActiveCharacter(player), characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), Integer.parseInt(sign.getLine(1).split(":")[1]));
+                                                if (plugin.getMoney(player) >= Integer.parseInt(sign.getLine(2).split(" ")[1])) {
+                                                    plugin.transferMoney(characterPlugin.getActiveCharacter(player), characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), Integer.parseInt(sign.getLine(2).split(" ")[1]));
+                                                    item.setAmount(Integer.parseInt(sign.getLine(2).replace("for ", "")));
                                                     player.getInventory().addItem(item);
                                                     chest.getInventory().removeItem(item);
-                                                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bought " + item.getAmount() + " x " + item.getType().toString().toLowerCase().replace('_', ' ') + " for " + sign.getLine(1).split(":")[1] + " " + (Integer.parseInt(sign.getLine(1).split(":")[1]) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bought " + item.getAmount() + " x " + item.getType().toString().toLowerCase().replace('_', ' ') + " for " + sign.getLine(2).split(" ")[1] + " " + (Integer.parseInt(sign.getLine(1).split(" ")[1]) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                                    if (characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().isOnline()) {
+                                                        characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + " bought " + item.getAmount() + " x " + item.getType().toString().toLowerCase().replace('_', ' ') + " for " + sign.getLine(2).split(" ")[1] + " " + (Integer.parseInt(sign.getLine(1).split(" ")[1]) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()) + " from your shop.");
+                                                    }
                                                 } else {
                                                     player.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough money.");
                                                 }

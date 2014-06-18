@@ -28,7 +28,7 @@ public class InventoryClickListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(final InventoryClickEvent event) {
         if (event.getWhoClicked().getGameMode() != GameMode.CREATIVE) {
             if (event.getInventory().getType() == InventoryType.WORKBENCH || event.getInventory().getType() == InventoryType.CRAFTING) {
                 if (event.getSlotType() == InventoryType.SlotType.RESULT) {
@@ -38,6 +38,7 @@ public class InventoryClickListener implements Listener {
                             || event.getAction() == InventoryAction.PICKUP_SOME
                             || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         if (event.getCurrentItem() != null) {
+                            if (!plugin.canGainCraftEfficiency(event.getCurrentItem().getType())) return;
                             if (ToolType.getToolType(event.getCurrentItem().getType()) != null) {
                                 ToolType type = ToolType.getToolType(event.getCurrentItem().getType());
                                 if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {

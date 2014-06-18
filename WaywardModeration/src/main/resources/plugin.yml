@@ -3,12 +3,15 @@ author: Lucariatias
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardmoderation.WaywardModeration
-depend: [WaywardLib]
+depend: [WaywardLib, TagAPI]
 commands:
     reputation:
         description: Manages reputation
         usage: /<command> [view|set|plus|minus]
         aliases: [rep]
+    tempban:
+        description: Temporarily bans a user
+        usage: /<command> [player] [hours]
     ticket:
         description: Manages tickets
         usage: /<command> [create|close|teleport]
@@ -17,10 +20,19 @@ commands:
         usage: /<command>
     warn:
         description: Warns a player
-        usage: /<command> [player] [message]
+        usage: /<command> [player] [reason]
+    unwarn:
+        description: Unwarns a player
+        usage: /<command> [player] [reason]
     warnings:
         description: Views warnings
         usage: /<command> (player)
+    amivanished:
+        description: Checks whether you are vanished
+        usage: /<command>
+    onlinestaff:
+        description: Shows staff online now
+        usage: /<command>
 permissions:
     wayward.moderation.command.reputation.set:
         description: Allows you to set reputation
@@ -31,11 +43,17 @@ permissions:
     wayward.moderation.command.reputation.minus:
         description: Allows you to take reputation
         default: op
+    wayward.moderation.command.tempban:
+        description: Allows you to temporarily ban users
+        default: op
     wayward.moderation.command.ticket.close:
         description: Allows you to close tickets that are not your own
         default: op
     wayward.moderation.command.ticket.teleport:
         description: Allows you to teleport to ticket locations
+        default: op
+    wayward.moderation.command.ticket.list:
+        description: Allows you to list tickets
         default: op
     wayward.moderation.command.vanish:
         description: Allows you to toggle vanish
@@ -45,4 +63,19 @@ permissions:
         default: op
     wayward.moderation.command.warn:
         description: Allows you to warn people
+        default: op
+    wayward.moderation.vanish.see.tier1:
+        description: Allows you to see all vanished people
+        default: op
+    wayward.moderation.vanish.see.tier2:
+        description: Allows you to see vanished people tier 2 and below
+        default: false
+    wayward.moderation.vanish.see.tier3:
+        description: Allows you to see vanished people tier 3 and below
+        default: false
+    wayward.moderation.ticket.notification:
+        description: Notifies the player when a ticket is filed
+        default: op
+    wayward.moderation.staff:
+        description: Marks the user as a staff member
         default: op

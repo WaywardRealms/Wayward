@@ -44,6 +44,13 @@ public class DrinkManager {
         this.drunkenness.put(character.getId(), drunkenness);
         if (getDrunkenness(character) == 100) {
             character.setDead(true);
+            if (character.getPlayer().isOnline()) {
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                if (characterPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    characterPlugin.setActiveCharacter(character.getPlayer().getPlayer(), characterPlugin.createNewCharacter(character.getPlayer()));
+                }
+            }
         }
         if (character.getPlayer().getPlayer().isOnline()) {
             if (getDrunkenness(character) == 100) {

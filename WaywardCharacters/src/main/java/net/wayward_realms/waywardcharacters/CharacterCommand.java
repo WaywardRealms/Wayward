@@ -1,9 +1,13 @@
 package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.events.EventCharacter;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,13 +26,15 @@ public class CharacterCommand implements CommandExecutor {
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("new")) {
                 int livingCharacters = 0;
-                for (net.wayward_realms.waywardlib.character.Character character : plugin.getCharacters((Player) sender)) {
-                    if (!character.isDead()) {
-                        livingCharacters++;
+                for (Character character : plugin.getCharacters((Player) sender)) {
+                    if (character != null) {
+                        if (!character.isDead() && !(character instanceof EventCharacter)) {
+                            livingCharacters++;
+                        }
                     }
                 }
                 if (livingCharacters < plugin.getConfig().getInt("characters.limit") || plugin.getConfig().getInt("characters.limit") <= 0 || sender.hasPermission("wayward.characters.characters.unlimited")) {
-                    plugin.setActiveCharacter((Player) sender, new CharacterImpl((Player) sender));
+                    plugin.setActiveCharacter((Player) sender, plugin.createNewCharacter((Player) sender));
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created a new character. Make sure to set up your character information!");
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You have reached your character limit.");
@@ -56,15 +62,17 @@ public class CharacterCommand implements CommandExecutor {
                 if (args.length >= 2) {
                     boolean found = false;
                     for (Character character : plugin.getCharacters((Player) sender)) {
-                        if (character.getName().toUpperCase().startsWith(args[1].toUpperCase())) {
-                            if (!character.isDead()) {
-                                plugin.setActiveCharacter((Player) sender, character);
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Switched character to " + character.getName());
-                            } else {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot switch to a dead character.");
+                        if (character != null) {
+                            if (character.getName().toUpperCase().startsWith(args[1].toUpperCase())) {
+                                if (!character.isDead()) {
+                                    plugin.setActiveCharacter((Player) sender, character);
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Switched character to " + character.getName());
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot switch to a dead character.");
+                                }
+                                found = true;
+                                break;
                             }
-                            found = true;
-                            break;
                         }
                     }
                     if (!found) {
@@ -122,11 +130,14 @@ public class CharacterCommand implements CommandExecutor {
                         }
                     } else if (args[1].equalsIgnoreCase("gender")) {
                         if (args.length >= 3) {
-                            try {
+                            if (plugin.getGender(args[2].toUpperCase()) != null) {
                                 character.setGender(plugin.getGender(args[2].toUpperCase()));
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set character's gender to " + args[2].toUpperCase());
-                            } catch (IllegalArgumentException exception) {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Gender must be either male or female");
+                            } else {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Gender must be one of the following:");
+                                for (Gender gender : plugin.getGenders()) {
+                                    sender.sendMessage(ChatColor.RED + gender.getName());
+                                }
                             }
                         } else {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set gender [gender]");
@@ -160,7 +171,7 @@ public class CharacterCommand implements CommandExecutor {
                     } else if (args[1].equalsIgnoreCase("dead")) {
                         Player player = (Player) sender;
                         character.setDead(true);
-                        plugin.setActiveCharacter(player, new CharacterImpl(player));
+                        plugin.setActiveCharacter(player, plugin.createNewCharacter(player));
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your character has been set to daed, and a new character has been created.");
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead]");
@@ -180,10 +191,45 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " extenddescription [info]");
                 }
+            } else if (args[0].equalsIgnoreCase("assignstatpoint") || args[0].equalsIgnoreCase("asp")) {
+                if (args.length >= 2) {
+                    Character character = plugin.getActiveCharacter((Player) sender);
+                    if (character instanceof CharacterImpl) {
+                        CharacterImpl characterImpl = (CharacterImpl) character;
+                        if (characterImpl.getUnassignedStatPoints() >= 1) {
+                            try {
+                                Stat stat = Stat.valueOf(args[1].toUpperCase());
+                                characterImpl.assignStatPoint(stat);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Stat point assigned to " + stat.toString().toLowerCase().replace("_", " "));
+                            } catch (IllegalArgumentException exception) {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That stat doesn't exist! Try one of the following:");
+                                for (Stat stat : Stat.values()) {
+                                    sender.sendMessage(ChatColor.RED + stat.toString().toLowerCase());
+                                }
+                            }
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have any unassigned stat points.");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are using a non-default character implementation, stat points are unsupported for this character type.");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0].toLowerCase() + " [stat]");
+                }
             } else if (args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Character list: ");
-                for (Character character : plugin.getCharacters((Player) sender)) {
-                    sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");
+                Player player = (Player) sender;
+                if (sender.hasPermission("wayward.characters.command.character.list.others")) {
+                    if (args.length >= 2) {
+                        if (plugin.getServer().getPlayer(args[1]) != null) {
+                            player = plugin.getServer().getPlayer(args[1]);
+                        }
+                    }
+                }
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getName() + "'s character list: ");
+                for (Character character : plugin.getCharacters(player)) {
+                    if (character != null) {
+                        sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")" + (character instanceof EventCharacter ? ChatColor.GRAY + " [" + ChatColor.YELLOW + "EVENT" + ChatColor.GRAY + "]" : ""));
+                    }
                 }
             } else if (args[0].equalsIgnoreCase("revive")) {
                 if (sender.hasPermission("wayward.characters.command.character.revive")) {
@@ -214,25 +260,46 @@ public class CharacterCommand implements CommandExecutor {
                             case "gender": character.setGenderHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender hidden."); break;
                             case "race": character.setRaceHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race hidden."); break;
                             case "description": character.setDescriptionHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description hidden."); break;
+                            case "class": character.setClassHidden(true); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Class hidden."); break;
                             default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to hide! This includes name, age, gender, race or description.");
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
                     }
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to hide! This includes name, age, gender, race, or description.");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to hide! This includes name, age, gender, race, description, or class.");
                 }
             } else if (args[0].equalsIgnoreCase("unhide")) {
                 if (args.length >= 2) {
                     if (sender instanceof Player) {
                         Character character = plugin.getActiveCharacter((Player) sender);
                         switch (args[1].toLowerCase()) {
-                            case "name": character.setNameHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Name unhidden."); break;
-                            case "age": character.setAgeHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Age unhidden."); break;
-                            case "gender": character.setGenderHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender unidden."); break;
-                            case "race": character.setRaceHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race unhidden."); break;
-                            case "description": character.setDescriptionHidden(false); sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description unhidden."); break;
-                            default: sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to unhide! This includes name, age, gender, race or description.");
+                            case "name":
+                                character.setNameHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Name unhidden.");
+                                break;
+                            case "age":
+                                character.setAgeHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Age unhidden.");
+                                break;
+                            case "gender":
+                                character.setGenderHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Gender unidden.");
+                                break;
+                            case "race":
+                                character.setRaceHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Race unhidden.");
+                                break;
+                            case "description":
+                                character.setDescriptionHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Description unhidden.");
+                                break;
+                            case "class":
+                                character.setClassHidden(false);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Class unhidden.");
+                                break;
+                            default:
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a valid field to unhide! This includes name, age, gender, race, description or class.");
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
@@ -240,11 +307,65 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a field to unhide! This includes name, age, gender, race, or description.");
                 }
+            } else if (args[0].equalsIgnoreCase("transfer")) {
+                if (sender.hasPermission("wayward.characters.command.character.transfer")) {
+                    if (args.length > 2) {
+                        try {
+                            int cid = Integer.parseInt(args[1]);
+                            OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[2]);
+                            if (player.getLastPlayed() != 0) {
+                                Character character = plugin.getCharacter(cid);
+                                if (character != null) {
+                                    OfflinePlayer originalPlayer = character.getPlayer();
+                                    plugin.removeCharacter(originalPlayer, character);
+                                    character.setPlayer(player);
+                                    plugin.addCharacter(player, character);
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Transferred " + character.getName() + " from " + originalPlayer.getName() + " to " + player.getName());
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character does not exist.");
+                                }
+                            } else {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player has never played before.");
+                            }
+                        } catch (NumberFormatException exception) {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " transfer [character id] [player]");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " transfer [character id] [player]");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
+                }
+            } else if (args[0].equalsIgnoreCase("resetstatpoints") || args[0].equalsIgnoreCase("rsp")) {
+                if (sender.hasPermission("wayward.characters.command.character.resetstatpoints")) {
+                    if (args.length > 1) {
+                        try {
+                            int cid = Integer.parseInt(args[1]);
+                            Character character = plugin.getCharacter(cid);
+                            if (character != null) {
+                                if (character instanceof CharacterImpl) {
+                                    ((CharacterImpl) character).resetStatPoints();
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Reset " + character.getName() + "'s stat points.");
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character is using a non-default character implementation, and cannot use stat points.");
+                                }
+                            } else {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character does not exist.");
+                            }
+                        } catch (NumberFormatException exception) {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
+                }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide]");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
         }
         return true;
     }

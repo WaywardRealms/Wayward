@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.TrapDoor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -71,16 +72,10 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     if (block != null) {
-                        if (event.getPlayer().getItemInHand() != null
-                                && event.getPlayer().getItemInHand().getType() == Material.IRON_INGOT
-                                && event.getPlayer().getItemInHand().hasItemMeta()
-                                && event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()
-                                && event.getPlayer().getItemInHand().getItemMeta().hasLore()
-                                && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Key")
-                                && event.getPlayer().getItemInHand().getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                        if (hasKey(event.getPlayer(), event.getClickedBlock())) {
                             plugin.unlock(block);
                             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The lock was successfully removed from the " + block.getType().toString().toLowerCase().replace('_', ' '));
-                            event.getPlayer().setItemInHand(null);
+                            removeKey(event.getPlayer(), event.getClickedBlock());
                             ItemStack lockItem = new ItemStack(Material.IRON_INGOT);
                             ItemMeta lockMeta = lockItem.getItemMeta();
                             lockMeta.setDisplayName("Lock");
@@ -114,7 +109,6 @@ public class PlayerInteractListener implements Listener {
                         event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "That block is not locked.");
                     } else {
                         ItemStack key = new ItemStack(Material.IRON_INGOT, 1);
-                        //int lockId = plugin.getLockId(block);
                         ItemMeta keyMeta = key.getItemMeta();
                         keyMeta.setDisplayName("Key");
                         List<String> keyLore = new ArrayList<>();
@@ -142,68 +136,48 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     if (block != null) {
-                        if (event.getPlayer().getItemInHand() != null) {
-                            if (event.getPlayer().getItemInHand().hasItemMeta()) {
-                                if (event.getPlayer().getItemInHand().getItemMeta().hasDisplayName()) {
-                                    if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Lockpick")) {
-                                        if (event.getPlayer().getItemInHand().getAmount() > 1) {
-                                            event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
-                                        } else {
-                                            event.getPlayer().setItemInHand(null);
-                                        }
-                                        event.getPlayer().updateInventory();
-                                        Random random = new Random();
-                                        if (random.nextInt(100) > plugin.getLockpickEfficiency(event.getPlayer())) {
-                                            event.setCancelled(true);
-                                            switch (random.nextInt(5)) {
-                                                case 0: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick bent inside the lock."); break;
-                                                case 1: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick snapped as you tried to use it."); break;
-                                                case 2: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick seems to have gotten stuck."); break;
-                                                case 3: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick twists out of shape. It looks unusable."); break;
-                                                case 4: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick makes a grating sound inside the lock, but nothing happens."); break;
-                                            }
-                                        } else {
-                                            event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You hear a click and the lock opens, allowing you access to the " + block.getType().toString().toLowerCase().replace('_', ' '));
-                                            if (random.nextInt(100) < 5) {
-                                                plugin.setLockpickEfficiency(event.getPlayer(), plugin.getLockpickEfficiency(event.getPlayer()) + 1);
-                                            }
-                                            final Player player = event.getPlayer();
-                                            if (block.getType() == Material.CHEST) {
-                                                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        player.closeInventory();
-                                                        player.sendMessage(ChatColor.RED + "The chest snaps shut again, the lock clicking shut.");
-                                                    }
-                                                }, 60L);
-                                            } else if (block.getType() == Material.WOOD_DOOR || block.getType() == Material.WOODEN_DOOR) {
-                                                final Block finalBlock = block;
-                                                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        closeDoor(finalBlock);
-                                                        player.sendMessage(ChatColor.RED + "The door slams behind you, the lock clicking shut.");
-                                                    }
-                                                }, 60L);
-                                            }
-                                        }
-                                        return;
-                                    }
-                                    if (!event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Key")
-                                            || !event.getPlayer().getItemInHand().getItemMeta().hasLore()
-                                            || !event.getPlayer().getItemInHand().getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
-                                        event.setCancelled(true);
-                                        event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "The " + block.getType().toString().toLowerCase().replace('_', ' ') + " seems to be locked. You would need the key or a lockpick to get in.");
-                                    }
-                                } else {
-                                    event.setCancelled(true);
-                                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "The " + block.getType().toString().toLowerCase().replace('_', ' ') + " seems to be locked. You would need the key or a lockpick to get in.");
+                        if (hasKey(event.getPlayer(), block)) return;
+                        if (hasLockpick(event.getPlayer())) {
+                            removeLockpick(event.getPlayer());
+                            event.getPlayer().updateInventory();
+                            Random random = new Random();
+                            if (random.nextInt(100) > plugin.getLockpickEfficiency(event.getPlayer())) {
+                                event.setCancelled(true);
+                                switch (random.nextInt(5)) {
+                                    case 0: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick bent inside the lock."); break;
+                                    case 1: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick snapped as you tried to use it."); break;
+                                    case 2: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick seems to have gotten stuck."); break;
+                                    case 3: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick twists out of shape. It looks unusable."); break;
+                                    case 4: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick makes a grating sound inside the lock, but nothing happens."); break;
                                 }
                             } else {
-                                event.setCancelled(true);
-                                event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "The " + block.getType().toString().toLowerCase().replace('_', ' ') + " seems to be locked. You would need the key or a lockpick to get in.");
+                                event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You hear a click and the lock opens, allowing you access to the " + block.getType().toString().toLowerCase().replace('_', ' '));
+                                if (random.nextInt(100) < 50) {
+                                    plugin.setLockpickEfficiency(event.getPlayer(), plugin.getLockpickEfficiency(event.getPlayer()) + 1);
+                                }
+                                final Player player = event.getPlayer();
+                                if (block.getType() == Material.CHEST) {
+                                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            player.closeInventory();
+                                            player.sendMessage(ChatColor.RED + "The chest snaps shut again, the lock clicking shut.");
+                                        }
+                                    }, 60L);
+                                } else if (block.getType() == Material.WOOD_DOOR || block.getType() == Material.WOODEN_DOOR) {
+                                    final Block finalBlock = block;
+                                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            closeDoor(finalBlock);
+                                            player.sendMessage(ChatColor.RED + "The door slams behind you, the lock clicking shut.");
+                                        }
+                                    }, 60L);
+                                }
                             }
-                        } else {
+                            return;
+                        }
+                        if (!hasKey(event.getPlayer(), block)) {
                             event.setCancelled(true);
                             event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "The " + block.getType().toString().toLowerCase().replace('_', ' ') + " seems to be locked. You would need the key or a lockpick to get in.");
                         }
@@ -214,6 +188,102 @@ public class PlayerInteractListener implements Listener {
     }
 
 
+    public boolean hasKey(Player player, Block block) {
+    	for (ItemStack key : plugin.getKeyringManager().getKeyring(player)) {
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                return true;
+            }
+    	}
+        for (ItemStack key : player.getInventory().getContents()) {
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                return true;
+            }
+        }
+    	return false;
+    }
+
+    public void removeKey(Player player, Block block) {
+        List<ItemStack> keyring = plugin.getKeyringManager().getKeyring(player);
+        for (Iterator<ItemStack> iterator = keyring.iterator(); iterator.hasNext(); ) {
+            ItemStack key = iterator.next();
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                if (key.getAmount() > 1) {
+                    key.setAmount(key.getAmount() - 1);
+                } else {
+                    iterator.remove();
+                }
+                return;
+            }
+        }
+        plugin.getKeyringManager().setKeyring(player, keyring);
+        for (ItemStack key : player.getInventory().getContents()) {
+            if (key != null
+                    && key.getType() == Material.IRON_INGOT
+                    && key.hasItemMeta()
+                    && key.getItemMeta().hasDisplayName()
+                    && key.getItemMeta().hasLore()
+                    && key.getItemMeta().getDisplayName().equals("Key")
+                    && key.getItemMeta().getLore().contains(block.getWorld().getName() + "," + block.getLocation().getBlockX() + "," + block.getLocation().getBlockY() + "," + block.getLocation().getBlockZ())) {
+                ItemStack oneKey = new ItemStack(key);
+                oneKey.setAmount(1);
+                player.getInventory().removeItem(oneKey);
+                return;
+            }
+        }
+    }
+
+    public boolean hasLockpick(Player player) {
+        ItemStack lockpick = player.getItemInHand();
+        if (lockpick != null) {
+            if (lockpick.hasItemMeta()) {
+                if (lockpick.getItemMeta().hasDisplayName()) {
+                    if (lockpick.getItemMeta().getDisplayName().equals("Lockpick")
+                            && lockpick.getItemMeta().hasLore()
+                            && lockpick.getItemMeta().getLore().contains("Used for breaking through locks")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public void removeLockpick(Player player) {
+        for (ItemStack lockpick : player.getInventory().getContents()) {
+            if (lockpick != null) {
+                if (lockpick.hasItemMeta()) {
+                    if (lockpick.getItemMeta().hasDisplayName()) {
+                        if (lockpick.getItemMeta().getDisplayName().equals("Lockpick")
+                                && lockpick.getItemMeta().hasLore()
+                                && lockpick.getItemMeta().getLore().contains("Used for breaking through locks")) {
+                            ItemStack oneLockpick = new ItemStack(lockpick);
+                            oneLockpick.setAmount(1);
+                            player.getInventory().removeItem(oneLockpick);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     public boolean isDoorClosed(Block block) {
         if (block.getType() == Material.TRAP_DOOR) {
             TrapDoor trapdoor = (TrapDoor)block.getState().getData();

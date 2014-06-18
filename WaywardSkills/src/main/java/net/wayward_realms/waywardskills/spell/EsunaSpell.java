@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
@@ -17,9 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EsunaSpell extends SpellBase {
 
@@ -35,7 +33,7 @@ public class EsunaSpell extends SpellBase {
     @Override
     public boolean use(Player player) {
         for (LivingEntity entity : player.getWorld().getEntitiesByClass(LivingEntity.class)) {
-            if (player.getLocation().distance(entity.getLocation()) <= radius) {
+            if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
                 for (PotionEffectType potionEffectType : PotionEffectType.values()) {
                     if (potionEffectType != null) {
                         entity.addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
@@ -49,8 +47,8 @@ public class EsunaSpell extends SpellBase {
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         if (attacking.getMana() >= getManaCost()) {
-            for (PotionEffectType potionEffectType : PotionEffectType.values()) {
-                defending.getPlayer().getPlayer().addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
+            for (StatusEffect statusEffect : StatusEffect.values()) {
+                fight.setStatusTurns(defending, statusEffect, 0);
             }
             fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cured " + defending.getName() + "'s status effects");
             return true;
@@ -87,25 +85,6 @@ public class EsunaSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("radius", radius);
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static EsunaSpell deserialize(Map<String, Object> serialised) {
-        EsunaSpell deserialised = new EsunaSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.radius = (int) serialised.get("radius");
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

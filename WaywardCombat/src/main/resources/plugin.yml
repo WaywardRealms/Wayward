@@ -16,3 +16,14 @@ commands:
     flee:
         usage: /<command>
         description: Run away from a fight
+    rolls:
+        usage: /<command>
+        description: Calculates and shows rolls
+        aliases: [rollinfo]
+    roll:
+        description: Rolls
+        usage: /<command> [roll|stat]
+permissions:
+    wayward.combat.command.rolls.other:
+        description: Allows viewing other peoples rolls
+        default: op

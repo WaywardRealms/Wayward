@@ -23,6 +23,10 @@ public class PlayerQuitListener implements Listener {
                 channel.removeSpeaker(event.getPlayer());
             }
         }
+        plugin.setSnooping(event.getPlayer(), false);
+        for (ChatGroup chatGroup : plugin.getChatGroups()) {
+            chatGroup.disposeIfUnused();
+        }
     }
 
 }

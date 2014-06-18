@@ -28,7 +28,6 @@ public interface Character extends Combatant, ConfigurationSerializable {
      */
     public String getName();
 
-
     /**
      * Sets the name of the character
      *
@@ -233,13 +232,6 @@ public interface Character extends Combatant, ConfigurationSerializable {
     public double getMaxHealth();
 
     /**
-     * Sets the max health of the character
-     *
-     * @param maxHealth the max health to set
-     */
-    public void setMaxHealth(double maxHealth);
-
-    /**
      * Gets the character's mana
      *
      * @return the mana
@@ -273,6 +265,62 @@ public interface Character extends Combatant, ConfigurationSerializable {
      * @param location the location to set
      */
     public void setLocation(Location location);
+
+    /**
+     * Gets the helmet the character is wearing
+     *
+     * @return the helmet
+     */
+    public ItemStack getHelmet();
+
+    /**
+     * Sets the helmet the character is wearing
+     *
+     * @param helmet the helmet to set
+     */
+    public void setHelmet(ItemStack helmet);
+
+    /**
+     * Gets the chestplate the character is wearing
+     *
+     * @return the chestplate
+     */
+    public ItemStack getChestplate();
+
+    /**
+     * Sets the chestplate the character is wearing
+     *
+     * @param chestplate the chestplate to set
+     */
+    public void setChestplate(ItemStack chestplate);
+
+    /**
+     * Gets the leggings the character is wearing
+     *
+     * @return the leggings
+     */
+    public ItemStack getLeggings();
+
+    /**
+     * Sets the leggings the character is wearing
+     *
+     * @param leggings the leggings to set
+     */
+    public void setLeggings(ItemStack leggings);
+
+    /**
+     * Gets the boots the character is wearing
+     *
+     * @return the boots
+     */
+    public ItemStack getBoots();
+
+    /**
+     * Sets the boots the character is wearing
+     *
+     * @param boots the boots to set
+     */
+    public void setBoots(ItemStack boots);
 
     /**
      * Gets the inventory contents of this character

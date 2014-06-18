@@ -4,10 +4,12 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,9 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class FreezeSpell extends SpellBase {
 
@@ -39,8 +38,14 @@ public class FreezeSpell extends SpellBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        //TODO Status effects, requires #37
-        return false;
+        if (attacking.getMana() >= getManaCost()) {
+            fight.setStatusTurns(defending, StatusEffect.FROZEN, 5);
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " froze " + defending.getName());
+            return true;
+        } else {
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to freeze " + defending.getName() + " but did not have enough mana.");
+            return false;
+        }
     }
 
     @Override
@@ -84,23 +89,6 @@ public class FreezeSpell extends SpellBase {
 
             }, delay);
         }
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static FreezeSpell deserialize(Map<String, Object> serialised) {
-        FreezeSpell deserialised = new FreezeSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

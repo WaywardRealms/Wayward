@@ -1,0 +1,206 @@
+rolls:
+    armour:
+        LEATHER_HELMET:
+            MELEE_DEFENCE: 0.25
+            RANGED_DEFENCE: 0.25
+            MAGIC_DEFENCE: 0.25
+            SPEED: -0.25
+        LEATHER_CHESTPLATE:
+            MELEE_DEFENCE: 1.75
+            RANGED_DEFENCE: 1.75
+            MAGIC_DEFENCE: 1.75
+            SPEED: -1.75
+        LEATHER_LEGGINGS:
+            MELEE_DEFENCE: 0.75
+            RANGED_DEFENCE: 0.75
+            MAGIC_DEFENCE: 0.75
+            SPEED: -0.75
+        LEATHER_BOOTS:
+            MELEE_DEFENCE: 0.25
+            RANGED_DEFENCE: 0.25
+            MAGIC_DEFENCE: 0.25
+            SPEED: -0.25
+        CHAINMAIL_HELMET:
+            MELEE_DEFENCE: 0.5
+            RANGED_DEFENCE: 0.5
+            MAGIC_DEFENCE: 0.5
+            SPEED: -0.5
+        CHAINMAIL_CHESTPLATE:
+            MELEE_DEFENCE: 2.25
+            RANGED_DEFENCE: 2.25
+            MAGIC_DEFENCE: 2.25
+            SPEED: -2.25
+        CHAINMAIL_LEGGINGS:
+            MELEE_DEFENCE: 1.75
+            RANGED_DEFENCE: 1.75
+            MAGIC_DEFENCE: 1.75
+            SPEED: -1.75
+        CHAINMAIL_BOOTS:
+            MELEE_DEFENCE: 0.5
+            RANGED_DEFENCE: 0.5
+            MAGIC_DEFENCE: 0.5
+            SPEED: -0.5
+        IRON_HELMET:
+            MELEE_DEFENCE: 0.75
+            RANGED_DEFENCE: 0.75
+            MAGIC_DEFENCE: 0.75
+            SPEED: -0.75
+        IRON_CHESTPLATE:
+            MELEE_DEFENCE: 2.5
+            RANGED_DEFENCE: 2.5
+            MAGIC_DEFENCE: 2.5
+            SPEED: -2.5
+        IRON_LEGGINGS:
+            MELEE_DEFENCE: 2.0
+            RANGED_DEFENCE: 2.0
+            MAGIC_DEFENCE: 2.0
+            SPEED: -2.0
+        IRON_BOOTS:
+            MELEE_DEFENCE: 0.75
+            RANGED_DEFENCE: 0.75
+            MAGIC_DEFENCE: 0.75
+            SPEED: -0.75
+        DIAMOND_HELMET:
+            MELEE_DEFENCE: 1.0
+            RANGED_DEFENCE: 1.0
+            MAGIC_DEFENCE: 1.0
+            SPEED: -1.0
+        DIAMOND_CHESTPLATE:
+            MELEE_DEFENCE: 3.5
+            RANGED_DEFENCE: 3.5
+            MAGIC_DEFENCE: 3.5
+            SPEED: -3.5
+        DIAMOND_LEGGINGS:
+            MELEE_DEFENCE: 2.5
+            RANGED_DEFENCE: 2.5
+            MAGIC_DEFENCE: 2.5
+            SPEED: -2.5
+        DIAMOND_BOOTS:
+            MELEE_DEFENCE: 1.0
+            RANGED_DEFENCE: 1.0
+            MAGIC_DEFENCE: 1.0
+            SPEED: -1.0
+    weapons:
+        WOOD_SWORD:
+            MELEE_ATTACK: 1.0
+        STONE_SPADE:
+            MELEE_ATTACK: 1.0
+        WOOD_PICKAXE:
+            MELEE_ATTACK: 1.0
+        STONE_PICKAXE:
+            MELEE_ATTACK: 1.0
+        IRON_PICKAXE:
+            MELEE_ATTACK: 1.0
+        IRON_HOE:
+            MELEE_ATTACK: 1.0
+        STONE_SWORD:
+            MELEE_ATTACK: 2.0
+        WOOD_AXE:
+            MELEE_ATTACK: 2.0
+        STONE_AXE:
+            MELEE_ATTACK: 2.0
+        DIAMOND_PICKAXE:
+            MELEE_ATTACK: 2.0
+        IRON_SWORD:
+            MELEE_ATTACK: 3.0
+        IRON_AXE:
+            MELEE_ATTACK: 3.0
+        IRON_SPADE:
+            MELEE_ATTACK: 3.0
+        DIAMOND_SWORD:
+            MELEE_ATTACK: 5.0
+        DIAMOND_AXE:
+            MELEE_ATTACK: 5.0
+        CARROT_STICK:
+            RANGED_ATTACK: 3.0
+        GOLD_PICKAXE:
+            RANGED_ATTACK: 4.0
+        BOW:
+            RANGED_ATTACK: 5.0
+        WOOD_HOE:
+            MELEE_ATTACK: 1.0
+            MAGIC_ATTACK: 3.0
+        STONE_HOE:
+            MELEE_ATTACK: 2.0
+            MAGIC_ATTACK: 2.0
+        GOLD_SWORD:
+            MELEE_ATTACK: 2.0
+            MAGIC_ATTACK: 3.0
+        GOLD_SPADE:
+            MELEE_ATTACK: 3.0
+            MAGIC_ATTACK: 2.0
+        GOLD_AXE:
+            MELEE_ATTACK: 3.0
+            MAGIC_ATTACK: 4.0
+        GOLD_HOE:
+            MELEE_ATTACK: 3.0
+            MAGIC_ATTACK: 4.0
+        ENDER_PEARL:
+            MAGIC_ATTACK: 2.0
+        DIAMOND_HOE:
+            MAGIC_ATTACK: 3.0
+        EYE_OF_ENDER:
+            MAGIC_ATTACK: 3.0
+        DIAMOND_SPADE:
+            MAGIC_ATTACK: 4.0
+        BLAZE_ROD:
+            MAGIC_ATTACK: 4.0
+        GOLDEN_APPLE:
+            MAGIC_ATTACK: 4.0
+        WOOD_SPADE:
+            MAGIC_ATTACK: 5.0
+    enchants:
+        ARROW_DAMAGE:
+            RANGED_ATTACK: 1.0
+        ARROW_FIRE:
+            RANGED_ATTACK: 0.5
+        ARROW_INFINITE:
+            RANGED_ATTACK: 0.5
+        ARROW_KNOCKBACK:
+            RANGED_ATTACK: 0.5
+        DAMAGE_ALL:
+            MELEE_ATTACK: 1.0
+        DAMAGE_ARTHROPODS:
+            MELEE_ATTACK: 0.5
+        DAMAGE_UNDEAD:
+            MELEE_ATTACK: 0.5
+        DIG_SPEED:
+            SPEED: 1.0
+        DURABILITY:
+            MELEE_DEFENCE: 1.0
+            RANGED_DEFENCE: 1.0
+            MAGIC_DEFENCE: 1.0
+        FIRE_ASPECT:
+            MELEE_ATTACK: 0.5
+        KNOCKBACK:
+            MELEE_ATTACK: 0.5
+        LOOT_BONUS_BLOCKS:
+            SPEED: 0.5
+        LOOT_BONUS_MOBS:
+            SPEED: 0.5
+        LUCK:
+            SPEED: 0.5
+        LURE:
+            SPEED: 0.5
+        OXYGEN:
+            SPEED: 0.5
+        PROTECTION_ENVIRONMENTAL:
+            MELEE_DEFENCE: 1.0
+            RANGED_DEFENCE: 1.0
+            MAGIC_DEFENCE: 1.0
+        PROTECTION_EXPLOSIONS:
+            MELEE_DEFENCE: 0.5
+            RANGED_DEFENCE: 0.5
+            MAGIC_DEFENCE: 0.5
+        PROTECTION_FALL:
+            MELEE_DEFENCE: 0.5
+        PROTECTION_FIRE:
+            MAGIC_DEFENCE: 1.0
+        PROTECTION_PROJECTILE:
+            RANGED_DEFENCE: 1.0
+        SILK_TOUCH:
+            SPEED: 0.5
+        THORNS:
+            MELEE_DEFENCE: 2.0
+        WATER_WORKER:
+            SPEED: 1.0

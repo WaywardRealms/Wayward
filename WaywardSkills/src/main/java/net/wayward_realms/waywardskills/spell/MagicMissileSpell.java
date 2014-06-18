@@ -9,16 +9,15 @@ import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MagicMissileSpell extends AttackSpellBase {
 
@@ -43,7 +42,11 @@ public class MagicMissileSpell extends AttackSpellBase {
 
     @Override
     public ItemStack getIcon() {
-        return null;
+        ItemStack icon = new ItemStack(Material.SNOW_BALL);
+        ItemMeta meta = icon.getItemMeta();
+        meta.setDisplayName("Magic Missile");
+        icon.setItemMeta(meta);
+        return icon;
     }
 
     @Override
@@ -67,37 +70,13 @@ public class MagicMissileSpell extends AttackSpellBase {
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static MagicMissileSpell deserialize(Map<String, Object> serialised) {
-        MagicMissileSpell deserialised = new MagicMissileSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
-    }
-
-    @Override
     public void animate(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         attacking.getPlayer().getPlayer().launchProjectile(Snowball.class);
     }
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case STICK: return 1.1D;
-                case BLAZE_ROD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMagicWeaponModifier(weapon);
     }
 
     @Override

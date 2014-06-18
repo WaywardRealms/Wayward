@@ -5,7 +5,7 @@ import net.wayward_realms.waywardlib.WaywardPlugin;
 import java.util.Collection;
 
 /**
- * Represents a combat pluginWaywardPlugin
+ * Represents a combat plugin
  *
  */
 public interface CombatPlugin extends WaywardPlugin {

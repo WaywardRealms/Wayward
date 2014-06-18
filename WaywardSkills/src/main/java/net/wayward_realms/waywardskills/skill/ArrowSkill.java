@@ -18,9 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ArrowSkill extends AttackSkillBase {
 
     public ArrowSkill() {
@@ -34,22 +31,24 @@ public class ArrowSkill extends AttackSkillBase {
         setPower(50);
     }
 
-	@Override
-	public ItemStack getIcon() {
-		ItemStack icon = new ItemStack(Material.ARROW, 1);
-		ItemMeta iconMeta = icon.getItemMeta();
-		iconMeta.setDisplayName("Arrow");
-		icon.setItemMeta(iconMeta);
-		return icon;
-	}
+    @Override
+    public ItemStack getIcon() {
+        ItemStack icon = new ItemStack(Material.ARROW, 1);
+        ItemMeta iconMeta = icon.getItemMeta();
+        iconMeta.setDisplayName("Arrow");
+        icon.setItemMeta(iconMeta);
+        return icon;
+    }
 
     @Override
     public boolean use(Player player) {
         boolean containsBow = false;
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item.getType() == Material.BOW) {
-                containsBow = true;
-                break;
+            if (item != null) {
+                if (item.getType() == Material.BOW) {
+                    containsBow = true;
+                    break;
+                }
             }
         }
         if (containsBow) {
@@ -73,15 +72,7 @@ public class ArrowSkill extends AttackSkillBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case BOW:
-                    return 1.5D;
-                default:
-                    return 1D;
-            }
-        }
-        return 1D;
+        return getRangedWeaponModifier(weapon);
     }
 
     @Override
@@ -90,8 +81,8 @@ public class ArrowSkill extends AttackSkillBase {
     }
 
     public boolean canUse(Class clazz, int level) {
-		return clazz.getSkillPointBonus(SkillType.RANGED_OFFENCE) * level >= 1;
-	}
+        return clazz.getSkillPointBonus(SkillType.RANGED_OFFENCE) * level >= 1;
+    }
 
     @Override
     public boolean canUse(Combatant combatant) {
@@ -99,33 +90,18 @@ public class ArrowSkill extends AttackSkillBase {
     }
 
     @Override
-	public boolean canUse(Character character) {
-		return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 1;
-	}
+    public boolean canUse(Character character) {
+        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 1;
+    }
 
-	@Override
-	public boolean canUse(OfflinePlayer player) {
+    @Override
+    public boolean canUse(OfflinePlayer player) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-	}
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static ArrowSkill deserialize(Map<String, Object> serialised) {
-        ArrowSkill deserialised = new ArrowSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

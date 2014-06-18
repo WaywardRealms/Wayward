@@ -4,8 +4,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class InventoryCloseListener implements Listener {
 
@@ -18,8 +20,10 @@ public class InventoryCloseListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getInventory().getTitle().equalsIgnoreCase("Keyring")) {
-            plugin.getKeyringManager().getKeyring((Player) event.getPlayer()).clear();
-            plugin.getKeyringManager().getKeyring((Player) event.getPlayer()).addAll(Arrays.asList(event.getInventory().getContents()));
+            List<ItemStack> keyring = plugin.getKeyringManager().getKeyring((Player) event.getPlayer());
+            keyring.clear();
+            keyring.addAll(Arrays.asList(event.getInventory().getContents()));
+            plugin.getKeyringManager().setKeyring((Player) event.getPlayer(), keyring);
         }
     }
 

@@ -72,7 +72,7 @@ public class ChairPlayerInteractListener implements Listener {
             if (!block.getRelative(BlockFace.DOWN).getType().isSolid()) {
                 return false;
             }
-            if (player.getLocation().distance(block.getLocation().add(0.5, 0, 0.5)) > 8) {
+            if (player.getLocation().distanceSquared(block.getLocation().add(0.5, 0, 0.5)) > 64) {
                 return false;
             }
             if (stairs != null && stairs.isInverted()) {

@@ -14,6 +14,9 @@ commands:
     deletewarp:
         description: Deletes a warp
         usage: /<command> [name]
+    distance:
+        description: Calculates the distance to a player
+        usage: /<command> [player]
     enchant:
         description: Enchants the item in your hand
         usage: /<command> [enchantment] [level]
@@ -58,12 +61,12 @@ commands:
     repair:
         description: Repairs the item in your hand
         usage: /<command>
-    roll:
-        description: Rolls
-        usage: /<command> [roll]
     runas:
         description: Runs a command as another player
         usage: /<command> [player] [command]
+    seen:
+        description: Shows when a player was last seen
+        usage: /<command> [player]
     smite:
         description: Smites the player
         usage: /<command> [player]
@@ -93,6 +96,9 @@ commands:
         description: Toggles messages when players log in and out
         usage: /<command>
         aliases: [tlm]
+    track:
+        description: Tracks a player with your compass
+        usage: /<command> [player]
     unsign:
         description: Unsigns written books
         usage: /<command>

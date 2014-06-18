@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
@@ -18,7 +19,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
@@ -51,14 +52,7 @@ public class IceboltSpell extends AttackSpellBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case STICK: return 1.1D;
-                case BLAZE_ROD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMagicWeaponModifier(weapon);
     }
 
     @Override
@@ -115,20 +109,14 @@ public class IceboltSpell extends AttackSpellBase {
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
+        statusEffects.put(StatusEffect.FROZEN, 3);
+        return statusEffects;
     }
 
-    public static IceboltSpell deserialize(Map<String, Object> serialised) {
-        IceboltSpell deserialised = new IceboltSpell();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
+    @Override
+    public int getStatusEffectChance(StatusEffect statusEffect) {
+        return 10;
     }
-
 }

@@ -6,10 +6,20 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 /**
- * Operations to simplify common location tasksWaywardPlugin
+ * Operations to simplify common location tasks
  *
  */
 public class LocationUtils {
+
+    /**
+     * Converts a location to a string parsable with {@link #parseLocation}
+     *
+     * @param location the location
+     * @return the location as a string
+     */
+    public static String toString(Location location) {
+        return location.getWorld().getName() + "," + location.getX() + "," + location.getY() + "," + location.getZ() + "," + location.getYaw() + "," + location.getPitch();
+    }
 
     /**
      * Parses a location from a string argument

@@ -87,19 +87,4 @@ public class QuickStepSkill extends SkillBase {
         return character.getSkillPoints(SkillType.SPEED_NIMBLE) >= 5;
     }
 
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static QuickStepSkill deserialize(Map<String, Object> serialised) {
-        QuickStepSkill deserialised = new QuickStepSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
-    }
-
 }

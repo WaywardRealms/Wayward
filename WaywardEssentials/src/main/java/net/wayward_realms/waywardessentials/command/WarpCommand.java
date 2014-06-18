@@ -61,6 +61,8 @@ public class WarpCommand implements CommandExecutor {
             } else {
                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to use this command.");
             }
+        } else {
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission to use this command.");
         }
         return true;
     }

@@ -17,12 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class CureSpell extends SpellBase {
@@ -40,27 +36,37 @@ public class CureSpell extends SpellBase {
     public boolean use(Player player) {
         Set<Player> players = new HashSet<>();
         for (Player player1 : player.getWorld().getPlayers()) {
-            if (player1.getLocation().distance(player.getLocation()) <= radius) {
+            if (player1.getLocation().distanceSquared(player.getLocation()) <= radius * radius) {
                 players.add(player1);
             }
         }
-        int healthPotionLevel = (int) Math.round(4D / (double) players.size()) - 1;
-        for (Player player1 : players) {
-            double initialHealth = player1.getHealth();
-            player1.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, healthPotionLevel));
-            double newHealth = player1.getHealth();
-            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-            if (classesPluginProvider != null) {
-                ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                classesPlugin.giveExperience(player, (int) Math.round(newHealth - initialHealth));
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            for (Player player1 : players) {
+                double potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE) / 4D;
+                if (player.getItemInHand() != null) {
+                    switch (player.getItemInHand().getType()) {
+                        case STICK: potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE) / 2D; break;
+                        case BLAZE_ROD: potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE); break;
+                        default: break;
+                    }
+                }
+                double healthRestore = potency / (double) players.size();
+                Character target = characterPlugin.getActiveCharacter(player1);
+                player1.setHealth(target.getHealth());
+                double initialHealth = player1.getHealth();
+                target.setHealth(Math.min(target.getHealth() + healthRestore, target.getMaxHealth()));
+                player1.setHealth(target.getHealth());
+                double newHealth = player1.getHealth();
+                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                if (classesPluginProvider != null) {
+                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                    classesPlugin.giveExperience(player, (int) Math.round(Math.max(newHealth - initialHealth, 0) * 4));
+                }
             }
         }
         return true;
-    }
-
-    @Override
-    public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
-        return use(fight, (Character) attacking, (Character) defending, weapon);
     }
 
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
@@ -112,25 +118,6 @@ public class CureSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("mana-cost", getManaCost());
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        serialised.put("radius", radius);
-        return serialised;
-    }
-
-    public static CureSpell deserialize(Map<String, Object> serialised) {
-        CureSpell deserialised = new CureSpell();
-        deserialised.setManaCost((int) serialised.get("mana-cost"));
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        deserialised.radius = (int) serialised.get("radius");
-        return deserialised;
     }
 
 }

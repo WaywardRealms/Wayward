@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Represents a moderation pluginWaywardPlugin
+ * Represents a moderation plugin
  *
  */
 public interface ModerationPlugin extends WaywardPlugin {

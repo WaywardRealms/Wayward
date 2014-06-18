@@ -21,7 +21,7 @@ public class MiningGenerator extends ChunkGenerator {
     public List<BlockPopulator> getDefaultPopulators(World world) {
         List<BlockPopulator> populators = new ArrayList<>();
         populators.add(new OrePopulator(plugin));
-        populators.add(new CavePopulator());
+        populators.add(new CavePopulator(plugin));
         return populators;
     }
 

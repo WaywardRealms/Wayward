@@ -5,30 +5,39 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
+import org.pircbotx.User;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ChannelImpl implements Channel {
 
+    private WaywardChat plugin;
     private String name;
     private ChatColor colour;
     private String format;
-    private Set<String> speakers;
-    private Set<String> listeners;
+    private Set<UUID> speakers;
+    private Set<UUID> listeners;
     private int radius;
     private boolean garbleEnabled;
     private boolean ircEnabled;
     private Command command;
-    private File log;
-    private String ircChannel;
+    private String ircChannelName;
+    private org.pircbotx.Channel ircChannel;
+
+    private Set<User> onlineIRCStaff = Collections.synchronizedSet(new HashSet<User>());
+    private long lastOnlineStaffQuery = 0;
+
+    private Set<User> onlineIRCUsers = Collections.synchronizedSet(new HashSet<User>());
+    private long lastOnlineUserQuery = 0;
 
     public ChannelImpl(WaywardChat plugin, String name) {
+        this.plugin = plugin;
         this.name = name;
         this.colour = ChatColor.valueOf(plugin.getConfig().getString("channels." + this.getName() + ".colour").toUpperCase());
         this.format = plugin.getConfig().getString("channels." + getName() + ".format");
@@ -38,18 +47,7 @@ public class ChannelImpl implements Channel {
         this.garbleEnabled = plugin.getConfig().getBoolean("channels." + getName() + ".garble-enabled") && this.radius >= 0;
         this.ircEnabled = plugin.getConfig().getBoolean("irc.enabled") && plugin.getConfig().getBoolean("channels." + getName() + ".irc.enabled");
         if (isIrcEnabled()) {
-            this.ircChannel = plugin.getConfig().getString("channels." + getName() + ".irc.channel");
-        }
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
-        }
-        log = new File(plugin.getDataFolder() + File.separator + "chat-" + this.getName() + ".log");
-        if (!log.exists()) {
-            try {
-                log.createNewFile();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
+            this.ircChannelName = plugin.getConfig().getString("channels." + getName() + ".irc.channel");
         }
     }
 
@@ -66,7 +64,7 @@ public class ChannelImpl implements Channel {
     @Override
     public Set<Player> getListeners() {
         Set<Player> listeners = new HashSet<>();
-        for (String listener : this.listeners) {
+        for (UUID listener : this.listeners) {
             listeners.add(Bukkit.getOfflinePlayer(listener).getPlayer());
         }
         return listeners;
@@ -85,7 +83,7 @@ public class ChannelImpl implements Channel {
     @Override
     public Collection<Player> getSpeakers() {
         Set<Player> speakers = new HashSet<>();
-        for (String speaker : this.speakers) {
+        for (UUID speaker : this.speakers) {
             speakers.add(Bukkit.getOfflinePlayer(speaker).getPlayer());
         }
         return speakers;
@@ -131,22 +129,22 @@ public class ChannelImpl implements Channel {
 
     @Override
     public void addListener(Player listener) {
-        listeners.add(listener.getName());
+        listeners.add(listener.getUniqueId());
     }
 
     @Override
     public void addSpeaker(Player speaker) {
-        speakers.add(speaker.getName());
+        speakers.add(speaker.getUniqueId());
     }
 
     @Override
     public void removeListener(Player listener) {
-        listeners.remove(listener.getName());
+        listeners.remove(listener.getUniqueId());
     }
 
     @Override
     public void removeSpeaker(Player speaker) {
-        speakers.remove(speaker.getName());
+        speakers.remove(speaker.getUniqueId());
     }
 
     @Override
@@ -161,9 +159,24 @@ public class ChannelImpl implements Channel {
 
     @Override
     public void log(String message) {
+        File logDirectory = new File(plugin.getDataFolder(), "logs");
+        DateFormat logDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        File datedLogDirectory = new File(logDirectory, logDateFormat.format(new Date()));
+        if (!datedLogDirectory.exists()) {
+            datedLogDirectory.mkdirs();
+        }
+        File log = new File(datedLogDirectory, "chat-" + this.getName() + ".log");
+        if (!log.exists()) {
+            try {
+                log.createNewFile();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(log, true));
-            writer.append(message).append("\n");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            writer.append("[").append(dateFormat.format(new Date())).append("] ").append(message).append("\n");
             writer.close();
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -171,11 +184,66 @@ public class ChannelImpl implements Channel {
     }
 
     public String getIrcChannel() {
-        return ircChannel;
+        return ircChannelName;
     }
 
     public void setIrcChannel(String ircChannel) {
-        this.ircChannel = ircChannel;
+        this.ircChannelName = ircChannel;
+    }
+
+    public void setIrcChannelObject(org.pircbotx.Channel channel) {
+        this.ircChannel = channel;
+    }
+
+    public Collection<User> getIrcUsers() {
+        Set<User> users = new HashSet<>();
+        if (System.currentTimeMillis() - lastOnlineUserQuery >= 300000L) {
+            if (ircChannel != null) {
+                users.addAll(ircChannel.getUsers());
+                onlineIRCUsers.clear();
+                onlineIRCUsers.addAll(users);
+                lastOnlineUserQuery = System.currentTimeMillis();
+            }
+        } else {
+            users.addAll(onlineIRCUsers);
+        }
+        return users;
+    }
+
+    public Collection<User> getIrcStaff() {
+        Set<User> users = new HashSet<>();
+        if (System.currentTimeMillis() - lastOnlineStaffQuery >= 300000L) {
+            if (ircChannel != null) {
+                for (User user : ircChannel.getUsers()) {
+                    if (!user.isVerified()) continue;
+                    if (user.getChannelsOpIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsSuperOpIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsHalfOpIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsOwnerIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsVoiceIn().contains(ircChannel)) {
+                        users.add(user);
+                    }
+                }
+                onlineIRCStaff.clear();
+                onlineIRCStaff.addAll(users);
+                lastOnlineStaffQuery = System.currentTimeMillis();
+            }
+        } else {
+            users.addAll(onlineIRCStaff);
+        }
+        return users;
     }
 
 }

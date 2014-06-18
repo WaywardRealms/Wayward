@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -16,7 +17,7 @@ public class EntityDamageByEntityListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         LivingEntity attacker = null;
         LivingEntity defender = null;
@@ -66,7 +67,7 @@ public class EntityDamageByEntityListener implements Listener {
                 defence = plugin.getEntityLevelManager().getEntityStatValue(defender);
             }
         }
-        if (attacker != null && defender != null) {
+        if (attacker != null && defender != null && (defender instanceof Monster || defender instanceof Player)) {
             event.setDamage((Math.ceil((((attack + 1D) / 2D) + 5D) * event.getDamage())) / (defence + 1D) / 2D);
         }
         if (defender != null) {

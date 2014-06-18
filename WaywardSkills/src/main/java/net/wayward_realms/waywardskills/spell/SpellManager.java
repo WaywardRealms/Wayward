@@ -3,9 +3,7 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.skills.Spell;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -20,7 +18,6 @@ public class SpellManager {
 
     private Map<String, Spell> spells = new HashMap<>();
 
-    private Map<String, Map<Material, Spell>> boundSpells = new HashMap<>();
     private Map<String, Map<Spell, Long>> spellCooldowns = new HashMap<>();
 
     public SpellManager(WaywardSkills plugin) {
@@ -32,9 +29,24 @@ public class SpellManager {
         addSpell(new EsunaSpell());
         addSpell(new MagicMissileSpell());
         addSpell(new CureSpell());
-        addSpell(new MageArmourSpell());
+        addSpell(new MageArmourSpell(plugin));
         addSpell(new DrawSwordSpell());
         addSpell(new EmpowerSpell());
+        addSpell(new SummonZombieSpell(plugin));
+        addSpell(new SummonSkeletonSpell(plugin));
+        addSpell(new SummonSpiderSpell(plugin));
+        addSpell(new BlizzardSpell(plugin));
+        addSpell(new IceBreathSpell(plugin));
+        addSpell(new FireSwordSpell());
+        addSpell(new LevitationSpell(plugin));
+        addSpell(new CloakOfShadowsSpell(plugin));
+        addSpell(new OvergrowthSpell());
+        addSpell(new LightningSwordSpell());
+        addSpell(new BlizzardSpell(plugin));
+        addSpell(new LightningSpell());
+        addSpell(new ExplosiveSpellSpell());
+        addSpell(new BlizzardSwordSpell());
+        addSpell(new FireBreathSpell(plugin));
     }
 
     public Spell getSpell(String name) {
@@ -42,7 +54,6 @@ public class SpellManager {
     }
 
     public void addSpell(Spell spell) {
-        ConfigurationSerialization.registerClass(spell.getClass());
         spells.put(spell.getName().toUpperCase(), spell);
     }
 
@@ -55,25 +66,35 @@ public class SpellManager {
     }
 
     public void bindSpell(Player player, Material type, Spell spell) {
-        if (boundSpells.get(player.getName()) == null) {
-            boundSpells.put(player.getName(), new HashMap<Material, Spell>());
+        File spellBindFile = new File(plugin.getDataFolder(), "spell-binds.yml");
+        YamlConfiguration spellBindConfig = YamlConfiguration.loadConfiguration(spellBindFile);
+        spellBindConfig.set(player.getName() + "." + type.toString(), spell.getName());
+        try {
+            spellBindConfig.save(spellBindFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-        boundSpells.get(player.getName()).put(type, spell);
     }
 
     public void unbindSpell(Player player, Material type) {
-        if (boundSpells.get(player.getName()) != null) {
-            boundSpells.get(player.getName()).remove(type);
+        File spellBindFile = new File(plugin.getDataFolder(), "spell-binds.yml");
+        YamlConfiguration spellBindConfig = YamlConfiguration.loadConfiguration(spellBindFile);
+        spellBindConfig.set(player.getName() + "." + type.toString(), null);
+        try {
+            spellBindConfig.save(spellBindFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
     public Spell getBoundSpell(Player player, Material type) {
-        if (boundSpells.get(player.getName()) != null) {
-            if (boundSpells.get(player.getName()).get(type) != null) {
-                return boundSpells.get(player.getName()).get(type);
-            }
+        File spellBindFile = new File(plugin.getDataFolder(), "spell-binds.yml");
+        YamlConfiguration spellBindConfig = YamlConfiguration.loadConfiguration(spellBindFile);
+        if (spellBindConfig.get(player.getName() + "." + type.toString()) != null) {
+            return getSpell(spellBindConfig.getString(player.getName() + "." + type.toString(), null));
+        } else {
+            return null;
         }
-        return null;
     }
 
     public void setSpellCooldownTime(Player player, Spell spell) {
@@ -94,46 +115,6 @@ public class SpellManager {
 
     public int getCooldownTime(Player player, Spell spell) {
         return (int) ((spellCooldowns.get(player.getName()).get(spell) - System.currentTimeMillis()) / 1000);
-    }
-
-    public void saveBinds() {
-        YamlConfiguration bindConfig = new YamlConfiguration();
-        for (Map.Entry<String, Map<Material, Spell>> player : boundSpells.entrySet()) {
-            for (Map.Entry<Material,Spell> spellBind : player.getValue().entrySet()) {
-                bindConfig.set(player.getKey() + "." + spellBind.getKey().toString(), spellBind.getValue().getName());
-            }
-        }
-        if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
-        }
-        File bindFile = new File(plugin.getDataFolder(), "spell-binds.yml");
-        try {
-            bindConfig.save(bindFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    public void loadBinds() {
-        File oldBindFile = new File(plugin.getDataFolder(), "binds.yml");
-        File bindFile = new File(plugin.getDataFolder(), "spell-binds.yml");
-        if (oldBindFile.exists()) {
-            oldBindFile.renameTo(bindFile);
-        }
-        if (bindFile.exists()) {
-            YamlConfiguration bindConfig = new YamlConfiguration();
-            try {
-                bindConfig.load(bindFile);
-            } catch (IOException | InvalidConfigurationException exception) {
-                exception.printStackTrace();
-            }
-            for (String player : bindConfig.getKeys(false)) {
-                boundSpells.put(player, new HashMap<Material, Spell>());
-                for (String type : bindConfig.getConfigurationSection(player).getKeys(false)) {
-                    boundSpells.get(player).put(Material.getMaterial(type), getSpell(bindConfig.getString(player + "." + type)));
-                }
-            }
-        }
     }
 
 }

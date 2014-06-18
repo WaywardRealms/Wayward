@@ -15,17 +15,21 @@ public class IrcBroadcastCommand extends IrcCommand {
     }
 
     @Override
-    public void execute(User sender, IrcCommand cmd, String label, String[] args) {
-        if (sender.isIrcop()) {
+    public void execute(org.pircbotx.Channel channel, User sender, IrcCommand cmd, String label, String[] args) {
+        if (sender.getChannelsOpIn().contains(channel)
+                || sender.getChannelsHalfOpIn().contains(channel)
+                || sender.getChannelsSuperOpIn().contains(channel)
+                || sender.getChannelsOwnerIn().contains(channel)
+                || sender.getChannelsVoiceIn().contains(channel)) {
             StringBuilder messageBuilder = new StringBuilder();
             for (String arg : args) {
                 messageBuilder.append(arg).append(" ");
             }
-            String message = ChatColor.GRAY + "[" + ChatColor.GREEN + "BROADCAST" + ChatColor.GRAY + "]" + ChatColor.WHITE + messageBuilder.toString();
+            String message = ChatColor.GRAY + "[" + ChatColor.GREEN + "BROADCAST" + ChatColor.GRAY + "] " + ChatColor.WHITE + messageBuilder.toString();
             plugin.getServer().broadcastMessage(message);
-            for (Channel channel : plugin.getChannels()) {
-                if (channel.isIrcEnabled()) {
-                    plugin.getIrcBot().sendIRC().message(channel.getIrcChannel(), ChatColor.stripColor(message));
+            for (Channel channel1 : plugin.getChannels()) {
+                if (channel1.isIrcEnabled()) {
+                    plugin.getIrcBot().sendIRC().message(channel1.getIrcChannel(), ChatColor.stripColor(message));
                 }
             }
         }

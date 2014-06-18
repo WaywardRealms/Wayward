@@ -7,6 +7,7 @@ import net.wayward_realms.waywardlib.classes.ClassChangeEvent;
 import net.wayward_realms.waywardlib.classes.ClassLevelChangeEvent;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import org.bukkit.*;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -15,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,20 +25,12 @@ import java.util.Map;
 public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     private Map<String, Class> classes = new HashMap<>();
-    private Map<Integer, Class> characterClasses = new HashMap<>();
-    private Map<Integer, Map<Class, Integer>> experience = new HashMap<>();
 
     @Override
     public void onEnable() {
         ConfigurationSerialization.registerClass(ClassImpl.class);
-        getCommand("addexp").setExecutor(new AddExpCommand(this));
         getCommand("class").setExecutor(new ClassCommand(this));
-        getCommand("setclass").setExecutor(new SetClassCommand(this));
-        getCommand("setlevel").setExecutor(new SetLevelCommand(this));
-        getCommand("getclass").setExecutor(new GetClassCommand(this));
-        getCommand("getlevel").setExecutor(new GetLevelCommand(this));
-        getCommand("listclasses").setExecutor(new ListClassesCommand(this));
-        registerListeners(new EntityDamageListener(this), new EntityDamageByEntityListener(), new PlayerDeathListener(), new PlayerExpChangeListener(), new PlayerJoinListener(this));
+        registerListeners(new EntityDamageListener(this), new PlayerDeathListener(), new PlayerExpChangeListener(), new PlayerJoinListener(this));
     }
 
     @Override
@@ -57,18 +52,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     @Override
     public void saveState() {
-        for (Class clazz : classes.values()) {
-            getConfig().set("classes." + clazz.getName().toUpperCase(), clazz);
-        }
-        for (int characterId : characterClasses.keySet()) {
-            getConfig().set("character-classes." + characterId, characterClasses.get(characterId).getName());
-        }
-        for (int characterId : experience.keySet()) {
-            for (Class clazz : experience.get(characterId).keySet()) {
-                getConfig().set("experience." + characterId + "." + clazz.getName(), experience.get(characterId).get(clazz));
-            }
-        }
-        saveConfig();
+
     }
 
     @Override
@@ -76,19 +60,6 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
         if (getConfig().getConfigurationSection("classes") != null) {
             for (String section : getConfig().getConfigurationSection("classes").getKeys(false)) {
                 classes.put(section.toUpperCase(), (ClassImpl) getConfig().get("classes." + section));
-            }
-        }
-        if (getConfig().getConfigurationSection("character-classes") != null) {
-            for (String section : getConfig().getConfigurationSection("character-classes").getKeys(false)) {
-                characterClasses.put(Integer.parseInt(section), getClass(getConfig().getString("character-classes." + section)));
-            }
-        }
-        if (getConfig().getConfigurationSection("experience") != null) {
-            for (String characterId : getConfig().getConfigurationSection("experience").getKeys(false)) {
-                experience.put(Integer.parseInt(characterId), new HashMap<Class, Integer>());
-                for (String className : getConfig().getConfigurationSection("experience." + characterId).getKeys(false)) {
-                    experience.get(Integer.parseInt(characterId)).put(getClass(className), getConfig().getInt("experience." + characterId + "." + className));
-                }
             }
         }
         if (classes.isEmpty()) {
@@ -119,10 +90,10 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     @Override
     public Class getClass(Character character) {
-        if (characterClasses.get(character.getId()) == null) {
-            characterClasses.put(character.getId(), (Class) getConfig().get("default-class"));
-        }
-        return characterClasses.get(character.getId());
+        File characterDirectory = new File(getDataFolder(), "characters");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(new File(characterDirectory, character.getId() + ".yml"));
+        if (characterConfig.get("class") == null) return (Class) getConfig().get("default-class");
+        return getClass(characterConfig.getString("class"));
     }
 
     @Override
@@ -194,10 +165,12 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
 
     @Override
     public int getTotalExperience(Character character, Class clazz) {
-        if (experience.get(character.getId()) == null || experience.get(character.getId()).get(clazz) == null) {
+        File characterDirectory = new File(getDataFolder(), "characters");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(new File(characterDirectory, character.getId() + ".yml"));
+        if (characterConfig.getConfigurationSection("experience") == null || characterConfig.get("experience." + clazz.getName()) == null) {
             return 0;
         }
-        return experience.get(character.getId()).get(clazz);
+        return characterConfig.getInt("experience." + clazz.getName());
     }
 
     @Override
@@ -244,7 +217,15 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
         if (event.isCancelled()) {
             return;
         }
-        characterClasses.put(event.getCharacter().getId(), event.getClazz());
+        File characterDirectory = new File(getDataFolder(), "characters");
+        File characterFile = new File(characterDirectory, event.getCharacter().getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        characterConfig.set("class", event.getClazz().getName());
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
         event.getCharacter().setHealth(Math.min(event.getCharacter().getHealth(), event.getCharacter().getMaxHealth()));
         if (event.getCharacter().getPlayer().isOnline()) {
             updateExp(event.getCharacter().getPlayer().getPlayer());
@@ -331,7 +312,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
                 for (int x = player.getLocation().getBlockX() - 4; x < player.getLocation().getBlockX() + 4; x++) {
                     for (int z = player.getLocation().getBlockZ() - 4; z < player.getLocation().getBlockZ() + 4; z++) {
                         Location location = player.getWorld().getBlockAt(x, player.getLocation().getBlockY(), z).getLocation();
-                        if (player.getLocation().distance(location) > 3 && player.getLocation().distance(location) < 5) {
+                        if (player.getLocation().distanceSquared(location) > 9 && player.getLocation().distanceSquared(location) < 25) {
                             Firework firework = (Firework) player.getWorld().spawnEntity(location, EntityType.FIREWORK);
                             FireworkMeta meta = firework.getFireworkMeta();
                             meta.setPower(0);
@@ -343,10 +324,15 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
                 }
             }
         }
-        if (experience.get(character.getId()) == null) {
-            experience.put(character.getId(), new HashMap<Class, Integer>());
+        File characterDirectory = new File(getDataFolder(), "characters");
+        File characterFile = new File(characterDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        characterConfig.set("experience." + clazz.getName(), Math.min(amount, getTotalExperienceForLevel(clazz.getMaxLevel())));
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-        experience.get(character.getId()).put(clazz, Math.min(amount, getTotalExperienceForLevel(clazz.getMaxLevel())));
         OfflinePlayer offlinePlayer = character.getPlayer();
         if (offlinePlayer.isOnline()) {
             Player player = offlinePlayer.getPlayer();

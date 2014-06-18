@@ -20,11 +20,11 @@ public class PlayerItemConsumeListener implements Listener {
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
         if (event.getItem().getType() == Material.POTION) {
-        	Player player = event.getPlayer();
-        	Character character = plugin.getActiveCharacter(player);
-        	character.setThirst(character.getThirst() + 5);
+            Player player = event.getPlayer();
+            Character character = plugin.getActiveCharacter(player);
+            character.setThirst(character.getThirst() + 5);
             player.sendMessage(ChatColor.GREEN + "Thirst: +5" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
-            if (event.getItem().hasItemMeta()) {	
+            if (event.getItem().hasItemMeta()) {
                 if (event.getItem().getItemMeta().hasDisplayName()) {
                     if (event.getItem().getItemMeta().getDisplayName().equals("Masheek")) {
                         if (event.getItem().getItemMeta().hasLore()) {
@@ -36,6 +36,16 @@ public class PlayerItemConsumeListener implements Listener {
                     }
                 }
             }
+        }
+        if (event.getItem().getType() == Material.MILK_BUCKET) {
+            Character character = plugin.getActiveCharacter(event.getPlayer());
+            character.setThirst(character.getThirst() + 5);
+            event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +5" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+        }
+        if (event.getItem().getType() == Material.ROTTEN_FLESH) {
+            Character character = plugin.getActiveCharacter(event.getPlayer());
+            character.setHealth(character.getHealth() - 5);
+            event.getPlayer().sendMessage(ChatColor.RED + "Health: -5" + ChatColor.GRAY + "(Total: " + character.getHealth() + ")");
         }
     }
 

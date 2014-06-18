@@ -17,9 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SlashSkill extends AttackSkillBase {
 
     public SlashSkill() {
@@ -36,6 +33,7 @@ public class SlashSkill extends AttackSkillBase {
     @Override
     public boolean use(Player player) {
         for (LivingEntity livingEntity : player.getWorld().getLivingEntities()) {
+            if (livingEntity == player) continue;
             if (player.getLocation().distanceSquared(livingEntity.getLocation()) <= 64) {
                 livingEntity.damage(4D, player);
             }
@@ -50,16 +48,7 @@ public class SlashSkill extends AttackSkillBase {
 
     @Override
     public double getWeaponModifier(ItemStack weapon) {
-        if (weapon != null) {
-            switch (weapon.getType()) {
-                case WOOD_SWORD: return 1.1D;
-                case STONE_SWORD: return 1.2D;
-                case IRON_SWORD: return 1.3D;
-                case DIAMOND_SWORD: return 1.5D;
-                default: return 1D;
-            }
-        }
-        return 1D;
+        return getMeleeWeaponModifier(weapon);
     }
 
     @Override
@@ -68,17 +57,17 @@ public class SlashSkill extends AttackSkillBase {
     }
 
     @Override
-	public ItemStack getIcon() {
-		ItemStack icon = new ItemStack(Material.IRON_SWORD, 1);
-		ItemMeta iconMeta = icon.getItemMeta();
-		iconMeta.setDisplayName("Slash");
-		icon.setItemMeta(iconMeta);
-		return icon;
-	}
+    public ItemStack getIcon() {
+        ItemStack icon = new ItemStack(Material.IRON_SWORD, 1);
+        ItemMeta iconMeta = icon.getItemMeta();
+        iconMeta.setDisplayName("Slash");
+        icon.setItemMeta(iconMeta);
+        return icon;
+    }
 
-	public boolean canUse(Class clazz, int level) {
-		return clazz.getSkillPointBonus(SkillType.MELEE_OFFENCE) * level >= 1;
-	}
+    public boolean canUse(Class clazz, int level) {
+        return clazz.getSkillPointBonus(SkillType.MELEE_OFFENCE) * level >= 1;
+    }
 
     @Override
     public boolean canUse(Combatant combatant) {
@@ -87,32 +76,17 @@ public class SlashSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-		return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 1;
-	}
+        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 1;
+    }
 
-	@Override
-	public boolean canUse(OfflinePlayer player) {
+    @Override
+    public boolean canUse(OfflinePlayer player) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
-	}
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> serialised = new HashMap<>();
-        serialised.put("name", getName());
-        serialised.put("cooldown", getCoolDown());
-        return serialised;
-    }
-
-    public static SlashSkill deserialize(Map<String, Object> serialised) {
-        SlashSkill deserialised = new SlashSkill();
-        deserialised.setName((String) serialised.get("name"));
-        deserialised.setCoolDown((int) serialised.get("cooldown"));
-        return deserialised;
     }
 
 }

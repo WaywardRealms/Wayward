@@ -10,25 +10,25 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TurnCommand implements CommandExecutor {
-	
-	private WaywardCombat plugin;
-	
-	public TurnCommand(WaywardCombat plugin) {
-		this.plugin = plugin;
-	}
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			CharacterPlugin characterPlugin = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
-			Character character = characterPlugin.getActiveCharacter(player);
-			if (plugin.getActiveFight(character) != null) {
-				FightImpl fight = (FightImpl) plugin.getActiveFight(character);
+
+    private WaywardCombat plugin;
+
+    public TurnCommand(WaywardCombat plugin) {
+        this.plugin = plugin;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            CharacterPlugin characterPlugin = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
+            Character character = characterPlugin.getActiveCharacter(player);
+            if (plugin.getActiveFight(character) != null) {
+                FightImpl fight = (FightImpl) plugin.getActiveFight(character);
                 if (fight.isActive()) {
                     Turn turn = fight.getActiveTurn();
                     if (args.length > 0) {
-                        if (turn.getAttacker() == character) {
+                        if (((Character) turn.getAttacker()).getId() == character.getId()) {
                             if (args[0].equalsIgnoreCase("skill")) {
                                 fight.showTurnOptions(player);
                             } else if (args[0].equalsIgnoreCase("target")) {
@@ -61,10 +61,10 @@ public class TurnCommand implements CommandExecutor {
             } else {
                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be in a fight to view the current turn.");
             }
-		} else {
+        } else {
             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
         }
-		return true;
-	}
-	
+        return true;
+    }
+
 }

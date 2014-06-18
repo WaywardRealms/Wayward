@@ -30,18 +30,25 @@ public class SpeedCommand implements CommandExecutor {
                 } catch (NumberFormatException exception) {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Speed must be a number.");
                 }
-            } else {
+            } else if (args.length > 0) {
                 try {
                     speed = Float.parseFloat(args[0]);
                 } catch (NumberFormatException exception) {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Speed must be a number.");
                 }
+            } else {
+                if (player != null) {
+                    player.setFlySpeed(0.1F);
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Reset " + player.getName() + "'s fly speed");
+                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your fly speed was reset by " + sender.getName());
+                }
+                return true;
             }
             if (player != null) {
                 if (speed >= 0 && speed <= 1) {
                     player.setFlySpeed(speed);
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set " + player.getName() + "'s fly speed to " + speed);
-                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your flyspeed was set to " + speed + " by " + sender.getName());
+                    player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your fly speed was set to " + speed + " by " + sender.getName());
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Speed must be between 0 and 1");
                 }

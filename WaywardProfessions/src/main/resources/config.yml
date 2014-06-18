@@ -1,0 +1,107 @@
+professions:
+    miner:
+        mine:
+            COAL_ORE: 25
+            IRON_ORE: 25
+            GOLD_ORE: 25
+            LAPIS_ORE: 25
+            DIAMOND_ORE: 25
+            EMERALD_ORE: 25
+            GLOWING_REDSTONE_ORE: 25
+            REDSTONE_ORE: 25
+            QUARTZ_ORE: 25
+            STONE: 50
+            OBSIDIAN: 25
+            GRAVEL: 50
+            SMOOTH_BRICK: 25
+            SAND: 25
+            SANDSTONE: 25
+            GRASS: 25
+            DIRT: 25
+            SOUL_SAND: 25
+            NETHERRACK: 25
+            GLOWSTONE: 25
+            NETHER_BRICK: 25
+    farmer:
+        mine:
+            CACTUS: 25
+            LOG: 25
+            LOG_2: 25
+            LEAVES: 25
+            LEAVES_2: 25
+            PUMPKIN: 25
+            MELON_BLOCK: 25
+            SEEDS: 25
+            LONG_GRASS: 50
+            WHEAT: 25
+            SUGAR_CANE_BLOCK: 25
+            SUGAR_CANE: 25
+            CARROT: 25
+            POTATO: 25
+            COCOA: 25
+            BROWN_MUSHROOM: 25
+            RED_MUSHROOM: 25
+            NETHER_WARTS: 25
+            NETHER_STALK: 25
+    smith:
+        craft:
+            WOOD_PICKAXE: 25
+            WOOD_HOE: 25
+            WOOD_AXE: 25
+            WOOD_SWORD: 25
+            WOOD_SPADE: 25
+            STONE_PICKAXE: 25
+            STONE_HOE: 25
+            STONE_AXE: 25
+            STONE_SWORD: 25
+            STONE_SPADE: 25
+            IRON_PICKAXE: 25
+            IRON_HOE: 25
+            IRON_AXE: 25
+            IRON_SWORD: 25
+            IRON_SPADE: 25
+            GOLD_PICKAXE: 25
+            GOLD_HOE: 25
+            GOLD_AXE: 25
+            GOLD_SWORD: 25
+            GOLD_SPADE: 25
+            DIAMOND_PICKAXE: 25
+            DIAMOND_HOE: 25
+            DIAMOND_AXE: 25
+            DIAMOND_SWORD: 25
+            DIAMOND_SPADE: 25
+            LEATHER_HELMET: 25
+            LEATHER_CHESTPLATE: 25
+            LEATHER_LEGGINGS: 25
+            LEATHER_BOOTS: 25
+            CHAINMAIL_HELMET: 25
+            CHAINMAIL_CHESTPLATE: 25
+            CHAINMAIL_LEGGINGS: 25
+            CHAINMAIL_BOOTS: 25
+            IRON_HELMET: 25
+            IRON_CHESTPLATE: 25
+            IRON_LEGGINGS: 25
+            IRON_BOOTS: 25
+            DIAMOND_HELMET: 25
+            DIAMOND_CHESTPLATE: 25
+            DIAMOND_LEGGINGS: 25
+            DIAMOND_BOOTS: 25
+            BOW: 25
+            ARROW: 25
+            ACTIVATOR_RAIL: 25
+            DETECTOR_RAIL: 25
+            POWERED_RAIL: 25
+            RAILS: 25
+        max-durability:
+            PICKAXE: 30
+            SWORD: 30
+            HOE: 30
+            AXE: 30
+            SPADE: 30
+            BOW: 30
+            HELMET: 30
+            LEGGINGS: 30
+            CHESTPLATE: 30
+            BOOTS: 30
+    alchemist:
+        brew: 50
