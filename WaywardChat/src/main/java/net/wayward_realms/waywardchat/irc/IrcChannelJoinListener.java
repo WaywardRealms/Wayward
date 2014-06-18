@@ -1,9 +1,7 @@
 package net.wayward_realms.waywardchat.irc;
 
 import net.wayward_realms.waywardchat.WaywardChat;
-import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.JoinEvent;
 
@@ -17,44 +15,44 @@ public class IrcChannelJoinListener extends ListenerAdapter<PircBotX>{
 
     @Override
     public void onJoin(JoinEvent<PircBotX> event) {
-        User thisuser = event.getUser();
-        Channel thischannel = event.getChannel();
-        boolean verified = thisuser.isVerified();
+        boolean verified = event.getUser().isVerified();
         //Start Auto Op/HOp/Voice Block
-        for(String channelOps: plugin.getConfig().getStringList("channels." + thischannel + ".hops")){
-            if((channelOps.equalsIgnoreCase(thisuser.getNick()))){
-                if(verified){
-                    if(!(thisuser.getChannelsOpIn().contains(thischannel))) {
-                        event.getBot().sendIRC().message(thischannel.getName(), "/cs op " + thischannel.getName() + " " + thisuser.getNick());
+        for (String channelOps: plugin.getConfig().getStringList("channels." + event.getChannel().getName() + ".hops")){
+            if ((channelOps.equalsIgnoreCase(event.getUser().getNick()))){
+                if (verified){
+                    if (!(event.getUser().getChannelsOpIn().contains(event.getChannel()))) {
+                        event.getBot().sendIRC().message("ChanServ", "OP " + event.getChannel().getName() + " " + event.getUser().getNick());
                     }
                 }
             }
         }
-        for(String channelHOps: plugin.getConfig().getStringList("channels." + event.getChannel() + ".hops")){
-            if((channelHOps.equalsIgnoreCase(thisuser.getNick()))){
-                if(verified){
-                    if(!(thisuser.getChannelsHalfOpIn().contains(thischannel))) {
-                        event.getBot().sendIRC().message(thischannel.getName(), "/cs hop " + thischannel.getName() + " " + thisuser.getNick());
+        for (String channelHOps: plugin.getConfig().getStringList("channels." + event.getChannel().getName() + ".hops")){
+            if ((channelHOps.equalsIgnoreCase(event.getUser().getNick()))){
+                if (verified){
+                    if (!(event.getUser().getChannelsHalfOpIn().contains(event.getChannel()))) {
+                        event.getBot().sendIRC().message("ChanServ", "HALFOP " + event.getChannel().getName() + " " + event.getUser().getNick());
                     }
                 }
             }
         }
-        for(String channelVoice: plugin.getConfig().getStringList("channels." + event.getChannel() + ".voice")){
-            if((channelVoice.equalsIgnoreCase(thisuser.getNick()))){
-                if(verified){
-                    if(!(thisuser.getChannelsVoiceIn().contains(thischannel))) {
-                        event.getBot().sendIRC().message(thischannel.getName(), "/cs voice " + thischannel.getName() + " " + thisuser.getNick());
+        for (String channelVoice: plugin.getConfig().getStringList("channels." + event.getChannel() + ".voice")){
+            if ((channelVoice.equalsIgnoreCase(event.getUser().getNick()))){
+                if (verified){
+                    if (!(event.getUser().getChannelsVoiceIn().contains(event.getChannel()))) {
+                        event.getBot().sendIRC().message("ChanServ", "VOICE " + event.getChannel().getName() + " " + event.getUser().getNick());
                     }
                 }
             }
         }
         //End Auto Op
         //Start Whitelist Block
-        if(plugin.getConfig().getBoolean("channel." + thischannel.getName() + ".whitelist")){
-            if(!verified){
-                event.getBot().sendIRC().message(thischannel.getName(), "/kick " + thischannel.getName() + " " + thisuser.getNick() + " Only registered/Identified users may join this channel.");
-            }else if(!(thisuser.getChannelsVoiceIn().contains(thischannel) || thisuser.getChannelsHalfOpIn().contains(thischannel) || thisuser.getChannelsOpIn().contains(thischannel))){
-                event.getBot().sendIRC().message(thischannel.getName(), "/kick " + thischannel.getName() + " " + thisuser.getNick() + " Only authorized users may join this channel.");
+        if (plugin.getConfig().getBoolean("channel." + event.getChannel().getName() + ".whitelist")){
+            if (!verified){
+                event.getBot().sendIRC().message(event.getChannel().getName(), "/kick " + event.getChannel().getName() + " " + event.getUser().getNick() + " Only registered/identified users may join this channel.");
+                event.getChannel().send().message(event.getUser().getNick() + " attempted to join, but was not registered.");
+            } else if (!(event.getUser().getChannelsVoiceIn().contains(event.getChannel()) || event.getUser().getChannelsHalfOpIn().contains(event.getChannel()) || event.getUser().getChannelsOpIn().contains(event.getChannel()))){
+                event.getBot().sendIRC().message(event.getChannel().getName(), "/kick " + event.getChannel().getName() + " " + event.getUser().getNick() + " Only authorised users may join this channel.");
+                event.getChannel().send().message(event.getUser().getNick() + " attempted to join, but was not authorised.");
             }
         }
         //End Whitelist Block
