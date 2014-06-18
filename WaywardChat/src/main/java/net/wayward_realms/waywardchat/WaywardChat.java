@@ -46,6 +46,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         getCommand("message").setExecutor(new MessageCommand(this));
         getCommand("reply").setExecutor(new ReplyCommand(this));
         getCommand("snoop").setExecutor(new SnoopCommand(this));
+        getCommand("irc").setExecutor(new IrcCommand(this));
         saveDefaultConfig();
         saveDefaultPrefixes();
         for (String section : getConfig().getConfigurationSection("channels").getKeys(false)) {
