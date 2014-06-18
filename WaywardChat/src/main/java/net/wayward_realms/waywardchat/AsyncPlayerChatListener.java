@@ -25,6 +25,7 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -247,7 +248,7 @@ public class AsyncPlayerChatListener implements Listener {
                         double clearRange = 0.75D * (double) channel.getRadius();
                         double hearingRange = (double) channel.getRadius();
                         double clarity = 1.0D - ((distance - clearRange) / hearingRange);
-                        String garbledMessage = plugin.garbleMessage(drunkify(talking, message), clarity);
+                        String garbledMessage = garbleMessage(drunkify(talking, message), clarity);
                         fancy.then(garbledMessage);
                     }
                 } else {
@@ -320,6 +321,31 @@ public class AsyncPlayerChatListener implements Listener {
             }
         }
         return message;
+    }
+
+    public String garbleMessage(String message, double clarity) {
+        StringBuilder newMessage = new StringBuilder();
+        Random random = new Random();
+        int i = 0;
+        int drops = 0;
+        while (i < message.length()) {
+            int c = message.codePointAt(i);
+            i += Character.charCount(c);
+            if (random.nextDouble() < clarity) {
+                newMessage.appendCodePoint(c);
+            } else if (random.nextDouble() < 0.1D) {
+                newMessage.append(ChatColor.DARK_GRAY);
+                newMessage.appendCodePoint(c);
+                newMessage.append(ChatColor.WHITE);
+            } else {
+                newMessage.append(' ');
+                drops++;
+            }
+        }
+        if (drops == message.length()) {
+            return "~~~";
+        }
+        return newMessage.toString();
     }
 
     private Location corelateUUIDtoLocation(UUID in){
