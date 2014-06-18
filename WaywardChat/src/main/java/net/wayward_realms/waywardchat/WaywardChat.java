@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
@@ -32,6 +34,9 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     private Map<String, ChatGroup> chatGroups = new ConcurrentHashMap<>();
     private Map<UUID, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
     private Set<UUID> snooping = Collections.synchronizedSet(new HashSet<UUID>());
+
+    private FileConfiguration ircConfig = null;
+    private File ircConfigFile = null;
 
     private PircBotX ircBot;
 
@@ -400,6 +405,8 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 .addListener(new IrcChCommand(this))
                 .addListener(new IrcChatHelpCommand(this))
                 .addListener(new IrcListCommand(this))
+                .addListener(new IrcRegisterCommand(this))
+                .addListener(new IrcVerifyCommand(this))
                 .addListener(new IrcMessageListener(this))
                 .addListener(new IrcUserListListener(this))
                 .setAutoReconnect(true);
@@ -499,6 +506,31 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
+        }
+    }
+
+    public FileConfiguration getIrcConfig() {
+        if (ircConfig == null) {
+            reloadIrcConfig();
+        }
+        return ircConfig;
+    }
+
+    public void reloadIrcConfig() {
+        if (ircConfigFile == null) {
+            ircConfigFile = new File(getDataFolder(), "irc.yml");
+        }
+        ircConfig = YamlConfiguration.loadConfiguration(ircConfigFile);
+    }
+
+    public void saveIrcConfig() {
+        if (ircConfig == null || ircConfigFile == null) {
+            return;
+        }
+        try {
+            getIrcConfig().save(ircConfigFile);
+        } catch (IOException exception) {
+            getLogger().log(Level.SEVERE, "Could not save config to " + ircConfigFile, exception);
         }
     }
 
