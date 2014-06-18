@@ -30,23 +30,23 @@ public class SignChangeListener implements Listener {
             }
             try {
                 Integer.parseInt(event.getLine(1).split(" ")[event.getLine(1).contains("buy") ? 1 : 2]);
-            } catch (NumberFormatException exception) {
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException exception) {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
-                event.getPlayer().sendMessage(ChatColor.RED + "You appear to have given a non-integer value for the amount.");
+                event.getPlayer().sendMessage(ChatColor.RED + "You appear to have given a non-integer value for the amount, or failed to specify an amount..");
                 return;
             }
             if (event.getLine(1).toLowerCase().contains("sell")) {
-                if (Material.matchMaterial(event.getLine(1).split(" ")[1].replace(' ', '_')) == null) {
-                    event.getBlock().breakNaturally();
-                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
-                    event.getPlayer().sendMessage(ChatColor.RED + "You appear to have neglected to mention which material you want.");
-                    return;
-                }
                 if (StringUtils.countMatches(event.getLine(1), " ") < 2) {
                     event.getBlock().breakNaturally();
                     event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
                     event.getPlayer().sendMessage(ChatColor.RED + "You appear to have neglected to mention the amount and/or material you want.");
+                    return;
+                }
+                if (Material.matchMaterial(event.getLine(1).split(" ")[1].replace(' ', '_')) == null) {
+                    event.getBlock().breakNaturally();
+                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line format must be: buy [amount] or sell [material] [amount]");
+                    event.getPlayer().sendMessage(ChatColor.RED + "You appear to have neglected to mention which material you want.");
                     return;
                 }
             }
@@ -59,6 +59,7 @@ public class SignChangeListener implements Listener {
             } catch (NumberFormatException exception) {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Third line format must be: for [price]");
+                return;
             }
             if (plugin.getMoney(event.getPlayer()) >= plugin.getConfig().getInt("shop.cost", 200)) {
                 plugin.addMoney(event.getPlayer(), - plugin.getConfig().getInt("shop.cost", 200));
@@ -68,10 +69,17 @@ public class SignChangeListener implements Listener {
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough money for a shop.");
                 return;
             }
-            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-            if (characterPluginProvider != null) {
-                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                event.setLine(3, "" + characterPlugin.getActiveCharacter(event.getPlayer()).getId());
+            if (event.getLine(3).equalsIgnoreCase("admin")) {
+                if (!event.getPlayer().hasPermission("wayward.economy.shop.admin")) {
+                    event.getBlock().breakNaturally();
+                    event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission to create admin shops.");
+                }
+            } else {
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                if (characterPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    event.setLine(3, "" + characterPlugin.getActiveCharacter(event.getPlayer()).getId());
+                }
             }
         }
     }
