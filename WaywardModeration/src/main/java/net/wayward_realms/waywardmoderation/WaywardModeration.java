@@ -54,6 +54,7 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         getCommand("warnings").setExecutor(new WarningsCommand(this));
         getCommand("amivanished").setExecutor(new AmIVanishedCommand(this));
         getCommand("tempban").setExecutor(new TempBanCommand(this));
+        getCommand("onlinestaff").setExecutor(new OnlineStaffCommand(this));
         registerListeners(new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerNamePlateChangeListener(this));
         for (Ticket ticket : getTickets()) {
             if (ticket.getId() > TicketImpl.getNextId()) {

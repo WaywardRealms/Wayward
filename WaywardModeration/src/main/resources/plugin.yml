@@ -30,6 +30,9 @@ commands:
     amivanished:
         description: Checks whether you are vanished
         usage: /<command>
+    onlinestaff:
+        description: Shows staff online now
+        usage: /<command>
 permissions:
     wayward.moderation.command.reputation.set:
         description: Allows you to set reputation
@@ -72,4 +75,7 @@ permissions:
         default: false
     wayward.moderation.ticket.notification:
         description: Notifies the player when a ticket is filed
+        default: op
+    wayward.moderation.staff:
+        description: Marks the user as a staff member
         default: op
