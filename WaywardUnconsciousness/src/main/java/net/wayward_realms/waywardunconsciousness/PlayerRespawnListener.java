@@ -17,7 +17,7 @@ public class PlayerRespawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(final PlayerRespawnEvent event) {
-        event.setRespawnLocation(plugin.getDeathLocation(event.getPlayer()));
+        event.setRespawnLocation(event.getPlayer().getLocation());
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {

@@ -16,7 +16,6 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         event.setDeathMessage("");
         plugin.setUnconscious(event.getEntity(), true);
-        plugin.setDeathLocation(event.getEntity(), event.getEntity().getLocation());
         plugin.setDeathTime(event.getEntity());
         event.getEntity().setBedSpawnLocation(null, true);
     }
