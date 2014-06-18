@@ -46,7 +46,7 @@ public class IrcChannelJoinListener extends ListenerAdapter<PircBotX>{
         }
         //End Auto Op
         //Start Whitelist Block
-        if (plugin.getConfig().getBoolean("channel." + event.getChannel().getName() + ".whitelist")){
+        if (plugin.getConfig().getBoolean("channels." + event.getChannel().getName() + ".whitelist")){
             if (!verified){
                 event.getBot().sendIRC().message(event.getChannel().getName(), "/kick " + event.getChannel().getName() + " " + event.getUser().getNick() + " Only registered/identified users may join this channel.");
                 event.getChannel().send().message(event.getUser().getNick() + " attempted to join, but was not registered.");
