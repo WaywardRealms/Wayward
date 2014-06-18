@@ -64,4 +64,20 @@ public interface ChatPlugin extends WaywardPlugin {
      */
     public Channel getChannelFromIrcChannel(String ircChannel);
 
+    /**
+     * Gets users in an IRC channel
+     *
+     * @param ircChannel the IRC channel
+     * @return the user names in the channel
+     */
+    public Collection<String> getUsersInIrcChannel(String ircChannel);
+
+    /**
+     * Gets staff in an IRC channel
+     *
+     * @param ircChannel the IRC channel
+     * @return the staff user names in the channel
+     */
+    public Collection<String> getStaffInIrcChannel(String ircChannel);
+
 }

@@ -116,6 +116,30 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         return null;
     }
 
+    @Override
+    public Collection<String> getUsersInIrcChannel(String ircChannel) {
+        Set<String> users = new HashSet<>();
+        Channel channel = getChannelFromIrcChannel(ircChannel);
+        if (channel != null && channel instanceof ChannelImpl) {
+            for (User user : ((ChannelImpl) channel).getIrcUsers()) {
+                users.add(user.getNick());
+            }
+        }
+        return users;
+    }
+
+    @Override
+    public Collection<String> getStaffInIrcChannel(String ircChannel) {
+        Set<String> users = new HashSet<>();
+        Channel channel = getChannelFromIrcChannel(ircChannel);
+        if (channel != null && channel instanceof ChannelImpl) {
+            for (User user : ((ChannelImpl) channel).getIrcStaff()) {
+                users.add(user.getNick());
+            }
+        }
+        return users;
+    }
+
     public void handleChat(Player talking, String message) {
         if (!message.equals("")) {
             String format;
@@ -376,6 +400,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 .addListener(new IrcChatHelpCommand(this))
                 .addListener(new IrcListCommand(this))
                 .addListener(new IrcMessageListener(this))
+                .addListener(new IrcUserListListener(this))
                 .setAutoReconnect(true);
             getLogger().info("Setting up IRC bot:");
             if (ircConfig.get("name") != null) {
