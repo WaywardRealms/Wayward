@@ -15,14 +15,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DrinkManager {
 
     private WaywardEssentials plugin;
 
-    private Map<Integer, Integer> drunkenness = new HashMap<>();
+    private ConcurrentHashMap<Integer, Integer> drunkenness = new ConcurrentHashMap<>();
 
     public DrinkManager(WaywardEssentials plugin) {
         this.plugin = plugin;

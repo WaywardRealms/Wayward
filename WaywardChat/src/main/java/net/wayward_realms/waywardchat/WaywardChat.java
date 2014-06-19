@@ -1,11 +1,8 @@
 package net.wayward_realms.waywardchat;
 
-import mkremins.fanciful.FancyMessage;
 import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
-import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
-import net.wayward_realms.waywardlib.util.math.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -15,7 +12,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permissible;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -145,148 +141,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         }
         return users;
     }
-
-    public void handleChat(Player talking, String message) {
-        if (!message.equals("")) {
-            String format;
-            if (getEmoteMode(talking).isEmote(message)) {
-                getChannel(getConfig().getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
-                    formatEmote(talking, message).send(player);
-                }
-            } else {
-                if (getPlayerChannel(talking) != null) {
-                    getPlayerChannel(talking).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                    for (Player player : new HashSet<>(getPlayerChannel(talking).getListeners())) {
-                        if (player != null) {
-                            if (getPlayerChannel(talking).getRadius() >= 0) {
-                                if (talking.getWorld().equals(player.getWorld())) {
-                                    if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= (double) getPlayerChannel(talking).getRadius()) {
-                                        FancyMessage fancy = formatChannel(getPlayerChannel(talking), talking, player, message);
-                                        fancy.send(player);
-                                    }
-                                }
-                            } else {
-                                formatChannel(getPlayerChannel(talking), talking, player, message).send(player);
-                            }
-                        }
-                    }
-                    if (getPlayerChannel(talking).isIrcEnabled()) {
-                        format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                        getIrcBot().sendIRC().message(getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
-                    }
-                } else {
-                    talking.sendMessage(getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
-                }
-            }
-        }
-    }
-
-    public FancyMessage formatChannel(Channel channel, Player talking, Player recipient, String message) {
-        FancyMessage fancy = new FancyMessage("");
-        String format = channel.getFormat();
-        ChatColor chatColour = null;
-        ChatColor chatFormat = null;
-        for (int i = 0; i < format.length(); i++) {
-            if (format.charAt(i) == '&') {
-                ChatColor colourOrFormat = ChatColor.getByChar(format.charAt(i + 1));
-                if (colourOrFormat.isColor()) chatColour = colourOrFormat;
-                if (colourOrFormat.isFormat()) chatFormat = colourOrFormat;
-                i += 1;
-            } else if (format.substring(i, i + ("%channel%").length()).equalsIgnoreCase("%channel%")) {
-                fancy.then(channel.getName());
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%channel%").length() - 1;
-            } else if (format.substring(i, i + ("%player%").length()).equalsIgnoreCase("%player%")) {
-                fancy.then(talking.getDisplayName());
-                fancy.tooltip(talking.getName());
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%player%").length() - 1;
-            } else if (format.substring(i, i + ("%prefix%").length()).equalsIgnoreCase("%prefix%")) {
-                fancy.then(getPlayerPrefix(talking));
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%prefix%").length() - 1;
-            } else if (format.substring(i, i + ("%ign%").length()).equalsIgnoreCase("%ign%")) {
-                fancy.then(talking.getName());
-                fancy.tooltip(talking.getDisplayName());
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%ign%").length() - 1;
-            } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
-                if (channel.isGarbleEnabled()) {
-                    if (recipient != null) {
-                        double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(recipient.getLocation()));
-                        double clearRange = 0.75D * (double) channel.getRadius();
-                        double hearingRange = (double) channel.getRadius();
-                        double clarity = 1.0D - ((distance - clearRange) / hearingRange);
-                        String garbleMessage = garbleMessage(drunkify(talking, message), clarity);
-                        fancy.then(garbleMessage);
-                    }
-                } else {
-                    fancy.then(message);
-                }
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%message%").length() - 1;
-            } else {
-                fancy.then(format.charAt(i));
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-            }
-        }
-        return fancy;
-    }
-
-    public FancyMessage formatEmote(Player talking, String message) {
-        FancyMessage fancy = new FancyMessage("");
-        String format = getConfig().getString("emotes.format");
-        ChatColor chatColour = null;
-        ChatColor chatFormat = null;
-        for (int i = 0; i < format.length(); i++) {
-            if (format.charAt(i) == '&') {
-                ChatColor colourOrFormat = ChatColor.getByChar(format.charAt(i + 1));
-                if (colourOrFormat.isColor()) chatColour = colourOrFormat;
-                if (colourOrFormat.isFormat()) chatFormat = colourOrFormat;
-                i += 1;
-            } else if (format.substring(i, i + ("%channel%").length()).equalsIgnoreCase("%channel%")) {
-                fancy.then("emote");
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%channel%").length() - 1;
-            } else if (format.substring(i, i + ("%player%").length()).equalsIgnoreCase("%player%")) {
-                fancy.then(talking.getDisplayName());
-                fancy.tooltip(talking.getName());
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%player%").length() - 1;
-            } else if (format.substring(i, i + ("%prefix%").length()).equalsIgnoreCase("%prefix%")) {
-                fancy.then(getPlayerPrefix(talking));
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%prefix%").length() - 1;
-            } else if (format.substring(i, i + ("%ign%").length()).equalsIgnoreCase("%ign%")) {
-                fancy.then(talking.getName());
-                fancy.tooltip(talking.getDisplayName());
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%ign%").length() - 1;
-            } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
-                fancy.then(message.replace("*", ""));
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-                i += ("%message%").length() - 1;
-            } else {
-                fancy.then(format.charAt(i));
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
-            }
-        }
-        return fancy;
-    }
-
+    
     public void handleChat(User talking, org.pircbotx.Channel ircChannel, String message) {
         String format;
         Channel channel = getChannelFromIrcChannel(ircChannel.getName());
@@ -297,42 +152,6 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 player.sendMessage(format);
             }
         }
-    }
-
-    private String drunkify(Player player, String message) {
-        RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
-        if (essentialsPluginProvider != null) {
-            EssentialsPlugin essentialsPlugin = essentialsPluginProvider.getProvider();
-            if (essentialsPlugin.getDrunkenness(player) >= 5) {
-                return message.replaceAll("s([^h])", "sh$1");
-            }
-        }
-        return message;
-    }
-
-    private String garbleMessage(String message, double clarity) {
-        StringBuilder newMessage = new StringBuilder();
-        Random random = new Random();
-        int i = 0;
-        int drops = 0;
-        while (i < message.length()) {
-            int c = message.codePointAt(i);
-            i += Character.charCount(c);
-            if (random.nextDouble() < clarity) {
-                newMessage.appendCodePoint(c);
-            } else if (random.nextDouble() < 0.1D) {
-                newMessage.append(ChatColor.DARK_GRAY);
-                newMessage.appendCodePoint(c);
-                newMessage.append(ChatColor.WHITE);
-            } else {
-                newMessage.append(' ');
-                drops++;
-            }
-        }
-        if (drops == message.length()) {
-            return "~~~";
-        }
-        return newMessage.toString();
     }
 
     public String getPlayerPrefix(Permissible player) {
