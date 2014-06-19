@@ -153,4 +153,12 @@ public interface CharacterPlugin extends WaywardPlugin {
      */
     public void incrementNextAvailableId();
 
+    /**
+     * Gets the party a character is in
+     *
+     * @param character the character
+     * @return the party, or null if the character does not have a party
+     */
+    public Party getParty(Character character);
+
 }
