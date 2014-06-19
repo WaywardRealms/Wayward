@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,10 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class AsyncPlayerChatListener implements Listener {
 
@@ -41,85 +37,13 @@ public class AsyncPlayerChatListener implements Listener {
     private YamlConfiguration prefixConfig;
     private ConcurrentHashMap<UUID, Location> UUIDLocations = new ConcurrentHashMap<>();
 
-    public AsyncPlayerChatListener(final WaywardChat plugin) {
+    public AsyncPlayerChatListener(WaywardChat plugin) {
         this.plugin = plugin;
-    // GET PLUGIN CONFIG
-        Future<FileConfiguration> futureConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<FileConfiguration>() {
-                    @Override
-                    public FileConfiguration call() {
-                        return plugin.getConfig();
-                    }
-                }
-        );
-        try {
-            pluginConfig = (YamlConfiguration) futureConfig.get();
-        } catch (InterruptedException | ExecutionException e) {
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                public void run() {
-                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the config from Wayward Chat.  Shit srsly broke yo.");
-                }
-            });
-            e.printStackTrace();
-        }
-    // END
-    // GET emote-mode.yml FILE.
-        Future<File> futureEmoteModeFolder = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<File>() {
-                    @Override
-                    public File call() {
-                        return new File(plugin.getDataFolder(), "emote-mode.yml");
-                    }
-                }
-        );
-        try {
-            emoteModeConfig = YamlConfiguration.loadConfiguration(futureEmoteModeFolder.get());
-        } catch (InterruptedException | ExecutionException | AssertionError e) {
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                public void run() {
-                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the file \"emote-mode.yml\".  ");
-                }
-            });
-            e.printStackTrace();
-        }
-    // END
-    // GET prefixes.yml FILE
-        Future<File> futurePrefixConfig = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<File>() {
-                    @Override
-                    public File call() {
-                        return new File(plugin.getDataFolder(), "prefixes.yml");
-                    }
-                }
-        );
-        try {
-            prefixConfig = YamlConfiguration.loadConfiguration(futurePrefixConfig.get());
-            prefixConfig.set("admin", " &e[admin] ");
-        } catch (InterruptedException | ExecutionException e) {
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                public void run() {
-                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the file \"prefixes.yml\".  ");
-                }
-            });
-            e.printStackTrace();
-        }
-    // END
-    // GET THE ESSENTIALS PLUGIN
-        Future<RegisteredServiceProvider<EssentialsPlugin>> futureEssentialsPluginProvider = Bukkit.getScheduler().callSyncMethod(plugin, new Callable<RegisteredServiceProvider<EssentialsPlugin>>(){
-                    @Override
-                    public RegisteredServiceProvider<EssentialsPlugin> call() {
-                        return Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
-                    }
-                }
-        );
-        try {
-            essentialsPluginProvider = futureEssentialsPluginProvider.get();
-        } catch (InterruptedException | ExecutionException e) {
-            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                public void run() {
-                    plugin.getLogger().severe("[WaywardChat.AsyncPlayerChatListener] Unable to get the EssentialsPluginProvider.");
-                }
-            });
-            e.printStackTrace();
-        }
-    // END
+        this.pluginConfig = (YamlConfiguration)plugin.getConfig();
+        emoteModeConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "emote-mode.yml"));
+        prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
+        prefixConfig.set("admin", " &e[admin] ");
+        essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
     // SET UP FUCKING PLAYER LOCATION GETTER SHIT COLLECTION
         Bukkit.getScheduler().runTaskTimer(
                 plugin,
