@@ -2,6 +2,7 @@ package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
@@ -102,19 +103,19 @@ public class FightImpl implements Fight {
         supportPerformMeta.setDisplayName("Support perform");
         supportPerform.setItemMeta(supportPerformMeta);
 
-        turnOptions.setItem(1, meleeOffence);
-        turnOptions.setItem(2, meleeDefence);
-        turnOptions.setItem(3, rangedOffence);
-        turnOptions.setItem(4, rangedDefence);
-        turnOptions.setItem(5, magicOffence);
-        turnOptions.setItem(6, magicDefence);
-        turnOptions.setItem(7, magicHealing);
-        turnOptions.setItem(8, magicNature);
-        turnOptions.setItem(9, magicIllusion);
-        turnOptions.setItem(10, magicSummoning);
-        turnOptions.setItem(11, magicSword);
-        turnOptions.setItem(12, speedNimble);
-        turnOptions.setItem(13, supportPerform);
+        turnOptions.setItem(0, meleeOffence);
+        turnOptions.setItem(1, meleeDefence);
+        turnOptions.setItem(2, rangedOffence);
+        turnOptions.setItem(3, rangedDefence);
+        turnOptions.setItem(4, magicOffence);
+        turnOptions.setItem(5, magicDefence);
+        turnOptions.setItem(6, magicHealing);
+        turnOptions.setItem(7, magicNature);
+        turnOptions.setItem(8, magicIllusion);
+        turnOptions.setItem(9, magicSummoning);
+        turnOptions.setItem(10, magicSword);
+        turnOptions.setItem(11, speedNimble);
+        turnOptions.setItem(12, supportPerform);
     }
 
     @Override
@@ -228,6 +229,37 @@ public class FightImpl implements Fight {
             if (classesPluginProvider != null) {
                 ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
                 classesPlugin.giveExperience(character, 50);
+            }
+        } else if (getCharacters().size() > 1) {
+            Character character = getCharacters().iterator().next();
+            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+            if (characterPluginProvider != null) {
+                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                Party party = characterPlugin.getParty(character);
+                if (party != null) {
+                    boolean partyWin = true;
+                    for (Character character1 : party.getMembers()) {
+                        boolean containsCharacter = false;
+                        for (Character character2 : getCharacters()) {
+                            if (character1.getId() == character2.getId()) {
+                                containsCharacter = true;
+                                break;
+                            }
+                        }
+                        if (!containsCharacter) {
+                            partyWin = false;
+                            break;
+                        }
+                    }
+                    if (partyWin) {
+                        party.sendMessage(ChatColor.GREEN + "You win.");
+                        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                        if (classesPluginProvider != null) {
+                            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                            classesPlugin.giveExperience(character, (int) Math.round(75D / (double) party.getMembers().size()));
+                        }
+                    }
+                }
             }
         }
         if (getCharacters().size() <= 1) {
