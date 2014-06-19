@@ -2,6 +2,7 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
@@ -35,14 +36,22 @@ public class CureSpell extends SpellBase {
     @Override
     public boolean use(Player player) {
         Set<Player> players = new HashSet<>();
-        for (Player player1 : player.getWorld().getPlayers()) {
-            if (player1.getLocation().distanceSquared(player.getLocation()) <= radius * radius) {
-                players.add(player1);
-            }
-        }
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Party party = characterPlugin.getParty(characterPlugin.getActiveCharacter(player));
+            if (party != null) {
+                for (Character member : party.getMembers()) {
+                    OfflinePlayer memberPlayer = member.getPlayer();
+                    if (memberPlayer.isOnline()) players.add(memberPlayer.getPlayer());
+                }
+            } else {
+                for (Player player1 : player.getWorld().getPlayers()) {
+                    if (player1.getLocation().distanceSquared(player.getLocation()) <= radius * radius) {
+                        players.add(player1);
+                    }
+                }
+            }
             for (Player player1 : players) {
                 double potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE) / 4D;
                 if (player.getItemInHand() != null) {
