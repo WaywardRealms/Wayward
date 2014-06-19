@@ -31,7 +31,7 @@ public class QuickChannelSwitchCommand extends Command {
                 for (String arg : args) {
                     message += arg + " ";
                 }
-                Bukkit.getServer().getPluginManager().callEvent(new AsyncPlayerChatEvent(true, (Player)sender, message, null));
+                Bukkit.getServer().getPluginManager().callEvent(new AsyncPlayerChatEvent(false, (Player)sender, message, null));
                 plugin.setPlayerChannel((Player) sender, channel);
             } else {
                 sender.sendMessage(plugin.getPrefix() + this.channel.getColour() + "Now talking in " + this.channel.getName() + ".");
