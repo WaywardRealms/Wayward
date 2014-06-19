@@ -133,6 +133,11 @@ public class EventCharacterImpl implements EventCharacter {
 
     public void setNameHidden(boolean nameHidden) {
         setFieldValue("name-hidden", nameHidden);
+        OfflinePlayer player = getPlayer();
+        if (player.isOnline()) {
+            player.getPlayer().setDisplayName(nameHidden ? "???" : getName());
+            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
+        }
     }
 
     @Override
