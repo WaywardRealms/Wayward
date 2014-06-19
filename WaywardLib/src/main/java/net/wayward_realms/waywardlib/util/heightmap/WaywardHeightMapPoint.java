@@ -5,7 +5,7 @@ public class WaywardHeightMapPoint {
 
     private int x;
     private int y;
-    private int value;
+    private double value;
 
     WaywardHeightMapPoint(int x, int y, int value){
         this.x = x;
@@ -21,7 +21,7 @@ public class WaywardHeightMapPoint {
         return y;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -33,7 +33,7 @@ public class WaywardHeightMapPoint {
         this.y = y;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
 }
