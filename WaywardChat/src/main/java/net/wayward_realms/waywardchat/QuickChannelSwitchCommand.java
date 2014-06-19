@@ -1,10 +1,12 @@
 package net.wayward_realms.waywardchat;
 
 import net.wayward_realms.waywardlib.chat.Channel;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class QuickChannelSwitchCommand extends Command {
                 for (String arg : args) {
                     message += arg + " ";
                 }
-                plugin.handleChat((Player) sender, message);
+                Bukkit.getServer().getPluginManager().callEvent(new AsyncPlayerChatEvent(true, (Player)sender, message, null));
                 plugin.setPlayerChannel((Player) sender, channel);
             } else {
                 sender.sendMessage(plugin.getPrefix() + this.channel.getColour() + "Now talking in " + this.channel.getName() + ".");
