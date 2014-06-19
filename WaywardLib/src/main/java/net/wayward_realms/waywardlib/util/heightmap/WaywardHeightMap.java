@@ -28,7 +28,7 @@ public class WaywardHeightMap {
         this.max = testMax;
         //Normalize, and then smooth/flatten out the heights.
         for(WaywardHeightMapPoint point: points){
-            point.setValue((point.getValue()/(max))^2);
+            point.setValue((point.getValue()/(max))*(point.getValue()/(max)));
         }
     }
 
