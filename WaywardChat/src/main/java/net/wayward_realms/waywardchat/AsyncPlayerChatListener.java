@@ -35,7 +35,7 @@ public class AsyncPlayerChatListener implements Listener {
     private YamlConfiguration pluginConfig;
     private YamlConfiguration emoteModeConfig;
     private YamlConfiguration prefixConfig;
-    private ConcurrentHashMap<UUID, Location> UUIDLocations = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
 
     public AsyncPlayerChatListener(WaywardChat plugin) {
         this.plugin = plugin;
@@ -44,18 +44,18 @@ public class AsyncPlayerChatListener implements Listener {
         prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
         prefixConfig.set("admin", " &e[admin] ");
         essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
-    // SET UP FUCKING PLAYER LOCATION GETTER SHIT COLLECTION
+        // SET UP FUCKING PLAYER LOCATION GETTER SHIT COLLECTION
         Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 new BukkitRunnable(){
                     @Override
                     public void run() {
                         for(Player player: Bukkit.getServer().getOnlinePlayers()) {
-                    UUIDLocations.put(player.getUniqueId(), player.getLocation());
+                            uuidLocations.put(player.getUniqueId(), player.getLocation());
                         }
                     }
                 },100L,100L);
-    // END THAT SHIT
+        // END THAT SHIT
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -82,7 +82,7 @@ public class AsyncPlayerChatListener implements Listener {
                             if (player != null) {
                                 if (plugin.getPlayerChannel(talking).getRadius() >= 0) {
                                     if (talking.getWorld().equals(player.getWorld())) {
-                                        if (MathUtils.fastsqrt(corelateUUIDtoLocation(talking.getUniqueId()).distanceSquared(corelateUUIDtoLocation(player.getUniqueId()))) <= (double) plugin.getPlayerChannel(talking).getRadius()) {
+                                        if (MathUtils.fastsqrt(correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId()))) <= (double) plugin.getPlayerChannel(talking).getRadius()) {
                                             FancyMessage fancy = formatChannel(plugin.getPlayerChannel(talking), talking, player, message);
                                             fancy.send(player);
                                         }
@@ -168,7 +168,7 @@ public class AsyncPlayerChatListener implements Listener {
             } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
                 if (channel.isGarbleEnabled()) {
                     if (recipient != null) {
-                        double distance = MathUtils.fastsqrt(corelateUUIDtoLocation(talking.getUniqueId()).distanceSquared(corelateUUIDtoLocation(recipient.getUniqueId())));
+                        double distance = MathUtils.fastsqrt(correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(recipient.getUniqueId())));
                         double clearRange = 0.75D * (double) channel.getRadius();
                         double hearingRange = (double) channel.getRadius();
                         double clarity = 1.0D - ((distance - clearRange) / hearingRange);
@@ -272,9 +272,9 @@ public class AsyncPlayerChatListener implements Listener {
         return newMessage.toString();
     }
 
-    private Location corelateUUIDtoLocation(UUID in){
-        if(UUIDLocations.containsKey(in)){
-            return UUIDLocations.get(in);
+    private Location correlateUUIDtoLocation(UUID in){
+        if(uuidLocations.containsKey(in)){
+            return uuidLocations.get(in);
         }
         return null;
     }
