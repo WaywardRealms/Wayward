@@ -7,11 +7,14 @@ import java.util.Vector;
 
 public class WaywardHeightMap {
 
-    private int max;
+    private int scale;
     private Vector<WaywardHeightMapPoint> points;
 
+    private int max;
+
     @SuppressWarnings("unchecked")
-    WaywardHeightMap(WaywardHeightMapPoint... inputPoints){
+    WaywardHeightMap(int scale, WaywardHeightMapPoint... inputPoints){
+        this.scale = scale;
         int testMax = 0;
         this.points = (Vector) Arrays.asList(inputPoints);
         //Find maximum point, in preparation for normalization.
@@ -19,12 +22,13 @@ public class WaywardHeightMap {
             points.add(point);
             if(point.getValue() > testMax){
                 testMax = point.getValue();
+                point.setValue(point.getValue());
             }
         }
         this.max = testMax;
         //Normalize, and then smooth/flatten out the heights.
         for(WaywardHeightMapPoint point: points){
-            point.setValue((point.getValue()/max)^2);
+            point.setValue((point.getValue()/(max))^2);
         }
     }
 
@@ -33,9 +37,9 @@ public class WaywardHeightMap {
         int testX = location.getBlockX();
         int out = 0;
         for(WaywardHeightMapPoint point : points){
-            int thisHeight =  ((point.getValue()^2) - ( ((testX - point.getX())^2) + ((testY - point.getY())^2)));
-            if(thisHeight > out){
-                out = thisHeight;
+            int thisHeight =  ((point.getValue() * point.getValue() * scale * scale) - ( ((testX - point.getX())*(testX - point.getX())) + ((testY - point.getY())*(testY - point.getY()))));
+            if(thisHeight/(scale * scale) > out){
+                out = thisHeight/(scale * scale);
             }
         }
         return out * max;
