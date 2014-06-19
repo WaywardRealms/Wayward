@@ -38,11 +38,11 @@ public class WaywardHeightMap {
         int out = 0;
         for(WaywardHeightMapPoint point : points){
             int thisHeight =  ((point.getValue() * point.getValue() * scale * scale) - ( ((testX - point.getX())*(testX - point.getX())) + ((testY - point.getY())*(testY - point.getY()))));
-            if(thisHeight/(scale * scale) > out){
-                out = thisHeight/(scale * scale);
+            if(thisHeight > out){
+                out = thisHeight;
             }
         }
-        return out * max;
+        return (out/(scale*scale)) * max;
     }
 
     public boolean addpoint(WaywardHeightMapPoint point){
