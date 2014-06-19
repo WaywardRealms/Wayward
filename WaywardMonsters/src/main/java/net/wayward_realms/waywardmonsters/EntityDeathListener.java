@@ -1,8 +1,10 @@
 package net.wayward_realms.waywardmonsters;
 
+import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Collection;
 import java.util.Random;
 
 public class EntityDeathListener implements Listener {
@@ -53,9 +56,24 @@ public class EntityDeathListener implements Listener {
                 exp = (int) Math.ceil(((double) entityLevel * (double) expScale));
                 money = random.nextInt(100) < 5 ? random.nextInt(5) : 0;
                 if (exp > 0) {
-                    RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                    RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
                     if (classesPluginProvider != null) {
                         ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                        if (characterPluginProvider != null) {
+                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                            Character character = characterPlugin.getActiveCharacter(player);
+                            Party party = characterPlugin.getParty(character);
+                            if (party != null) {
+                                Collection<? extends Character> partyMembers = party.getMembers();
+                                if (partyMembers.size() > 1) {
+                                    exp = (int) Math.round((exp * 1.5D) / (double) partyMembers.size());
+                                    for (Character partyMember : partyMembers) {
+                                        if (partyMember.getPlayer().isOnline()) classesPlugin.giveExperience(partyMember, exp);
+                                    }
+                                }
+                            }
+                        }
                         classesPlugin.giveExperience(player, exp);
                     }
                 }
@@ -64,7 +82,7 @@ public class EntityDeathListener implements Listener {
                     event.getDrops().addAll(plugin.getMobDropManager().getDrops(event.getEntity().getType(), entityLevel));
                 }
                 if (money > 0) {
-                    RegisteredServiceProvider<EconomyPlugin> economyPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EconomyPlugin.class);
+                    RegisteredServiceProvider<EconomyPlugin> economyPluginProvider = plugin.getServer().getServicesManager().getRegistration(EconomyPlugin.class);
                     if (economyPluginProvider != null) {
                         EconomyPlugin economyPlugin = economyPluginProvider.getProvider();
                         ItemStack coins = new ItemStack(Material.GOLD_NUGGET, money);
