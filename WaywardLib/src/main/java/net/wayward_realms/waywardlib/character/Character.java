@@ -1,18 +1,17 @@
 package net.wayward_realms.waywardlib.character;
 
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * Represents a character
  * 
  */
-public interface Character extends Combatant, ConfigurationSerializable {
+public interface Character extends Combatant {
 
     /**
      * Gets the character's unique ID
