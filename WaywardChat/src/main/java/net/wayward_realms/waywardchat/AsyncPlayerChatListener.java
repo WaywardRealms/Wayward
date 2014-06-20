@@ -78,10 +78,12 @@ public class AsyncPlayerChatListener implements Listener {
                             if (player != null) {
                                 int radius = channel.getRadius();
                                 if (radius >= 0) {
-                                    if (talking.getWorld().equals(player.getWorld())) {
-                                        if (correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (radius * radius)) {
-                                            FancyMessage fancy = formatChannel(channel, talking, player, message);
-                                            fancy.send(player);
+                                    if(correlateUUIDtoLocation(player.getUniqueId()) != null) {
+                                        if (talking.getWorld().equals(player.getWorld())) {
+                                            if (correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (radius * radius)) {
+                                                FancyMessage fancy = formatChannel(channel, talking, player, message);
+                                                fancy.send(player);
+                                            }
                                         }
                                     }
                                 } else {
