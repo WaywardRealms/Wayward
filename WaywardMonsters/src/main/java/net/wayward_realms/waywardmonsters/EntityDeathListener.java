@@ -71,10 +71,13 @@ public class EntityDeathListener implements Listener {
                                     for (Character partyMember : partyMembers) {
                                         if (partyMember.getPlayer().isOnline()) classesPlugin.giveExperience(partyMember, exp);
                                     }
+                                } else {
+                                    classesPlugin.giveExperience(player, exp);
                                 }
+                            } else {
+                                classesPlugin.giveExperience(player, exp);
                             }
                         }
-                        classesPlugin.giveExperience(player, exp);
                     }
                 }
                 if (!(event.getEntity() instanceof Player)) {
