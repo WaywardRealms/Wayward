@@ -8,7 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class QuickChannelSwitchCommand extends Command {
 
@@ -31,7 +34,9 @@ public class QuickChannelSwitchCommand extends Command {
                 for (String arg : args) {
                     message += arg + " ";
                 }
-                Bukkit.getServer().getPluginManager().callEvent(new AsyncPlayerChatEvent(false, (Player)sender, message, null));
+                Set<Player> recipients = new HashSet<>();
+                recipients.addAll(Arrays.asList(plugin.getServer().getOnlinePlayers()));
+                Bukkit.getServer().getPluginManager().callEvent(new AsyncPlayerChatEvent(false, (Player) sender, message, recipients));
                 plugin.setPlayerChannel((Player) sender, channel);
             } else {
                 sender.sendMessage(plugin.getPrefix() + this.channel.getColour() + "Now talking in " + this.channel.getName() + ".");

@@ -19,9 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class EventCharacterImpl implements EventCharacter {
@@ -434,44 +432,6 @@ public class EventCharacterImpl implements EventCharacter {
 
     public void setClassHidden(boolean classHidden) {
         setFieldValue("class-hidden", classHidden);
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        return new HashMap<>();
-    }
-
-    public static EventCharacterImpl deserialize(Map<String, Object> serialised) {
-        CharacterPlugin plugin = Bukkit.getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
-        EventCharacterImpl character = new EventCharacterImpl(new File(new File(plugin.getDataFolder(), "event-characters"), ((long) serialised.get("id")) + ".yml"));
-        character.setId((int) serialised.get("id"));
-        if (character.getId() > plugin.getNextAvailableId()) {
-            plugin.setNextAvailableId(character.getId());
-        }
-        character.setPlayer(Bukkit.getOfflinePlayer(UUID.fromString((String) serialised.get("uuid"))));
-        character.setName((String) serialised.get("name"));
-        character.setGender((Gender) serialised.get("gender"));
-        character.setAge((int) serialised.get("age"));
-        character.setRace((Race) serialised.get("race"));
-        character.setDescription((String) serialised.get("description"));
-        character.setDead((boolean) serialised.get("dead"));
-        character.setLocation(((SerialisableLocation) serialised.get("location")).toLocation());
-        if (serialised.get("inventory-contents") instanceof List<?>) {
-            character.setInventoryContents(((List<ItemStack>) serialised.get("inventory-contents")).toArray(new ItemStack[36]));
-        } else {
-            character.setInventoryContents(new ItemStack[36]);
-        }
-        character.setHealth((double) serialised.get("health"));
-        character.setFoodLevel((int) serialised.get("food-level"));
-        character.setMana((int) serialised.get("mana"));
-        character.setThirst((int) serialised.get("thirst"));
-        character.setNameHidden(serialised.get("name-hidden") != null && (boolean) serialised.get("name-hidden"));
-        character.setGenderHidden(serialised.get("gender-hidden") != null && (boolean) serialised.get("gender-hidden"));
-        character.setAgeHidden(serialised.get("age-hidden") != null && (boolean) serialised.get("age-hidden"));
-        character.setRaceHidden(serialised.get("race-hidden") != null && (boolean) serialised.get("race-hidden"));
-        character.setDescriptionHidden(serialised.get("description-hidden") != null && (boolean) serialised.get("description-hidden"));
-        character.setClassHidden(serialised.get("class-hidden") != null && (boolean) serialised.get("class-hidden"));
-        return character;
     }
 
 }

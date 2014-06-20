@@ -13,9 +13,14 @@ public class PlayerNamePlateUtils {
     }
 
     public static void refreshPlayer(Player player) {
-        PlayerNamePlateChangeEvent event = new PlayerNamePlateChangeEvent(player, player.getName(), player.getDisplayName());
+        final PlayerNamePlateChangeEvent event = new PlayerNamePlateChangeEvent(player, player.getName(), player.getDisplayName());
         Bukkit.getPluginManager().callEvent(event);
-        factory.changeDisplay(event.getPlayer(), event.getSkin(), event.getName());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getServer().getPluginManager().getPlugin("WaywardLib"), new Runnable() {
+            @Override
+            public void run() {
+                factory.changeDisplay(event.getPlayer(), event.getSkin(), event.getName());
+            }
+        });
     }
 
 }

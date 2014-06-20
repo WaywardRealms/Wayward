@@ -33,7 +33,6 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public void onEnable() {
-        ConfigurationSerialization.registerClass(CharacterImpl.class);
         ConfigurationSerialization.registerClass(GenderImpl.class);
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
@@ -392,7 +391,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         File newCharacterDirectory = new File(getDataFolder(), "characters-new");
         File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
         if (newCharacterFile.exists()) {
-            Character character = new CharacterImpl(newCharacterFile);
+            Character character = new CharacterImpl(this, newCharacterFile);
             character.getPlayer(); // UUID conversion
             return character;
         } else {
