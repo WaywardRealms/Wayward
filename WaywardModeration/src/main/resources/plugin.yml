@@ -3,7 +3,7 @@ author: Lucariatias
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardmoderation.WaywardModeration
-depend: [WaywardLib, TagAPI]
+depend: [WaywardLib]
 commands:
     reputation:
         description: Manages reputation
