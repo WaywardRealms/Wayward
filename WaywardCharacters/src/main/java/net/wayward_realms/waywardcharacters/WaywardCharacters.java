@@ -1,9 +1,7 @@
 package net.wayward_realms.waywardcharacters;
 
+import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.character.Gender;
-import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
@@ -47,8 +45,10 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getCommand("skillpoints").setExecutor(new SkillPointsCommand(this));
         getCommand("togglethirst").setExecutor(new ToggleThirstCommand(this));
         getCommand("togglehunger").setExecutor(new ToggleHungerCommand(this));
+        getCommand("party").setExecutor(new PartyCommand(this));
         setupRegen();
         setupHungerSlowdown();
+        setupPartyCleanup();
     }
     
     private void setupRegen() {
@@ -216,6 +216,13 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
             for (File file : characterDirectory.listFiles(new YamlFileFilter())) {
                 int id = Integer.parseInt(file.getName().replace(".yml", ""));
                 if (id > CharacterImpl.getNextId()) CharacterImpl.setNextId(id);
+            }
+        }
+        File partyDirectory = new File(getDataFolder(), "parties");
+        if (partyDirectory.exists()) {
+            for (File file : partyDirectory.listFiles(new YamlFileFilter())) {
+                int id = Integer.parseInt(file.getName().replace(".yml", ""));
+                if (id > PartyImpl.getNextId()) PartyImpl.setNextId(id);
             }
         }
         // UUID conversion
@@ -431,6 +438,76 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void incrementNextAvailableId() {
         CharacterImpl.nextAvailableId();
+    }
+
+    @Override
+    public Party getParty(Character character) {
+        for (Party party : getParties()) {
+            for (Character member : party.getMembers()) {
+                if (member.getId() == character.getId()) return party;
+            }
+        }
+        return null;
+    }
+
+    public Set<Party> getParties() {
+        File partyDirectory = new File(getDataFolder(), "parties");
+        Set<Party> parties = new HashSet<>();
+        if (partyDirectory.exists()) {
+            for (File file : partyDirectory.listFiles(new YamlFileFilter())) {
+                parties.add(new PartyImpl(this, file));
+            }
+        }
+        return parties;
+    }
+
+    public void addParty(Party party) {
+        if (!(party instanceof PartyImpl)) {
+            new PartyImpl(this, party);
+        }
+    }
+
+    public void removeParty(Party party) {
+        File partyDirectory = new File(getDataFolder(), "parties");
+        File partyFile = new File(partyDirectory, party.getId() + ".yml");
+        if (partyFile.exists()) partyFile.delete();
+    }
+
+    public void setupPartyCleanup() {
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                Set<Party> partiesToRemove = new HashSet<>();
+                for (Party party : getParties()) {
+                    Set<Character> membersToRemove = new HashSet<>();
+                    for (Character character : party.getMembers()) {
+                        if (!character.getPlayer().isOnline()) membersToRemove.add(character);
+                    }
+                    for (Character character : membersToRemove) {
+                        party.removeMember(character);
+                    }
+                    Set<Character> inviteesToRemove = new HashSet<>();
+                    for (Character character : party.getInvitees()) {
+                        if (!character.getPlayer().isOnline()) inviteesToRemove.add(character);
+                    }
+                    for (Character character : inviteesToRemove) {
+                        party.uninvite(character);
+                    }
+                    if (party.getMembers().size() <= 1 && ((System.currentTimeMillis() - party.getCreationDate().getTime()) / 60000) > 5) partiesToRemove.add(party);
+                }
+                for (Party party : partiesToRemove) {
+                    for (Character character : party.getMembers()) {
+                        OfflinePlayer player = character.getPlayer();
+                        if (player.isOnline()) player.getPlayer().sendMessage(getPrefix() + ChatColor.RED + "Your party was automatically removed due to having too few members, please re-create it if you still need it.");
+                    }
+                    for (Character character : party.getInvitees()) {
+                        OfflinePlayer player = character.getPlayer();
+                        if (player.isOnline()) player.getPlayer().sendMessage(getPrefix() + ChatColor.RED + "Your party invite expired.");
+                    }
+                    removeParty(party);
+                }
+            }
+        }, 6000L, 6000L);
     }
 
     @Override

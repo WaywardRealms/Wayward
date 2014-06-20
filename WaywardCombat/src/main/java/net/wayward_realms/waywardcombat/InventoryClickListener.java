@@ -31,7 +31,7 @@ public class InventoryClickListener implements Listener {
         CharacterPlugin characterPlugin = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
         if (event.getInventory().getTitle().equals("Skill type")) {
             event.setCancelled(true);
-            if (event.getSlot() >= 1 && event.getSlot() <= 13) {
+            if (event.getSlot() >= 0 && event.getSlot() <= 12) {
                 Set<Skill> skills = new HashSet<>();
                 RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
                 if (skillsPluginProvider != null) {
@@ -42,19 +42,19 @@ public class InventoryClickListener implements Listener {
                 Set<Skill> skillsToRemove = new HashSet<>();
                 SkillType skillType = null;
                 switch (event.getSlot()) {
-                    case 1: skillType = SkillType.MELEE_OFFENCE; break;
-                    case 2: skillType = SkillType.MELEE_DEFENCE; break;
-                    case 3: skillType = SkillType.RANGED_OFFENCE; break;
-                    case 4: skillType = SkillType.RANGED_DEFENCE; break;
-                    case 5: skillType = SkillType.MAGIC_OFFENCE; break;
-                    case 6: skillType = SkillType.MAGIC_DEFENCE; break;
+                    case 0: skillType = SkillType.MELEE_OFFENCE; break;
+                    case 1: skillType = SkillType.MELEE_DEFENCE; break;
+                    case 2: skillType = SkillType.RANGED_OFFENCE; break;
+                    case 3: skillType = SkillType.RANGED_DEFENCE; break;
+                    case 4: skillType = SkillType.MAGIC_OFFENCE; break;
+                    case 5: skillType = SkillType.MAGIC_DEFENCE; break;
+                    case 6: skillType = SkillType.MAGIC_HEALING; break;
                     case 7: skillType = SkillType.MAGIC_HEALING; break;
-                    case 8: skillType = SkillType.MAGIC_HEALING; break;
-                    case 9: skillType = SkillType.MAGIC_NATURE; break;
-                    case 10: skillType = SkillType.MAGIC_SUMMONING; break;
-                    case 11: skillType = SkillType.MAGIC_SWORD; break;
-                    case 12: skillType = SkillType.SPEED_NIMBLE; break;
-                    case 13: skillType = SkillType.SUPPORT_PERFORM; break;
+                    case 8: skillType = SkillType.MAGIC_NATURE; break;
+                    case 9: skillType = SkillType.MAGIC_SUMMONING; break;
+                    case 10: skillType = SkillType.MAGIC_SWORD; break;
+                    case 11: skillType = SkillType.SPEED_NIMBLE; break;
+                    case 12: skillType = SkillType.SUPPORT_PERFORM; break;
                     default: break;
                 }
                 for (Skill skill : skills) {
