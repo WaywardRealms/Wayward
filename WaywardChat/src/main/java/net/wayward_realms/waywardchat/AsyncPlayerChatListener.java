@@ -70,9 +70,10 @@ public class AsyncPlayerChatListener implements Listener {
         if (!message.equals("")) {
             final String format;
             if (getEmoteMode(talking).isEmote(message)) {
+                int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
-                    formatEmote(talking, message).send(player);
+                    if (emoteRadius < 0 || MathUtils.fastsqrt(correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId()))) <= (double) emoteRadius) formatEmote(talking, message).send(player);
                 }
             } else {
                 if (plugin.getPlayerChannel(talking) != null) {
@@ -101,13 +102,13 @@ public class AsyncPlayerChatListener implements Listener {
                                 .replace("%ign%", talking.getName())
                                 .replace("&", ChatColor.COLOR_CHAR + "")
                                 .replace("%message%", message);
-                    //SCHEDULE TASK TO PASS TO IRCBOT
+                        //SCHEDULE TASK TO PASS TO IRCBOT
                         Bukkit.getScheduler().runTask(plugin, new Runnable() {
                             public void run() {
                                 plugin.getIrcBot().sendIRC().message(plugin.getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
                             }
                         });
-                    //TASK FUCKING PASSED
+                        //TASK FUCKING PASSED
                     }
                 } else {
                     talking.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
