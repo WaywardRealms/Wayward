@@ -70,28 +70,29 @@ public class AsyncPlayerChatListener implements Listener {
                     if (emoteRadius < 0 || correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (emoteRadius * emoteRadius)) formatEmote(talking, message).send(player);
                 }
             } else {
-                if (plugin.getPlayerChannel(talking) != null) {
-                    plugin.getPlayerChannel(talking).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                    synchronized (plugin.getPlayerChannel(talking).getListeners()) {
-                        for (Player player : new HashSet<>(plugin.getPlayerChannel(talking).getListeners())) {
+                final Channel channel = plugin.getPlayerChannel(talking);
+                if (channel != null) {
+                    channel.log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
+                    synchronized (channel.getListeners()) {
+                        for (Player player : new HashSet<>(channel.getListeners())) {
                             if (player != null) {
-                                int radius = plugin.getPlayerChannel(talking).getRadius();
+                                int radius = channel.getRadius();
                                 if (radius >= 0) {
                                     if (talking.getWorld().equals(player.getWorld())) {
                                         if (correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (radius * radius)) {
-                                            FancyMessage fancy = formatChannel(plugin.getPlayerChannel(talking), talking, player, message);
+                                            FancyMessage fancy = formatChannel(channel, talking, player, message);
                                             fancy.send(player);
                                         }
                                     }
                                 } else {
-                                    formatChannel(plugin.getPlayerChannel(talking), talking, player, message).send(player);
+                                    formatChannel(channel, talking, player, message).send(player);
                                 }
                             }
                         }
                     }
-                    if (plugin.getPlayerChannel(talking).isIrcEnabled()) {
-                        format = plugin.getPlayerChannel(talking).getFormat()
-                                .replace("%channel%", plugin.getPlayerChannel(talking).getName())
+                    if (channel.isIrcEnabled()) {
+                        format = channel.getFormat()
+                                .replace("%channel%", channel.getName())
                                 .replace("%prefix%", getPlayerPrefix(talking))
                                 .replace("%player%", talking.getDisplayName())
                                 .replace("%ign%", talking.getName())
@@ -100,7 +101,7 @@ public class AsyncPlayerChatListener implements Listener {
                         //SCHEDULE TASK TO PASS TO IRCBOT
                         Bukkit.getScheduler().runTask(plugin, new Runnable() {
                             public void run() {
-                                plugin.getIrcBot().sendIRC().message(plugin.getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
+                                plugin.getIrcBot().sendIRC().message(channel.getIrcChannel(), ChatColor.stripColor(format));
                             }
                         });
                         //TASK FUCKING PASSED
