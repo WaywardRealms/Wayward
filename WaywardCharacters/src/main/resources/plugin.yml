@@ -45,3 +45,6 @@ permissions:
     wayward.characters.command.character.resetstatpoints:
         default: op
         description: Allows you to reset character stat points
+    wayward.characters.command.togglehunger:
+        default: op
+        description: Allows you to toggle hunger
