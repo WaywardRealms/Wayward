@@ -29,7 +29,7 @@ public class SpellManager {
         addSpell(new EsunaSpell());
         addSpell(new MagicMissileSpell());
         addSpell(new CureSpell());
-        addSpell(new MageArmourSpell());
+        addSpell(new MageArmourSpell(plugin));
         addSpell(new DrawSwordSpell());
         addSpell(new EmpowerSpell());
         addSpell(new SummonZombieSpell(plugin));
@@ -44,6 +44,9 @@ public class SpellManager {
         addSpell(new LightningSwordSpell());
         addSpell(new BlizzardSpell(plugin));
         addSpell(new LightningSpell());
+        addSpell(new ExplosiveSpellSpell());
+        addSpell(new BlizzardSwordSpell());
+        addSpell(new FireBreathSpell(plugin));
     }
 
     public Spell getSpell(String name) {

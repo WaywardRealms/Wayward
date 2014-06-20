@@ -2,10 +2,7 @@ package net.wayward_realms.waywardskills;
 
 import net.wayward_realms.waywardlib.professions.ToolType;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -40,6 +37,17 @@ public class EntityDamageByEntityListener implements Listener {
                     if (!snowball.getMetadata("isIceBreath").isEmpty()) {
                         event.setCancelled(true);
                         freeze(event.getEntity());
+                    }
+                }
+            }
+        } else if (event.getDamager() instanceof SmallFireball) {
+            SmallFireball fireball = (SmallFireball) event.getDamager();
+            if (fireball.getShooter() instanceof Player) {
+                if (fireball.getMetadata("isFireBreath") != null) {
+                    if (!fireball.getMetadata("isFireBreath").isEmpty()) {
+                        event.getEntity().setFireTicks(400);
+                        event.setCancelled(true);
+                        event.getEntity().remove();
                     }
                 }
             }

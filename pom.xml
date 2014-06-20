@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.wayward-realms</groupId>
     <artifactId>wayward</artifactId>
-    <version>0.7.4-SNAPSHOT</version>
+    <version>0.8.1-SNAPSHOT</version>
     <name>Wayward</name>
     <description>Plugins designed for Wayward Realms server</description>
     <url>http://wayward-realms.net/</url>
@@ -71,6 +71,11 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
+            <version>1.7.9-R0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
             <version>1.7.9-R0.2</version>
         </dependency>
     </dependencies>

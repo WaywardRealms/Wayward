@@ -5,7 +5,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import org.bukkit.OfflinePlayer;
 
 /**
- * Represents a death management pluginWaywardPlugin
+ * Represents a death management plugin
  *
  */
 public interface DeathPlugin extends WaywardPlugin {

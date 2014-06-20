@@ -8,6 +8,8 @@ import net.wayward_realms.waywardmechanics.chairs.*;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisBlockRedstoneListener;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisPlayerInteractListener;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisSignChangeListener;
+import net.wayward_realms.waywardmechanics.secretswitch.SecretSwitchPlayerInteractListener;
+import net.wayward_realms.waywardmechanics.secretswitch.SecretSwitchSignChangeListener;
 import org.bukkit.block.Block;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
@@ -24,7 +26,8 @@ public class WaywardMechanics extends JavaPlugin implements MechanicsPlugin {
     public void onEnable() {
         registerListeners(new BookshelfBlockBreakListener(this), new BookshelfPlayerInteractListener(this),
                 new ChairBlockBreakListener(this), new ChairExitVehicleListener(this), new ChairPlayerDeathListener(this), new ChairPlayerInteractListener(this), new ChairPlayerTeleportListener(this),
-                new PortcullisBlockRedstoneListener(), new PortcullisPlayerInteractListener(), new PortcullisSignChangeListener(this));
+                new PortcullisBlockRedstoneListener(), new PortcullisPlayerInteractListener(), new PortcullisSignChangeListener(this),
+                new SecretSwitchPlayerInteractListener(this), new SecretSwitchSignChangeListener(this));
     }
 
     @Override

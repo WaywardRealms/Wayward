@@ -32,6 +32,9 @@ commands:
     snoop:
         description: Toggles PM and command snooping
         usage: /<command>
+    irc:
+        description: Parent command for commands dealing with IRC
+        usage: /<command> [list]
 permissions:
     wayward.chat.command.broadcast:
         description: Allows you to broadcast messages

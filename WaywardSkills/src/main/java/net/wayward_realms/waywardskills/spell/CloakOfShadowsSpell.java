@@ -1,7 +1,9 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
@@ -48,8 +50,16 @@ public class CloakOfShadowsSpell extends SpellBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        //TODO Status effects, requires #37
-        return false;
+        if (attacking.getMana() >= getManaCost()) {
+            for (Combatant combatant : fight.getCombatants()) {
+                fight.setStatusTurns(combatant, StatusEffect.BLIND, 3);
+            }
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cloaked themselves in shadows.");
+            return true;
+        } else {
+            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to hide in the shadows, but did not have enough mana.");
+            return false;
+        }
     }
 
     @Override

@@ -23,6 +23,12 @@ commands:
     togglethirst:
         description: Toggles thirst
         usage: /<command>
+    togglehunger:
+        description: Toggles hunger
+        usage: /<command>
+    party:
+        description: Parent command for party commands
+        usage: /<command> [invite|join|leave|members|disband]
 permissions:
     wayward.characters.createmasheekwell:
         default: op

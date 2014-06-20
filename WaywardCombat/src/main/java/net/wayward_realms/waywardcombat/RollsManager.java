@@ -1,7 +1,6 @@
 package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
@@ -9,7 +8,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class RollsManager {
 
@@ -20,12 +18,7 @@ public class RollsManager {
     }
 
     public String getRoll(Character character, Stat stat) {
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return "1d" + (10 + classesPlugin.getLevel(character)) + "+" + (int) Math.round((character.getStatValue(stat) + getArmourBonus(character, stat) + getWeaponBonus(character, stat)));
-        }
-        return "1d20+0";
+        return "1d" + character.getStatValue(stat) + "+" + (int) Math.round(getArmourBonus(character, stat) + getWeaponBonus(character, stat));
     }
 
     private double getArmourBonus(Character character, Stat stat) {

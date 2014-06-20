@@ -8,6 +8,7 @@ import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -119,8 +120,10 @@ public class EventCharacterImpl implements EventCharacter {
     @Override
     public void setName(String name) {
         setFieldValue("name", name);
-        if (getPlayer().isOnline()) {
-            getPlayer().getPlayer().setDisplayName(isNameHidden() ? "???" : name);
+        OfflinePlayer player = getPlayer();
+        if (player.isOnline()) {
+            player.getPlayer().setDisplayName(isNameHidden() ? "???" : name);
+            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
 
@@ -130,6 +133,11 @@ public class EventCharacterImpl implements EventCharacter {
 
     public void setNameHidden(boolean nameHidden) {
         setFieldValue("name-hidden", nameHidden);
+        OfflinePlayer player = getPlayer();
+        if (player.isOnline()) {
+            player.getPlayer().setDisplayName(nameHidden ? "???" : getName());
+            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
+        }
     }
 
     @Override
@@ -294,7 +302,7 @@ public class EventCharacterImpl implements EventCharacter {
 
     @Override
     public void setHealth(double health) {
-        setFieldValue("health", health);
+        setFieldValue("health", Math.max(Math.min(health, getMaxHealth()), 0));
     }
 
     @Override

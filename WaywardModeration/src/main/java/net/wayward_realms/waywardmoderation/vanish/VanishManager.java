@@ -1,8 +1,8 @@
 package net.wayward_realms.waywardmoderation.vanish;
 
+import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardmoderation.WaywardModeration;
 import org.bukkit.entity.Player;
-import org.kitteh.tag.TagAPI;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,7 +34,7 @@ public class VanishManager {
                 player1.showPlayer(player);
             }
         }
-        TagAPI.refreshPlayer(player);
+        PlayerNamePlateUtils.refreshPlayer(player);
     }
 
     public Set<Player> getVanishedPlayers() {

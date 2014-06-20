@@ -2,16 +2,16 @@ package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.combat.Turn;
 import net.wayward_realms.waywardlib.skills.Skill;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.wayward_realms.waywardlib.skills.SkillType;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -21,6 +21,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.*;
 
+import static net.wayward_realms.waywardlib.combat.StatusEffect.*;
+
 public class FightImpl implements Fight {
 
     private Map<Integer, Location> characterLocations = new HashMap<>();
@@ -29,6 +31,8 @@ public class FightImpl implements Fight {
     private boolean active;
     private Turn activeTurn;
     private Map<Integer, Turn> savedTurns = new HashMap<>();
+
+    private Map<Combatant, EnumMap<StatusEffect, Integer>> statusEffectTurns = new HashMap<>();
 
     private Inventory turnOptions = Bukkit.createInventory(null, 18, "Skill type");
 
@@ -99,19 +103,19 @@ public class FightImpl implements Fight {
         supportPerformMeta.setDisplayName("Support perform");
         supportPerform.setItemMeta(supportPerformMeta);
 
-        turnOptions.setItem(1, meleeOffence);
-        turnOptions.setItem(2, meleeDefence);
-        turnOptions.setItem(3, rangedOffence);
-        turnOptions.setItem(4, rangedDefence);
-        turnOptions.setItem(5, magicOffence);
-        turnOptions.setItem(6, magicDefence);
-        turnOptions.setItem(7, magicHealing);
-        turnOptions.setItem(8, magicNature);
-        turnOptions.setItem(9, magicIllusion);
-        turnOptions.setItem(10, magicSummoning);
-        turnOptions.setItem(11, magicSword);
-        turnOptions.setItem(12, speedNimble);
-        turnOptions.setItem(13, supportPerform);
+        turnOptions.setItem(0, meleeOffence);
+        turnOptions.setItem(1, meleeDefence);
+        turnOptions.setItem(2, rangedOffence);
+        turnOptions.setItem(3, rangedDefence);
+        turnOptions.setItem(4, magicOffence);
+        turnOptions.setItem(5, magicDefence);
+        turnOptions.setItem(6, magicHealing);
+        turnOptions.setItem(7, magicNature);
+        turnOptions.setItem(8, magicIllusion);
+        turnOptions.setItem(9, magicSummoning);
+        turnOptions.setItem(10, magicSword);
+        turnOptions.setItem(11, speedNimble);
+        turnOptions.setItem(12, supportPerform);
     }
 
     @Override
@@ -207,7 +211,7 @@ public class FightImpl implements Fight {
 
     public void doTurn(Character attacking, Character defending, ItemStack weapon, Skill skill) {
         incrementTurn();
-        boolean hit = skill.use(this, attacking, defending, weapon);
+        boolean hit = canMove(attacking, skill) && skill.use(this, attacking, defending, weapon);
         while (!getNextTurn().getPlayer().isOnline()) {
             incrementTurn();
         }
@@ -217,6 +221,7 @@ public class FightImpl implements Fight {
             defending.getPlayer().getPlayer().sendMessage(ChatColor.RED + "You lost the fight.");
             defending.getPlayer().getPlayer().damage(defending.getPlayer().getPlayer().getHealth());
         }
+        doStatusEffects();
         if (getCharacters().size() == 1) {
             Character character = getCharacters().iterator().next();
             character.getPlayer().getPlayer().sendMessage(ChatColor.GREEN + "You win.");
@@ -224,6 +229,39 @@ public class FightImpl implements Fight {
             if (classesPluginProvider != null) {
                 ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
                 classesPlugin.giveExperience(character, 50);
+            }
+        } else if (getCharacters().size() > 1) {
+            Character character = getCharacters().iterator().next();
+            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+            if (characterPluginProvider != null) {
+                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                Party party = characterPlugin.getParty(character);
+                if (party != null) {
+                    boolean partyWin = true;
+                    for (Character character1 : getCharacters()) {
+                        boolean containsCharacter = false;
+                        for (Character character2 : party.getMembers()) {
+                            if (character1.getId() == character2.getId()) {
+                                containsCharacter = true;
+                                break;
+                            }
+                        }
+                        if (!containsCharacter) {
+                            partyWin = false;
+                            break;
+                        }
+                    }
+                    if (partyWin) {
+                        party.sendMessage(ChatColor.GREEN + "You win.");
+                        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                        if (classesPluginProvider != null) {
+                            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                            classesPlugin.giveExperience(character, (int) Math.round(75D / (double) party.getMembers().size()));
+                        }
+                        end();
+                        return;
+                    }
+                }
             }
         }
         if (getCharacters().size() <= 1) {
@@ -283,7 +321,7 @@ public class FightImpl implements Fight {
 
     @Override
     public void removeCombatant(Combatant combatant) {
-
+        if (combatant instanceof Character) removeCharacter((Character) combatant);
     }
 
     private void incrementTurn() {
@@ -352,6 +390,170 @@ public class FightImpl implements Fight {
                 }
             }
         }
+    }
+
+    @Override
+    public int getStatusTurns(Combatant combatant, StatusEffect statusEffect) {
+        if (!statusEffectTurns.containsKey(combatant)) return 0;
+        Map<StatusEffect, Integer> combatantStatusEffectTurns = statusEffectTurns.get(combatant);
+        if (!combatantStatusEffectTurns.containsKey(statusEffect)) return 0;
+        return statusEffectTurns.get(combatant).get(statusEffect);
+    }
+
+    @Override
+    public void setStatusTurns(Combatant combatant, StatusEffect statusEffect, int turns) {
+        if (turns > 0) {
+            if (statusEffectTurns.get(combatant) == null) {
+                statusEffectTurns.put(combatant, new EnumMap<StatusEffect, Integer>(StatusEffect.class));
+            }
+            statusEffectTurns.get(combatant).put(statusEffect, turns);
+        } else {
+            statusEffectTurns.get(combatant).remove(statusEffect);
+            if (statusEffectTurns.get(combatant).isEmpty()) {
+                statusEffectTurns.remove(combatant);
+            }
+        }
+    }
+
+    public boolean hasStatusEffect(Combatant combatant, StatusEffect statusEffect) {
+        return statusEffectTurns.containsKey(combatant) && statusEffectTurns.get(combatant).containsKey(statusEffect);
+    }
+
+    public void doStatusEffects() {
+        for (Iterator<Combatant> iterator = statusEffectTurns.keySet().iterator(); iterator.hasNext(); ) {
+            Combatant combatant = iterator.next();
+            for (Iterator<Map.Entry<StatusEffect, Integer>> iterator1 = statusEffectTurns.get(combatant).entrySet().iterator(); iterator1.hasNext(); ) {
+                Map.Entry<StatusEffect, Integer> entry = iterator1.next();
+                doStatusEffect(combatant, entry.getKey());
+                if (combatant.getHealth() <= 0D) {
+                    removeCombatant(combatant);
+                    if (combatant instanceof Character) {
+                        Character character = (Character) combatant;
+                        OfflinePlayer player = character.getPlayer();
+                        player.getPlayer().sendMessage(ChatColor.RED + "You lost the fight.");
+                        player.getPlayer().damage(player.getPlayer().getHealth());
+                    }
+                }
+                if (entry.getValue() > 0) {
+                    entry.setValue(entry.getValue() - 1);
+                } else {
+                    iterator1.remove();
+                }
+            }
+            if (statusEffectTurns.get(combatant).isEmpty()) iterator.remove();
+        }
+    }
+
+    public void doStatusEffect(Combatant combatant, StatusEffect statusEffect) {
+        double damage;
+        switch (statusEffect) {
+            case POISON:
+                damage = 0.1D * combatant.getMaxHealth();
+                combatant.setHealth(combatant.getHealth() - damage);
+                sendMessage(ChatColor.DARK_PURPLE + combatant.getName() + " took " + damage + " poison damage.");
+                if (combatant instanceof Character) {
+                    Character character = (Character) combatant;
+                    OfflinePlayer player = character.getPlayer();
+                    if (player.isOnline()) {
+                        player.getPlayer().setHealth(character.getHealth());
+                    }
+                }
+                if (combatant.getHealth() <= 0D) {
+                    removeCombatant(combatant);
+                }
+                break;
+            case PARALYSIS:
+                sendMessage(ChatColor.GOLD + combatant.getName() + " is paralysed.");
+                break;
+            case BURNED:
+                damage = 0.1D * combatant.getMaxHealth();
+                combatant.setHealth(combatant.getHealth() - damage);
+                sendMessage(ChatColor.DARK_RED + combatant.getName() + " took " + damage + " burn damage.");
+                if (combatant instanceof Character) {
+                    Character character = (Character) combatant;
+                    OfflinePlayer player = character.getPlayer();
+                    if (player.isOnline()) {
+                        player.getPlayer().setHealth(character.getHealth());
+                    }
+                }
+                break;
+            case FROZEN:
+                sendMessage(ChatColor.AQUA + combatant.getName() + " is frozen solid.");
+                break;
+            case CONFUSED:
+                sendMessage(ChatColor.YELLOW + combatant.getName() + " is confused.");
+                Random random = new Random();
+                if (random.nextBoolean()) {
+                    damage = random.nextDouble() * (combatant.getMaxHealth() / 2D);
+                    combatant.setHealth(combatant.getHealth() - damage);
+                    sendMessage(ChatColor.YELLOW + combatant.getName() + " hurt themself while confused.");
+                }
+                break;
+            case ASLEEP:
+                sendMessage(ChatColor.GRAY + combatant.getName() + " is asleep.");
+                break;
+            case BLIND:
+                sendMessage(ChatColor.DARK_GRAY + combatant.getName() + " is blinded.");
+                break;
+            case DOOM:
+                sendMessage(combatant.getName() + " is doomed - " + getStatusTurns(combatant, statusEffect) + " turns remaining until they pass out.");
+                if (getStatusTurns(combatant, statusEffect) <= 0) {
+                    sendMessage(ChatColor.DARK_PURPLE + combatant.getName() + " was knocked out.");
+                    combatant.setHealth(0);
+                    if (combatant instanceof Character) {
+                        Character character = (Character) combatant;
+                        OfflinePlayer player = character.getPlayer();
+                        if (player.isOnline()) {
+                            player.getPlayer().setHealth(character.getHealth());
+                        }
+                    }
+                    removeCombatant(combatant);
+                }
+                break;
+            case SILENCED:
+                sendMessage(ChatColor.GRAY + combatant.getName() + " is silenced.");
+                break;
+        }
+    }
+
+    public boolean canMove(Combatant combatant, Skill skill) {
+        Random random = new Random();
+        if (skill.getType() == SkillType.MELEE_OFFENCE ||
+                skill.getType() == SkillType.MELEE_DEFENCE ||
+                skill.getType() == SkillType.RANGED_OFFENCE ||
+                skill.getType() == SkillType.RANGED_DEFENCE) {
+            if (hasStatusEffect(combatant, PARALYSIS)) {
+                sendMessage(ChatColor.GOLD + combatant.getName() + " could not move due to paralysis.");
+                if (random.nextInt(100) > 20) return false;
+            }
+            if (hasStatusEffect(combatant, FROZEN)) {
+                sendMessage(ChatColor.AQUA + combatant.getName() + " is frozen and could not move.");
+                return false;
+            }
+
+        }
+        if (skill.getType() == SkillType.MAGIC_OFFENCE ||
+                skill.getType() == SkillType.MAGIC_DEFENCE ||
+                skill.getType() == SkillType.MAGIC_HEALING ||
+                skill.getType() == SkillType.MAGIC_ILLUSION ||
+                skill.getType() == SkillType.MAGIC_NATURE ||
+                skill.getType() == SkillType.MAGIC_SUMMONING ||
+                skill.getType() == SkillType.MAGIC_SWORD) {
+            if (hasStatusEffect(combatant, SILENCED)) {
+                sendMessage(ChatColor.GRAY + combatant.getName() + " is silenced and could not cast.");
+                return false;
+            }
+        }
+        if (hasStatusEffect(combatant, ASLEEP)) {
+            sendMessage(ChatColor.GRAY + combatant.getName() + " is asleep and can not move.");
+        }
+        if (hasStatusEffect(combatant, BLIND)) {
+            if (random.nextInt(100) > 10) {
+                sendMessage(ChatColor.DARK_GRAY + combatant.getName() + " is blinded and missed.");
+                return false;
+            }
+        }
+        return true;
     }
 
 }

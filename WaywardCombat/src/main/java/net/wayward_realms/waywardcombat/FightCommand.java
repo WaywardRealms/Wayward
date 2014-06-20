@@ -2,6 +2,7 @@ package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.combat.Fight;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -62,6 +63,28 @@ public class FightCommand implements CommandExecutor {
                 if (fight != null) {
                     if (fight.getCombatants() != null) {
                         if (fight.getCombatants().size() > 1) {
+                            Character character = fight.getCharacters().iterator().next();
+                            Party party = characterPlugin.getParty(character);
+                            if (party != null) {
+                                boolean allParty = true;
+                                for (Character character1 : fight.getCharacters()) {
+                                    boolean containsCharacter = false;
+                                    for (Character character2 : party.getMembers()) {
+                                        if (character1.getId() == character2.getId()) {
+                                            containsCharacter = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!containsCharacter) {
+                                        allParty = false;
+                                        break;
+                                    }
+                                }
+                                if (allParty) {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must get some players that are not in your party to join before you can start the fight!");
+                                    return true;
+                                }
+                            }
                             fight.start();
                             fight.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has begun!");
                             fight.sendMessage(ChatColor.YELLOW + "It's " + fight.getNextTurn().getName() + "'s turn.");

@@ -5,7 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Represents a lock pluginWaywardPlugin
+ * Represents a lock plugin
  *
  */
 public interface LockPlugin extends WaywardPlugin {

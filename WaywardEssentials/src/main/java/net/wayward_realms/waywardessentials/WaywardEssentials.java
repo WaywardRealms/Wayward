@@ -34,7 +34,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
 
     private GitHub gitHub;
 
-    private Set<UUID> logMessagesEnabled = new HashSet<>();
+    private File logMessagesEnabledFile;
     private Map<UUID, Location> previousLocations = new HashMap<>();
 
     @Override
@@ -72,6 +72,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
             exception.printStackTrace();
         }
         drinkManager.setupRecipes();
+        logMessagesEnabledFile = new File(getDataFolder(), "log-messages-enabled.yml");
     }
 
     private void registerListeners(Listener... listeners) {
@@ -200,21 +201,35 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
     }
 
     public boolean isLogMessagesEnabled(OfflinePlayer player) {
-        return logMessagesEnabled.contains(player.getUniqueId());
+        YamlConfiguration logMessagesEnabledConfig = YamlConfiguration.loadConfiguration(logMessagesEnabledFile);
+        return logMessagesEnabledConfig.getStringList("enabled").contains(player.getUniqueId().toString());
     }
 
     public void setLogMessagesEnabled(OfflinePlayer player, boolean enable) {
+        YamlConfiguration logMessagesEnabledConfig = YamlConfiguration.loadConfiguration(logMessagesEnabledFile);
+        List<String> logMessagesEnabled = logMessagesEnabledConfig.getStringList("enabled");
         if (enable) {
-            logMessagesEnabled.add(player.getUniqueId());
+            logMessagesEnabled.add(player.getUniqueId().toString());
         } else {
-            logMessagesEnabled.remove(player.getUniqueId());
+            logMessagesEnabled.remove(player.getUniqueId().toString());
+        }
+        logMessagesEnabledConfig.set("enabled", logMessagesEnabled);
+        try {
+            logMessagesEnabledConfig.save(logMessagesEnabledFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 
     public Set<Player> getPlayersWithLogMessagesEnabled() {
+        YamlConfiguration logMessagesEnabledConfig = YamlConfiguration.loadConfiguration(logMessagesEnabledFile);
+        List<String> logMessagesEnabled = logMessagesEnabledConfig.getStringList("enabled");
         Set<Player> players = new HashSet<>();
-        for (UUID uuid : logMessagesEnabled) {
-            players.add(getServer().getPlayer(uuid));
+        for (String uuidString : logMessagesEnabled) {
+            UUID uuid = UUID.fromString(uuidString);
+            if (getServer().getPlayer(uuid) != null) {
+                players.add(getServer().getPlayer(uuid));
+            }
         }
         return players;
     }

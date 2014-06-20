@@ -7,7 +7,7 @@ import org.bukkit.World;
 import java.util.Set;
 
 /**
- * Represents a permissions pluginWaywardPlugin
+ * Represents a permissions plugin
  *
  */
 public interface PermissionsPlugin extends WaywardPlugin {

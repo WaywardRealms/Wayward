@@ -5,12 +5,15 @@ import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Random;
 
 public abstract class AttackSpellBase extends SpellBase {
@@ -43,7 +46,7 @@ public abstract class AttackSpellBase extends SpellBase {
                 double weaponModifier = getWeaponModifier(weapon);
                 double armourModifier = getArmourModifier(defendingPlayer.getInventory().getHelmet(), defendingPlayer.getInventory().getChestplate(), defendingPlayer.getInventory().getLeggings(), defendingPlayer.getInventory().getBoots());
                 boolean critical = random.nextInt(100) < getCriticalChance();
-                double modifier = (critical ? criticalMultiplier : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
+                double modifier = (critical ? getCriticalMultiplier() : 1D) * weaponModifier * armourModifier * (((double) random.nextInt(15) + 85D) / 100D);
                 int damage = (int) Math.round((a * b * power) + 2D * modifier);
                 defending.setHealth(defending.getHealth() - damage);
                 defending.getPlayer().getPlayer().setHealth(Math.max(defending.getHealth(), 0D));
@@ -51,6 +54,40 @@ public abstract class AttackSpellBase extends SpellBase {
                     fight.sendMessage(ChatColor.YELLOW + "Critical hit!");
                 }
                 fight.sendMessage(ChatColor.YELLOW + getFightUseMessage(attacking, defending, Math.round(damage * 100D) / 100D));
+                for (Map.Entry<StatusEffect, Integer> entry : getStatusEffects().entrySet()) {
+                    if (random.nextInt(100) + 1 < getStatusEffectChance(entry.getKey())) {
+                        fight.setStatusTurns(defending, entry.getKey(), entry.getValue());
+                        switch (entry.getKey()) {
+                            case POISON:
+                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was poisoned for " + entry.getValue() + " turns");
+                                break;
+                            case PARALYSIS:
+                                fight.sendMessage(ChatColor.GOLD + defending.getName() + " was paralysed for " + entry.getValue() + " turns");
+                                break;
+                            case BURNED:
+                                fight.sendMessage(ChatColor.DARK_RED + defending.getName() + " was burned for " + entry.getValue() + " turns");
+                                break;
+                            case FROZEN:
+                                fight.sendMessage(ChatColor.AQUA + defending.getName() + " was frozen for " + entry.getValue() + " turns");
+                                break;
+                            case CONFUSED:
+                                fight.sendMessage(ChatColor.YELLOW + defending.getName() + " was confused for " + entry.getValue() + " turns");
+                                break;
+                            case ASLEEP:
+                                fight.sendMessage(ChatColor.GRAY + defending.getName() + " was sent to sleep for " + entry.getValue() + " turns");
+                                break;
+                            case BLIND:
+                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was blinded for " + entry.getValue() + " turns");
+                                break;
+                            case DOOM:
+                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was doomed, and will die in " + entry.getValue() + " turns");
+                                break;
+                            case SILENCED:
+                                fight.sendMessage(ChatColor.GRAY + defending.getName() + " was silenced for " + entry.getValue() + " turns");
+                                break;
+                        }
+                    }
+                }
                 return true;
             } else {
                 fight.sendMessage(ChatColor.YELLOW + getFightFailManaMessage(attacking, defending));
@@ -190,6 +227,14 @@ public abstract class AttackSpellBase extends SpellBase {
 
     public void setHitChance(int hitChance) {
         this.hitChance = hitChance;
+    }
+
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        return new EnumMap<>(StatusEffect.class);
+    }
+
+    public int getStatusEffectChance(StatusEffect statusEffect) {
+        return 100;
     }
 
 }

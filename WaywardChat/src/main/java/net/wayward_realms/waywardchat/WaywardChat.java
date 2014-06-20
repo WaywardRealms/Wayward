@@ -3,17 +3,15 @@ package net.wayward_realms.waywardchat;
 import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
-import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
-import net.wayward_realms.waywardlib.util.math.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permissible;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -24,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
@@ -31,6 +30,9 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     private Map<String, ChatGroup> chatGroups = new ConcurrentHashMap<>();
     private Map<UUID, ChatGroup> lastPrivateMessage = new ConcurrentHashMap<>();
     private Set<UUID> snooping = Collections.synchronizedSet(new HashSet<UUID>());
+
+    private FileConfiguration ircConfig = null;
+    private File ircConfigFile = null;
 
     private PircBotX ircBot;
 
@@ -45,6 +47,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         getCommand("message").setExecutor(new MessageCommand(this));
         getCommand("reply").setExecutor(new ReplyCommand(this));
         getCommand("snoop").setExecutor(new SnoopCommand(this));
+        getCommand("irc").setExecutor(new IrcCommand(this));
         saveDefaultConfig();
         saveDefaultPrefixes();
         for (String section : getConfig().getConfigurationSection("channels").getKeys(false)) {
@@ -115,59 +118,30 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         return null;
     }
 
-    public void handleChat(Player talking, String message) {
-        if (!message.equals("")) {
-            String format;
-            if (getEmoteMode(talking).isEmote(message)) {
-                getChannel(getConfig().getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
-                    if (getConfig().getInt("emotes.radius") >= 0) {
-                        if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= getConfig().getInt("emotes.radius")) {
-                            format = getConfig().getString("emotes.format").replace("%channel%", "emote").replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message.replace("*", ""));
-                            player.sendMessage(format);
-                        }
-                    } else {
-                        format = getConfig().getString("emotes.format").replace("%channel%", "emote").replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message.replace("*", ""));
-                        player.sendMessage(format);
-                    }
-                }
-            } else {
-                if (getPlayerChannel(talking) != null) {
-                    getPlayerChannel(talking).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                    for (Player player : new HashSet<>(getPlayerChannel(talking).getListeners())) {
-                        if (player != null) {
-                            if (getPlayerChannel(talking).getRadius() >= 0) {
-                                if (talking.getWorld().equals(player.getWorld())) {
-                                    if (MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation())) <= (double) getPlayerChannel(talking).getRadius()) {
-                                        if (getPlayerChannel(talking).isGarbleEnabled()) {
-                                            double distance = MathUtils.fastsqrt(talking.getLocation().distanceSquared(player.getLocation()));
-                                            double clearRange = 0.75D * (double) getPlayerChannel(talking).getRadius();
-                                            double hearingRange = (double) getPlayerChannel(talking).getRadius();
-                                            double clarity = 1.0D - ((distance - clearRange) / hearingRange);
-                                            format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", garbleMessage(drunkify(player, message), clarity));
-                                        } else {
-                                            format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                                        }
-                                        player.sendMessage(format);
-                                    }
-                                }
-                            } else {
-                                format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                                player.sendMessage(format);
-                            }
-                        }
-                    }
-                    if (getPlayerChannel(talking).isIrcEnabled()) {
-                        format = getPlayerChannel(talking).getFormat().replace("%channel%", getPlayerChannel(talking).getName()).replace("%prefix%", getPlayerPrefix(talking)).replace("%player%", talking.getDisplayName()).replace("%ign%", talking.getName()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                        getIrcBot().sendIRC().message(getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
-                    }
-                } else {
-                    talking.sendMessage(getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
-                }
+    @Override
+    public Collection<String> getUsersInIrcChannel(String ircChannel) {
+        Set<String> users = new HashSet<>();
+        Channel channel = getChannelFromIrcChannel(ircChannel);
+        if (channel != null && channel instanceof ChannelImpl) {
+            for (User user : ((ChannelImpl) channel).getIrcUsers()) {
+                users.add(user.getNick());
             }
         }
+        return users;
     }
 
+    @Override
+    public Collection<String> getStaffInIrcChannel(String ircChannel) {
+        Set<String> users = new HashSet<>();
+        Channel channel = getChannelFromIrcChannel(ircChannel);
+        if (channel != null && channel instanceof ChannelImpl) {
+            for (User user : ((ChannelImpl) channel).getIrcStaff()) {
+                users.add(user.getNick());
+            }
+        }
+        return users;
+    }
+    
     public void handleChat(User talking, org.pircbotx.Channel ircChannel, String message) {
         String format;
         Channel channel = getChannelFromIrcChannel(ircChannel.getName());
@@ -178,42 +152,6 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 player.sendMessage(format);
             }
         }
-    }
-
-    private String drunkify(Player player, String message) {
-        RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
-        if (essentialsPluginProvider != null) {
-            EssentialsPlugin essentialsPlugin = essentialsPluginProvider.getProvider();
-            if (essentialsPlugin.getDrunkenness(player) >= 5) {
-                return message.replaceAll("s([^h])", "sh$1");
-            }
-        }
-        return message;
-    }
-
-    private String garbleMessage(String message, double clarity) {
-        StringBuilder newMessage = new StringBuilder();
-        Random random = new Random();
-        int i = 0;
-        int drops = 0;
-        while (i < message.length()) {
-            int c = message.codePointAt(i);
-            i += Character.charCount(c);
-            if (random.nextDouble() < clarity) {
-                newMessage.appendCodePoint(c);
-            } else if (random.nextDouble() < 0.1D) {
-                newMessage.append(ChatColor.DARK_GRAY);
-                newMessage.appendCodePoint(c);
-                newMessage.append(ChatColor.WHITE);
-            } else {
-                newMessage.append(' ');
-                drops++;
-            }
-        }
-        if (drops == message.length()) {
-            return "~~~";
-        }
-        return newMessage.toString();
     }
 
     public String getPlayerPrefix(Permissible player) {
@@ -286,7 +224,11 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 .addListener(new IrcChCommand(this))
                 .addListener(new IrcChatHelpCommand(this))
                 .addListener(new IrcListCommand(this))
+                .addListener(new IrcRegisterCommand(this))
+                .addListener(new IrcVerifyCommand(this))
                 .addListener(new IrcMessageListener(this))
+                .addListener(new IrcChannelJoinListener(this))
+                .addListener(new IrcUserListListener(this))
                 .setAutoReconnect(true);
             getLogger().info("Setting up IRC bot:");
             if (ircConfig.get("name") != null) {
@@ -384,6 +326,31 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
+        }
+    }
+
+    public FileConfiguration getIrcConfig() {
+        if (ircConfig == null) {
+            reloadIrcConfig();
+        }
+        return ircConfig;
+    }
+
+    public void reloadIrcConfig() {
+        if (ircConfigFile == null) {
+            ircConfigFile = new File(getDataFolder(), "irc.yml");
+        }
+        ircConfig = YamlConfiguration.loadConfiguration(ircConfigFile);
+    }
+
+    public void saveIrcConfig() {
+        if (ircConfig == null || ircConfigFile == null) {
+            return;
+        }
+        try {
+            getIrcConfig().save(ircConfigFile);
+        } catch (IOException exception) {
+            getLogger().log(Level.SEVERE, "Could not save config to " + ircConfigFile, exception);
         }
     }
 

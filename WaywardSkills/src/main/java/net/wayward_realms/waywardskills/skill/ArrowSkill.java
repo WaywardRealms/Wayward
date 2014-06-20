@@ -44,9 +44,11 @@ public class ArrowSkill extends AttackSkillBase {
     public boolean use(Player player) {
         boolean containsBow = false;
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item.getType() == Material.BOW) {
-                containsBow = true;
-                break;
+            if (item != null) {
+                if (item.getType() == Material.BOW) {
+                    containsBow = true;
+                    break;
+                }
             }
         }
         if (containsBow) {

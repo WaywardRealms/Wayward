@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
@@ -17,6 +18,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
 import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_DEFENCE;
@@ -104,4 +108,15 @@ public class IceboltSpell extends AttackSpellBase {
         }
     }
 
+    @Override
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
+        statusEffects.put(StatusEffect.FROZEN, 3);
+        return statusEffects;
+    }
+
+    @Override
+    public int getStatusEffectChance(StatusEffect statusEffect) {
+        return 10;
+    }
 }

@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,21 +16,62 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MageArmourSpell extends SpellBase {
 
-    public MageArmourSpell() {
+    private WaywardSkills plugin;
+
+    public MageArmourSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("MageArmour");
-        setManaCost(10);
+        setManaCost(25);
         setCoolDown(180);
         setType(SkillType.MAGIC_DEFENCE);
     }
 
     @Override
-    public boolean use(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 2400, 1));
+    public boolean use(final Player player) {
+        List<String> lore = new ArrayList<>();
+        lore.add("" + System.currentTimeMillis());
+        if (player.getInventory().getHelmet() == null) {
+            ItemStack helmet = new ItemStack(Material.DIAMOND_HELMET);
+            ItemMeta helmetMeta = helmet.getItemMeta();
+            helmetMeta.setDisplayName("Mage armour helmet");
+            helmetMeta.setLore(lore);
+            helmetMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
+            helmet.setItemMeta(helmetMeta);
+            player.getInventory().setHelmet(helmet);
+        }
+        if (player.getInventory().getChestplate() == null) {
+            ItemStack chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
+            ItemMeta chestplateMeta = chestplate.getItemMeta();
+            chestplateMeta.setDisplayName("Mage armour chestplate");
+            chestplateMeta.setLore(lore);
+            chestplateMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
+            chestplate.setItemMeta(chestplateMeta);
+            player.getInventory().setChestplate(chestplate);
+        }
+        if (player.getInventory().getLeggings() == null) {
+            ItemStack leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
+            ItemMeta leggingsMeta = leggings.getItemMeta();
+            leggingsMeta.setDisplayName("Mage armour leggings");
+            leggingsMeta.setLore(lore);
+            leggingsMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
+            leggings.setItemMeta(leggingsMeta);
+            player.getInventory().setLeggings(leggings);
+        }
+        if (player.getInventory().getBoots() == null) {
+            ItemStack boots = new ItemStack(Material.DIAMOND_BOOTS);
+            ItemMeta bootsMeta = boots.getItemMeta();
+            bootsMeta.setDisplayName("Mage armour boots");
+            bootsMeta.setLore(lore);
+            bootsMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
+            boots.setItemMeta(bootsMeta);
+            player.getInventory().setBoots(boots);
+        }
         return true;
     }
 

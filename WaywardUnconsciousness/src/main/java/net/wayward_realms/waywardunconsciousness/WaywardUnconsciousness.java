@@ -3,9 +3,7 @@ package net.wayward_realms.waywardunconsciousness;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.death.DeathPlugin;
-import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -22,8 +20,6 @@ import java.io.IOException;
 
 public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
 
-    private File deathLocationsFile;
-    private YamlConfiguration deathLocations;
     private File deathTimesFile;
     private YamlConfiguration deathTimes;
 
@@ -67,19 +63,10 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
 
     @Override
     public void loadState() {
-        this.deathLocationsFile = new File(getDataFolder(), "death-locations.yml");
-        this.deathLocations = new YamlConfiguration();
         this.deathTimesFile = new File(getDataFolder(), "death-times.yml");
         this.deathTimes = new YamlConfiguration();
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
-        }
-        if (!deathLocationsFile.exists()) {
-            try {
-                deathLocationsFile.createNewFile();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
         }
         if (!deathTimesFile.exists()) {
             try {
@@ -89,7 +76,6 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
             }
         }
         try {
-            deathLocations.load(deathLocationsFile);
             deathTimes.load(deathTimesFile);
         } catch (IOException | InvalidConfigurationException exception) {
             exception.printStackTrace();
@@ -133,7 +119,6 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
                 }
             }, getConfig().getInt("unconscious-time") * 1200);
         } else {
-            removeDeathLocation(character);
             removeDeathTime(character);
             if (character.getPlayer().isOnline()) {
                 RegisteredServiceProvider<CharacterPlugin> characterProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
@@ -157,51 +142,6 @@ public class WaywardUnconsciousness extends JavaPlugin implements DeathPlugin {
     @Override
     public boolean isUnconscious(Character character) {
         return deathTimes.contains("" + character.getId());
-    }
-
-    public Location getDeathLocation(OfflinePlayer player) {
-        RegisteredServiceProvider<CharacterPlugin> characterProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        if (characterProvider != null) {
-            return getDeathLocation(characterProvider.getProvider().getActiveCharacter(player));
-        }
-        return null;
-    }
-
-    public Location getDeathLocation(Character character) {
-        return ((SerialisableLocation) deathLocations.get("" + character.getId())).toLocation();
-    }
-
-    public void setDeathLocation(OfflinePlayer player, Location location) {
-        RegisteredServiceProvider<CharacterPlugin> characterProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        if (characterProvider != null) {
-            setDeathLocation(characterProvider.getProvider().getActiveCharacter(player), location);
-        }
-    }
-
-    public void setDeathLocation(Character character, Location location) {
-        deathLocations.set("" + character.getId(), new SerialisableLocation(location));
-        try {
-            deathLocations.save(deathLocationsFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private void removeDeathLocation(OfflinePlayer player) {
-        RegisteredServiceProvider<CharacterPlugin> characterProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        if (characterProvider != null) {
-            CharacterPlugin characterPlugin = characterProvider.getProvider();
-            removeDeathLocation(characterPlugin.getActiveCharacter(player));
-        }
-    }
-
-    private void removeDeathLocation(Character character) {
-        deathLocations.set("" + character.getId(), null);
-        try {
-            deathLocations.save(deathLocationsFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
     }
 
     public long getDeathTime(OfflinePlayer player) {

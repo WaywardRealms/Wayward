@@ -1,19 +1,30 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardskills.WaywardSkills;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.BlockIterator;
+
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class BlizzardSpell extends AttackSpellBase {
 
@@ -114,9 +125,21 @@ public class BlizzardSpell extends AttackSpellBase {
             delay += 5L;
             i++;
         }
+        Set<LivingEntity> invulnerableEntities = new HashSet<>();
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Party party = characterPlugin.getParty(characterPlugin.getActiveCharacter(player));
+            if (party != null) {
+                for (Character member : party.getMembers()) {
+                    OfflinePlayer memberPlayer = member.getPlayer();
+                    if (memberPlayer.isOnline()) invulnerableEntities.add(memberPlayer.getPlayer());
+                }
+            }
+        }
         for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (entity.getLocation().distanceSquared(player.getLocation()) <= 64) {
-                entity.damage(entity.getHealth() / 2, player);
+                if (!invulnerableEntities.contains(entity)) entity.damage(entity.getHealth() / 2, player);
             }
         }
         return true;
@@ -153,6 +176,18 @@ public class BlizzardSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 40;
+    }
+
+    @Override
+    public Map<StatusEffect, Integer> getStatusEffects() {
+        Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
+        statusEffects.put(StatusEffect.FROZEN, 3);
+        return statusEffects;
+    }
+
+    @Override
+    public int getStatusEffectChance(StatusEffect statusEffect) {
+        return 20;
     }
 
 }

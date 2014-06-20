@@ -7,6 +7,7 @@ import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -126,8 +127,10 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
     @Override
     public void setName(String name) {
         setFieldValue("name", name);
-        if (getPlayer().isOnline()) {
-            getPlayer().getPlayer().setDisplayName(isNameHidden() ? "???" : name);
+        OfflinePlayer player = getPlayer();
+        if (player.isOnline()) {
+            player.getPlayer().setDisplayName(isNameHidden() ? "???" : name);
+            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
 
@@ -137,6 +140,11 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     public void setNameHidden(boolean nameHidden) {
         setFieldValue("name-hidden", nameHidden);
+        OfflinePlayer player = getPlayer();
+        if (player.isOnline()) {
+            player.getPlayer().setDisplayName(nameHidden ? "???" : getName());
+            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
+        }
     }
 
     @Override
@@ -303,7 +311,7 @@ public class CharacterImpl implements Character, ConfigurationSerializable {
 
     @Override
     public void setHealth(double health) {
-        setFieldValue("health", health);
+        setFieldValue("health", Math.max(Math.min(health, getMaxHealth()), 0));
     }
 
     @Override

@@ -24,3 +24,6 @@ permissions:
     wayward.economy.shop.free:
         description: Allows you to create shops for free
         default: false
+    wayward.economy.shop.admin:
+        description: Allows you to create admin shops
+        default: op

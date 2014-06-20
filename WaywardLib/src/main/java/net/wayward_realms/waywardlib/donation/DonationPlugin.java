@@ -6,7 +6,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.Collection;
 
 /**
- * Represents a donation management pluginWaywardPlugin
+ * Represents a donation management plugin
  *
  */
 public interface DonationPlugin extends WaywardPlugin {

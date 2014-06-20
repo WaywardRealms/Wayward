@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
+import org.pircbotx.User;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,13 +21,20 @@ public class ChannelImpl implements Channel {
     private String name;
     private ChatColor colour;
     private String format;
-    private Set<UUID> speakers;
-    private Set<UUID> listeners;
+    private Set<UUID> speakers = Collections.synchronizedSet(new HashSet<UUID>());
+    private Set<UUID> listeners = Collections.synchronizedSet(new HashSet<UUID>());
     private int radius;
     private boolean garbleEnabled;
     private boolean ircEnabled;
     private Command command;
-    private String ircChannel;
+    private String ircChannelName;
+    private org.pircbotx.Channel ircChannel;
+
+    private Set<User> onlineIRCStaff = Collections.synchronizedSet(new HashSet<User>());
+    private long lastOnlineStaffQuery = 0;
+
+    private Set<User> onlineIRCUsers = Collections.synchronizedSet(new HashSet<User>());
+    private long lastOnlineUserQuery = 0;
 
     public ChannelImpl(WaywardChat plugin, String name) {
         this.plugin = plugin;
@@ -39,7 +47,7 @@ public class ChannelImpl implements Channel {
         this.garbleEnabled = plugin.getConfig().getBoolean("channels." + getName() + ".garble-enabled") && this.radius >= 0;
         this.ircEnabled = plugin.getConfig().getBoolean("irc.enabled") && plugin.getConfig().getBoolean("channels." + getName() + ".irc.enabled");
         if (isIrcEnabled()) {
-            this.ircChannel = plugin.getConfig().getString("channels." + getName() + ".irc.channel");
+            this.ircChannelName = plugin.getConfig().getString("channels." + getName() + ".irc.channel");
         }
     }
 
@@ -176,11 +184,66 @@ public class ChannelImpl implements Channel {
     }
 
     public String getIrcChannel() {
-        return ircChannel;
+        return ircChannelName;
     }
 
     public void setIrcChannel(String ircChannel) {
-        this.ircChannel = ircChannel;
+        this.ircChannelName = ircChannel;
+    }
+
+    public void setIrcChannelObject(org.pircbotx.Channel channel) {
+        this.ircChannel = channel;
+    }
+
+    public Collection<User> getIrcUsers() {
+        Set<User> users = new HashSet<>();
+        if (System.currentTimeMillis() - lastOnlineUserQuery >= 300000L) {
+            if (ircChannel != null) {
+                users.addAll(ircChannel.getUsers());
+                onlineIRCUsers.clear();
+                onlineIRCUsers.addAll(users);
+                lastOnlineUserQuery = System.currentTimeMillis();
+            }
+        } else {
+            users.addAll(onlineIRCUsers);
+        }
+        return users;
+    }
+
+    public Collection<User> getIrcStaff() {
+        Set<User> users = new HashSet<>();
+        if (System.currentTimeMillis() - lastOnlineStaffQuery >= 300000L) {
+            if (ircChannel != null) {
+                for (User user : ircChannel.getUsers()) {
+                    if (!user.isVerified()) continue;
+                    if (user.getChannelsOpIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsSuperOpIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsHalfOpIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsOwnerIn().contains(ircChannel)) {
+                        users.add(user);
+                        continue;
+                    }
+                    if (user.getChannelsVoiceIn().contains(ircChannel)) {
+                        users.add(user);
+                    }
+                }
+                onlineIRCStaff.clear();
+                onlineIRCStaff.addAll(users);
+                lastOnlineStaffQuery = System.currentTimeMillis();
+            }
+        } else {
+            users.addAll(onlineIRCStaff);
+        }
+        return users;
     }
 
 }
