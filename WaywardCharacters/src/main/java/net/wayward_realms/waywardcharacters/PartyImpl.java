@@ -31,14 +31,16 @@ public class PartyImpl implements Party {
 
     public PartyImpl(WaywardCharacters plugin, Character... characters) {
         this.plugin = plugin;
-        this.file = new File(plugin.getDataFolder(), nextAvailableId() + ".yml");
+        File partyDirectory = new File(plugin.getDataFolder(), "parties");
+        this.file = new File(partyDirectory, nextAvailableId() + ".yml");
         setCreationDate(new Date());
         for (Character character : characters) addMember(character);
     }
 
     public PartyImpl(WaywardCharacters plugin, Party toCopy) {
         this.plugin = plugin;
-        this.file = new File(plugin.getDataFolder(), nextAvailableId() + ".yml");
+        File partyDirectory = new File(plugin.getDataFolder(), "parties");
+        this.file = new File(partyDirectory, nextAvailableId() + ".yml");
         setCreationDate(new Date());
         for (Character character : toCopy.getMembers()) addMember(character);
         for (Character character : toCopy.getInvitees()) invite(character);
