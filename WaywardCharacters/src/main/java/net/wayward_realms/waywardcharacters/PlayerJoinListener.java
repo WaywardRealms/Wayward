@@ -21,14 +21,8 @@ public class PlayerJoinListener implements Listener {
         }
         plugin.getActiveCharacter(event.getPlayer());
         event.getPlayer().setDisplayName(plugin.getActiveCharacter(event.getPlayer()).getName());
-        final Player player = event.getPlayer();
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                PlayerNamePlateUtils.refreshPlayer(player);
-            }
-        });
-
+        Player player = event.getPlayer();
+        PlayerNamePlateUtils.refreshPlayer(player);
     }
 
 }

@@ -145,7 +145,7 @@ public class TicketImpl implements Ticket {
 
     @Override
     public void setIssuer(OfflinePlayer issuer) {
-        setFieldValue("issuer-uuid", issuer.getUniqueId());
+        setFieldValue("issuer-uuid", issuer.getUniqueId().toString());
     }
 
     @Override
