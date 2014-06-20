@@ -1,11 +1,9 @@
 package net.wayward_realms.waywardchat;
 
 import mkremins.fanciful.FancyMessage;
-
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.util.math.MathUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,11 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AsyncPlayerChatListener implements Listener {
@@ -70,44 +64,47 @@ public class AsyncPlayerChatListener implements Listener {
         if (!message.equals("")) {
             final String format;
             if (getEmoteMode(talking).isEmote(message)) {
+                int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
-                    formatEmote(talking, message).send(player);
+                for (Player player : emoteRadius >= 0 ? new ArrayList<>(talking.getWorld().getPlayers()) : new ArrayList<>(Arrays.asList(plugin.getServer().getOnlinePlayers()))) {
+                    if (emoteRadius < 0 || correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (emoteRadius * emoteRadius)) formatEmote(talking, message).send(player);
                 }
             } else {
-                if (plugin.getPlayerChannel(talking) != null) {
-                    plugin.getPlayerChannel(talking).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                    synchronized (plugin.getPlayerChannel(talking).getListeners()) {
-                        for (Player player : new HashSet<>(plugin.getPlayerChannel(talking).getListeners())) {
+                final Channel channel = plugin.getPlayerChannel(talking);
+                if (channel != null) {
+                    channel.log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
+                    synchronized (channel.getListeners()) {
+                        for (Player player : new HashSet<>(channel.getListeners())) {
                             if (player != null) {
-                                if (plugin.getPlayerChannel(talking).getRadius() >= 0) {
+                                int radius = channel.getRadius();
+                                if (radius >= 0) {
                                     if (talking.getWorld().equals(player.getWorld())) {
-                                        if (MathUtils.fastsqrt(correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId()))) <= (double) plugin.getPlayerChannel(talking).getRadius()) {
-                                            FancyMessage fancy = formatChannel(plugin.getPlayerChannel(talking), talking, player, message);
+                                        if (correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (radius * radius)) {
+                                            FancyMessage fancy = formatChannel(channel, talking, player, message);
                                             fancy.send(player);
                                         }
                                     }
                                 } else {
-                                    formatChannel(plugin.getPlayerChannel(talking), talking, player, message).send(player);
+                                    formatChannel(channel, talking, player, message).send(player);
                                 }
                             }
                         }
                     }
-                    if (plugin.getPlayerChannel(talking).isIrcEnabled()) {
-                        format = plugin.getPlayerChannel(talking).getFormat()
-                                .replace("%channel%", plugin.getPlayerChannel(talking).getName())
+                    if (channel.isIrcEnabled()) {
+                        format = channel.getFormat()
+                                .replace("%channel%", channel.getName())
                                 .replace("%prefix%", getPlayerPrefix(talking))
                                 .replace("%player%", talking.getDisplayName())
                                 .replace("%ign%", talking.getName())
                                 .replace("&", ChatColor.COLOR_CHAR + "")
                                 .replace("%message%", message);
-                    //SCHEDULE TASK TO PASS TO IRCBOT
+                        //SCHEDULE TASK TO PASS TO IRCBOT
                         Bukkit.getScheduler().runTask(plugin, new Runnable() {
                             public void run() {
-                                plugin.getIrcBot().sendIRC().message(plugin.getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
+                                plugin.getIrcBot().sendIRC().message(channel.getIrcChannel(), ChatColor.stripColor(format));
                             }
                         });
-                    //TASK FUCKING PASSED
+                        //TASK FUCKING PASSED
                     }
                 } else {
                     talking.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
