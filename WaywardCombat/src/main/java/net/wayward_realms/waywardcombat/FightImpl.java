@@ -238,9 +238,9 @@ public class FightImpl implements Fight {
                 Party party = characterPlugin.getParty(character);
                 if (party != null) {
                     boolean partyWin = true;
-                    for (Character character1 : party.getMembers()) {
+                    for (Character character1 : getCharacters()) {
                         boolean containsCharacter = false;
-                        for (Character character2 : getCharacters()) {
+                        for (Character character2 : party.getMembers()) {
                             if (character1.getId() == character2.getId()) {
                                 containsCharacter = true;
                                 break;
