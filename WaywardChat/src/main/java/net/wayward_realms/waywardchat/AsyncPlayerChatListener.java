@@ -1,11 +1,9 @@
 package net.wayward_realms.waywardchat;
 
 import mkremins.fanciful.FancyMessage;
-
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.util.math.MathUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,11 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AsyncPlayerChatListener implements Listener {
@@ -72,7 +66,7 @@ public class AsyncPlayerChatListener implements Listener {
             if (getEmoteMode(talking).isEmote(message)) {
                 int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
+                for (Player player : emoteRadius >= 0 ? new ArrayList<>(talking.getWorld().getPlayers()) : new ArrayList<>(Arrays.asList(plugin.getServer().getOnlinePlayers()))) {
                     if (emoteRadius < 0 || correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (emoteRadius * emoteRadius)) formatEmote(talking, message).send(player);
                 }
             } else {
