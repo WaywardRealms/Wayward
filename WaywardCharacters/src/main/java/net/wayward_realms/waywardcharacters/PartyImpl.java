@@ -70,7 +70,7 @@ public class PartyImpl implements Party {
         cidList.add(character.getId());
         config.set("members", cidList);
         List<Integer> inviteeCidList = config.getIntegerList("invitees");
-        inviteeCidList.remove(character.getId());
+        if (inviteeCidList.contains(character.getId())) inviteeCidList.remove((Integer) character.getId());
         config.set("invitees", inviteeCidList);
         try {
             config.save(file);
@@ -119,7 +119,7 @@ public class PartyImpl implements Party {
     public void uninvite(Character character) {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         List<Integer> cidList = config.getIntegerList("invitees");
-        cidList.remove(character.getId());
+        if (cidList.contains(character.getId())) cidList.remove((Integer) character.getId());
         config.set("invitees", cidList);
         try {
             config.save(file);
