@@ -258,6 +258,8 @@ public class FightImpl implements Fight {
                             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
                             classesPlugin.giveExperience(character, (int) Math.round(75D / (double) party.getMembers().size()));
                         }
+                        end();
+                        return;
                     }
                 }
             }
