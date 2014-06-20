@@ -73,7 +73,7 @@ public class AsyncPlayerChatListener implements Listener {
                 int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
-                    if (emoteRadius < 0 || MathUtils.fastsqrt(correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId()))) <= (double) emoteRadius) formatEmote(talking, message).send(player);
+                    if (emoteRadius < 0 || correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (emoteRadius * emoteRadius)) formatEmote(talking, message).send(player);
                 }
             } else {
                 if (plugin.getPlayerChannel(talking) != null) {
@@ -81,9 +81,10 @@ public class AsyncPlayerChatListener implements Listener {
                     synchronized (plugin.getPlayerChannel(talking).getListeners()) {
                         for (Player player : new HashSet<>(plugin.getPlayerChannel(talking).getListeners())) {
                             if (player != null) {
-                                if (plugin.getPlayerChannel(talking).getRadius() >= 0) {
+                                int radius = plugin.getPlayerChannel(talking).getRadius();
+                                if (radius >= 0) {
                                     if (talking.getWorld().equals(player.getWorld())) {
-                                        if (MathUtils.fastsqrt(correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId()))) <= (double) plugin.getPlayerChannel(talking).getRadius()) {
+                                        if (correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (radius * radius)) {
                                             FancyMessage fancy = formatChannel(plugin.getPlayerChannel(talking), talking, player, message);
                                             fancy.send(player);
                                         }
