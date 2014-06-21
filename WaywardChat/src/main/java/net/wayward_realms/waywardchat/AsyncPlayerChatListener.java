@@ -67,7 +67,9 @@ public class AsyncPlayerChatListener implements Listener {
                 int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (Player player : emoteRadius >= 0 ? new ArrayList<>(talking.getWorld().getPlayers()) : new ArrayList<>(Arrays.asList(plugin.getServer().getOnlinePlayers()))) {
-                    if (emoteRadius < 0 || correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (emoteRadius * emoteRadius)) formatEmote(talking, message).send(player);
+                    Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
+                    Location playerLocation = correlateUUIDtoLocation(player.getUniqueId());
+                    if (emoteRadius < 0 || (talkingLocation != null && playerLocation != null && talkingLocation.getWorld() == playerLocation.getWorld() && talkingLocation.distanceSquared(playerLocation) <= (double) (emoteRadius * emoteRadius))) formatEmote(talking, message).send(player);
                 }
             } else {
                 final Channel channel = plugin.getPlayerChannel(talking);
@@ -78,8 +80,10 @@ public class AsyncPlayerChatListener implements Listener {
                             if (player != null) {
                                 int radius = channel.getRadius();
                                 if (radius >= 0) {
-                                    if(correlateUUIDtoLocation(player.getUniqueId()) != null) {
-                                        if (talking.getWorld().equals(player.getWorld())) {
+                                    Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
+                                    Location playerLocation = correlateUUIDtoLocation(player.getUniqueId());
+                                    if (talkingLocation != null && playerLocation != null) {
+                                        if (talkingLocation.getWorld() == playerLocation.getWorld()) {
                                             if (correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (radius * radius)) {
                                                 FancyMessage fancy = formatChannel(channel, talking, player, message);
                                                 fancy.send(player);
