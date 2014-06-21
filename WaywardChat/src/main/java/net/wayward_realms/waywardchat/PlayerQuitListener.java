@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardchat;
 
 import net.wayward_realms.waywardlib.chat.Channel;
+import net.wayward_realms.waywardlib.chat.ChatGroup;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -25,7 +26,7 @@ public class PlayerQuitListener implements Listener {
         }
         plugin.setSnooping(event.getPlayer(), false);
         for (ChatGroup chatGroup : plugin.getChatGroups()) {
-            chatGroup.disposeIfUnused();
+            if (chatGroup instanceof ChatGroupImpl) ((ChatGroupImpl) chatGroup).disposeIfUnused();
         }
     }
 

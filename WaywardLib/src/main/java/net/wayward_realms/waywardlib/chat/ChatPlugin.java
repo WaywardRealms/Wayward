@@ -80,4 +80,26 @@ public interface ChatPlugin extends WaywardPlugin {
      */
     public Collection<String> getStaffInIrcChannel(String ircChannel);
 
+    /**
+     * Gets a chat group by name
+     *
+     * @param name the name of the chat group
+     * @return the chat group
+     */
+    public ChatGroup getChatGroup(String name);
+
+    /**
+     * Removes a chat group
+     *
+     * @param chatGroup the chat group to remove
+     */
+    public void removeChatGroup(ChatGroup chatGroup);
+
+    /**
+     * Adds a chat group
+     *
+     * @param chatGroup the chat group to add
+     */
+    public void addChatGroup(ChatGroup chatGroup);
+
 }
