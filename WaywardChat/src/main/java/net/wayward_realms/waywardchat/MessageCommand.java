@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardchat;
 
+import net.wayward_realms.waywardlib.chat.ChatGroup;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +19,7 @@ public class MessageCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length >= 2) {
             if (plugin.getChatGroup(args[0]) != null) {
-                if (plugin.getChatGroup(args[0]).getPlayers().contains(sender.getName())) {
+                if (plugin.getChatGroup(args[0]).getPlayers().contains(sender)) {
                     StringBuilder message = new StringBuilder();
                     for (int i = 1; i < args.length; i++) {
                         message.append(args[i]).append(" ");
@@ -35,7 +36,7 @@ public class MessageCommand implements CommandExecutor {
                 } else if (plugin.getChatGroup("_pm_" + player.getName() + "_" + sender.getName()) != null) {
                     chatGroup = plugin.getChatGroup("_pm_" + player.getName() + "_" + sender.getName());
                 } else {
-                    chatGroup = new ChatGroup(plugin, "_pm_" + sender.getName() + "_" + player.getName(), (Player) sender, player);
+                    chatGroup = new ChatGroupImpl(plugin, "_pm_" + sender.getName() + "_" + player.getName(), (Player) sender, player);
                     plugin.addChatGroup(chatGroup);
                 }
                 StringBuilder message = new StringBuilder();

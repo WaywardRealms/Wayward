@@ -2,6 +2,7 @@ package net.wayward_realms.waywardchat;
 
 import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
+import net.wayward_realms.waywardlib.chat.ChatGroup;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -388,7 +389,8 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         return chatGroups.get(name.toLowerCase());
     }
 
-    public void removeChatGroup(String name) {
+    public void removeChatGroup(ChatGroup chatGroup) {
+        String name = chatGroup.getName();
         chatGroups.remove(name.toLowerCase());
         for (Iterator<Map.Entry<String, ChatGroup>> iterator = chatGroups.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, ChatGroup> entry = iterator.next();
@@ -402,8 +404,10 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public void sendPrivateMessage(Player sender, ChatGroup recipients, String message) {
         recipients.sendMessage(sender, message);
-        for (UUID recipient : recipients.getPlayers()) {
-            lastPrivateMessage.put(recipient, recipients);
+        if (recipients instanceof ChatGroupImpl) {
+            for (UUID recipient : ((ChatGroupImpl) recipients).getPlayerUUIDs()) {
+                lastPrivateMessage.put(recipient, recipients);
+            }
         }
     }
 
@@ -436,7 +440,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             @Override
             public void run() {
                 for (ChatGroup chatGroup : chatGroups.values()) {
-                    chatGroup.disposeIfUnused();
+                    if (chatGroup instanceof ChatGroupImpl) ((ChatGroupImpl) chatGroup).disposeIfUnused();
                 }
             }
         }, 0L, 900000L);
