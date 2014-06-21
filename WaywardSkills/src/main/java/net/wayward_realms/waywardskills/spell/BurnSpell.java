@@ -91,7 +91,7 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 20;
+        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 15;
     }
 
     @Override

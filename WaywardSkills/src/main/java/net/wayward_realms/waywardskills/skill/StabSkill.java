@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -91,10 +90,6 @@ public class StabSkill extends AttackSkillBase {
         iconMeta.setDisplayName("Stab");
         icon.setItemMeta(iconMeta);
         return icon;
-    }
-
-    public boolean canUse(Class clazz, int level) {
-        return clazz.getSkillPointBonus(SkillType.MELEE_OFFENCE) * level >= 5;
     }
 
     @Override

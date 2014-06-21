@@ -88,7 +88,7 @@ public class EsunaSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 1;
+        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 3;
     }
 
     @Override

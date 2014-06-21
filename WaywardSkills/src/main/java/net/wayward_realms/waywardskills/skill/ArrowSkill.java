@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -78,10 +77,6 @@ public class ArrowSkill extends AttackSkillBase {
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
         return attacking.getName() + " shot an arrow at " + defending.getName() + " dealing " + damage + " points of damage.";
-    }
-
-    public boolean canUse(Class clazz, int level) {
-        return clazz.getSkillPointBonus(SkillType.RANGED_OFFENCE) * level >= 1;
     }
 
     @Override

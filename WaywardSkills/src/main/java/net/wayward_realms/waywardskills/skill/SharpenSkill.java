@@ -78,7 +78,7 @@ public class SharpenSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 1;
+        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 3;
     }
 
 }

@@ -90,7 +90,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 1;
+        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 5;
     }
 
     @Override

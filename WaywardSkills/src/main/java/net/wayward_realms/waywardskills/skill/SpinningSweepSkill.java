@@ -40,7 +40,7 @@ public class SpinningSweepSkill extends AttackSkillBase {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    Location adjustedLocation = new Location(attackingPlayer.getLocation().getWorld(), attackingPlayer.getLocation().getX(), attackingPlayer.getLocation().getY(), attackingPlayer.getLocation().getZ(), attackingPlayer.getLocation().getYaw() + theta, attackingPlayer.getLocation().getPitch());
+                    Location adjustedLocation = new Location(attackingPlayer.getLocation().getWorld(), attackingPlayer.getLocation().getX(), attackingPlayer.getLocation().getY(), attackingPlayer.getLocation().getZ(), theta, attackingPlayer.getLocation().getPitch());
                     attackingPlayer.teleport(adjustedLocation);
                 }
             }, i * 2);

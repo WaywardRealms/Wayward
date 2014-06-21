@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
@@ -69,10 +68,6 @@ public class FireballSpell extends AttackSpellBase {
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
         return attacking.getName() + " tried to form a fireball, but did not have enough mana.";
-    }
-
-    public boolean canUse(Class clazz, int level) {
-        return clazz.getSkillPointBonus(SkillType.MAGIC_OFFENCE) * level >= 30;
     }
 
     @Override

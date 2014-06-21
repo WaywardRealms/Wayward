@@ -46,7 +46,7 @@ public class LevitationSpell extends SpellBase {
     public ItemStack getIcon() {
         ItemStack icon = new ItemStack(Material.FEATHER);
         ItemMeta meta = icon.getItemMeta();
-        meta.setDisplayName("Levitate");
+        meta.setDisplayName("Levitation");
         icon.setItemMeta(meta);
         return icon;
     }

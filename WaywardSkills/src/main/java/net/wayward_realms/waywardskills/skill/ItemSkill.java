@@ -77,10 +77,6 @@ public class ItemSkill extends SkillBase {
         return true;
     }
 
-    public boolean canUse(Class clazz, int level) {
-        return true;
-    }
-
     @Override
     public boolean canUse(Combatant combatant) {
         return true;

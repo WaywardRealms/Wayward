@@ -81,7 +81,7 @@ public class SummonSpiderSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 10;
+        return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 8;
     }
 
 }

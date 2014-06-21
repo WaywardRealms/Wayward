@@ -3,7 +3,6 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
-import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
@@ -106,17 +105,13 @@ public class CureSpell extends SpellBase {
         return icon;
     }
 
-    public boolean canUse(Class clazz, int level) {
-        return clazz.getSkillPointBonus(SkillType.MAGIC_HEALING) * level >= 1;
-    }
-
     @Override
     public boolean canUse(Combatant combatant) {
         return canUse((Character) combatant);
     }
 
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 1;
+        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 2;
     }
 
     @Override
