@@ -8,12 +8,6 @@
     <artifactId>waywarddonations</artifactId>
     <name>WaywardDonations</name>
     <description>Allows donators to claim their perks</description>
-    <repositories>
-        <repository>
-            <id>waywardlib-repo</id>
-            <url>https://raw.github.com/Wayward/WaywardLib/mvn-repo/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>net.wayward-realms</groupId>
