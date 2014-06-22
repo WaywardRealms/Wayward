@@ -41,40 +41,48 @@ public class CharacterCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You have reached your character limit.");
                 }
             } else if (args[0].equalsIgnoreCase("card")) {
-                Player player = (Player) sender;
+                Player player = null;
+                if (sender instanceof Player) {
+                    player = (Player) sender;
+                }
                 if (args.length >= 2) {
                     if (plugin.getServer().getPlayer(args[1]) != null) {
                         player = plugin.getServer().getPlayer(args[1]);
                     }
                 }
-                Character character = plugin.getActiveCharacter(player);
-                ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
-                if(sender instanceof Player) {
-                    ((Player) sender).sendRawMessage(new FancyMessage("")
-                                    .then(plugin.getPrefix())
-                                    .then(character.getName() + "'s")
-                                        .color(ChatColor.BLUE)
-                                        .color(ChatColor.BOLD)
-                                    .then("")
-                                        .color(ChatColor.RESET)
-                                    .then("Character Card")
-                                        .color(ChatColor.DARK_GRAY)
-                                    .toJSONString()
-                    );
-                } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + character.getName() + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
-                }
-                if (!character.isAgeHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE +  character.getAge());
-                if (!character.isGenderHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
-                if (!character.isRaceHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
-                if (classesPlugin != null) {
-                    if (classesPlugin.getClass(character) != null) {
-                        if (!character.isClassHidden()) {
-                            sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
+                if (player != null) {
+                    Character character = plugin.getActiveCharacter(player);
+                    ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
+                    if (sender instanceof Player) {
+                        new FancyMessage("")
+                                .then(character.getName() + "'s ")
+                                    .tooltip(player.getName())
+                                    .color(ChatColor.BLUE)
+                                    .style(ChatColor.BOLD)
+                                .then("character card")
+                                    .color(ChatColor.DARK_GRAY)
+                                .send((Player) sender);
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + character.getName() + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
+                    }
+                    if (!character.isAgeHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE + character.getAge());
+                    if (!character.isGenderHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
+                    if (!character.isRaceHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
+                    if (classesPlugin != null) {
+                        if (classesPlugin.getClass(character) != null) {
+                            if (!character.isClassHidden()) {
+                                sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
+                            }
                         }
                     }
+                    if (!character.isDescriptionHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not online!");
                 }
-                if (!character.isDescriptionHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
             } else if (args[0].equalsIgnoreCase("switch")) {
                 if (args.length >= 2) {
                     boolean found = false;
