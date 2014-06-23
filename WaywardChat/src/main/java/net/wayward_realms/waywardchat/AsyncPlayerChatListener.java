@@ -66,10 +66,19 @@ public class AsyncPlayerChatListener implements Listener {
             if (getEmoteMode(talking).isEmote(message)) {
                 int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                for (Player player : emoteRadius >= 0 ? new ArrayList<>(talking.getWorld().getPlayers()) : new ArrayList<>(Arrays.asList(plugin.getServer().getOnlinePlayers()))) {
-                    Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
-                    Location playerLocation = correlateUUIDtoLocation(player.getUniqueId());
-                    if (emoteRadius < 0 || (talkingLocation != null && playerLocation != null && talkingLocation.getWorld() == playerLocation.getWorld() && talkingLocation.distanceSquared(playerLocation) <= (double) (emoteRadius * emoteRadius))) formatEmote(talking, message).send(player);
+                for (UUID uuid : uuidLocations.keySet()) {
+                    Player player = plugin.getServer().getPlayer(uuid); // I hope this is threadsafe...
+                    if (player != null) {
+                        Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
+                        Location playerLocation = correlateUUIDtoLocation(uuid);
+                        if (emoteRadius < 0
+                                || (talkingLocation != null
+                                && playerLocation != null
+                                && talkingLocation.getWorld() == playerLocation.getWorld()
+                                && talkingLocation.distanceSquared(playerLocation) <= (double) (emoteRadius * emoteRadius))) {
+                            formatEmote(talking, message).send(player);
+                        }
+                    }
                 }
             } else {
                 final Channel channel = plugin.getPlayerChannel(talking);
