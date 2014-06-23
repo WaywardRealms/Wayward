@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardchat;
 
+import mkremins.fanciful.FancyMessage;
 import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.chat.ChatGroup;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
@@ -144,15 +147,79 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     }
     
     public void handleChat(User talking, org.pircbotx.Channel ircChannel, String message) {
-        String format;
         Channel channel = getChannelFromIrcChannel(ircChannel.getName());
-        channel.log("(irc)" + talking.getRealName() + "/" + talking.getNick() + ": " + message);
+        channel.log("(irc) " + talking.getRealName() + "/" + talking.getNick() + ": " + message);
         for (Player player : new HashSet<>(channel.getListeners())) {
             if (player != null) {
-                format = channel.getFormat().replace("%channel%", channel.getName()).replace("%player%", talking.getNick()).replace("%ign%", talking.getNick()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                player.sendMessage(format);
+                formatChannel(ircChannel, talking, message).send(player);
             }
         }
+    }
+
+    public FancyMessage formatChannel(org.pircbotx.Channel ircChannel, User talking, String message) {
+        Channel channel = getChannelFromIrcChannel(ircChannel.getName());
+        FancyMessage fancy = new FancyMessage("");
+        String format = channel.getFormat();
+        ChatColor chatColour = null;
+        ChatColor chatFormat = null;
+        for (int i = 0; i < format.length(); i++) {
+            if (format.charAt(i) == '&') {
+                ChatColor colourOrFormat = ChatColor.getByChar(format.charAt(i + 1));
+                if (colourOrFormat.isColor()) chatColour = colourOrFormat;
+                if (colourOrFormat.isFormat()) chatFormat = colourOrFormat;
+                i += 1;
+            } else if (format.substring(i, i + ("%channel%").length()).equalsIgnoreCase("%channel%")) {
+                fancy.then(channel.getName());
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%channel%").length() - 1;
+            } else if (format.substring(i, i + ("%player%").length()).equalsIgnoreCase("%player%")) {
+                fancy.then(talking.getNick());
+                fancy.tooltip("IRC user");
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%player%").length() - 1;
+            } else if (format.substring(i, i + ("%prefix%").length()).equalsIgnoreCase("%prefix%")) {
+                i += ("%prefix%").length() - 1;
+            } else if (format.substring(i, i + ("%ign%").length()).equalsIgnoreCase("%ign%")) {
+                fancy.then(talking.getNick());
+                fancy.tooltip("IRC user");
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%ign%").length() - 1;
+            } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
+                String urlRegex = "(\\w+://)?\\w+(\\.\\w+)+(/\\S*)?/?";
+                Matcher matcher = Pattern.compile(urlRegex).matcher(message);
+                int index = 0;
+                int startIndex;
+                int endIndex = 0;
+                while (matcher.find()) {
+                    startIndex = matcher.start();
+                    endIndex = matcher.end();
+                    if (startIndex > index) {
+                        fancy.then(message.substring(index, startIndex));
+                    }
+                    String link = message.substring(startIndex, endIndex);
+                    if (!link.contains("://")) link = "http://" + link;
+                    fancy.then("[link]")
+                            .color(ChatColor.BLUE)
+                            .style(ChatColor.UNDERLINE)
+                            .link(link)
+                            .tooltip(link);
+                }
+                if (endIndex < message.length() - 1) {
+                    fancy.then(message.substring(endIndex, message.length()));
+                    if (chatColour != null) fancy.color(chatColour);
+                    if (chatFormat != null) fancy.style(chatFormat);
+                }
+                i += ("%message%").length() - 1;
+            } else {
+                fancy.then(format.charAt(i));
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+            }
+        }
+        return fancy;
     }
 
     public String getPlayerPrefix(Permissible player) {

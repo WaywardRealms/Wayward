@@ -7,7 +7,6 @@ import net.wayward_realms.waywardlib.util.math.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,22 +18,24 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AsyncPlayerChatListener implements Listener {
 
     private WaywardChat plugin;
     private RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider;
     private YamlConfiguration pluginConfig;
-    private YamlConfiguration emoteModeConfig;
     private YamlConfiguration prefixConfig;
     private ConcurrentHashMap<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
 
     public AsyncPlayerChatListener(WaywardChat plugin) {
         this.plugin = plugin;
         this.pluginConfig = (YamlConfiguration)plugin.getConfig();
-        emoteModeConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "emote-mode.yml"));
         prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
         prefixConfig.set("admin", " &e[admin] ");
         essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
@@ -63,13 +64,22 @@ public class AsyncPlayerChatListener implements Listener {
     public void handleAsyncChat(final Player talking, String message) {
         if (!message.equals("")) {
             final String format;
-            if (getEmoteMode(talking).isEmote(message)) {
+            if (plugin.getEmoteMode(talking).isEmote(message)) {
                 int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                for (Player player : emoteRadius >= 0 ? new ArrayList<>(talking.getWorld().getPlayers()) : new ArrayList<>(Arrays.asList(plugin.getServer().getOnlinePlayers()))) {
-                    Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
-                    Location playerLocation = correlateUUIDtoLocation(player.getUniqueId());
-                    if (emoteRadius < 0 || (talkingLocation != null && playerLocation != null && talkingLocation.getWorld() == playerLocation.getWorld() && talkingLocation.distanceSquared(playerLocation) <= (double) (emoteRadius * emoteRadius))) formatEmote(talking, message).send(player);
+                for (UUID uuid : uuidLocations.keySet()) {
+                    Player player = plugin.getServer().getPlayer(uuid); // I hope this is threadsafe...
+                    if (player != null) {
+                        Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
+                        Location playerLocation = correlateUUIDtoLocation(uuid);
+                        if (emoteRadius < 0
+                                || (talkingLocation != null
+                                && playerLocation != null
+                                && talkingLocation.getWorld() == playerLocation.getWorld()
+                                && talkingLocation.distanceSquared(playerLocation) <= (double) (emoteRadius * emoteRadius))) {
+                            formatEmote(talking, message).send(player);
+                        }
+                    }
                 }
             } else {
                 final Channel channel = plugin.getPlayerChannel(talking);
@@ -117,13 +127,6 @@ public class AsyncPlayerChatListener implements Listener {
                 }
             }
         }
-    }
-
-    public EmoteMode getEmoteMode(OfflinePlayer player) {
-        if (emoteModeConfig.get(player.getName()) != null)
-            return EmoteMode.valueOf(emoteModeConfig.getString(player.getName()));
-        else
-            return EmoteMode.TWO_ASTERISKS;
     }
 
     public String getPlayerPrefix(final Permissible player) {
@@ -179,10 +182,31 @@ public class AsyncPlayerChatListener implements Listener {
                         fancy.then(garbledMessage);
                     }
                 } else {
-                    fancy.then(message);
+                    String urlRegex = "(\\w+://)?\\w+(\\.\\w+)+(/\\S*)?/?";
+                    Matcher matcher = Pattern.compile(urlRegex).matcher(message);
+                    int index = 0;
+                    int startIndex;
+                    int endIndex = 0;
+                    while (matcher.find()) {
+                        startIndex = matcher.start();
+                        endIndex = matcher.end();
+                        if (startIndex > index) {
+                            fancy.then(message.substring(index, startIndex));
+                        }
+                        String link = message.substring(startIndex, endIndex);
+                        if (!link.contains("://")) link = "http://" + link;
+                        fancy.then("[link]")
+                                .color(ChatColor.BLUE)
+                                .style(ChatColor.UNDERLINE)
+                                .link(link)
+                                .tooltip(link);
+                    }
+                    if (endIndex < message.length() - 1) {
+                        fancy.then(message.substring(endIndex, message.length()));
+                        if (chatColour != null) fancy.color(chatColour);
+                        if (chatFormat != null) fancy.style(chatFormat);
+                    }
                 }
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
                 i += ("%message%").length() - 1;
             } else {
                 fancy.then(format.charAt(i));
