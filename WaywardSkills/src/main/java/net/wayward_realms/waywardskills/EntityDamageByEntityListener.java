@@ -47,7 +47,7 @@ public class EntityDamageByEntityListener implements Listener {
                     if (!fireball.getMetadata("isFireBreath").isEmpty()) {
                         event.getEntity().setFireTicks(400);
                         event.setCancelled(true);
-                        event.getEntity().remove();
+                        fireball.remove();
                     }
                 }
             }
