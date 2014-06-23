@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +32,7 @@ public class AsyncPlayerChatListener implements Listener {
     private RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider;
     private YamlConfiguration pluginConfig;
     private YamlConfiguration prefixConfig;
-    private ConcurrentHashMap<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
+    private Map<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
 
     public AsyncPlayerChatListener(WaywardChat plugin) {
         this.plugin = plugin;
