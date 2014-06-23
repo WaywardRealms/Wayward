@@ -19,8 +19,12 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AsyncPlayerChatListener implements Listener {
 
@@ -188,10 +192,31 @@ public class AsyncPlayerChatListener implements Listener {
                         fancy.then(garbledMessage);
                     }
                 } else {
-                    fancy.then(message);
+                    String urlRegex = "(\\w+://)?\\w+(\\.\\w+)+(/\\S*)?/?";
+                    Matcher matcher = Pattern.compile(urlRegex).matcher(message);
+                    int index = 0;
+                    int startIndex;
+                    int endIndex = 0;
+                    while (matcher.find()) {
+                        startIndex = matcher.start();
+                        endIndex = matcher.end();
+                        if (startIndex > index) {
+                            fancy.then(message.substring(index, startIndex));
+                        }
+                        String link = message.substring(startIndex, endIndex);
+                        if (!link.contains("://")) link = "http://" + link;
+                        fancy.then("[link]")
+                                .color(ChatColor.BLUE)
+                                .style(ChatColor.UNDERLINE)
+                                .link(link)
+                                .tooltip(link);
+                    }
+                    if (endIndex < message.length() - 1) {
+                        fancy.then(message.substring(endIndex, message.length()));
+                        if (chatColour != null) fancy.color(chatColour);
+                        if (chatFormat != null) fancy.style(chatFormat);
+                    }
                 }
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
                 i += ("%message%").length() - 1;
             } else {
                 fancy.then(format.charAt(i));
