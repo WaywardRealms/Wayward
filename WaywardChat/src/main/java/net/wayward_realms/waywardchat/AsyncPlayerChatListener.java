@@ -7,7 +7,6 @@ import net.wayward_realms.waywardlib.util.math.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,14 +30,12 @@ public class AsyncPlayerChatListener implements Listener {
     private WaywardChat plugin;
     private RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider;
     private YamlConfiguration pluginConfig;
-    private YamlConfiguration emoteModeConfig;
     private YamlConfiguration prefixConfig;
     private ConcurrentHashMap<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
 
     public AsyncPlayerChatListener(WaywardChat plugin) {
         this.plugin = plugin;
         this.pluginConfig = (YamlConfiguration)plugin.getConfig();
-        emoteModeConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "emote-mode.yml"));
         prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
         prefixConfig.set("admin", " &e[admin] ");
         essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
@@ -67,7 +64,7 @@ public class AsyncPlayerChatListener implements Listener {
     public void handleAsyncChat(final Player talking, String message) {
         if (!message.equals("")) {
             final String format;
-            if (getEmoteMode(talking).isEmote(message)) {
+            if (plugin.getEmoteMode(talking).isEmote(message)) {
                 int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
                 for (UUID uuid : uuidLocations.keySet()) {
@@ -130,13 +127,6 @@ public class AsyncPlayerChatListener implements Listener {
                 }
             }
         }
-    }
-
-    public EmoteMode getEmoteMode(OfflinePlayer player) {
-        if (emoteModeConfig.get(player.getName()) != null)
-            return EmoteMode.valueOf(emoteModeConfig.getString(player.getName()));
-        else
-            return EmoteMode.TWO_ASTERISKS;
     }
 
     public String getPlayerPrefix(final Permissible player) {
