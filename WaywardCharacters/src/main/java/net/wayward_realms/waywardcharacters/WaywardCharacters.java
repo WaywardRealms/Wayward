@@ -345,7 +345,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     }
 
     @Override
-    public void setActiveCharacter(final Player player, final Character character) {
+    public void setActiveCharacter(Player player, Character character) {
         if (getActiveCharacter(player) != null) {
             Character activeCharacter = getActiveCharacter(player);
             activeCharacter.setHelmet(player.getInventory().getHelmet());
@@ -367,16 +367,11 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
-            public void run() {
-                player.getInventory().setHelmet(character.getHelmet());
-                player.getInventory().setChestplate(character.getChestplate());
-                player.getInventory().setLeggings(character.getLeggings());
-                player.getInventory().setBoots(character.getBoots());
-                player.getInventory().setContents(character.getInventoryContents());
-            }
-        });
+        player.getInventory().setHelmet(character.getHelmet());
+        player.getInventory().setChestplate(character.getChestplate());
+        player.getInventory().setLeggings(character.getLeggings());
+        player.getInventory().setBoots(character.getBoots());
+        player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
         PlayerNamePlateUtils.refreshPlayer(player);
