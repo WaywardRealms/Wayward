@@ -451,7 +451,7 @@ public class FightImpl implements Fight {
         OfflinePlayer player;
         switch (statusEffect) {
             case POISON:
-                damage = 0.1D * combatant.getMaxHealth();
+                damage = 0.05D * combatant.getMaxHealth();
                 combatant.setHealth(combatant.getHealth() - damage);
                 sendMessage(ChatColor.DARK_PURPLE + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_PURPLE + " took " + damage + " poison damage.");
                 player = character.getPlayer();
@@ -466,7 +466,7 @@ public class FightImpl implements Fight {
                 sendMessage(ChatColor.GOLD + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GOLD + " is paralysed.");
                 break;
             case BURNED:
-                damage = 0.1D * combatant.getMaxHealth();
+                damage = 0.05D * combatant.getMaxHealth();
                 combatant.setHealth(combatant.getHealth() - damage);
                 sendMessage(ChatColor.DARK_RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_RED + " took " + damage + " burn damage.");
                 player = character.getPlayer();
