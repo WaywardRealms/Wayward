@@ -8,6 +8,7 @@ import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
 import net.wayward_realms.waywardlib.util.vector.VectorUtils;
 import net.wayward_realms.waywardskills.WaywardSkills;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -54,7 +55,7 @@ public class SpinningSweepSkill extends AttackSkillBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " slashed in circles towards " + defending.getName() + ", dealing " + damage + " damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " slashed in circles towards " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", dealing " + damage + " damage.";
     }
 
     @Override

@@ -109,10 +109,10 @@ public class BandageSkill extends SkillBase {
             if (itemsPlugin.getMaterial("Bandage").isMaterial(weapon)) {
                 defending.setHealth(defending.getHealth() + getHealthRestore());
                 attacking.getPlayer().getPlayer().getInventory().removeItem(itemsPlugin.createNewItemStack(itemsPlugin.getMaterial("Bandage"), 1).toMinecraftItemStack());
-                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " applied a bandage to " + defending.getName());
+                fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " applied a bandage to " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()));
                 return true;
             } else {
-                fight.sendMessage(ChatColor.RED + attacking.getName() + " attempted to use " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " as a bandage. It didn't work very well.");
+                fight.sendMessage(ChatColor.RED + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.RED + " attempted to use " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " as a bandage. It didn't work very well.");
             }
         }
         return false;

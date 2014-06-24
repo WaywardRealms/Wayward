@@ -141,7 +141,7 @@ public class FightImpl implements Fight {
             getNextTurn().getPlayer().getPlayer().sendMessage(new String[] {ChatColor.GREEN + "It's your turn.",
                     (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill type: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
                     (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
-                    (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + turn.getDefender().getName() + "(" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
+                    (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + "(" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
                     (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
                     (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
         }
@@ -215,7 +215,7 @@ public class FightImpl implements Fight {
         while (!getNextTurn().getPlayer().isOnline()) {
             incrementTurn();
         }
-        sendMessage(hit ? ChatColor.YELLOW + "The attack hit! " + defending.getName() + " has " + Math.max((Math.round(defending.getHealth() * 100D) / 100D), 0D) + "/" + (Math.round(defending.getMaxHealth() * 100D) / 100D) + " health remaining." : ChatColor.YELLOW + "The attack missed.");
+        sendMessage(hit ? ChatColor.YELLOW + "The attack hit! " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " has " + Math.max((Math.round(defending.getHealth() * 100D) / 100D), 0D) + "/" + (Math.round(defending.getMaxHealth() * 100D) / 100D) + " health remaining." : ChatColor.YELLOW + "The attack missed.");
         if (defending.getHealth() <= 0D) {
             removeCharacter(defending);
             defending.getPlayer().getPlayer().sendMessage(ChatColor.RED + "You lost the fight.");
@@ -268,14 +268,15 @@ public class FightImpl implements Fight {
             end();
             return;
         }
-        sendMessage(ChatColor.YELLOW + "It's " + getNextTurn().getName() + "'s turn.");
+        Character nextTurn = getNextTurn();
+        sendMessage(ChatColor.YELLOW + "It's " + (nextTurn.isNameHidden() ? ChatColor.MAGIC + nextTurn.getName() + ChatColor.RESET : nextTurn.getName()) + ChatColor.YELLOW + "'s turn.");
         activeTurn = savedTurns.get(getNextTurn().getId()) == null ? new TurnImpl(this) : savedTurns.get(getNextTurn().getId());
         Turn turn = getActiveTurn();
         turn.setAttacker(getNextTurn());
         getNextTurn().getPlayer().getPlayer().sendMessage(new String[] {ChatColor.GREEN + "It's your turn.",
                             (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill type: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
                             (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
-                            (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + turn.getDefender().getName() + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
+                            (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
                             (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
                             (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
     }
@@ -446,88 +447,82 @@ public class FightImpl implements Fight {
 
     public void doStatusEffect(Combatant combatant, StatusEffect statusEffect) {
         double damage;
+        Character character = (Character) combatant;
+        OfflinePlayer player;
         switch (statusEffect) {
             case POISON:
                 damage = 0.1D * combatant.getMaxHealth();
                 combatant.setHealth(combatant.getHealth() - damage);
-                sendMessage(ChatColor.DARK_PURPLE + combatant.getName() + " took " + damage + " poison damage.");
-                if (combatant instanceof Character) {
-                    Character character = (Character) combatant;
-                    OfflinePlayer player = character.getPlayer();
-                    if (player.isOnline()) {
-                        player.getPlayer().setHealth(character.getHealth());
-                    }
+                sendMessage(ChatColor.DARK_PURPLE + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_PURPLE + " took " + damage + " poison damage.");
+                player = character.getPlayer();
+                if (player.isOnline()) {
+                    player.getPlayer().setHealth(character.getHealth());
                 }
                 if (combatant.getHealth() <= 0D) {
                     removeCombatant(combatant);
                 }
                 break;
             case PARALYSIS:
-                sendMessage(ChatColor.GOLD + combatant.getName() + " is paralysed.");
+                sendMessage(ChatColor.GOLD + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GOLD + " is paralysed.");
                 break;
             case BURNED:
                 damage = 0.1D * combatant.getMaxHealth();
                 combatant.setHealth(combatant.getHealth() - damage);
-                sendMessage(ChatColor.DARK_RED + combatant.getName() + " took " + damage + " burn damage.");
-                if (combatant instanceof Character) {
-                    Character character = (Character) combatant;
-                    OfflinePlayer player = character.getPlayer();
-                    if (player.isOnline()) {
-                        player.getPlayer().setHealth(character.getHealth());
-                    }
+                sendMessage(ChatColor.DARK_RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_RED + " took " + damage + " burn damage.");
+                player = character.getPlayer();
+                if (player.isOnline()) {
+                    player.getPlayer().setHealth(character.getHealth());
                 }
                 break;
             case FROZEN:
-                sendMessage(ChatColor.AQUA + combatant.getName() + " is frozen solid.");
+                sendMessage(ChatColor.AQUA + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.AQUA + " is frozen solid.");
                 break;
             case CONFUSED:
-                sendMessage(ChatColor.YELLOW + combatant.getName() + " is confused.");
+                sendMessage(ChatColor.YELLOW + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.YELLOW + " is confused.");
                 Random random = new Random();
                 if (random.nextBoolean()) {
                     damage = random.nextDouble() * (combatant.getMaxHealth() / 2D);
                     combatant.setHealth(combatant.getHealth() - damage);
-                    sendMessage(ChatColor.YELLOW + combatant.getName() + " hurt themself while confused.");
+                    sendMessage(ChatColor.YELLOW + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.YELLOW + " hurt themself while confused.");
                 }
                 break;
             case ASLEEP:
-                sendMessage(ChatColor.GRAY + combatant.getName() + " is asleep.");
+                sendMessage(ChatColor.GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " is asleep.");
                 break;
             case BLIND:
-                sendMessage(ChatColor.DARK_GRAY + combatant.getName() + " is blinded.");
+                sendMessage(ChatColor.DARK_GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_GRAY + " is blinded.");
                 break;
             case DOOM:
-                sendMessage(combatant.getName() + " is doomed - " + getStatusTurns(combatant, statusEffect) + " turns remaining until they pass out.");
+                sendMessage(ChatColor.DARK_GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_GRAY + " is doomed - " + getStatusTurns(combatant, statusEffect) + " turns remaining until they pass out.");
                 if (getStatusTurns(combatant, statusEffect) <= 0) {
-                    sendMessage(ChatColor.DARK_PURPLE + combatant.getName() + " was knocked out.");
+                    sendMessage(ChatColor.DARK_GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_GRAY + " was knocked out.");
                     combatant.setHealth(0);
-                    if (combatant instanceof Character) {
-                        Character character = (Character) combatant;
-                        OfflinePlayer player = character.getPlayer();
-                        if (player.isOnline()) {
-                            player.getPlayer().setHealth(character.getHealth());
-                        }
+                    player = character.getPlayer();
+                    if (player.isOnline()) {
+                        player.getPlayer().setHealth(character.getHealth());
                     }
                     removeCombatant(combatant);
                 }
                 break;
             case SILENCED:
-                sendMessage(ChatColor.GRAY + combatant.getName() + " is silenced.");
+                sendMessage(ChatColor.GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " is silenced.");
                 break;
         }
     }
 
     public boolean canMove(Combatant combatant, Skill skill) {
         Random random = new Random();
+        Character character = (Character) combatant;
         if (skill.getType() == SkillType.MELEE_OFFENCE ||
                 skill.getType() == SkillType.MELEE_DEFENCE ||
                 skill.getType() == SkillType.RANGED_OFFENCE ||
                 skill.getType() == SkillType.RANGED_DEFENCE) {
             if (hasStatusEffect(combatant, PARALYSIS)) {
-                sendMessage(ChatColor.GOLD + combatant.getName() + " could not move due to paralysis.");
+                sendMessage(ChatColor.GOLD + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GOLD + " could not move due to paralysis.");
                 if (random.nextInt(100) > 20) return false;
             }
             if (hasStatusEffect(combatant, FROZEN)) {
-                sendMessage(ChatColor.AQUA + combatant.getName() + " is frozen and could not move.");
+                sendMessage(ChatColor.AQUA + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.AQUA + " is frozen and could not move.");
                 return false;
             }
 
@@ -540,16 +535,16 @@ public class FightImpl implements Fight {
                 skill.getType() == SkillType.MAGIC_SUMMONING ||
                 skill.getType() == SkillType.MAGIC_SWORD) {
             if (hasStatusEffect(combatant, SILENCED)) {
-                sendMessage(ChatColor.GRAY + combatant.getName() + " is silenced and could not cast.");
+                sendMessage(ChatColor.GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " is silenced and could not cast.");
                 return false;
             }
         }
         if (hasStatusEffect(combatant, ASLEEP)) {
-            sendMessage(ChatColor.GRAY + combatant.getName() + " is asleep and can not move.");
+            sendMessage(ChatColor.GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " is asleep and can not move.");
         }
         if (hasStatusEffect(combatant, BLIND)) {
             if (random.nextInt(100) > 10) {
-                sendMessage(ChatColor.DARK_GRAY + combatant.getName() + " is blinded and missed.");
+                sendMessage(ChatColor.DARK_GRAY + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.DARK_GRAY + " is blinded and missed.");
                 return false;
             }
         }

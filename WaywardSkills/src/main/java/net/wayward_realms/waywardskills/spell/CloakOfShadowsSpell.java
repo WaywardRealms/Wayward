@@ -54,10 +54,10 @@ public class CloakOfShadowsSpell extends SpellBase {
             for (Combatant combatant : fight.getCombatants()) {
                 fight.setStatusTurns(combatant, StatusEffect.BLIND, 3);
             }
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cloaked themselves in shadows.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " cloaked themselves in shadows.");
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to hide in the shadows, but did not have enough mana.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to hide in the shadows, but did not have enough mana.");
             return false;
         }
     }

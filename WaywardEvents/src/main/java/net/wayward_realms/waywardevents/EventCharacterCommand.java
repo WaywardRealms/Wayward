@@ -146,7 +146,7 @@ public class EventCharacterCommand implements CommandExecutor {
                             player = plugin.getServer().getPlayer(args[1]);
                         }
                     }
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getName() + "'s character list: ");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getName() + "'s event character list: ");
                     for (Character character : characterPlugin.getCharacters(player)) {
                         if (character != null && character instanceof EventCharacter) {
                             sender.sendMessage(ChatColor.GRAY + "[" + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + character.getId() + ChatColor.GRAY + "] " + character.getName() + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + ")");

@@ -76,11 +76,11 @@ public class PartyCommand implements CommandExecutor {
                     if (party != null) {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Members:");
                         for (Character character : party.getMembers()) {
-                            sender.sendMessage(ChatColor.GRAY + character.getPlayer().getName() + "/" + character.getName());
+                            sender.sendMessage(ChatColor.GRAY + character.getPlayer().getName() + "/" + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()));
                         }
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Invited:");
                         for (Character character : party.getInvitees()) {
-                            sender.sendMessage(ChatColor.GRAY + character.getPlayer().getName() + "/" + character.getName());
+                            sender.sendMessage(ChatColor.GRAY + character.getPlayer().getName() + "/" + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()));
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are not currently in a party, use /party invite [player] to invite people to your party.");

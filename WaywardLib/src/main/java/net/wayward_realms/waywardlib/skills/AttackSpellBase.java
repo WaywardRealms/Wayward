@@ -59,31 +59,31 @@ public abstract class AttackSpellBase extends SpellBase {
                         fight.setStatusTurns(defending, entry.getKey(), entry.getValue());
                         switch (entry.getKey()) {
                             case POISON:
-                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was poisoned for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.DARK_PURPLE + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.DARK_PURPLE + " was poisoned for " + entry.getValue() + " turns");
                                 break;
                             case PARALYSIS:
-                                fight.sendMessage(ChatColor.GOLD + defending.getName() + " was paralysed for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.GOLD + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.GOLD + " was paralysed for " + entry.getValue() + " turns");
                                 break;
                             case BURNED:
-                                fight.sendMessage(ChatColor.DARK_RED + defending.getName() + " was burned for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.DARK_RED + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.DARK_RED + " was burned for " + entry.getValue() + " turns");
                                 break;
                             case FROZEN:
-                                fight.sendMessage(ChatColor.AQUA + defending.getName() + " was frozen for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.AQUA + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.AQUA + " was frozen for " + entry.getValue() + " turns");
                                 break;
                             case CONFUSED:
-                                fight.sendMessage(ChatColor.YELLOW + defending.getName() + " was confused for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.YELLOW + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " was confused for " + entry.getValue() + " turns");
                                 break;
                             case ASLEEP:
-                                fight.sendMessage(ChatColor.GRAY + defending.getName() + " was sent to sleep for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.GRAY + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.GRAY + " was sent to sleep for " + entry.getValue() + " turns");
                                 break;
                             case BLIND:
-                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was blinded for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.DARK_PURPLE + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.DARK_PURPLE + " was blinded for " + entry.getValue() + " turns");
                                 break;
                             case DOOM:
-                                fight.sendMessage(ChatColor.DARK_PURPLE + defending.getName() + " was doomed, and will die in " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.DARK_GRAY + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.DARK_GRAY + " was doomed, and will die in " + entry.getValue() + " turns");
                                 break;
                             case SILENCED:
-                                fight.sendMessage(ChatColor.GRAY + defending.getName() + " was silenced for " + entry.getValue() + " turns");
+                                fight.sendMessage(ChatColor.GRAY + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.GRAY + " was silenced for " + entry.getValue() + " turns");
                                 break;
                         }
                     }

@@ -41,11 +41,11 @@ public class FireBreathSpell extends SpellBase {
                 Player player = attacking.getPlayer().getPlayer();
                 player.launchProjectile(Snowball.class);
                 fight.setStatusTurns(attacking, StatusEffect.BURNED, 5);
-                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " scorched " + defending.getName() + " with burning hot breath.");
+                fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " scorched " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " with burning hot breath.");
             }
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed a burning hot wind, but nothing happened.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " breathed a burning hot wind, but nothing happened.");
         }
         return false;
     }

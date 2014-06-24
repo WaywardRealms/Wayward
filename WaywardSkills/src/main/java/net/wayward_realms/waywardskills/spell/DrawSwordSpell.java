@@ -54,7 +54,7 @@ public class DrawSwordSpell extends SpellBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " drew a sword from the ground!");
+        fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + " drew a sword from the ground!");
         return use((attacking).getPlayer().getPlayer());
     }
 

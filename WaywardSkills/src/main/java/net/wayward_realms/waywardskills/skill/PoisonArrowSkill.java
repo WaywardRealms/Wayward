@@ -105,7 +105,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " shot a poisoned arrow at " + defending.getName() + " dealing " + damage + " points of damage, and poisoning them.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " shot a poisoned arrow at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " dealing " + damage + " points of damage, and poisoning them.";
     }
 
     @Override

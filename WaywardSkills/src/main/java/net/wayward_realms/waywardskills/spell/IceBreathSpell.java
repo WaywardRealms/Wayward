@@ -40,11 +40,11 @@ public class IceBreathSpell extends SpellBase {
                 Player player = attacking.getPlayer().getPlayer();
                 player.launchProjectile(Snowball.class);
                 fight.setStatusTurns(attacking, StatusEffect.FROZEN, 5);
-                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed an ice cold wind at " + defending.getName() + ", freezing them.");
+                fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " breathed an ice cold wind at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", freezing them.");
             }
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed an ice cold wind, but nothing happened.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " breathed an ice cold wind, but nothing happened.");
         }
         return false;
     }

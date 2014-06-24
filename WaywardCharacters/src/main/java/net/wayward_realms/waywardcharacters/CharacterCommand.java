@@ -54,16 +54,16 @@ public class CharacterCommand implements CommandExecutor {
                     Character character = plugin.getActiveCharacter(player);
                     ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
                     if (sender instanceof Player) {
-                        new FancyMessage("")
+                        FancyMessage message = new FancyMessage("")
                                 .then(character.getName() + "'s ")
                                     .tooltip(player.getName())
-                                    .color(ChatColor.BLUE)
-                                    .style(ChatColor.BOLD)
-                                .then("character card")
+                                    .color(ChatColor.BLUE);
+                        if (character.isNameHidden()) message.style(ChatColor.BOLD, ChatColor.MAGIC); else message.style(ChatColor.BOLD);
+                        message.then("character card")
                                     .color(ChatColor.DARK_GRAY)
                                 .send((Player) sender);
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + character.getName() + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.BLUE + ChatColor.BOLD + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
                     }
                     if (!character.isAgeHidden())
                         sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE + character.getAge());

@@ -38,7 +38,7 @@ public class FleeCommand implements CommandExecutor {
                         if (characterPlugin.getParty(combatant) == null || characterPlugin.getParty(character) == null || characterPlugin.getParty(combatant).getId() != characterPlugin.getParty(character).getId()) {
                             if (random.nextInt(combatant.getStatValue(Stat.SPEED)) > random.nextInt(character.getStatValue(Stat.SPEED))) {
                                 stopped = true;
-                                fight.sendMessage(ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + " attempted to flee, but was stopped by " + (combatant.isNameHidden() ? ChatColor.MAGIC + combatant.getName() + ChatColor.RESET : combatant.getName()));
+                                fight.sendMessage(ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.RED + " attempted to flee, but was stopped by " + (combatant.isNameHidden() ? ChatColor.MAGIC + combatant.getName() + ChatColor.RESET : combatant.getName()));
                                 break;
                             }
                         }

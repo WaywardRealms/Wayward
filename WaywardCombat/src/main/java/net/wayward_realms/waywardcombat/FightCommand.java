@@ -87,7 +87,8 @@ public class FightCommand implements CommandExecutor {
                             }
                             fight.start();
                             fight.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "The fight has begun!");
-                            fight.sendMessage(ChatColor.YELLOW + "It's " + fight.getNextTurn().getName() + "'s turn.");
+                            Character nextTurn = (Character) fight.getNextTurn();
+                            fight.sendMessage(ChatColor.YELLOW + "It's " + (nextTurn.isNameHidden() ? ChatColor.MAGIC + nextTurn.getName() + ChatColor.RESET : nextTurn.getName()) + ChatColor.YELLOW + "'s turn.");
                         } else {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You cannot fight with yourself! Please get any others to join the fight first.");
                         }
