@@ -188,7 +188,24 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 if (chatFormat != null) fancy.style(chatFormat);
                 i += ("%ign%").length() - 1;
             } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
-                String urlRegex = "(\\w+://)?\\w+(\\.\\w+)+(/\\S*)?/?";
+                /*
+                (
+                  ( // brackets covering match for protocol (optional) and domain
+                    ([A-Za-z]{3,9}:(?:\/\/)?) // match protocol, allow in format http:// or mailto:
+                    (?:[\-;:&=\+\$,\w]+@)? // allow something@ for email addresses
+                    [A-Za-z0-9\.\-]+ // anything looking at all like a domain, non-unicode domains
+                    | // or instead of above
+                    (?:www\.|[\-;:&=\+\$,\w]+@) // starting with something@ or www.
+                    [A-Za-z0-9\.\-]+   // anything looking at all like a domain
+                  )
+                  ( // brackets covering match for path, query string and anchor
+                    (?:\/[\+~%\/\.\w\-]*) // allow optional /path
+                    ?\??(?:[\-\+=&;%@\.\w]*) // allow optional query string starting with ?
+                    #?(?:[\.\!\/\\\w]*) // allow optional anchor #anchor
+                  )? // make URL suffix optional
+                )
+                */
+                String urlRegex = "((([A-Za-z]{3,9}:(?://)?)(?:[\\-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9\\.\\-]+|(?:www\\.|[\\-;:&=\\+\\$,\\w]+@)[A-Za-z0-9\\.\\-]+)((?:/[\\+~%/\\.\\w\\-_]*)?\\??(?:[\\-\\+=&;%@\\.\\w_]*)#?(?:[\\.!/\\\\\\w]*))?)";
                 Matcher matcher = Pattern.compile(urlRegex).matcher(message);
                 int index = 0;
                 int startIndex;
