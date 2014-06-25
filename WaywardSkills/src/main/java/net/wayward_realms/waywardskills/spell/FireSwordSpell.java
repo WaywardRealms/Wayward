@@ -22,7 +22,7 @@ public class FireSwordSpell extends SpellBase {
 
     @Override
     public boolean use(Player player) {
-        if (player.getItemInHand() != null) {
+        if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
             try {
                 player.getItemInHand().addEnchantment(Enchantment.FIRE_ASPECT, 1);
                 return true;
