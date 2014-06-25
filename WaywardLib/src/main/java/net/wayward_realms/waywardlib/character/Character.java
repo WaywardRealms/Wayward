@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 /**
  * Represents a character
  * 
@@ -378,5 +380,36 @@ public interface Character extends Combatant {
      * @param hidden whether to hide the class
      */
     public void setClassHidden(boolean hidden);
+
+    /**
+     * Gets if the character knows a language based on the language's String name
+     *
+     * @param language what language is being asked
+     * @return if the language is known
+     */
+    public boolean knowsLanguage(String language);
+
+    /**
+     * Adds a language to the pool of known languages of a character
+     *
+     * @return all known languages of the character
+     */
+    public List<String> getLanguages();
+
+    /**
+     * Removes a language from the pool of known languages of a character.
+     *
+     * @param language what language is going to be removed
+     * @return if the language was successfully removed
+     */
+    public boolean removeLanguage(String language);
+
+    /**
+     * Adds a language to the pool of known languages of a character.
+     *
+     * @param language what language is being asked
+     * @return if the language was successfully added
+     */
+    public boolean addLanguage(String language);
 
 }
