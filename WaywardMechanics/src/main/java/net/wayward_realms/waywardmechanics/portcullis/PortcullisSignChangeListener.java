@@ -17,7 +17,7 @@ public class PortcullisSignChangeListener implements Listener {
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
         if (event.getLine(0).equalsIgnoreCase("[portcullis]")) {
-            if (event.getPlayer().hasPermission("wayward.essentials.portcullissigns.create")) {
+            if (event.getPlayer().hasPermission("wayward.mechanics.portcullis.create")) {
                 event.setLine(0, ChatColor.GRAY + "[portcullis]");
             } else {
                 event.getBlock().breakNaturally();

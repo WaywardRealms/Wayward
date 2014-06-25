@@ -109,9 +109,6 @@ permissions:
     wayward.essentials.boatsigns.create:
         description: Allows you to create boat signs
         default: op
-    wayward.essentials.portcullissigns.create:
-        description: Allows you to create portcullis signs
-        default: op
     wayward.essentials.warpsigns.create:
         description: Allows you to create warp signs
         default: op

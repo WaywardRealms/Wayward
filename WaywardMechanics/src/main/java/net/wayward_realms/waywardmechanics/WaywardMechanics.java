@@ -5,6 +5,9 @@ import net.wayward_realms.waywardmechanics.bookshelf.BookshelfBlockBreakListener
 import net.wayward_realms.waywardmechanics.bookshelf.BookshelfManager;
 import net.wayward_realms.waywardmechanics.bookshelf.BookshelfPlayerInteractListener;
 import net.wayward_realms.waywardmechanics.chairs.*;
+import net.wayward_realms.waywardmechanics.drawbridge.DrawbridgeBlockRedstoneListener;
+import net.wayward_realms.waywardmechanics.drawbridge.DrawbridgePlayerInteractListener;
+import net.wayward_realms.waywardmechanics.drawbridge.DrawbridgeSignChangeListener;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisBlockRedstoneListener;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisPlayerInteractListener;
 import net.wayward_realms.waywardmechanics.portcullis.PortcullisSignChangeListener;
@@ -27,7 +30,8 @@ public class WaywardMechanics extends JavaPlugin implements MechanicsPlugin {
         registerListeners(new BookshelfBlockBreakListener(this), new BookshelfPlayerInteractListener(this),
                 new ChairBlockBreakListener(this), new ChairExitVehicleListener(this), new ChairPlayerDeathListener(this), new ChairPlayerInteractListener(this), new ChairPlayerTeleportListener(this),
                 new PortcullisBlockRedstoneListener(), new PortcullisPlayerInteractListener(), new PortcullisSignChangeListener(this),
-                new SecretSwitchPlayerInteractListener(this), new SecretSwitchSignChangeListener(this));
+                new SecretSwitchPlayerInteractListener(this), new SecretSwitchSignChangeListener(this),
+                new DrawbridgeBlockRedstoneListener(), new DrawbridgePlayerInteractListener(), new DrawbridgeSignChangeListener(this));
     }
 
     @Override
