@@ -1,11 +1,15 @@
 package net.wayward_realms.waywardlib.character;
 
 import net.wayward_realms.waywardlib.classes.Stat;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a temporary modification to a stat
  */
-public class TemporaryStatModification {
+public class TemporaryStatModification implements ConfigurationSerializable {
     
     public static final TemporaryStatModification MELEE_ATTACK_UP_25 = new TemporaryStatModification(Stat.MELEE_ATTACK, 1.25F);
     public static final TemporaryStatModification MELEE_ATTACK_UP_50 = new TemporaryStatModification(Stat.MELEE_ATTACK, 1.50F);
@@ -134,6 +138,18 @@ public class TemporaryStatModification {
         } else {
             return original;
         }
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> serialised = new HashMap<>();
+        serialised.put("stat", getStat().toString());
+        serialised.put("multiplier", getMultiplier());
+        return serialised;
+    }
+
+    public static TemporaryStatModification deserialize(Map<String, Object> serialised) {
+        return new TemporaryStatModification(Stat.valueOf((String) serialised.get("stat")), (float) serialised.get("multiplier"));
     }
 
 }
