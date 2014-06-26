@@ -352,11 +352,18 @@ public class FightImpl implements Fight {
     }
 
     public void showSkillOptions(Player player, Collection<Skill> skills) {
-        Inventory skillOptions = Bukkit.createInventory(null, (int) Math.ceil((double) skills.size() / 9D) * 9, "Skill");
-        for (Skill skill : skills) {
-            skillOptions.addItem(skill.getIcon());
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Character character = characterPlugin.getActiveCharacter(player);
+            Inventory skillOptions = Bukkit.createInventory(null, (int) Math.ceil((double) skills.size() / 9D) * 9, "Skill");
+            for (Skill skill : skills) {
+                ItemStack skillIcon = new ItemStack(skill.getIcon());
+                skillIcon.setAmount(Math.max(getCoolDownTurnsRemaining(character, skill), 1));
+                skillOptions.addItem(skill.getIcon());
+            }
+            player.openInventory(skillOptions);
         }
-        player.openInventory(skillOptions);
     }
 
     public void showCharacterOptions(Player player) {
