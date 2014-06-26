@@ -115,4 +115,18 @@ public interface Skill {
      */
     public void setCoolDown(int coolDown);
 
+    /**
+     * Gets the amount of turns the skill is on cooldown for after use
+     *
+     * @return the amount of turns the skill takes to cool down
+     */
+    public int getCoolDownTurns();
+
+    /**
+     * Sets the amount of turns the skills is on cooldown for after use
+     *
+     * @param coolDownTurns the amount of turns the skill takes to cool down
+     */
+    public void setCoolDownTurns(int coolDownTurns);
+
 }

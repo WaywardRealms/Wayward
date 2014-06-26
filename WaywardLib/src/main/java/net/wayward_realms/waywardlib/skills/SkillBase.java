@@ -17,6 +17,7 @@ public abstract class SkillBase implements Skill {
     private String name;
     private SkillType type;
     private int coolDown;
+    private int coolDownTurns = 1;
 
     @Override
     public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
@@ -102,6 +103,13 @@ public abstract class SkillBase implements Skill {
         return 1D;
     }
 
+    @Override
+    public int getCoolDownTurns() {
+        return coolDownTurns;
+    }
 
-
+    @Override
+    public void setCoolDownTurns(int coolDownTurns) {
+        this.coolDownTurns = coolDownTurns;
+    }
 }
