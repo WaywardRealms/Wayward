@@ -11,6 +11,7 @@ import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.combat.Turn;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -32,7 +33,8 @@ public class FightImpl implements Fight {
     private Turn activeTurn;
     private Map<Integer, Turn> savedTurns = new HashMap<>();
 
-    private Map<Combatant, EnumMap<StatusEffect, Integer>> statusEffectTurns = new HashMap<>();
+    private Map<Integer, EnumMap<StatusEffect, Integer>> statusEffectTurns = new HashMap<>();
+    private Map<Integer, Map<Skill, Integer>> coolDownTurns = new HashMap<>();
 
     private Inventory turnOptions = Bukkit.createInventory(null, 18, "Skill type");
 
@@ -210,8 +212,20 @@ public class FightImpl implements Fight {
     }
 
     public void doTurn(Character attacking, Character defending, ItemStack weapon, Skill skill) {
+        if (getCoolDownTurnsRemaining(attacking, skill) > 0) {
+            attacking.getPlayer().getPlayer().sendMessage(ChatColor.RED + "That skill is still on cooldown.");
+            return;
+        }
         incrementTurn();
         boolean hit = canMove(attacking, skill) && skill.use(this, attacking, defending, weapon);
+        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        if (skillsPluginProvider != null) {
+            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+            for (Skill skill1 : skillsPlugin.getSkills()) {
+                setCoolDownTurnsRemaining(attacking, skill, Math.max(getCoolDownTurnsRemaining(attacking, skill1) - 1, 0));
+            }
+        }
+        setCoolDownTurnsRemaining(attacking, skill, skill.getCoolDownTurns());
         while (!getNextTurn().getPlayer().isOnline()) {
             incrementTurn();
         }
@@ -338,11 +352,18 @@ public class FightImpl implements Fight {
     }
 
     public void showSkillOptions(Player player, Collection<Skill> skills) {
-        Inventory skillOptions = Bukkit.createInventory(null, (int) Math.ceil((double) skills.size() / 9D) * 9, "Skill");
-        for (Skill skill : skills) {
-            skillOptions.addItem(skill.getIcon());
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Character character = characterPlugin.getActiveCharacter(player);
+            Inventory skillOptions = Bukkit.createInventory(null, (int) Math.ceil((double) skills.size() / 9D) * 9, "Skill");
+            for (Skill skill : skills) {
+                ItemStack skillIcon = new ItemStack(skill.getIcon());
+                skillIcon.setAmount(Math.max(getCoolDownTurnsRemaining(character, skill), 1));
+                skillOptions.addItem(skillIcon);
+            }
+            player.openInventory(skillOptions);
         }
-        player.openInventory(skillOptions);
     }
 
     public void showCharacterOptions(Player player) {
@@ -395,54 +416,75 @@ public class FightImpl implements Fight {
 
     @Override
     public int getStatusTurns(Combatant combatant, StatusEffect statusEffect) {
-        if (!statusEffectTurns.containsKey(combatant)) return 0;
-        Map<StatusEffect, Integer> combatantStatusEffectTurns = statusEffectTurns.get(combatant);
+        if (!statusEffectTurns.containsKey(((Character) combatant).getId())) return 0;
+        Map<StatusEffect, Integer> combatantStatusEffectTurns = statusEffectTurns.get(((Character) combatant).getId());
         if (!combatantStatusEffectTurns.containsKey(statusEffect)) return 0;
-        return statusEffectTurns.get(combatant).get(statusEffect);
+        return statusEffectTurns.get(((Character) combatant).getId()).get(statusEffect);
     }
 
     @Override
     public void setStatusTurns(Combatant combatant, StatusEffect statusEffect, int turns) {
         if (turns > 0) {
-            if (statusEffectTurns.get(combatant) == null) {
-                statusEffectTurns.put(combatant, new EnumMap<StatusEffect, Integer>(StatusEffect.class));
+            if (statusEffectTurns.get(((Character) combatant).getId()) == null) {
+                statusEffectTurns.put(((Character) combatant).getId(), new EnumMap<StatusEffect, Integer>(StatusEffect.class));
             }
-            statusEffectTurns.get(combatant).put(statusEffect, turns);
+            statusEffectTurns.get(((Character) combatant).getId()).put(statusEffect, turns);
         } else {
-            statusEffectTurns.get(combatant).remove(statusEffect);
-            if (statusEffectTurns.get(combatant).isEmpty()) {
-                statusEffectTurns.remove(combatant);
+            statusEffectTurns.get(((Character) combatant).getId()).remove(statusEffect);
+            if (statusEffectTurns.get(((Character) combatant).getId()).isEmpty()) {
+                statusEffectTurns.remove(((Character) combatant).getId());
             }
+        }
+    }
+
+    @Override
+    public int getCoolDownTurnsRemaining(Combatant combatant, Skill skill) {
+        if (!coolDownTurns.containsKey(((Character) combatant).getId())) return 0;
+        if (!coolDownTurns.get(((Character) combatant).getId()).containsKey(skill)) return 0;
+        return coolDownTurns.get(((Character) combatant).getId()).get(skill);
+    }
+
+    @Override
+    public void setCoolDownTurnsRemaining(Combatant combatant, Skill skill, int turns) {
+        if (!coolDownTurns.containsKey(((Character) combatant).getId())) {
+            coolDownTurns.put(((Character) combatant).getId(), new HashMap<Skill, Integer>());
+        }
+        if (turns > 0) {
+            coolDownTurns.get(((Character) combatant).getId()).put(skill, turns);
+        } else {
+            coolDownTurns.get(((Character) combatant).getId()).remove(skill);
         }
     }
 
     public boolean hasStatusEffect(Combatant combatant, StatusEffect statusEffect) {
-        return statusEffectTurns.containsKey(combatant) && statusEffectTurns.get(combatant).containsKey(statusEffect);
+        return statusEffectTurns.containsKey(((Character) combatant).getId()) && statusEffectTurns.get(((Character) combatant).getId()).containsKey(statusEffect);
     }
 
     public void doStatusEffects() {
-        for (Iterator<Combatant> iterator = statusEffectTurns.keySet().iterator(); iterator.hasNext(); ) {
-            Combatant combatant = iterator.next();
-            for (Iterator<Map.Entry<StatusEffect, Integer>> iterator1 = statusEffectTurns.get(combatant).entrySet().iterator(); iterator1.hasNext(); ) {
-                Map.Entry<StatusEffect, Integer> entry = iterator1.next();
-                doStatusEffect(combatant, entry.getKey());
-                if (combatant.getHealth() <= 0D) {
-                    removeCombatant(combatant);
-                    if (combatant instanceof Character) {
-                        Character character = (Character) combatant;
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            for (Iterator<Integer> iterator = statusEffectTurns.keySet().iterator(); iterator.hasNext(); ) {
+                Character character = characterPlugin.getCharacter(iterator.next());
+                for (Iterator<Map.Entry<StatusEffect, Integer>> iterator1 = statusEffectTurns.get(character.getId()).entrySet().iterator(); iterator1.hasNext(); ) {
+                    Map.Entry<StatusEffect, Integer> entry = iterator1.next();
+                    doStatusEffect(character, entry.getKey());
+                    if (character.getHealth() <= 0D) {
+                        removeCombatant(character);
                         OfflinePlayer player = character.getPlayer();
                         player.getPlayer().sendMessage(ChatColor.RED + "You lost the fight.");
                         player.getPlayer().damage(player.getPlayer().getHealth());
                     }
+                    if (entry.getValue() > 0) {
+                        entry.setValue(entry.getValue() - 1);
+                    } else {
+                        iterator1.remove();
+                    }
                 }
-                if (entry.getValue() > 0) {
-                    entry.setValue(entry.getValue() - 1);
-                } else {
-                    iterator1.remove();
-                }
+                if (statusEffectTurns.get(character.getId()).isEmpty()) iterator.remove();
             }
-            if (statusEffectTurns.get(combatant).isEmpty()) iterator.remove();
         }
+
     }
 
     public void doStatusEffect(Combatant combatant, StatusEffect statusEffect) {
