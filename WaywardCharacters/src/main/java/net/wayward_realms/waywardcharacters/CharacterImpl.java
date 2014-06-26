@@ -366,7 +366,7 @@ public class CharacterImpl implements Character {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 20D);
         }
         return 0;
     }

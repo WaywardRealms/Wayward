@@ -77,8 +77,8 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                                 continue;
                             }
                         }
-                        int manaRegen = Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()) - character.getMana();
-                        character.setMana(Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()));
+                        int manaRegen = Math.min(character.getMana() + Math.max(character.getMaxMana() / 30, 1), character.getMaxMana()) - character.getMana();
+                        character.setMana(Math.min(character.getMana() + Math.max(character.getMaxMana() / 30, 1), character.getMaxMana()));
                         if (manaRegen > 0) {
                             player.sendMessage(getPrefix() + ChatColor.GREEN + "Mana regenerated: " + manaRegen);
                         }
