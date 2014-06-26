@@ -1,5 +1,8 @@
 package net.wayward_realms.waywardmonsters;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.util.math.MathUtils;
@@ -15,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class EntityLevelManager {
 
@@ -23,6 +28,24 @@ public class EntityLevelManager {
     public EntityLevelManager(WaywardMonsters plugin) {
         this.plugin = plugin;
     }
+
+    private Cache<Entity, Integer> levelCache = CacheBuilder.newBuilder().
+            maximumSize(100).
+            expireAfterAccess(3, TimeUnit.MINUTES).
+            build(new CacheLoader<Entity, Integer>() {
+                public Integer load(Entity entity) {
+                    Collection<Location> zeroPoints = getZeroPoints();
+                    if (zeroPoints.size() == 0) return 1;
+                    int minimumLevel = -1;
+                    for (Location zeroPoint : zeroPoints) {
+                        if (zeroPoint.getWorld().equals(entity.getWorld())) {
+                            int possibleLevel = (int) Math.floor((MathUtils.fastsqrt(entity.getLocation().distanceSquared(zeroPoint)) / plugin.getConfig().getDouble("mob-level-scale", 32D)));
+                            minimumLevel = possibleLevel < minimumLevel || minimumLevel == -1 ? possibleLevel : minimumLevel;
+                        }
+                    }
+                    return Math.max(minimumLevel - 1, 0);
+                }
+            });
 
     public void addZeroPoint(Location location) {
         File zeroPointsFile = new File(plugin.getDataFolder(), "zero-points.yml");
@@ -73,16 +96,12 @@ public class EntityLevelManager {
                 }
             }
         }
-        Collection<Location> zeroPoints = getZeroPoints();
-        if (zeroPoints.size() == 0) return 1;
-        int minimumLevel = -1;
-        for (Location zeroPoint : zeroPoints) {
-            if (zeroPoint.getWorld().equals(entity.getWorld())) {
-                int possibleLevel = (int) Math.floor((MathUtils.fastsqrt(entity.getLocation().distanceSquared(zeroPoint)) / plugin.getConfig().getDouble("mob-level-scale", 32D)));
-                minimumLevel = possibleLevel < minimumLevel || minimumLevel == -1 ? possibleLevel : minimumLevel;
-            }
+        try {
+            return levelCache.get(entity);
+        } catch (ExecutionException exception) {
+            exception.printStackTrace();
         }
-        return Math.max(minimumLevel - 1, 0);
+        return 0;
     }
 
     public int getEntityStatValue(Entity entity) {
