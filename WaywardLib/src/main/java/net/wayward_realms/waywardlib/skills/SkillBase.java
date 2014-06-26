@@ -17,7 +17,7 @@ public abstract class SkillBase implements Skill {
     private String name;
     private SkillType type;
     private int coolDown;
-    private int coolDownTurns = 1;
+    private int coolDownTurns = 0;
 
     @Override
     public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {

@@ -11,6 +11,7 @@ import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.combat.Turn;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ public class FightImpl implements Fight {
     private Map<Integer, Turn> savedTurns = new HashMap<>();
 
     private Map<Combatant, EnumMap<StatusEffect, Integer>> statusEffectTurns = new HashMap<>();
+    private Map<Combatant, Map<Skill, Integer>> coolDownTurns = new HashMap<>();
 
     private Inventory turnOptions = Bukkit.createInventory(null, 18, "Skill type");
 
@@ -210,8 +212,20 @@ public class FightImpl implements Fight {
     }
 
     public void doTurn(Character attacking, Character defending, ItemStack weapon, Skill skill) {
+        if (getCoolDownTurnsRemaining(attacking, skill) > 0) {
+            attacking.getPlayer().getPlayer().sendMessage(ChatColor.RED + "That skill is still on cooldown.");
+            return;
+        }
         incrementTurn();
         boolean hit = canMove(attacking, skill) && skill.use(this, attacking, defending, weapon);
+        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        if (skillsPluginProvider != null) {
+            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+            for (Skill skill1 : skillsPlugin.getSkills()) {
+                setCoolDownTurnsRemaining(attacking, skill, Math.max(getCoolDownTurnsRemaining(attacking, skill1) - 1, 0));
+            }
+        }
+        setCoolDownTurnsRemaining(attacking, skill, skill.getCoolDownTurns());
         while (!getNextTurn().getPlayer().isOnline()) {
             incrementTurn();
         }
@@ -413,6 +427,25 @@ public class FightImpl implements Fight {
             if (statusEffectTurns.get(combatant).isEmpty()) {
                 statusEffectTurns.remove(combatant);
             }
+        }
+    }
+
+    @Override
+    public int getCoolDownTurnsRemaining(Combatant combatant, Skill skill) {
+        if (!coolDownTurns.containsKey(combatant)) return 0;
+        if (!coolDownTurns.get(combatant).containsKey(skill)) return 0;
+        return coolDownTurns.get(combatant).get(skill);
+    }
+
+    @Override
+    public void setCoolDownTurnsRemaining(Combatant combatant, Skill skill, int turns) {
+        if (!coolDownTurns.containsKey(combatant)) {
+            coolDownTurns.put(combatant, new HashMap<Skill, Integer>());
+        }
+        if (turns > 0) {
+            coolDownTurns.get(combatant).put(skill, turns);
+        } else {
+            coolDownTurns.get(combatant).remove(skill);
         }
     }
 
