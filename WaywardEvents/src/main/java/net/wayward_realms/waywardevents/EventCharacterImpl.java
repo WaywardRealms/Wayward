@@ -3,6 +3,7 @@ package net.wayward_realms.waywardevents;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
+import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
@@ -20,6 +21,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -100,6 +103,11 @@ public class EventCharacterImpl implements EventCharacter {
     private ItemStack getFieldItemStackValue(String field) {
         YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
         return save.getItemStack("character." + field);
+    }
+
+    private List<?> getFieldListValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getList("character." + field);
     }
 
     @Override
@@ -419,7 +427,33 @@ public class EventCharacterImpl implements EventCharacter {
 
     @Override
     public int getStatValue(Stat stat) {
-        return getFieldIntValue("stats." + stat.toString().toLowerCase());
+        int value = getFieldIntValue("stats." + stat.toString().toLowerCase());
+        for (TemporaryStatModification modification : getTemporaryStatModifications()) {
+            value = modification.apply(stat, value);
+        }
+        return value;
+    }
+
+    @Override
+    public Collection<TemporaryStatModification> getTemporaryStatModifications() {
+        return (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+    }
+
+    @Override
+    public void addTemporaryStatModification(TemporaryStatModification modification) {
+        List<TemporaryStatModification> statModifications = (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+        statModifications.add(modification);
+        setFieldValue("temporary-stat-modifications", statModifications);
+    }
+
+    @Override
+    public void removeTemporaryStatModification(TemporaryStatModification modification) {
+        List<TemporaryStatModification> statModifications = (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+        for (Iterator<TemporaryStatModification> iterator = statModifications.iterator(); iterator.hasNext(); ) {
+            TemporaryStatModification modification1 = iterator.next();
+            if (modification.equals(modification1)) iterator.remove();
+        }
+        setFieldValue("temporary-stat-modifications", statModifications);
     }
 
     @Override
