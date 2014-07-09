@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.wayward-realms</groupId>
         <artifactId>wayward</artifactId>
-        <version>0.8.8-SNAPSHOT</version>
+        <version>0.8.9-SNAPSHOT</version>
     </parent>
     <artifactId>waywardlib</artifactId>
     <name>WaywardLib</name>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>3.3.1</version>
+            <version>3.4.0</version>
         </dependency>
     </dependencies>
     <build>
