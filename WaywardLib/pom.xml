@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.wayward-realms</groupId>
         <artifactId>wayward</artifactId>
-        <version>0.8.9-SNAPSHOT</version>
+        <version>0.8.10-SNAPSHOT</version>
     </parent>
     <artifactId>waywardlib</artifactId>
     <name>WaywardLib</name>
@@ -18,13 +18,13 @@
             <url>http://repo.comphenix.net/content/groups/public</url>
         </repository>
     </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-    </dependencies>
+    <!-- dependencies -->
+        <!-- dependency -->
+            <!-- groupId>com.comphenix.protocol</groupId -->
+            <!-- artifactId>ProtocolLib</artifactId -->
+            <!-- version>3.4.0</version -->
+        <!-- /dependency -->
+    <!-- /dependencies -->
     <build>
         <defaultGoal>clean install</defaultGoal>
         <sourceDirectory>src/main/java</sourceDirectory>
