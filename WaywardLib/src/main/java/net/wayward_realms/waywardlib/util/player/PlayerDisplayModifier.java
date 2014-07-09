@@ -1,5 +1,5 @@
 package net.wayward_realms.waywardlib.util.player;
- 
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
@@ -33,10 +34,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-
-// For ProtocolLib 3.3.1 and lower
-// For ProtocolLib 3.4.0
-//import com.comphenix.protocol.wrappers.WrappedSignedProperty;
  
 public class PlayerDisplayModifier {
 
@@ -128,8 +125,7 @@ public class PlayerDisplayModifier {
                 String value = (String) property.get("value");
                 String signature = (String) property.get("signature"); // May be NULL
 
-                // Uncomment for ProtocolLib 3.4.0
-                //profile.getProperties().put(name, new WrappedSignedProperty(name, value, signature));
+                profile.getProperties().put(name, new WrappedSignedProperty(name, value, signature));
                 ((GameProfile) profile.getHandle()).getProperties().put(name, new Property(name, value, signature));
             }
         } catch (Exception e) {
