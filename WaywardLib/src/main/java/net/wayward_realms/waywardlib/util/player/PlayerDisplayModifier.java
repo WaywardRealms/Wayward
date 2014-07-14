@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
  
 public class PlayerDisplayModifier {
 
-    private static final String PROFILE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
     private static final int WORKER_THREADS = 4;
  
     private ProtocolManager protocolManager;
@@ -103,7 +102,7 @@ public class PlayerDisplayModifier {
  
     // This will be cached by Guava
     private String getProfileJson(String name) throws IOException {
-        final URL url = new URL(PROFILE_URL + extractUUID(name).toString().replace("-", ""));
+        final URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + extractUUID(name).toString().replace("-", "") + "?unsigned=false");
         final URLConnection uc = url.openConnection();
  
         return CharStreams.toString(new InputSupplier<InputStreamReader>() {
