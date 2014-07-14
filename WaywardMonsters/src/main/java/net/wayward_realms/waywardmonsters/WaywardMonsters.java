@@ -2,6 +2,7 @@ package net.wayward_realms.waywardmonsters;
 
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
+import net.wayward_realms.waywardmonsters.bleed.BleedCommand;
 import net.wayward_realms.waywardmonsters.bleed.BleedEntityDamageListener;
 import net.wayward_realms.waywardmonsters.bleed.BleedTask;
 import net.wayward_realms.waywardmonsters.drops.MobDrop;
@@ -33,6 +34,7 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
         registerListeners(this, new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener(), new PlayerFishListener(this),
                 new TrainingDummyPlayerInteractListener(this), new TrainingDummySignChangeListener(this),
                 new BleedEntityDamageListener(this));
+        getCommand("bleed").setExecutor(new BleedCommand(this));
         getCommand("zeropoint").setExecutor(new ZeroPointCommand(this));
         getCommand("viewzeropoints").setExecutor(new ViewZeroPointsCommand(this));
         bleedTask = new BleedTask();

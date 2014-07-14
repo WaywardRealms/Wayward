@@ -5,6 +5,9 @@ description: ${project.description}
 main: net.wayward_realms.waywardmonsters.WaywardMonsters
 depend: [WaywardLib]
 commands:
+    bleed:
+        description: Forces a player to bleed
+        usage: /<command> [player]
     zeropoint:
         description: Sets a mob-level-zero point at your location
         usage: /<command>
@@ -14,6 +17,9 @@ commands:
         usage: /<command>
         aliases: [showzeropoints]
 permissions:
+    wayward.monsters.command.bleed:
+        description: Allows you to force players to bleed
+        default: op
     wayward.monsters.command.zeropoint:
         description: Allows you to set zero points
         default: op
