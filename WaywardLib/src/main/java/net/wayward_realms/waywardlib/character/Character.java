@@ -402,4 +402,18 @@ public interface Character extends Combatant {
      */
     public void setClassHidden(boolean hidden);
 
+    /**
+     * Gets what to use for the name plate
+     *
+     * @return the name plate
+     */
+    public String getNamePlate();
+
+    /**
+     * Sets what to use for the name plate
+     *
+     * @param namePlate the name plate to set
+     */
+    public void setNamePlate(String namePlate);
+
 }

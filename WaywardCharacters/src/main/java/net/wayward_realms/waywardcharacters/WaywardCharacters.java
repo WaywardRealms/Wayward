@@ -37,7 +37,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
         saveDefaultConfig();
-        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener());
+        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener(this));
         getCommand("character").setExecutor(new CharacterCommand(this));
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));

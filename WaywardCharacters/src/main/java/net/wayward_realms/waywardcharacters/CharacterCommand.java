@@ -198,11 +198,25 @@ public class CharacterCommand implements CommandExecutor {
                         character.setDead(true);
                         plugin.setActiveCharacter(player, plugin.createNewCharacter(player));
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your character has been set to daed, and a new character has been created.");
+                    } else if (args[1].equalsIgnoreCase("nameplate")) {
+                        if (args.length >= 3) {
+                            StringBuilder nameBuilder = new StringBuilder();
+                            for (int i = 2; i < args.length; i++) {
+                                nameBuilder.append(args[i]);
+                                if (i < args.length - 1) {
+                                    nameBuilder.append(" ");
+                                }
+                            }
+                            character.setNamePlate(nameBuilder.toString());
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set character's nameplate to " + nameBuilder.toString());
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set nameplate [nameplate]");
+                        }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead]");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead|nameplate]");
                     }
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead]");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead|nameplate]");
                 }
             } else if (args[0].equalsIgnoreCase("extenddescription")) {
                 Character character = plugin.getActiveCharacter((Player) sender);

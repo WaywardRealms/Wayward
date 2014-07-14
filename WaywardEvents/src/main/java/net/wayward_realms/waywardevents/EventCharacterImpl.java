@@ -57,6 +57,7 @@ public class EventCharacterImpl implements EventCharacter {
             setMaxMana(20);
             setMana(getMaxMana());
             setThirst(20);
+            setNamePlate("");
         }
 
     }
@@ -467,6 +468,16 @@ public class EventCharacterImpl implements EventCharacter {
 
     public void setClassHidden(boolean classHidden) {
         setFieldValue("class-hidden", classHidden);
+    }
+
+    @Override
+    public String getNamePlate() {
+        return getFieldStringValue("nameplate");
+    }
+
+    @Override
+    public void setNamePlate(String namePlate) {
+        setFieldValue("nameplate", namePlate);
     }
 
 }

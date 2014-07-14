@@ -66,6 +66,7 @@ public class CharacterImpl implements Character {
         setFoodLevel(20);
         setMana(getMaxMana());
         setThirst(20);
+        setNamePlate("");
     }
 
     public CharacterImpl(WaywardCharacters plugin, File file) {
@@ -442,6 +443,16 @@ public class CharacterImpl implements Character {
 
     public void setClassHidden(boolean classHidden) {
         setFieldValue("class-hidden", classHidden);
+    }
+
+    @Override
+    public String getNamePlate() {
+        return getFieldStringValue("nameplate");
+    }
+
+    @Override
+    public void setNamePlate(String namePlate) {
+        setFieldValue("nameplate", namePlate);
     }
 
     public int getStatPoints(Stat stat) {

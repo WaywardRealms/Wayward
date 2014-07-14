@@ -13,7 +13,7 @@ public class PlayerNamePlateUtils {
     }
 
     public static void refreshPlayer(Player player) {
-        final PlayerNamePlateChangeEvent event = new PlayerNamePlateChangeEvent(player, player.getName(), player.getDisplayName());
+        final PlayerNamePlateChangeEvent event = new PlayerNamePlateChangeEvent(player, player.getName(), player.getName());
         Bukkit.getPluginManager().callEvent(event);
         Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getServer().getPluginManager().getPlugin("WaywardLib"), new Runnable() {
             @Override
