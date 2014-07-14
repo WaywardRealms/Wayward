@@ -125,4 +125,19 @@ public interface Fight {
      */
     public void setCoolDownTurnsRemaining(Combatant combatant, Skill skill, int turns);
 
+    /**
+     * Schedules a task to occur in an amount of turns
+     *
+     * @param task the task to schedule
+     * @param turns the amount of turns the task should occur in
+     */
+    public void scheduleTask(Runnable task, int turns);
+
+    /**
+     * Cancels a scheduled task
+     *
+     * @param task the task to cancel
+     */
+    public void cancelTask(Runnable task);
+
 }

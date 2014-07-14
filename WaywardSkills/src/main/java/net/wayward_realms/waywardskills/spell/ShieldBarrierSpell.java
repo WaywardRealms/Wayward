@@ -61,11 +61,19 @@ public class ShieldBarrierSpell extends SpellBase {
     }
 
     @Override
-    public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
+    public boolean use(Fight fight, Character attacking, final Character defending, ItemStack weapon) {
         if (attacking.getMana() >= getManaCost()) {
             defending.addTemporaryStatModification(TemporaryStatModification.MELEE_DEFENCE_UP_50);
             defending.addTemporaryStatModification(TemporaryStatModification.RANGED_DEFENCE_UP_50);
             defending.addTemporaryStatModification(TemporaryStatModification.MAGIC_DEFENCE_DOWN_50);
+            fight.scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    defending.removeTemporaryStatModification(TemporaryStatModification.MELEE_DEFENCE_UP_50);
+                    defending.removeTemporaryStatModification(TemporaryStatModification.RANGED_DEFENCE_UP_50);
+                    defending.removeTemporaryStatModification(TemporaryStatModification.MAGIC_DEFENCE_UP_50);
+                }
+            }, 3);
             use(attacking.getPlayer().getPlayer());
             fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " created a shield barrier over " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()));
             return true;
