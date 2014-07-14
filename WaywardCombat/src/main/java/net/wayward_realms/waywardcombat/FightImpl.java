@@ -35,6 +35,7 @@ public class FightImpl implements Fight {
 
     private Map<Integer, EnumMap<StatusEffect, Integer>> statusEffectTurns = new HashMap<>();
     private Map<Integer, Map<Skill, Integer>> coolDownTurns = new HashMap<>();
+    private Map<Runnable, Integer> scheduledTasks = new HashMap<>();
 
     private Inventory turnOptions = Bukkit.createInventory(null, 18, "Skill type");
 
@@ -236,6 +237,7 @@ public class FightImpl implements Fight {
             defending.getPlayer().getPlayer().damage(defending.getPlayer().getPlayer().getHealth());
         }
         doStatusEffects();
+        doScheduledTasks();
         if (getCharacters().size() == 1) {
             Character character = getCharacters().iterator().next();
             character.getPlayer().getPlayer().sendMessage(ChatColor.GREEN + "You win.");
@@ -552,6 +554,20 @@ public class FightImpl implements Fight {
         }
     }
 
+    public void doScheduledTasks() {
+        for (Iterator<Map.Entry<Runnable, Integer>> iterator = scheduledTasks.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<Runnable, Integer> task = iterator.next();
+            if (task.getValue() == 0) {
+                task.getKey().run();
+                iterator.remove();
+            } else if (task.getValue() > 0) {
+                task.setValue(task.getValue() - 1);
+            } else {
+                iterator.remove();
+            }
+        }
+    }
+
     public boolean canMove(Combatant combatant, Skill skill) {
         Random random = new Random();
         Character character = (Character) combatant;
@@ -591,6 +607,16 @@ public class FightImpl implements Fight {
             }
         }
         return true;
+    }
+
+    @Override
+    public void scheduleTask(Runnable runnable, int turns) {
+        scheduledTasks.put(runnable, turns);
+    }
+
+    @Override
+    public void cancelTask(Runnable runnable) {
+        scheduledTasks.remove(runnable);
     }
 
 }
