@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collection;
+
 /**
  * Represents a character
  * 
@@ -356,6 +358,27 @@ public interface Character extends Combatant {
      * @return the value of the stat
      */
     public int getStatValue(Stat stat);
+
+    /**
+     * Gets the temporary stat modifications currently applying to the character
+     *
+     * @return the temporary stat modifications
+     */
+    public Collection<TemporaryStatModification> getTemporaryStatModifications();
+
+    /**
+     * Adds a temporary stat modification to the character
+     *
+     * @param modification the modification to add
+     */
+    public void addTemporaryStatModification(TemporaryStatModification modification);
+
+    /**
+     * Removes a temporary stat modification from a character
+     *
+     * @param modification the modification to remove
+     */
+    public void removeTemporaryStatModification(TemporaryStatModification modification);
 
     /**
      * Gets the amount of skill points the character has for a certain skill type
