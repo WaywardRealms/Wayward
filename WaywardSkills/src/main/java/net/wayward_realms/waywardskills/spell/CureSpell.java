@@ -3,7 +3,6 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -63,15 +62,8 @@ public class CureSpell extends SpellBase {
                 double healthRestore = potency / (double) players.size();
                 Character target = characterPlugin.getActiveCharacter(player1);
                 player1.setHealth(target.getHealth());
-                double initialHealth = player1.getHealth();
                 target.setHealth(Math.min(target.getHealth() + healthRestore, target.getMaxHealth()));
                 player1.setHealth(target.getHealth());
-                double newHealth = player1.getHealth();
-                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                if (classesPluginProvider != null) {
-                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                    classesPlugin.giveExperience(player, (int) Math.round(Math.max(newHealth - initialHealth, 0) * 4));
-                }
             }
         }
         return true;

@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillBase;
@@ -67,15 +66,8 @@ public class BandageSkill extends SkillBase {
                                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                                 Character character = characterPlugin.getActiveCharacter(target);
                                 target.setHealth(character.getHealth());
-                                double initialHealth = target.getHealth();
                                 character.setHealth(Math.min(character.getHealth() + healthRestore, character.getMaxHealth()));
                                 target.setHealth(character.getHealth());
-                                double newHealth = target.getHealth();
-                                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                                if (classesPluginProvider != null) {
-                                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                                    classesPlugin.giveExperience(player, (int) Math.round(Math.max(newHealth - initialHealth, 0) * 16));
-                                }
                                 target.sendMessage(ChatColor.GREEN + player.getDisplayName() + " applied a bandage to your wounds.");
                                 player.sendMessage(ChatColor.GREEN + "Applied a bandage to " + target.getDisplayName() + "'s wounds.");
                                 return true;
