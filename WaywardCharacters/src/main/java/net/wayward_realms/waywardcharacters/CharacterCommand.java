@@ -197,7 +197,7 @@ public class CharacterCommand implements CommandExecutor {
                         Player player = (Player) sender;
                         character.setDead(true);
                         plugin.setActiveCharacter(player, plugin.createNewCharacter(player));
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your character has been set to daed, and a new character has been created.");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your character has been set to dead, and a new character has been created.");
                     } else if (args[1].equalsIgnoreCase("nameplate")) {
                         if (args.length >= 3) {
                             StringBuilder nameBuilder = new StringBuilder();
