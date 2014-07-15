@@ -5,20 +5,20 @@ import org.bukkit.Location;
 import java.util.Arrays;
 import java.util.Vector;
 
-public class WaywardHeightMap {
+public class HeightMap {
 
     private int scale;
-    private Vector<WaywardHeightMapPoint> points;
+    private Vector<HeightMapPoint> points;
 
     private int max;
 
     @SuppressWarnings("unchecked")
-    WaywardHeightMap(int scale, WaywardHeightMapPoint... inputPoints){
+    HeightMap(int scale, HeightMapPoint... inputPoints){
         this.scale = scale;
         double testMax = 0;
         this.points = (Vector) Arrays.asList(inputPoints);
         //Find maximum point, in preparation for normalization.
-        for(WaywardHeightMapPoint point: points){
+        for(HeightMapPoint point: points){
             points.add(point);
             if(point.getValue() > testMax){
                 testMax = point.getValue();
@@ -26,7 +26,7 @@ public class WaywardHeightMap {
         }
         this.max = (int)testMax;
         //Normalize, and then smooth/flatten out the heights.
-        for(WaywardHeightMapPoint point: points){
+        for(HeightMapPoint point: points){
             point.setValue((point.getValue()/(max))*(point.getValue()/(max)));
         }
     }
@@ -35,7 +35,7 @@ public class WaywardHeightMap {
         int testY = location.getBlockY();
         int testX = location.getBlockX();
         double out = 0;
-        for(WaywardHeightMapPoint point : points){
+        for(HeightMapPoint point : points){
             double thisHeight =  ((point.getValue() * point.getValue() * scale * scale) - ( ((testX - point.getX())*(testX - point.getX())) + ((testY - point.getY())*(testY - point.getY()))));
             if(thisHeight > out){
                 out = thisHeight;
@@ -44,12 +44,12 @@ public class WaywardHeightMap {
         return (out/(scale*scale)) * max;
     }
 
-    public boolean addpoint(WaywardHeightMapPoint point){
+    public boolean addpoint(HeightMapPoint point){
         this.points.add(point);
         return this.points.contains(point);
     }
 
-    public Vector<WaywardHeightMapPoint> getPoints(){
+    public Vector<HeightMapPoint> getPoints(){
         return points;
     }
 }

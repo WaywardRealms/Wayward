@@ -1,13 +1,13 @@
 package net.wayward_realms.waywardlib.util.heightmap;
 
 
-public class WaywardHeightMapPoint {
+public class HeightMapPoint {
 
     private int x;
     private int y;
     private double value;
 
-    WaywardHeightMapPoint(int x, int y, int value){
+    HeightMapPoint(int x, int y, int value){
         this.x = x;
         this.y = y;
         this.value = value;
