@@ -31,7 +31,7 @@ public class HeightMap {
         }
     }
 
-    public double getheight(Location location){
+    public double getHeight(Location location){
         int testY = location.getBlockY();
         int testX = location.getBlockX();
         double out = 0;
@@ -44,7 +44,7 @@ public class HeightMap {
         return (out/(scale*scale)) * max;
     }
 
-    public boolean addpoint(HeightMapPoint point){
+    public boolean addPoint(HeightMapPoint point){
         this.points.add(point);
         return this.points.contains(point);
     }
