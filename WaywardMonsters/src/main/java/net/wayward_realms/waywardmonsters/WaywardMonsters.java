@@ -2,6 +2,7 @@ package net.wayward_realms.waywardmonsters;
 
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
+import net.wayward_realms.waywardmonsters.bleed.BleedBlockBreakListener;
 import net.wayward_realms.waywardmonsters.bleed.BleedCommand;
 import net.wayward_realms.waywardmonsters.bleed.BleedEntityDamageListener;
 import net.wayward_realms.waywardmonsters.bleed.BleedTask;
@@ -31,13 +32,14 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
         saveDefaultConfig();
         entityLevelManager = new EntityLevelManager(this);
         mobDropManager = new MobDropManager(this);
-        registerListeners(this, new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener(), new PlayerFishListener(this),
+        registerListeners(this,
+                new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener(), new PlayerFishListener(this),
                 new TrainingDummyPlayerInteractListener(this), new TrainingDummySignChangeListener(this),
-                new BleedEntityDamageListener(this));
+                new BleedEntityDamageListener(this), new BleedBlockBreakListener());
         getCommand("bleed").setExecutor(new BleedCommand(this));
         getCommand("zeropoint").setExecutor(new ZeroPointCommand(this));
         getCommand("viewzeropoints").setExecutor(new ViewZeroPointsCommand(this));
-        bleedTask = new BleedTask();
+        bleedTask = new BleedTask(this);
         getServer().getScheduler().runTaskTimer(this, bleedTask, 10L, 10L);
     }
 

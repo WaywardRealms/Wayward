@@ -1,18 +1,25 @@
 package net.wayward_realms.waywardmonsters.bleed;
 
+import net.wayward_realms.waywardmonsters.WaywardMonsters;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BleedTask implements Runnable {
 
+    private WaywardMonsters plugin;
+
     private final Map<UUID, BleedingEntity> bleedingEntities = new ConcurrentHashMap<>();
+    private final Map<Block, Integer> bloodBlocks = new ConcurrentHashMap<>();
+
+    public BleedTask(WaywardMonsters plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public void run() {
@@ -27,6 +34,28 @@ public class BleedTask implements Runnable {
                     Block block = entity.getWorld().getBlockAt(entity.getLocation());
                     if (block.getType() == Material.AIR && block.getRelative(BlockFace.DOWN).getType().isSolid()) {
                         block.setType(Material.REDSTONE_WIRE);
+                        block.setMetadata("isBlood", new FixedMetadataValue(plugin, true));
+                        synchronized (bloodBlocks) {
+                            bloodBlocks.put(block, 200);
+                        }
+                    }
+                } else {
+                    iterator.remove();
+                }
+            }
+        }
+        synchronized (bloodBlocks) {
+            final int interval = 10;
+            final Iterator<Map.Entry<Block, Integer>> iterator = bloodBlocks.entrySet().iterator();
+            while (iterator.hasNext()) {
+                final Map.Entry<Block, Integer> entry = iterator.next();
+                entry.setValue(entry.getValue() - interval);
+                int timeLeft = entry.getValue();
+                if (timeLeft > 0 && entry.getKey() != null && entry.getKey().getLocation() != null) {
+                    Block block = entry.getKey();
+                    if (block.getType() == Material.REDSTONE_WIRE && block.getMetadata("isBlood") != null && block.getMetadata("isBlood").size() > 0) {
+                        block.setType(Material.AIR);
+                        block.removeMetadata("isBlood", plugin);
                     }
                 } else {
                     iterator.remove();
