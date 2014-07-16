@@ -2,63 +2,63 @@ package net.wayward_realms.waywardmonsters;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.util.math.MathUtils;
-import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class EntityLevelManager {
 
     private WaywardMonsters plugin;
 
+    private File levelMapFile;
+    private BufferedImage levelMap;
+
     public EntityLevelManager(WaywardMonsters plugin) {
         this.plugin = plugin;
-    }
-
-    public void addZeroPoint(Location location) {
-        File zeroPointsFile = new File(plugin.getDataFolder(), "zero-points.yml");
-        YamlConfiguration zeroPointsConfig = YamlConfiguration.loadConfiguration(zeroPointsFile);
-        List<SerialisableLocation> zeroPoints = (List<SerialisableLocation>) zeroPointsConfig.getList("locations");
-        zeroPoints.add(new SerialisableLocation(location));
-        zeroPointsConfig.set("locations", zeroPoints);
-        try {
-            zeroPointsConfig.save(zeroPointsFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        levelMapFile = new File(plugin.getDataFolder(), "level-map");
+        if (levelMapFile.exists()) {
+            try {
+                levelMap = ImageIO.read(levelMapFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            levelMap = new BufferedImage(256, 256, BufferedImage.TYPE_BYTE_GRAY);
+            try {
+                ImageIO.write(levelMap, "png", levelMapFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
-    public void removeZeroPoint(Location location) {
-        File zeroPointsFile = new File(plugin.getDataFolder(), "zero-points.yml");
-        YamlConfiguration zeroPointsConfig = YamlConfiguration.loadConfiguration(zeroPointsFile);
-        List<SerialisableLocation> zeroPoints = (List<SerialisableLocation>) zeroPointsConfig.getList("locations");
-        zeroPoints.remove(new SerialisableLocation(location));
-        zeroPointsConfig.set("locations", zeroPoints);
-        try {
-            zeroPointsConfig.save(zeroPointsFile);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+    public void setChunkEntityLevel(Chunk chunk, int level, int radius) {
+        Chunk spawnChunk = chunk.getWorld().getSpawnLocation().getChunk();
+        int xOrigin = spawnChunk.getX() - 128;
+        int yOrigin = spawnChunk.getZ() - 128;
+        int x = chunk.getX() - xOrigin;
+        int y = chunk.getZ() - yOrigin;
+        if (x >= 0 && x < levelMap.getWidth() && y >= 0 && y < levelMap.getHeight()) {
+            Graphics2D graphics = levelMap.createGraphics();
+            for (int i = radius; i > 0; i--) {
+                int c = level - (int) Math.round(((double) i / (double) radius) * (double) level);
+                graphics.setColor(new Color(c, c, c));
+                graphics.fillRect(x - i, y - i, i * 2, i * 2);
+            }
+            graphics.dispose();
+            try {
+                ImageIO.write(levelMap, "png", levelMapFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
-    }
-
-    public Collection<Location> getZeroPoints() {
-        File zeroPointsFile = new File(plugin.getDataFolder(), "zero-points.yml");
-        YamlConfiguration zeroPointsConfig = YamlConfiguration.loadConfiguration(zeroPointsFile);
-        List<SerialisableLocation> zeroPoints = (List<SerialisableLocation>) zeroPointsConfig.getList("locations");
-        List<Location> locations = new ArrayList<>();
-        for (SerialisableLocation location : zeroPoints) {
-            locations.add(location.toLocation());
-        }
-        return locations;
     }
 
     public int getEntityLevel(Entity entity) {
@@ -73,16 +73,17 @@ public class EntityLevelManager {
                 }
             }
         }
-        Collection<Location> zeroPoints = getZeroPoints();
-        if (zeroPoints.size() == 0) return 1;
-        int minimumLevel = -1;
-        for (Location zeroPoint : zeroPoints) {
-            if (zeroPoint.getWorld().equals(entity.getWorld())) {
-                int possibleLevel = (int) Math.floor((MathUtils.fastsqrt(entity.getLocation().distanceSquared(zeroPoint)) / plugin.getConfig().getDouble("mob-level-scale", 32D)));
-                minimumLevel = possibleLevel < minimumLevel || minimumLevel == -1 ? possibleLevel : minimumLevel;
-            }
+        Chunk spawnChunk = entity.getWorld().getSpawnLocation().getChunk();
+        int xOrigin = spawnChunk.getX() - 128;
+        int yOrigin = spawnChunk.getZ() - 128;
+        Chunk entityChunk = entity.getLocation().getChunk();
+        int x = entityChunk.getX() - xOrigin;
+        int y = entityChunk.getZ() - yOrigin;
+        if (x >= 0 && x < levelMap.getWidth() && y >= 0 && y < levelMap.getHeight()) {
+            return (levelMap.getRGB(x, y) & 0xff);
+        } else {
+            return 0;
         }
-        return Math.max(minimumLevel - 1, 0);
     }
 
     public int getEntityStatValue(Entity entity) {

@@ -8,13 +8,10 @@ import net.wayward_realms.waywardmonsters.drops.MobDrop;
 import net.wayward_realms.waywardmonsters.drops.MobDropManager;
 import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummyPlayerInteractListener;
 import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummySignChangeListener;
-import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Collection;
 
 import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
 
@@ -33,8 +30,6 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
         registerListeners(this, new CreatureSpawnListener(this), new EntityDamageByEntityListener(this), new EntityDeathListener(this), new PlayerInteractEntityListener(), new PlayerFishListener(this),
                 new TrainingDummyPlayerInteractListener(this), new TrainingDummySignChangeListener(this),
                 new BleedEntityDamageListener(this));
-        getCommand("zeropoint").setExecutor(new ZeroPointCommand(this));
-        getCommand("viewzeropoints").setExecutor(new ViewZeroPointsCommand(this));
         bleedTask = new BleedTask();
         getServer().getScheduler().runTaskTimer(this, bleedTask, 10L, 10L);
     }
@@ -42,21 +37,6 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
     @Override
     public void onDisable() {
         saveState();
-    }
-
-    @Override
-    public Collection<Location> getZeroPoints() {
-        return entityLevelManager.getZeroPoints();
-    }
-
-    @Override
-    public void addZeroPoint(Location zeroPoint) {
-        entityLevelManager.addZeroPoint(zeroPoint);
-    }
-
-    @Override
-    public void removeZeroPoint(Location zeroPoint) {
-        entityLevelManager.removeZeroPoint(zeroPoint);
     }
 
     @Override
