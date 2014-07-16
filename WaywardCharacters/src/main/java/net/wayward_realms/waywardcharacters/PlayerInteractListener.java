@@ -12,11 +12,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static org.bukkit.block.Biome.*;
+import static org.bukkit.event.block.Action.*;
 
 public class PlayerInteractListener implements Listener {
 
@@ -74,10 +79,38 @@ public class PlayerInteractListener implements Listener {
                     if (targetBlock != null) {
                         if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
                             net.wayward_realms.waywardlib.character.Character character = plugin.getActiveCharacter(event.getPlayer());
-                            character.setThirst(character.getThirst() + 1);
-                            event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                            if (plugin.isSafeWater(targetBlock.getBiome())) {
+                                character.setThirst(character.getThirst() + 1);
+                                event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                            } else {
+                                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 1500, 2), true);
+                                event.getPlayer().sendMessage(ChatColor.RED + "You feel sick. Perhaps it was the water.");
+                                if (targetBlock.getBiome() == OCEAN || targetBlock.getBiome() == DEEP_OCEAN || targetBlock.getBiome() == FROZEN_OCEAN || targetBlock.getBiome() == BEACH || targetBlock.getBiome() == COLD_BEACH || targetBlock.getBiome() == STONE_BEACH) {
+                                    character.setThirst(character.getThirst() - 2);
+                                    event.getPlayer().sendMessage(ChatColor.RED + "You suddenly feel dehydrated from drinking salt water.");
+                                    event.getPlayer().sendMessage(ChatColor.RED + "Thirst: -2" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
+                                }
+                            }
                         }
                     }
+                }
+            } else if (event.getPlayer().getItemInHand().getType() == Material.GLASS_BOTTLE) {
+                if (event.getAction() == RIGHT_CLICK_BLOCK || event.getAction() == RIGHT_CLICK_AIR) {
+                    event.setCancelled(true);
+                    if (event.getPlayer().getItemInHand().getAmount() > 1) {
+                        event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
+                    } else {
+                        event.getPlayer().setItemInHand(null);
+                    }
+                    ItemStack water = new ItemStack(Material.POTION);
+                    ItemMeta meta = water.getItemMeta();
+                    List<String> lore = new ArrayList<>();
+                    Block targetBlock = getTargetBlock(event.getPlayer());
+                    lore.add(targetBlock.getWorld().getBiome(targetBlock.getX(), targetBlock.getY()).toString());
+                    meta.setLore(lore);
+                    water.setItemMeta(meta);
+                    event.getPlayer().getInventory().addItem(water);
+                    event.getPlayer().updateInventory();
                 }
             }
         }
