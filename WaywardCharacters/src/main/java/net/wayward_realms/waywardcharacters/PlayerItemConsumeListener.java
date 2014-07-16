@@ -64,7 +64,6 @@ public class PlayerItemConsumeListener implements Listener {
             event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +5 " + ChatColor.GRAY + "(Total: " + character.getThirst() + ")");
         }
         if (event.getItem().getType() == Material.ROTTEN_FLESH) {
-            Character character = plugin.getActiveCharacter(event.getPlayer());
             character.setHealth(character.getHealth() - 5);
             event.getPlayer().sendMessage(ChatColor.RED + "Health: -5 " + ChatColor.GRAY + "(Total: " + character.getHealth() + ")");
         }
