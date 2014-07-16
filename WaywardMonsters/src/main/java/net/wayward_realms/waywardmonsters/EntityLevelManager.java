@@ -39,6 +39,19 @@ public class EntityLevelManager {
         }
     }
 
+    public int getChunkEntityLevel(Chunk chunk) {
+        Chunk spawnChunk = chunk.getWorld().getSpawnLocation().getChunk();
+        int xOrigin = spawnChunk.getX() - 128;
+        int yOrigin = spawnChunk.getZ() - 128;
+        int x = chunk.getX() - xOrigin;
+        int y = chunk.getZ() - yOrigin;
+        if (x >= 0 && x < levelMap.getWidth() && y >= 0 && y < levelMap.getHeight()) {
+            return (levelMap.getRGB(x, y) & 0xff);
+        } else {
+            return 0;
+        }
+    }
+
     public void setChunkEntityLevel(Chunk chunk, int level, int radius) {
         Chunk spawnChunk = chunk.getWorld().getSpawnLocation().getChunk();
         int xOrigin = spawnChunk.getX() - 128;
@@ -73,17 +86,8 @@ public class EntityLevelManager {
                 }
             }
         }
-        Chunk spawnChunk = entity.getWorld().getSpawnLocation().getChunk();
-        int xOrigin = spawnChunk.getX() - 128;
-        int yOrigin = spawnChunk.getZ() - 128;
         Chunk entityChunk = entity.getLocation().getChunk();
-        int x = entityChunk.getX() - xOrigin;
-        int y = entityChunk.getZ() - yOrigin;
-        if (x >= 0 && x < levelMap.getWidth() && y >= 0 && y < levelMap.getHeight()) {
-            return (levelMap.getRGB(x, y) & 0xff);
-        } else {
-            return 0;
-        }
+        return getChunkEntityLevel(entityChunk);
     }
 
     public int getEntityStatValue(Entity entity) {

@@ -8,6 +8,7 @@ import net.wayward_realms.waywardmonsters.drops.MobDrop;
 import net.wayward_realms.waywardmonsters.drops.MobDropManager;
 import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummyPlayerInteractListener;
 import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummySignChangeListener;
+import org.bukkit.Chunk;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -74,6 +75,14 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
 
     public void bleed(LivingEntity entity) {
         bleedTask.add(entity);
+    }
+
+    public int getChunkEntityLevel(Chunk chunk) {
+        return getEntityLevelManager().getChunkEntityLevel(chunk);
+    }
+
+    public void setChunkEntityLevel(Chunk chunk, int level, int radius) {
+        getEntityLevelManager().setChunkEntityLevel(chunk, level, radius);
     }
 
 }
