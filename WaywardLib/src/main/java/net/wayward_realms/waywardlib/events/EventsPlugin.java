@@ -101,4 +101,33 @@ public interface EventsPlugin extends WaywardPlugin {
      */
     public void removeRace(Race race);
 
+    /**
+     * Gets a collection of all quests
+     *
+     * @return a {@link java.util.Collection} containing all available quests
+     */
+    public Collection<? extends Quest> getQuests();
+
+    /**
+     * Gets a quest by name
+     *
+     * @param name the name of the quest
+     * @return the quest
+     */
+    public Quest getQuest(String name);
+
+    /**
+     * Adds a quest
+     *
+     * @param quest the quest to add
+     */
+    public void addQuest(Quest quest);
+
+    /**
+     * Removes a quest
+     *
+     * @param quest the quest to remove
+     */
+    public void removeQuest(Quest quest);
+
 }
