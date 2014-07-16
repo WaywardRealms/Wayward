@@ -29,3 +29,6 @@ permissions:
     wayward.monsters.trainingdummy:
         description: Allows you to create training dummies
         default: op
+    wayward.monsters.target:
+        description: Allows you to create targets
+        default: op
