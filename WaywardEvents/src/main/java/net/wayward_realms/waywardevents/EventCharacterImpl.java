@@ -21,10 +21,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class EventCharacterImpl implements EventCharacter {
 
@@ -437,7 +434,7 @@ public class EventCharacterImpl implements EventCharacter {
 
     @Override
     public Collection<TemporaryStatModification> getTemporaryStatModifications() {
-        return (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+        return getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
     }
 
     @Override
