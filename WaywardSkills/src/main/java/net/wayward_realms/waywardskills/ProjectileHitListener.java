@@ -29,6 +29,17 @@ public class ProjectileHitListener implements Listener {
                         thrownPotion.setVelocity(arrow.getVelocity());
                         thrownPotion.setItem(itemStack);
                     }
+                } else if (arrow.getMetadata("isSnareShot") != null) {
+                    if (!arrow.getMetadata("isSnareShot").isEmpty()) {
+                        Potion potion = new Potion(PotionType.SLOWNESS, 7);
+                        potion.setSplash(true);
+                        ItemStack itemStack = new ItemStack(Material.POTION);
+                        potion.apply(itemStack);
+                        ThrownPotion thrownPotion = arrow.getShooter().launchProjectile(ThrownPotion.class);
+                        thrownPotion.teleport(arrow);
+                        thrownPotion.setVelocity(arrow.getVelocity());
+                        thrownPotion.setItem(itemStack);
+                    }
                 }
             }
         }

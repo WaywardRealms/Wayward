@@ -36,6 +36,7 @@ public class SkillManager {
         addSkill(new MultiShotSkill());
         addSkill(new RazorShotSkill(plugin));
         addSkill(new PowerShotSkill(plugin));
+        addSkill(new SnareShotSkill());
     }
 
     public Skill getSkill(String name) {
