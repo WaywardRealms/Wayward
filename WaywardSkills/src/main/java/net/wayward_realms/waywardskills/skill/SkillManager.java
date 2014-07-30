@@ -35,6 +35,7 @@ public class SkillManager {
         addSkill(new SpinningSweepSkill(plugin));
         addSkill(new MultiShotSkill());
         addSkill(new RazorShotSkill(plugin));
+        addSkill(new PowerShotSkill(plugin));
     }
 
     public Skill getSkill(String name) {

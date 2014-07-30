@@ -6,8 +6,15 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class EntityDamageByEntityListener implements Listener {
+
+    private WaywardSkills plugin;
+
+    public EntityDamageByEntityListener(WaywardSkills plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
@@ -56,9 +63,14 @@ public class EntityDamageByEntityListener implements Listener {
             if (arrow.getMetadata("isRazorShot") != null) {
                 if (!arrow.getMetadata("isRazorShot").isEmpty()) {
                     if (event.getEntity() instanceof LivingEntity) {
-                        event.setDamage(Double.MAX_VALUE);
-                        ((LivingEntity) event.getEntity()).launchProjectile(Arrow.class, arrow.getVelocity());
+                        event.setDamage(9999D);
+                        Arrow newArrow = ((LivingEntity) event.getEntity()).launchProjectile(Arrow.class, arrow.getVelocity());
+                        newArrow.setMetadata("isRazorShot", new FixedMetadataValue(plugin, true));
                     }
+                }
+            } else if (arrow.getMetadata("isPowerShot") != null) {
+                if (!arrow.getMetadata("isPowerShot").isEmpty()) {
+                    event.setDamage(9999D);
                 }
             }
         } else if (event.getDamager() instanceof Player) {
