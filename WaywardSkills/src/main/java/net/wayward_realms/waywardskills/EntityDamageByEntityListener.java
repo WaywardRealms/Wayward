@@ -51,6 +51,16 @@ public class EntityDamageByEntityListener implements Listener {
                     }
                 }
             }
+        } else if (event.getDamager() instanceof Arrow) {
+            Arrow arrow = (Arrow) event.getDamager();
+            if (arrow.getMetadata("isRazorShot") != null) {
+                if (!arrow.getMetadata("isRazorShot").isEmpty()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        event.setDamage(Double.MAX_VALUE);
+                        ((LivingEntity) event.getEntity()).launchProjectile(Arrow.class, arrow.getVelocity());
+                    }
+                }
+            }
         } else if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
             if (player.getItemInHand() != null) {
