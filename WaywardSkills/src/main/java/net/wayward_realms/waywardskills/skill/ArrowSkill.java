@@ -53,7 +53,7 @@ public class ArrowSkill extends AttackSkillBase {
         if (containsBow) {
             if (player.getInventory().containsAtLeast(new ItemStack(Material.ARROW), 1)) {
                 player.launchProjectile(Arrow.class);
-                player.getInventory().removeItem(new ItemStack(Material.ARROW), new ItemStack(Material.FERMENTED_SPIDER_EYE));
+                player.getInventory().removeItem(new ItemStack(Material.ARROW));
                 return true;
             } else {
                 player.sendMessage(ChatColor.RED + "You require an arrow.");
