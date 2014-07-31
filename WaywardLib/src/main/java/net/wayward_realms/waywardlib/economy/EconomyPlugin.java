@@ -224,4 +224,38 @@ public interface EconomyPlugin extends WaywardPlugin {
      */
     public void transferMoney(Character takeFrom, Character giveTo, Currency currency, int amount);
 
+    /**
+     * Gets a character's bank balance in the default currency
+     *
+     * @param character the character
+     * @return the character's bank balance
+     */
+    public int getBankBalance(Character character);
+
+    /**
+     * Gets a character's bank balance
+     *
+     * @param character the character
+     * @param currency the currency
+     * @return the character's bank balance
+     */
+    public int getBankBalance(Character character, Currency currency);
+
+    /**
+     * Sets a character's bank balance in the default currency
+     *
+     * @param character the character
+     * @param amount the amount to set
+     */
+    public void setBankBalance(Character character, int amount);
+
+    /**
+     * Sets a character's bank balance
+     *
+     * @param character the character
+     * @param currency the currency
+     * @param amount the amount to set
+     */
+    public void setBankBalance(Character character, Currency currency, int amount);
+
 }
