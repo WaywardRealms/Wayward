@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -56,7 +55,7 @@ public class BurnSpell extends AttackSpellBase {
                 }
             }
         }
-        for (Entity entity : player.getWorld().getEntities()) {
+        for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
                 if (!invulnerableEntities.contains(entity)) {
                     entity.setFireTicks(fireTicks);
@@ -88,6 +87,11 @@ public class BurnSpell extends AttackSpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deal 3 burn damage to the opposing party for 5 turns";
     }
 
     @Override

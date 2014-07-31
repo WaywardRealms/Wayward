@@ -65,6 +65,11 @@ public class QuickStepSkill extends SkillBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Flees a fight without fail";
+    }
+
     private List<Block> getLineOfSight(Player player, int maxDistance) {
         if (maxDistance > 120) {
             maxDistance = 120;

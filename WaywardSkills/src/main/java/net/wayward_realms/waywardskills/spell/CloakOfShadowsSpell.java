@@ -76,4 +76,9 @@ public class CloakOfShadowsSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 45;
     }
 
+    @Override
+    public String getDescription() {
+        return "Causes every attack targeted at you to miss for 5 turns";
+    }
+
 }

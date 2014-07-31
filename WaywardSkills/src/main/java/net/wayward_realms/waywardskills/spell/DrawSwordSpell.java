@@ -87,4 +87,9 @@ public class DrawSwordSpell extends SpellBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Draw a sword from the material you are standing on";
+    }
+
 }

@@ -54,4 +54,9 @@ public class FireSwordSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 25;
     }
 
+    @Override
+    public String getDescription() {
+        return "For the next three turns, melee attacks cause 3 burn damage for 3 turns after the attack";
+    }
+
 }

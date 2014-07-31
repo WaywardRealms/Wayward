@@ -116,4 +116,9 @@ public class CureSpell extends SpellBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Restore HP equal to 25% of your magic defence stat to one target";
+    }
+
 }

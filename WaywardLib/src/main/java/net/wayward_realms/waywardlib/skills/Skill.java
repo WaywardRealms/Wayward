@@ -88,6 +88,13 @@ public interface Skill {
     public void setName(String name);
 
     /**
+     * Gets a description of how the skill is used in RP
+     *
+     * @return a description of how the skill is used in RP
+     */
+    public String getDescription();
+
+    /**
      * Gets the type of skill
      *
      * @return the type

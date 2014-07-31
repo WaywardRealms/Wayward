@@ -180,6 +180,11 @@ public class BlizzardSpell extends AttackSpellBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Deals damage equal to the difference between your magic attack roll and your opponent's magic defence roll for every member of the opposing party";
+    }
+
+    @Override
     public Map<StatusEffect, Integer> getStatusEffects() {
         Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
         statusEffects.put(StatusEffect.FROZEN, 3);

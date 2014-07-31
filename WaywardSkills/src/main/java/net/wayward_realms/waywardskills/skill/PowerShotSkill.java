@@ -86,4 +86,9 @@ public class PowerShotSkill extends AttackSkillBase {
         return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 24;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deals damage equal to double the difference between your ranged attack roll and your target's ranged defence roll";
+    }
+
 }

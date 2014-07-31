@@ -89,6 +89,11 @@ public class PoisonArrowSkill extends AttackSkillBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Deals damage equal to half of the difference between your ranged attack roll and your opponent's ranged defence roll, then 3 additional damage for the next 5 turns";
+    }
+
+    @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 5;
     }

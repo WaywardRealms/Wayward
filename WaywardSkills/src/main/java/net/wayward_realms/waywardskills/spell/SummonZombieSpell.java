@@ -84,4 +84,9 @@ public class SummonZombieSpell extends AttackSpellBase {
         return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 5;
     }
 
+    @Override
+    public String getDescription() {
+        return "Allows you to deal the difference between your magic attack roll and your opponent's melee defence roll for 3 turns in addition to taking another action";
+    }
+
 }

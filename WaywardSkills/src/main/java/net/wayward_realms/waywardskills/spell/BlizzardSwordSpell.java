@@ -66,4 +66,9 @@ public class BlizzardSwordSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 70;
     }
 
+    @Override
+    public String getDescription() {
+        return "Add 10 to your melee attack roll for 3 turns";
+    }
+
 }

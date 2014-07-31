@@ -56,4 +56,9 @@ public class LevitationSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 50;
     }
 
+    @Override
+    public String getDescription() {
+        return "Prevents melee attacks from hitting for 5 turns";
+    }
+
 }

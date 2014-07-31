@@ -99,4 +99,9 @@ public class SpinningSweepSkill extends AttackSkillBase {
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 10;
     }
+
+    @Override
+    public String getDescription() {
+        return "Deal damage equal to half the difference between your melee attack roll and your opponent's melee defence roll for each member of the opposing party";
+    }
 }

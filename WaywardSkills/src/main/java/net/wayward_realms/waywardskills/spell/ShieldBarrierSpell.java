@@ -97,4 +97,9 @@ public class ShieldBarrierSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_DEFENCE) >= 40;
     }
 
+    @Override
+    public String getDescription() {
+        return "Prevents your party taking damage for 1 turn";
+    }
+
 }

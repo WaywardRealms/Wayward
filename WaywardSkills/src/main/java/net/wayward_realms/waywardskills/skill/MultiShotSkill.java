@@ -101,4 +101,9 @@ public class MultiShotSkill extends AttackSkillBase {
         return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 8;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deals one fifth of the difference between your ranged attack roll and your target's ranged defence roll five times";
+    }
+
 }

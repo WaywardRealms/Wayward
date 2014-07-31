@@ -63,4 +63,9 @@ public class IceBreathSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 20;
     }
 
+    @Override
+    public String getDescription() {
+        return "Prevents one target from moving for 5 turns";
+    }
+
 }

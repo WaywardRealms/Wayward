@@ -64,4 +64,9 @@ public class FireBreathSpell extends SpellBase {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 5;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deal 5 damage to the opposing party for 5 turns";
+    }
+
 }

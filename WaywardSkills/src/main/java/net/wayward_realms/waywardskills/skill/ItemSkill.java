@@ -87,4 +87,9 @@ public class ItemSkill extends SkillBase {
         return true;
     }
 
+    @Override
+    public String getDescription() {
+        return "Uses an item in battle";
+    }
+
 }
