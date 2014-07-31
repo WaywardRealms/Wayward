@@ -63,6 +63,11 @@ public class DashSkill extends SkillBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Flees a fight without fail";
+    }
+
+    @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.SPEED_NIMBLE) >= 1;
     }

@@ -118,4 +118,9 @@ public class MageArmourSpell extends SpellBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Increases defensive rolls by 25% for 5 turns";
+    }
+
 }

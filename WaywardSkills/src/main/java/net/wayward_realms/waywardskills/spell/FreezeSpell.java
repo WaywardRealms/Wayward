@@ -77,6 +77,11 @@ public class FreezeSpell extends SpellBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Prevents the opposing party from moving for 3 turns";
+    }
+
     private void scheduleLaunches(final Plugin plugin, final Player player, long... delays) {
         for (long delay : delays) {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

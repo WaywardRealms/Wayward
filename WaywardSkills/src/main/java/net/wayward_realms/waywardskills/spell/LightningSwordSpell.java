@@ -80,4 +80,9 @@ public class LightningSwordSpell extends AttackSpellBase {
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 80;
     }
+
+    @Override
+    public String getDescription() {
+        return "Add 20 to your melee attack rolls for 3 turns";
+    }
 }

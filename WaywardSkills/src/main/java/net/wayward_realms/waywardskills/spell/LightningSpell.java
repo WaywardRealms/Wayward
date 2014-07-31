@@ -94,6 +94,11 @@ public class LightningSpell extends AttackSpellBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Deals damage equal to five times the difference between your magic attack roll and your opponent's magic defence roll";
+    }
+
+    @Override
     public int getStatusEffectChance(StatusEffect statusEffect) {
         return 10;
     }

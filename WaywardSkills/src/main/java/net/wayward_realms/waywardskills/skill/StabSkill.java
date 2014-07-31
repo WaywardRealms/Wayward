@@ -108,4 +108,9 @@ public class StabSkill extends AttackSkillBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deals damage equal to the difference between your melee attack roll and your target's melee defence roll";
+    }
+
 }

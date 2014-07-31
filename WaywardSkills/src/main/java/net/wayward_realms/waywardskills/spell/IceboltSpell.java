@@ -95,6 +95,11 @@ public class IceboltSpell extends AttackSpellBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deal damage to one target equal to half of the difference between your magic attack stat rolled 5 times and your target's magic defence rolled 5 times";
+    }
+
     private void scheduleLaunches(final Plugin plugin, final Player player, long... delays) {
         for (long delay : delays) {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

@@ -99,4 +99,9 @@ public class ArrowSkill extends AttackSkillBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deal damage equal to the difference between your ranged attack roll and your target's ranged defence roll";
+    }
+
 }

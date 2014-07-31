@@ -83,6 +83,11 @@ public class SnareShotSkill extends AttackSkillBase {
     }
 
     @Override
+    public String getDescription() {
+        return "If your ranged attack roll is higher than your target's ranged defence roll, prevent your target from making a move for 3 turns";
+    }
+
+    @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.RANGED_DEFENCE) >= 8;
     }

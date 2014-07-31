@@ -85,4 +85,9 @@ public class SlashSkill extends AttackSkillBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deal damage equal to the difference between your melee attack roll and your opponent's melee defence roll";
+    }
+
 }

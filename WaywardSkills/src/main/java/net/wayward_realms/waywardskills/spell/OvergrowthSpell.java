@@ -85,4 +85,9 @@ public class OvergrowthSpell extends AttackSpellBase {
         return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 80;
     }
 
+    @Override
+    public String getDescription() {
+        return "Deals damage equal to 3 times the difference between your magic attack roll and target's magic defence roll to up to 3 targets, and prevents them from making one move";
+    }
+
 }

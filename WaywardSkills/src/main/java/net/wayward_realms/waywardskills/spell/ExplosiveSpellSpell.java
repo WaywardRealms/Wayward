@@ -72,4 +72,9 @@ public class ExplosiveSpellSpell extends AttackSpellBase {
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 24;
     }
+
+    @Override
+    public String getDescription() {
+        return "Deal damage equal to five times the difference between your magic attack roll and your opponent's magic defence roll";
+    }
 }

@@ -91,6 +91,11 @@ public class FireballSpell extends AttackSpellBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Deals damage equal to double the difference between your magic attack roll and your target's magic defence roll";
+    }
+
+    @Override
     public Map<StatusEffect, Integer> getStatusEffects() {
         Map<StatusEffect, Integer> statusEffects = new EnumMap<>(StatusEffect.class);
         statusEffects.put(StatusEffect.BURNED, 3);

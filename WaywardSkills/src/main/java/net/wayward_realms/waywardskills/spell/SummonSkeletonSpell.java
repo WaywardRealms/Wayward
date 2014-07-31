@@ -84,4 +84,9 @@ public class SummonSkeletonSpell extends AttackSpellBase {
         return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 10;
     }
 
+    @Override
+    public String getDescription() {
+        return "Allows you to deal the difference between your magic attack roll and your opponent's ranged defence roll for 3 turns in addition to taking another action";
+    }
+
 }

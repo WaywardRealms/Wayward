@@ -128,4 +128,9 @@ public class ArmourUpSkill extends SkillBase {
         return character.getSkillPoints(SkillType.SUPPORT_PERFORM) >= 2;
     }
 
+    @Override
+    public String getDescription() {
+        return "Add 25% to each of your defence rolls";
+    }
+
 }

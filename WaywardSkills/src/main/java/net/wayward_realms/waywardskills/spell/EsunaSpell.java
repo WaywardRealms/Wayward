@@ -106,4 +106,9 @@ public class EsunaSpell extends SpellBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Cure all status ailments (burn, bleed, paralyse, etc) for one target";
+    }
+
 }

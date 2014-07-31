@@ -66,6 +66,11 @@ public class MagicMissileSpell extends AttackSpellBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Deals damage equal to the difference between your magic attack roll and your opponent's magic defence roll, with a minimum of 1 damage";
+    }
+
+    @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 1;
     }

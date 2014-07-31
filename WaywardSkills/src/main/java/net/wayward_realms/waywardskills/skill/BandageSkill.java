@@ -124,4 +124,9 @@ public class BandageSkill extends SkillBase {
         return character.getSkillPoints(SkillType.MAGIC_HEALING) > 0;
     }
 
+    @Override
+    public String getDescription() {
+        return "Restores " + (int) Math.round(getHealthRestore()) + " HP to one target, and uses one bandage";
+    }
+
 }

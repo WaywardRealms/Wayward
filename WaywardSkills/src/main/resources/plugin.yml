@@ -11,9 +11,15 @@ commands:
     bindspell:
         description: Binds a spell to your item in hand
         usage: /<command>
+    spellinfo:
+        description: Shows the description for a spell
+        usage: /<command> [spell]
     skill:
         description: Uses a skill
         usage: /<command> [skill]
     bindskill:
         description: Binds a skill to your item in hand
         usage: /<command>
+    skillinfo:
+        description: Shows the description for a skill
+        usage: /<command> [skill]

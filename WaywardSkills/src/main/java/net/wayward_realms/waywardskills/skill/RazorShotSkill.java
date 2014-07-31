@@ -86,4 +86,9 @@ public class RazorShotSkill extends AttackSkillBase {
         return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 32;
     }
 
+    @Override
+    public String getDescription() {
+        return "If your ranged attack roll is greater than your opponent's ranged defence roll, 3 damage is dealt to your opponent every turn for 5 turns";
+    }
+
 }
