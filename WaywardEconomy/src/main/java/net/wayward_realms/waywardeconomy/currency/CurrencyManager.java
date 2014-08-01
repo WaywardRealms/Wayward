@@ -60,8 +60,11 @@ public class CurrencyManager {
     public Currency getCurrency(String name) {
         File currencyDirectory = new File(plugin.getDataFolder(), "currency");
         File currencyFile = new File(currencyDirectory, name + ".yml");
-        YamlConfiguration currencyConfig = YamlConfiguration.loadConfiguration(currencyFile);
-        return (Currency) currencyConfig.get("currency");
+        if (currencyFile.exists()) {
+            YamlConfiguration currencyConfig = YamlConfiguration.loadConfiguration(currencyFile);
+            return (Currency) currencyConfig.get("currency");
+        }
+        return null;
     }
 
     public int getMoney(Character character, Currency currency) {

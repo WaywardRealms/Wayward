@@ -20,6 +20,7 @@ public class SignChangeListener implements Listener {
 
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
+        // Shop signs
         if (event.getLine(0).equalsIgnoreCase("[shop]")) {
             event.setLine(0, ChatColor.DARK_PURPLE + "[shop]");
             if (!(event.getLine(1).toLowerCase().contains("buy ") || event.getLine(1).toLowerCase().contains("sell "))) {
@@ -80,6 +81,24 @@ public class SignChangeListener implements Listener {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     event.setLine(3, "" + characterPlugin.getActiveCharacter(event.getPlayer()).getId());
                 }
+            }
+        }
+        // Bank signs
+        if (event.getLine(0).equalsIgnoreCase("[bank]")) {
+            event.setLine(0, ChatColor.GOLD + "[bank]");
+            if (!event.getPlayer().hasPermission("wayward.economy.bank.create")) {
+                event.getBlock().breakNaturally();
+                event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission to create banks.");
+                return;
+            }
+            if (!(event.getLine(1).equalsIgnoreCase("withdraw") || event.getLine(1).equalsIgnoreCase("deposit") || event.getLine(1).equalsIgnoreCase("balance"))) {
+                event.getBlock().breakNaturally();
+                event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line must be: \"withdraw\", \"deposit\" or \"balance\"");
+                return;
+            }
+            event.setLine(2, "1");
+            if (plugin.getCurrency(event.getLine(3)) == null) {
+                event.setLine(3, plugin.getPrimaryCurrency().getName());
             }
         }
     }
