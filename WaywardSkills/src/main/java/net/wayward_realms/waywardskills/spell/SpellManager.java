@@ -48,6 +48,7 @@ public class SpellManager {
         addSpell(new BlizzardSwordSpell());
         addSpell(new FireBreathSpell(plugin));
         addSpell(new ShieldBarrierSpell(plugin));
+        addSpell(new BlinkSpell(plugin));
     }
 
     public Spell getSpell(String name) {
