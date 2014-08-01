@@ -141,7 +141,7 @@ public class PlayerInteractListener implements Listener {
                             removeLockpick(event.getPlayer());
                             event.getPlayer().updateInventory();
                             Random random = new Random();
-                            if (random.nextInt(100) > plugin.getLockpickEfficiency(event.getPlayer())) {
+                            if (random.nextInt(100) > plugin.getLockpickEfficiency(event.getPlayer()) / 4) {
                                 event.setCancelled(true);
                                 switch (random.nextInt(5)) {
                                     case 0: event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Your lockpick bent inside the lock."); break;
