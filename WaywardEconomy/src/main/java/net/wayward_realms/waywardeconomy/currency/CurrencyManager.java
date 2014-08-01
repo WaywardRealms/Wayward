@@ -109,4 +109,27 @@ public class CurrencyManager {
         }
     }
 
+    public int getBankBalance(Character character, Currency currency) {
+        File bankDirectory = new File(plugin.getDataFolder(), "bank");
+        File characterFile = new File(bankDirectory, character.getId() + ".yml");
+        if (characterFile.exists()) {
+            YamlConfiguration characterSave = YamlConfiguration.loadConfiguration(characterFile);
+            return characterSave.getInt("currencies." + currency.getName(), 0);
+        }
+        return currency.getDefaultAmount();
+    }
+
+    public void setBankBalance(Character character, Currency currency, int amount) {
+        File bankDirectory = new File(plugin.getDataFolder(), "bank");
+        File characterFile = new File(bankDirectory, character.getId() + ".yml");
+        YamlConfiguration characterSave = YamlConfiguration.loadConfiguration(characterFile);
+        characterSave.set("currencies." + currency.getName(), amount);
+        try {
+            characterSave.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        plugin.checkRichest(character);
+    }
+
 }

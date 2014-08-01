@@ -230,6 +230,26 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         currencyManager.transferMoney(takeFrom, giveTo, currency, amount);
     }
 
+    @Override
+    public int getBankBalance(Character character) {
+        return getBankBalance(character, getPrimaryCurrency());
+    }
+
+    @Override
+    public int getBankBalance(Character character, Currency currency) {
+        return currencyManager.getBankBalance(character, currency);
+    }
+
+    @Override
+    public void setBankBalance(Character character, int amount) {
+        setBankBalance(character, getPrimaryCurrency(), amount);
+    }
+
+    @Override
+    public void setBankBalance(Character character, Currency currency, int amount) {
+        currencyManager.setBankBalance(character, currency, amount);
+    }
+
     public Character[] getRichestCharacters() {
         File richestFile = new File(getDataFolder(), "richest.yml");
         YamlConfiguration richestSave = YamlConfiguration.loadConfiguration(richestFile);
@@ -274,8 +294,8 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
         Character tmp;
         Character pivot = characters.get((left + right) / 2);
         while (i <= j) {
-            while (getMoney(characters.get(i)) > getMoney(pivot)) i++;
-            while (getMoney(characters.get(j)) < getMoney(pivot)) j--;
+            while (getMoney(characters.get(i)) + getBankBalance(characters.get(i)) > getMoney(pivot) + getBankBalance(pivot)) i++;
+            while (getMoney(characters.get(j)) + getBankBalance(characters.get(j)) < getMoney(pivot) + getBankBalance(pivot)) j--;
             if (i <= j) {
                 tmp = characters.get(i);
                 characters.set(i, characters.get(j));
