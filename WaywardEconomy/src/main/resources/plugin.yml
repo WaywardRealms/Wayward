@@ -27,3 +27,6 @@ permissions:
     wayward.economy.shop.admin:
         description: Allows you to create admin shops
         default: op
+    wayward.economy.bank.create:
+        description: Allows you to create banks
+        default: op
