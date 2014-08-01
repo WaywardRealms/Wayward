@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -157,13 +158,22 @@ public class PlayerInteractListener implements Listener {
                                 }
                                 final Player player = event.getPlayer();
                                 if (block.getType() == Material.CHEST) {
-                                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            player.closeInventory();
-                                            player.sendMessage(ChatColor.RED + "The chest snaps shut again, the lock clicking shut.");
+                                    if (plugin.isLockpickCooledDown(block)) {
+                                        Chest chest = (Chest) block.getState();
+                                        ItemStack item = chest.getInventory().getItem(random.nextInt(chest.getInventory().getSize()));
+                                        if (item != null) {
+                                            for (ItemStack drop : player.getInventory().addItem(item).values()) {
+                                                player.getWorld().dropItem(player.getLocation(), drop);
+                                            }
+                                            player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You managed to recover " + item.getAmount() + " " + item.getType().toString().toLowerCase().replace('_', ' ') + (item.getAmount() != 1 ? "s" : "") + " before the chest slammed shut again.");
+                                        } else {
+                                            player.sendMessage(plugin.getPrefix() + ChatColor.RED + "You managed to open the container, but failed to find any items before it slammed shut again.");
                                         }
-                                    }, 60L);
+                                        plugin.setLockpickCooldown(block, 43200000L); // 43200000 milliseconds = 12 hours
+                                    } else {
+                                        player.sendMessage(plugin.getPrefix() + ChatColor.RED + "That chest has already been lockpicked today, try again tomorrow.");
+                                    }
+                                    event.setCancelled(true);
                                 } else if (block.getType() == Material.WOOD_DOOR || block.getType() == Material.WOODEN_DOOR) {
                                     final Block finalBlock = block;
                                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
