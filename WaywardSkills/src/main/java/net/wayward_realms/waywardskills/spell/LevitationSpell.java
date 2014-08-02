@@ -46,7 +46,7 @@ public class LevitationSpell extends SpellBase {
     public ItemStack getIcon() {
         ItemStack icon = new ItemStack(Material.FEATHER);
         ItemMeta meta = icon.getItemMeta();
-        meta.setDisplayName("Levitate");
+        meta.setDisplayName("Levitation");
         icon.setItemMeta(meta);
         return icon;
     }
@@ -54,6 +54,11 @@ public class LevitationSpell extends SpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 50;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Prevents melee attacks from hitting for 5 turns";
     }
 
 }

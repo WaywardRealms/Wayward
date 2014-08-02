@@ -51,7 +51,7 @@ public class MultiShotSkill extends AttackSkillBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " launched multiple arrows at " + defending.getName() + ", dealing " + damage + " damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " launched multiple arrows at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", dealing " + damage + " damage.";
     }
 
     @Override
@@ -99,6 +99,11 @@ public class MultiShotSkill extends AttackSkillBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 8;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deals one fifth of the difference between your ranged attack roll and your target's ranged defence roll five times";
     }
 
 }

@@ -10,9 +10,9 @@ import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -55,7 +55,7 @@ public class BurnSpell extends AttackSpellBase {
                 }
             }
         }
-        for (Entity entity : player.getWorld().getEntities()) {
+        for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
                 if (!invulnerableEntities.contains(entity)) {
                     entity.setFireTicks(fireTicks);
@@ -90,8 +90,13 @@ public class BurnSpell extends AttackSpellBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Deal 3 burn damage to the opposing party for 5 turns";
+    }
+
+    @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 20;
+        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 15;
     }
 
     @Override
@@ -106,12 +111,12 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " set " + defending.getName() + " alight with magic, dealing " + damage + " points of damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " set " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " alight with magic, dealing " + damage + " points of damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to set " + defending.getName() + " alight with magic, but did not have enough mana.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to set " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " alight with magic, but did not have enough mana.";
     }
 
     @Override

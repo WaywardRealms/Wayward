@@ -35,11 +35,21 @@ public class WalletCommand implements CommandExecutor {
             ItemMeta meta = coin.getItemMeta();
             meta.setDisplayName(currency.getNameSingular());
             coin.setItemMeta(meta);
-            for (int i = 0; i < plugin.getMoney(player); i++) {
-                Map<Integer, ItemStack> leftover = wallet.addItem(coin);
+            ItemStack coinStack = new ItemStack(Material.GOLD_NUGGET, 64);
+            ItemMeta stackMeta = coinStack.getItemMeta();
+            stackMeta.setDisplayName(currency.getNameSingular());
+            coinStack.setItemMeta(stackMeta);
+            int remainder = plugin.getMoney(player, currency) % 64;
+            for (int i = 0; i < plugin.getMoney(player, currency); i += 64) {
+                Map<Integer, ItemStack> leftover = wallet.addItem(coinStack);
                 if (!leftover.isEmpty()) {
                     player.getWorld().dropItem(player.getLocation(), leftover.values().iterator().next());
                 }
+            }
+            if (remainder != 0) {
+                ItemStack remove = new ItemStack(coin);
+                remove.setAmount(64 - remainder);
+                wallet.removeItem(remove);
             }
             player.openInventory(wallet);
         }

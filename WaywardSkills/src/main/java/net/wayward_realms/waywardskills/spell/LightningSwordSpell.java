@@ -43,12 +43,12 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " imbued their weapon with lightning and hit " + defending.getName() + ", dealing " + damage;
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " imbued their weapon with lightning and hit " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", dealing " + damage;
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to imbue their weapon with lightning, but did not have enough mana.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to imbue their weapon with lightning, but did not have enough mana.";
     }
 
     @Override
@@ -79,5 +79,10 @@ public class LightningSwordSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 80;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Add 20 to your melee attack rolls for 3 turns";
     }
 }

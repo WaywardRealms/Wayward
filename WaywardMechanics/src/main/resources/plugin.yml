@@ -8,3 +8,9 @@ permissions:
     wayward.mechanics.secretswitch:
         description: Allows creation of secret switches
         default: op
+    wayward.mechanics.portcullis.create:
+        description: Allows creation of portcullises
+        default: op
+    wayward.mechanics.drawbridge.create:
+        description: Allows creation of drawbridges
+        default: op

@@ -82,7 +82,7 @@ public class MageArmourSpell extends SpellBase {
 
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         if (attacking.getMana() >= 10) {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " formed a resistant barrier!");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " formed a resistant barrier!");
             return use(attacking.getPlayer().getPlayer());
         }
         return false;
@@ -116,6 +116,11 @@ public class MageArmourSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Increases defensive rolls by 25% for 5 turns";
     }
 
 }

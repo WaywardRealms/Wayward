@@ -10,12 +10,15 @@ import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -86,12 +89,12 @@ public class BlizzardSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " summoned a blizzard at " + defending.getName() + ", dealing " + damage + " damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " summoned a blizzard at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", dealing " + damage + " damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " began summoning strong winds, but didn't have enough mana to summon a blizzard.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " began summoning strong winds, but didn't have enough mana to summon a blizzard.";
     }
 
     @Override
@@ -139,7 +142,16 @@ public class BlizzardSpell extends AttackSpellBase {
         }
         for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (entity.getLocation().distanceSquared(player.getLocation()) <= 64) {
-                if (!invulnerableEntities.contains(entity)) entity.damage(entity.getHealth() / 2, player);
+                if (!invulnerableEntities.contains(entity)) {
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, entity.getHealth() / 2D);
+                    plugin.getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        if (event.getEntity() instanceof LivingEntity) {
+                            ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                            event.getEntity().setLastDamageCause(event);
+                        }
+                    }
+                }
             }
         }
         return true;
@@ -176,6 +188,11 @@ public class BlizzardSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 40;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deals damage equal to the difference between your magic attack roll and your opponent's magic defence roll for every member of the opposing party";
     }
 
     @Override

@@ -22,7 +22,7 @@ public class FireSwordSpell extends SpellBase {
 
     @Override
     public boolean use(Player player) {
-        if (player.getItemInHand() != null) {
+        if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
             try {
                 player.getItemInHand().addEnchantment(Enchantment.FIRE_ASPECT, 1);
                 return true;
@@ -52,6 +52,11 @@ public class FireSwordSpell extends SpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 25;
+    }
+
+    @Override
+    public String getDescription() {
+        return "For the next three turns, melee attacks cause 3 burn damage for 3 turns after the attack";
     }
 
 }

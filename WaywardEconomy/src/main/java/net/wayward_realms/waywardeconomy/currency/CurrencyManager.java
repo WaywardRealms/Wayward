@@ -60,8 +60,11 @@ public class CurrencyManager {
     public Currency getCurrency(String name) {
         File currencyDirectory = new File(plugin.getDataFolder(), "currency");
         File currencyFile = new File(currencyDirectory, name + ".yml");
-        YamlConfiguration currencyConfig = YamlConfiguration.loadConfiguration(currencyFile);
-        return (Currency) currencyConfig.get("currency");
+        if (currencyFile.exists()) {
+            YamlConfiguration currencyConfig = YamlConfiguration.loadConfiguration(currencyFile);
+            return (Currency) currencyConfig.get("currency");
+        }
+        return null;
     }
 
     public int getMoney(Character character, Currency currency) {
@@ -107,6 +110,29 @@ public class CurrencyManager {
             currency.setRate(100);
             addCurrency(currency);
         }
+    }
+
+    public int getBankBalance(Character character, Currency currency) {
+        File bankDirectory = new File(plugin.getDataFolder(), "bank");
+        File characterFile = new File(bankDirectory, character.getId() + ".yml");
+        if (characterFile.exists()) {
+            YamlConfiguration characterSave = YamlConfiguration.loadConfiguration(characterFile);
+            return characterSave.getInt("currencies." + currency.getName(), 0);
+        }
+        return 0;
+    }
+
+    public void setBankBalance(Character character, Currency currency, int amount) {
+        File bankDirectory = new File(plugin.getDataFolder(), "bank");
+        File characterFile = new File(bankDirectory, character.getId() + ".yml");
+        YamlConfiguration characterSave = YamlConfiguration.loadConfiguration(characterFile);
+        characterSave.set("currencies." + currency.getName(), amount);
+        try {
+            characterSave.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        plugin.checkRichest(character);
     }
 
 }

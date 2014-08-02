@@ -44,10 +44,10 @@ public class BlizzardSwordSpell extends SpellBase {
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         if (attacking.getMana() >= getManaCost()) {
             fight.setStatusTurns(defending, StatusEffect.FROZEN, 5);
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " hit " + defending.getName() + " with a " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " imbued with ice, freezing them.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " hit " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " with a " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " imbued with ice, freezing them.");
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to imbue their " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " with ice, but did not have enough mana.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to imbue their " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " with ice, but did not have enough mana.");
             return false;
         }
     }
@@ -64,6 +64,11 @@ public class BlizzardSwordSpell extends SpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 70;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Add 10 to your melee attack roll for 3 turns";
     }
 
 }

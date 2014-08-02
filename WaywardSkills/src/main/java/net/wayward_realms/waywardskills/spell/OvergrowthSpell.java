@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -12,6 +13,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -47,12 +50,12 @@ public class OvergrowthSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " caused a huge tree to grow around " + defending.getName() + ", dealing " + damage + " damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " caused a huge tree to grow around " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", dealing " + damage + " damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to rapidly grow a huge tree, but did not have enough mana.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to rapidly grow a huge tree, but did not have enough mana.";
     }
 
     @Override
@@ -62,7 +65,14 @@ public class OvergrowthSpell extends AttackSpellBase {
         if (successful) {
             for (LivingEntity entity : player.getWorld().getLivingEntities()) {
                 if (entity.getLocation().distanceSquared(targetBlock.getLocation()) <= 256) {
-                    entity.damage(15D, player);
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, 15D);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        if (event.getEntity() instanceof LivingEntity) {
+                            ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                            event.getEntity().setLastDamageCause(event);
+                        }
+                    }
                 }
             }
         } else {
@@ -83,6 +93,11 @@ public class OvergrowthSpell extends AttackSpellBase {
     @Override
     public boolean canUse(Character character) {
         return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 80;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deals damage equal to 3 times the difference between your magic attack roll and target's magic defence roll to up to 3 targets, and prevents them from making one move";
     }
 
 }

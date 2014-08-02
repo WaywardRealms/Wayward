@@ -45,6 +45,9 @@ public class EntityDamageByEntityListener implements Listener {
             attacker = (LivingEntity) event.getDamager();
             attackStat = Stat.MELEE_ATTACK;
             defenceStat = Stat.MELEE_DEFENCE;
+        } else {
+            attackStat = Stat.MAGIC_ATTACK;
+            defenceStat = Stat.MAGIC_DEFENCE;
         }
         if (event.getEntity() instanceof LivingEntity) {
             defender = (LivingEntity) event.getEntity();

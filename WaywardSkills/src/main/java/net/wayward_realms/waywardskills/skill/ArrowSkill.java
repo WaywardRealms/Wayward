@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -54,7 +53,7 @@ public class ArrowSkill extends AttackSkillBase {
         if (containsBow) {
             if (player.getInventory().containsAtLeast(new ItemStack(Material.ARROW), 1)) {
                 player.launchProjectile(Arrow.class);
-                player.getInventory().removeItem(new ItemStack(Material.ARROW), new ItemStack(Material.FERMENTED_SPIDER_EYE));
+                player.getInventory().removeItem(new ItemStack(Material.ARROW));
                 return true;
             } else {
                 player.sendMessage(ChatColor.RED + "You require an arrow.");
@@ -77,11 +76,7 @@ public class ArrowSkill extends AttackSkillBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " shot an arrow at " + defending.getName() + " dealing " + damage + " points of damage.";
-    }
-
-    public boolean canUse(Class clazz, int level) {
-        return clazz.getSkillPointBonus(SkillType.RANGED_OFFENCE) * level >= 1;
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " shot an arrow at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " dealing " + damage + " points of damage.";
     }
 
     @Override
@@ -102,6 +97,11 @@ public class ArrowSkill extends AttackSkillBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deal damage equal to the difference between your ranged attack roll and your target's ranged defence roll";
     }
 
 }

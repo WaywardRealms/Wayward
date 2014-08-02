@@ -77,8 +77,13 @@ public class SharpenSkill extends SkillBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Add 5 to your melee attack roll for 5 turns if you are holding a sword";
+    }
+
+    @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 1;
+        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 3;
     }
 
 }

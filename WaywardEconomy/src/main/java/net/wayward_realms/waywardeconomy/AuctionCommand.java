@@ -117,7 +117,7 @@ public class AuctionCommand implements CommandExecutor {
                                 int minutes = (int) Math.floor(interval / 60);
                                 int seconds = interval % 60;
                                 String[] messages = new String[] {plugin.getPrefix() + ChatColor.GREEN + (minutes > 0 ? minutes + " minutes, " : "") + seconds + "seconds till " + auction.getCharacter() + "'s auction for " + auction.getItem().getAmount() + "x" + auction.getItem().getType().toString().toLowerCase().replace('_', ' ') + "ends.",
-                                        ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + auction.getHighestBid().getCharacter().getName()};
+                                        ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + (auction.getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getHighestBid().getCharacter().getName() + ChatColor.RESET : auction.getHighestBid().getCharacter().getName())};
                                 for (Player player : players) {
                                     player.sendMessage(messages);
                                 }
@@ -143,13 +143,13 @@ public class AuctionCommand implements CommandExecutor {
                     CharacterPlugin characterPlugin = plugin.getCharacterPlugin();
                     Auction auction = plugin.getAuction(characterPlugin.getActiveCharacter(player));
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Auction status: ");
-                    sender.sendMessage(ChatColor.GREEN + "Hosted by: " + auction.getCharacter().getName());
+                    sender.sendMessage(ChatColor.GREEN + "Hosted by: " + (auction.getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getCharacter().getName() + ChatColor.RESET : auction.getCharacter().getName()));
                     sender.sendMessage(ChatColor.GREEN + "Item: " + auction.getItem().getAmount() + " x " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));
                     sender.sendMessage(ChatColor.GREEN + "Bidding is " + (auction.isBiddingOpen() ? (ChatColor.GREEN + "OPEN") : (ChatColor.RED + "CLOSED")));
                     sender.sendMessage(ChatColor.GREEN + "Located at: " + auction.getLocation().getBlockX() + ", " + auction.getLocation().getBlockY() + ", " + auction.getLocation().getBlockZ());
                     sender.sendMessage(ChatColor.GREEN + "Starting at: " + ((List<Bid>) auction.getBids()).get(0).getAmount());
                     sender.sendMessage(ChatColor.GREEN + "Minimum bid increment: " + auction.getMinimumBidIncrement());
-                    sender.sendMessage(ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + auction.getHighestBid().getCharacter().getName());
+                    sender.sendMessage(ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + (auction.getHighestBid().getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getHighestBid().getCharacter().getName() + ChatColor.RESET : auction.getHighestBid().getCharacter().getName()));
                     sender.sendMessage(ChatColor.GREEN + "Currency: " + auction.getCurrency().getNamePlural());
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");

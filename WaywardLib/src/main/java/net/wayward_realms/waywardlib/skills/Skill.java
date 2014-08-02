@@ -88,6 +88,13 @@ public interface Skill {
     public void setName(String name);
 
     /**
+     * Gets a description of how the skill is used in RP
+     *
+     * @return a description of how the skill is used in RP
+     */
+    public String getDescription();
+
+    /**
      * Gets the type of skill
      *
      * @return the type
@@ -114,5 +121,19 @@ public interface Skill {
      * @param coolDown the cooldown to set, in seconds
      */
     public void setCoolDown(int coolDown);
+
+    /**
+     * Gets the amount of turns the skill is on cooldown for after use
+     *
+     * @return the amount of turns the skill takes to cool down
+     */
+    public int getCoolDownTurns();
+
+    /**
+     * Sets the amount of turns the skills is on cooldown for after use
+     *
+     * @param coolDownTurns the amount of turns the skill takes to cool down
+     */
+    public void setCoolDownTurns(int coolDownTurns);
 
 }

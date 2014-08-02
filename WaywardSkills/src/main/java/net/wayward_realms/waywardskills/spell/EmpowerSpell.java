@@ -89,4 +89,9 @@ public class EmpowerSpell extends SpellBase {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return "Increase your attack stats by 25% for 3 turns";
+    }
+
 }

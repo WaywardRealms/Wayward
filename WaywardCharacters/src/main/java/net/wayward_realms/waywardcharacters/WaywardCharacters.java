@@ -37,7 +37,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
         saveDefaultConfig();
-        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener());
+        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener(this));
         getCommand("character").setExecutor(new CharacterCommand(this));
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
@@ -58,10 +58,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (player.getGameMode() != GameMode.CREATIVE) {
                         Character character = getActiveCharacter(player);
+                        int decreaseChance = checkBiome(player.getLocation().getBlock().getBiome());
                         if (!isThirstDisabled(player)) {
-                            //Disabled until biomes are fixed.
-                            //int decreaseChance = checkBiome(player.getLocation().getBlock().getBiome());
-                            if (character.getThirst() > 0 && random.nextInt(100) <= 4) {
+                            if (character.getThirst() > 0 && random.nextInt(100) <= decreaseChance) {
                                 character.setThirst(character.getThirst() - 1);
                                 player.sendMessage(getPrefix() + ChatColor.RED + "Thirst: -1" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
                             }
@@ -77,8 +76,8 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                                 continue;
                             }
                         }
-                        int manaRegen = Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()) - character.getMana();
-                        character.setMana(Math.min(character.getMana() + Math.max(character.getMaxMana() / 50, 1), character.getMaxMana()));
+                        int manaRegen = Math.min(character.getMana() + Math.max(character.getMaxMana() / 30, 1), character.getMaxMana()) - character.getMana();
+                        character.setMana(Math.min(character.getMana() + Math.max(character.getMaxMana() / 30, 1), character.getMaxMana()));
                         if (manaRegen > 0) {
                             player.sendMessage(getPrefix() + ChatColor.GREEN + "Mana regenerated: " + manaRegen);
                         }
@@ -92,7 +91,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                                 character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()));
                             }
                             if (healthRegen > 0) {
-                                player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + healthRegen);
+                                player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + (Math.round(healthRegen * 100D) / 100D));
                             }
                         }
                         player.setMaxHealth(character.getMaxHealth());
@@ -345,7 +344,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     }
 
     @Override
-    public void setActiveCharacter(final Player player, final Character character) {
+    public void setActiveCharacter(Player player, Character character) {
         if (getActiveCharacter(player) != null) {
             Character activeCharacter = getActiveCharacter(player);
             activeCharacter.setHelmet(player.getInventory().getHelmet());
@@ -367,16 +366,11 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
-            public void run() {
-                player.getInventory().setHelmet(character.getHelmet());
-                player.getInventory().setChestplate(character.getChestplate());
-                player.getInventory().setLeggings(character.getLeggings());
-                player.getInventory().setBoots(character.getBoots());
-                player.getInventory().setContents(character.getInventoryContents());
-            }
-        });
+        player.getInventory().setHelmet(character.getHelmet());
+        player.getInventory().setChestplate(character.getChestplate());
+        player.getInventory().setLeggings(character.getLeggings());
+        player.getInventory().setBoots(character.getBoots());
+        player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
         PlayerNamePlateUtils.refreshPlayer(player);
@@ -579,37 +573,59 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         }
     }
     
-	private int checkBiome(Biome biome) {
-		switch (biome) {
-		case DESERT:
-		case DESERT_HILLS:
-		case DESERT_MOUNTAINS:
-			return 8;
-		case HELL:
-			return 16;
-		case JUNGLE:
-		case JUNGLE_EDGE:
-		case JUNGLE_EDGE_MOUNTAINS:
-		case JUNGLE_HILLS:
-		case JUNGLE_MOUNTAINS:
-			return 6;
-		case MESA:
-		case MESA_BRYCE:
-		case MESA_PLATEAU:
-		case MESA_PLATEAU_FOREST:
-		case MESA_PLATEAU_FOREST_MOUNTAINS:
-		case MESA_PLATEAU_MOUNTAINS:
-			return 8;
-		case SAVANNA:
-		case SAVANNA_MOUNTAINS:
-		case SAVANNA_PLATEAU:
-		case SAVANNA_PLATEAU_MOUNTAINS:
-			return 6;
-		default:
-			return 4;
-		}
-		
-	}
+    private int checkBiome(Biome biome) {
+        switch (biome) {
+            case DESERT:
+            case DESERT_HILLS:
+            case DESERT_MOUNTAINS:
+                return 8;
+            case HELL:
+                return 16;
+            case JUNGLE:
+            case JUNGLE_EDGE:
+            case JUNGLE_EDGE_MOUNTAINS:
+            case JUNGLE_HILLS:
+            case JUNGLE_MOUNTAINS:
+                return 6;
+            case MESA:
+            case MESA_BRYCE:
+            case MESA_PLATEAU:
+            case MESA_PLATEAU_FOREST:
+            case MESA_PLATEAU_FOREST_MOUNTAINS:
+            case MESA_PLATEAU_MOUNTAINS:
+                return 8;
+            case SAVANNA:
+            case SAVANNA_MOUNTAINS:
+            case SAVANNA_PLATEAU:
+            case SAVANNA_PLATEAU_MOUNTAINS:
+                return 6;
+            default:
+                return 4;
+        }
+    }
+
+    public Biome convertBiomeFromString(String biomeString) {
+        try {
+            return Biome.valueOf(biomeString.toUpperCase().replace(' ', '_'));
+        } catch (IllegalArgumentException | NullPointerException exception) {
+            return null;
+        }
+    }
+    
+    public boolean isSafeWater(Biome biome) {
+        switch (biome) {
+            case BEACH:
+            case COLD_BEACH:
+            case FROZEN_OCEAN:
+            case OCEAN:
+            case SWAMPLAND:
+            case SWAMPLAND_MOUNTAINS:
+                return false;
+            default:
+                return true;
+        }
+
+    }
 
     public boolean isHungerDisabled(OfflinePlayer player) {
         File hungerDisabledFile = new File(getDataFolder(), "hunger-disabled.yml");

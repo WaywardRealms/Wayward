@@ -3,8 +3,6 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
-import net.wayward_realms.waywardlib.classes.Class;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -64,15 +62,8 @@ public class CureSpell extends SpellBase {
                 double healthRestore = potency / (double) players.size();
                 Character target = characterPlugin.getActiveCharacter(player1);
                 player1.setHealth(target.getHealth());
-                double initialHealth = player1.getHealth();
                 target.setHealth(Math.min(target.getHealth() + healthRestore, target.getMaxHealth()));
                 player1.setHealth(target.getHealth());
-                double newHealth = player1.getHealth();
-                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                if (classesPluginProvider != null) {
-                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                    classesPlugin.giveExperience(player, (int) Math.round(Math.max(newHealth - initialHealth, 0) * 4));
-                }
             }
         }
         return true;
@@ -90,10 +81,10 @@ public class CureSpell extends SpellBase {
             }
             defending.setHealth(Math.min(defending.getHealth() + potency, defending.getMaxHealth()));
             defending.getPlayer().getPlayer().setHealth(defending.getHealth());
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " used Cure on " + defending.getName() + ", healing " + potency + " health.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " used Cure on " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", healing " + potency + " health.");
             return true;
         }
-        fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to use Cure on " + defending.getName() + " but did not have enough mana.");
+        fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to use Cure on " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " but did not have enough mana.");
         return false;
     }
 
@@ -106,17 +97,13 @@ public class CureSpell extends SpellBase {
         return icon;
     }
 
-    public boolean canUse(Class clazz, int level) {
-        return clazz.getSkillPointBonus(SkillType.MAGIC_HEALING) * level >= 1;
-    }
-
     @Override
     public boolean canUse(Combatant combatant) {
         return canUse((Character) combatant);
     }
 
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 1;
+        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 2;
     }
 
     @Override
@@ -127,6 +114,11 @@ public class CureSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Restore HP equal to 25% of your magic defence stat to one target";
     }
 
 }

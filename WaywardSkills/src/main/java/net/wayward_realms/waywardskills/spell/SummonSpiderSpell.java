@@ -50,12 +50,12 @@ public class SummonSpiderSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " summoned a spider and demanded it attack " + defending.getName() + "! It dealt " + damage + " damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " summoned a spider and demanded it attack " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + "! It dealt " + damage + " damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to summon a spider, but did not have enough mana.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to summon a spider, but did not have enough mana.";
     }
 
     @Override
@@ -81,7 +81,12 @@ public class SummonSpiderSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 10;
+        return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 8;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Allows you to deal the difference between your magic attack roll and your opponent's melee defence roll for 3 turns in addition to taking another action";
     }
 
 }

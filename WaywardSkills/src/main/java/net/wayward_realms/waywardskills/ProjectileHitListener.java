@@ -20,8 +20,18 @@ public class ProjectileHitListener implements Listener {
             if (arrow.getShooter() instanceof Player) {
                 if (arrow.getMetadata("isPoisonArrow") != null) {
                     if (!arrow.getMetadata("isPoisonArrow").isEmpty()) {
-                        Potion potion = new Potion(PotionType.POISON, 2);
-                        potion.setSplash(true);
+                        Potion potion = new Potion(PotionType.POISON, 2).splash();
+                        ItemStack itemStack = new ItemStack(Material.POTION);
+                        potion.apply(itemStack);
+                        ThrownPotion thrownPotion = arrow.getShooter().launchProjectile(ThrownPotion.class);
+                        thrownPotion.teleport(arrow);
+                        thrownPotion.setVelocity(arrow.getVelocity());
+                        thrownPotion.setItem(itemStack);
+                    }
+                }
+                if (arrow.getMetadata("isSnareShot") != null) {
+                    if (!arrow.getMetadata("isSnareShot").isEmpty()) {
+                        Potion potion = new Potion(PotionType.SLOWNESS, 2).splash();
                         ItemStack itemStack = new ItemStack(Material.POTION);
                         potion.apply(itemStack);
                         ThrownPotion thrownPotion = arrow.getShooter().launchProjectile(ThrownPotion.class);

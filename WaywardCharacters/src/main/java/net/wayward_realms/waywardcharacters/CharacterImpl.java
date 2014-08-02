@@ -3,12 +3,14 @@ package net.wayward_realms.waywardcharacters;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
+import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,8 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CharacterImpl implements Character {
 
@@ -62,6 +63,7 @@ public class CharacterImpl implements Character {
         setFoodLevel(20);
         setMana(getMaxMana());
         setThirst(20);
+        setNamePlate("");
     }
 
     public CharacterImpl(WaywardCharacters plugin, File file) {
@@ -109,6 +111,11 @@ public class CharacterImpl implements Character {
         return save.getItemStack("character." + field);
     }
 
+    private List<?> getFieldListValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getList("character." + field);
+    }
+
     @Override
     public int getId() {
         return getFieldIntValue("id");
@@ -141,7 +148,7 @@ public class CharacterImpl implements Character {
         setFieldValue("name-hidden", nameHidden);
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
-            player.getPlayer().setDisplayName(nameHidden ? "???" : getName());
+            player.getPlayer().setDisplayName(nameHidden ? ChatColor.MAGIC + getName() + ChatColor.RESET : getName());
             PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
@@ -365,7 +372,7 @@ public class CharacterImpl implements Character {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 20D);
         }
         return 0;
     }
@@ -386,9 +393,35 @@ public class CharacterImpl implements Character {
         RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
         if (classesPluginProvider != null) {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat) + getRace().getStatBonus(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
+            int value = (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat) + getRace().getStatBonus(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
+            for (TemporaryStatModification modification : getTemporaryStatModifications()) {
+                value = modification.apply(stat, value);
+            }
+            return value;
         }
         return 0;
+    }
+
+    @Override
+    public Collection<TemporaryStatModification> getTemporaryStatModifications() {
+        return getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
+    }
+
+    @Override
+    public void addTemporaryStatModification(TemporaryStatModification modification) {
+        List<TemporaryStatModification> statModifications = (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+        statModifications.add(modification);
+        setFieldValue("temporary-stat-modifications", statModifications);
+    }
+
+    @Override
+    public void removeTemporaryStatModification(TemporaryStatModification modification) {
+        List<TemporaryStatModification> statModifications = (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+        for (Iterator<TemporaryStatModification> iterator = statModifications.iterator(); iterator.hasNext(); ) {
+            TemporaryStatModification modification1 = iterator.next();
+            if (modification.equals(modification1)) iterator.remove();
+        }
+        setFieldValue("temporary-stat-modifications", statModifications);
     }
 
     @Override
@@ -407,6 +440,16 @@ public class CharacterImpl implements Character {
 
     public void setClassHidden(boolean classHidden) {
         setFieldValue("class-hidden", classHidden);
+    }
+
+    @Override
+    public String getNamePlate() {
+        return getFieldStringValue("nameplate");
+    }
+
+    @Override
+    public void setNamePlate(String namePlate) {
+        setFieldValue("nameplate", namePlate);
     }
 
     public int getStatPoints(Stat stat) {

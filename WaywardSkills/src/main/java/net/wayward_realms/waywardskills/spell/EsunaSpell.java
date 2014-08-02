@@ -69,10 +69,10 @@ public class EsunaSpell extends SpellBase {
             for (StatusEffect statusEffect : StatusEffect.values()) {
                 fight.setStatusTurns(defending, statusEffect, 0);
             }
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cured " + defending.getName() + "'s status effects");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " cured " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + "'s status effects");
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to cure " + defending.getName() + "'s status effects, but did not have enough mana!");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to cure " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + "'s status effects, but did not have enough mana!");
             return false;
         }
     }
@@ -88,7 +88,7 @@ public class EsunaSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 1;
+        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 3;
     }
 
     @Override
@@ -104,6 +104,11 @@ public class EsunaSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Cure all status ailments (burn, bleed, paralyse, etc) for one target";
     }
 
 }

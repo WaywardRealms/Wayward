@@ -115,7 +115,7 @@ public class MoneyCommand implements CommandExecutor {
                 int i = 1;
                 for (Character character : plugin.getRichestCharacters()) {
                     if (character != null) {
-                        sender.sendMessage(ChatColor.GRAY + "" + i + ". " + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + "): " + plugin.getMoney(character) + " " + (plugin.getMoney(character) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                        sender.sendMessage(ChatColor.GRAY + "" + i + ". " + (character.isDead() ? ChatColor.RED : ChatColor.GREEN) + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.GRAY + " (" + (character.isDead() ? ChatColor.RED + "Dead" : ChatColor.GREEN + "Alive") + ChatColor.GRAY + "): " + (plugin.getMoney(character) + plugin.getBankBalance(character)) + " " + (plugin.getMoney(character) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
                     } else {
                         break;
                     }

@@ -107,4 +107,37 @@ public interface Fight {
      */
     public void setStatusTurns(Combatant combatant, StatusEffect statusEffect, int turns);
 
+    /**
+     * Gets the amount of turns a combatant has to wait before using a skill again
+     *
+     * @param combatant the combatant
+     * @param skill the skill
+     * @return the amount of turns remaining before the skill can be used again
+     */
+    public int getCoolDownTurnsRemaining(Combatant combatant, Skill skill);
+
+    /**
+     * Sets the amount of turns a combatant has to wair before using a skill again
+     *
+     * @param combatant the combatant
+     * @param skill the skill
+     * @param turns the amount of turns to set
+     */
+    public void setCoolDownTurnsRemaining(Combatant combatant, Skill skill, int turns);
+
+    /**
+     * Schedules a task to occur in an amount of turns
+     *
+     * @param task the task to schedule
+     * @param turns the amount of turns the task should occur in
+     */
+    public void scheduleTask(Runnable task, int turns);
+
+    /**
+     * Cancels a scheduled task
+     *
+     * @param task the task to cancel
+     */
+    public void cancelTask(Runnable task);
+
 }

@@ -1,13 +1,17 @@
 package net.wayward_realms.waywardchat;
 
+import net.wayward_realms.waywardlib.chat.ChatGroup;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class ChatGroup {
+public class ChatGroupImpl implements ChatGroup {
 
     private WaywardChat plugin;
 
@@ -17,7 +21,7 @@ public class ChatGroup {
 
     private long lastUsed;
 
-    public ChatGroup(WaywardChat plugin, String name, Player... players) {
+    public ChatGroupImpl(WaywardChat plugin, String name, Player... players) {
         this.plugin = plugin;
         this.name = name.toLowerCase();
         for (Player player : players) {
@@ -25,22 +29,34 @@ public class ChatGroup {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public Set<UUID> getPlayers() {
+    @Override
+    public Collection<OfflinePlayer> getPlayers() {
+        Set<OfflinePlayer> players = new HashSet<>();
+        for (UUID uuid : getPlayerUUIDs()) {
+            players.add(Bukkit.getOfflinePlayer(uuid));
+        }
         return players;
     }
 
-    public Set<UUID> getInvited() {
+    public Set<UUID> getPlayerUUIDs() {
+        return players;
+    }
+
+    public Set<UUID> getInvitedUUIDs() {
         return invited;
     }
 
+    @Override
     public boolean isInvited(Player player) {
         return invited.contains(player.getUniqueId());
     }
 
+    @Override
     public void sendMessage(Player sender, String message) {
         lastUsed = System.currentTimeMillis();
         String format = ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + (name.startsWith("_pm_") ? "private message" : name) + ChatColor.WHITE + "] " + ChatColor.GRAY + sender.getName() + ": " + message;
@@ -54,21 +70,34 @@ public class ChatGroup {
         }
     }
 
-    public void addPlayer(Player player) {
+    @Override
+    public void addPlayer(OfflinePlayer player) {
         players.add(player.getUniqueId());
         invited.remove(player.getUniqueId());
     }
 
-    public void removePlayer(Player player) {
+    @Override
+    public void removePlayer(OfflinePlayer player) {
         players.remove(player.getUniqueId());
         invited.add(player.getUniqueId());
     }
 
-    public void invitePlayer(Player player) {
+    @Override
+    public Collection<OfflinePlayer> getInvited() {
+        Set<OfflinePlayer> players = new HashSet<>();
+        for (UUID uuid : getInvitedUUIDs()) {
+            players.add(Bukkit.getOfflinePlayer(uuid));
+        }
+        return players;
+    }
+
+    @Override
+    public void invite(OfflinePlayer player) {
         invited.add(player.getUniqueId());
     }
 
-    public void uninvitePlayer(Player player) {
+    @Override
+    public void uninvite(OfflinePlayer player) {
         invited.remove(player.getUniqueId());
     }
 
@@ -80,7 +109,7 @@ public class ChatGroup {
             }
         }
         if (playersOffline || System.currentTimeMillis() - lastUsed > 1800000) {
-            plugin.removeChatGroup(getName());
+            plugin.removeChatGroup(this);
         }
     }
 

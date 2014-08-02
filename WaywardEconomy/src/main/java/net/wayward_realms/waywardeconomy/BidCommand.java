@@ -37,13 +37,13 @@ public class BidCommand implements CommandExecutor {
                             if (amount >= auction.getHighestBid().getAmount() + auction.getMinimumBidIncrement()) {
                                 Bid bid = new BidImpl(bidder, amount);
                                 auction.addBid(bid);
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bid " + bid.getAmount() + (bid.getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " for " + auction.getCharacter().getName() + "'s " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bid " + bid.getAmount() + (bid.getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " for " + (auction.getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getCharacter().getName() + ChatColor.RESET : auction.getCharacter().getName()) + "'s " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));
                                 Set<Player> players = new HashSet<>();
                                 for (Bid bid1 : auction.getBids()) {
                                     players.add(bid1.getCharacter().getPlayer().getPlayer());
                                 }
                                 for (Player player1 : players) {
-                                    player1.sendMessage(plugin.getPrefix() + ChatColor.GREEN + bidder.getName() + " bid " + bid.getAmount() + (bid.getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " for " + auction.getCharacter().getName() + "'s " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));
+                                    player1.sendMessage(plugin.getPrefix() + ChatColor.GREEN + (bidder.isNameHidden() ? ChatColor.MAGIC + bidder.getName() + ChatColor.RESET : bidder.getName()) + ChatColor.GREEN + " bid " + bid.getAmount() + (bid.getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " for " + (auction.getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getCharacter().getName() + ChatColor.RESET : auction.getCharacter().getName()) + ChatColor.GREEN + "'s " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));
                                 }
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "The minimum bid increment is " + auction.getMinimumBidIncrement() + (auction.getMinimumBidIncrement() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + ", so you may not bid less than " + (auction.getHighestBid().getAmount() + auction.getMinimumBidIncrement()) + ((auction.getHighestBid().getAmount() + auction.getMinimumBidIncrement()) == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()));

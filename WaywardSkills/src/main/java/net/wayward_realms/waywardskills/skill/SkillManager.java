@@ -22,6 +22,7 @@ public class SkillManager {
 
     public SkillManager(WaywardSkills plugin) {
         this.plugin = plugin;
+        addSkill(new ArmourUpSkill(plugin));
         addSkill(new ArrowSkill());
         addSkill(new BandageSkill());
         addSkill(new DashSkill());
@@ -33,6 +34,9 @@ public class SkillManager {
         addSkill(new StabSkill());
         addSkill(new SpinningSweepSkill(plugin));
         addSkill(new MultiShotSkill());
+        addSkill(new RazorShotSkill(plugin));
+        addSkill(new PowerShotSkill(plugin));
+        addSkill(new SnareShotSkill());
     }
 
     public Skill getSkill(String name) {

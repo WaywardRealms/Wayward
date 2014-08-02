@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardcharacters;
 
+import mkremins.fanciful.FancyMessage;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
@@ -40,24 +41,48 @@ public class CharacterCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You have reached your character limit.");
                 }
             } else if (args[0].equalsIgnoreCase("card")) {
-                Player player = (Player) sender;
+                Player player = null;
+                if (sender instanceof Player) {
+                    player = (Player) sender;
+                }
                 if (args.length >= 2) {
                     if (plugin.getServer().getPlayer(args[1]) != null) {
                         player = plugin.getServer().getPlayer(args[1]);
                     }
                 }
-                Character character = plugin.getActiveCharacter(player);
-                ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
-                sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + character.getName() + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
-                if (!character.isAgeHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE +  character.getAge());
-                if (!character.isGenderHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
-                if (!character.isRaceHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
-                if (classesPlugin != null) {
-                    if (classesPlugin.getClass(character) != null) {
-                        if (!character.isClassHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
+                if (player != null) {
+                    Character character = plugin.getActiveCharacter(player);
+                    ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
+                    if (sender instanceof Player) {
+                        FancyMessage message = new FancyMessage("")
+                                .then(character.getName() + "'s ")
+                                    .tooltip(player.getName())
+                                    .color(ChatColor.BLUE);
+                        if (character.isNameHidden()) message.style(ChatColor.BOLD, ChatColor.MAGIC); else message.style(ChatColor.BOLD);
+                        message.then("character card")
+                                    .color(ChatColor.DARK_GRAY)
+                                .send((Player) sender);
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.BLUE + ChatColor.BOLD + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + ChatColor.BLUE + ChatColor.BOLD + "'s " + ChatColor.RESET + ChatColor.DARK_GRAY + "character card");
                     }
+                    if (!character.isAgeHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Age: " + ChatColor.BLUE + character.getAge());
+                    if (!character.isGenderHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
+                    if (!character.isRaceHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
+                    if (classesPlugin != null) {
+                        if (classesPlugin.getClass(character) != null) {
+                            if (!character.isClassHidden()) {
+                                sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
+                            }
+                        }
+                    }
+                    if (!character.isDescriptionHidden())
+                        sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not online!");
                 }
-                if (!character.isDescriptionHidden()) sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
             } else if (args[0].equalsIgnoreCase("switch")) {
                 if (args.length >= 2) {
                     boolean found = false;
@@ -172,12 +197,26 @@ public class CharacterCommand implements CommandExecutor {
                         Player player = (Player) sender;
                         character.setDead(true);
                         plugin.setActiveCharacter(player, plugin.createNewCharacter(player));
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your character has been set to daed, and a new character has been created.");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your character has been set to dead, and a new character has been created.");
+                    } else if (args[1].equalsIgnoreCase("nameplate")) {
+                        if (args.length >= 3) {
+                            StringBuilder nameBuilder = new StringBuilder();
+                            for (int i = 2; i < args.length; i++) {
+                                nameBuilder.append(args[i]);
+                                if (i < args.length - 1) {
+                                    nameBuilder.append(" ");
+                                }
+                            }
+                            character.setNamePlate(nameBuilder.toString());
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set character's nameplate to " + nameBuilder.toString());
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set nameplate [nameplate]");
+                        }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead]");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead|nameplate]");
                     }
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead]");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [name|age|gender|race|description|dead|nameplate]");
                 }
             } else if (args[0].equalsIgnoreCase("extenddescription")) {
                 Character character = plugin.getActiveCharacter((Player) sender);

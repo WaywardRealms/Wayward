@@ -25,7 +25,7 @@ public class TrainingDummyPlayerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 6; i++) {
                 Block block = event.getClickedBlock().getRelative(BlockFace.DOWN, i);
                 if (block.getState() instanceof Sign) {
                     Sign sign = (Sign) block.getState();
