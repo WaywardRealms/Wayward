@@ -68,6 +68,7 @@ public class PlayerInteractListener implements Listener {
                                         }
                                     }
                                 } catch (NumberFormatException ignored) {}
+                                return;
                             }
                         }
                     }
@@ -96,21 +97,25 @@ public class PlayerInteractListener implements Listener {
                 }
             } else if (event.getPlayer().getItemInHand().getType() == Material.GLASS_BOTTLE) {
                 if (event.getAction() == RIGHT_CLICK_BLOCK || event.getAction() == RIGHT_CLICK_AIR) {
-                    event.setCancelled(true);
-                    if (event.getPlayer().getItemInHand().getAmount() > 1) {
-                        event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
-                    } else {
-                        event.getPlayer().setItemInHand(null);
-                    }
-                    ItemStack water = new ItemStack(Material.POTION);
-                    ItemMeta meta = water.getItemMeta();
-                    List<String> lore = new ArrayList<>();
                     Block targetBlock = getTargetBlock(event.getPlayer());
-                    lore.add(targetBlock.getWorld().getBiome(targetBlock.getX(), targetBlock.getY()).toString());
-                    meta.setLore(lore);
-                    water.setItemMeta(meta);
-                    event.getPlayer().getInventory().addItem(water);
-                    event.getPlayer().updateInventory();
+                    if (targetBlock != null) {
+                        if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
+                            event.setCancelled(true);
+                            if (event.getPlayer().getItemInHand().getAmount() > 1) {
+                                event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
+                            } else {
+                                event.getPlayer().setItemInHand(null);
+                            }
+                            ItemStack water = new ItemStack(Material.POTION);
+                            ItemMeta meta = water.getItemMeta();
+                            List<String> lore = new ArrayList<>();
+                            lore.add(targetBlock.getWorld().getBiome(targetBlock.getX(), targetBlock.getY()).toString());
+                            meta.setLore(lore);
+                            water.setItemMeta(meta);
+                            event.getPlayer().getInventory().addItem(water);
+                            event.getPlayer().updateInventory();
+                        }
+                    }
                 }
             }
         }

@@ -35,7 +35,7 @@ public class PlayerItemConsumeListener implements Listener {
                     Biome biome = plugin.convertBiomeFromString(biomeString);
                     if (biome != null) {
                         boolean isSafe = plugin.isSafeWater(biome);
-                        if (!isSafe){
+                        if (!isSafe) {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 1500, 2), true);
                             player.sendMessage(ChatColor.RED + "You feel sick. Perhaps it was the water.");
                             if (biome == OCEAN || biome == BEACH) {
@@ -43,6 +43,9 @@ public class PlayerItemConsumeListener implements Listener {
                                 player.sendMessage(ChatColor.RED + "You suddenly feel dehydrated from drinking salt water.");
                                 player.sendMessage(ChatColor.RED + "Thirst: -2" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
                             }
+                        } else {
+                            character.setThirst(character.getThirst() + 5);
+                            player.sendMessage(ChatColor.GREEN + "Thirst: +5" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
                         }
                     } else {
                         if (event.getItem().getItemMeta().hasDisplayName()) {
@@ -62,8 +65,8 @@ public class PlayerItemConsumeListener implements Listener {
                 player.sendMessage(ChatColor.GREEN + "Thirst: +5" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
             }
         } else if (event.getItem().getType() == Material.MILK_BUCKET) {
-            character.setThirst(character.getThirst() + 5);
-            event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +5 " + ChatColor.GRAY + "(Total: " + character.getThirst() + ")");
+            character.setThirst(character.getThirst() + 10);
+            event.getPlayer().sendMessage(ChatColor.GREEN + "Thirst: +10 " + ChatColor.GRAY + "(Total: " + character.getThirst() + ")");
         }
         if (event.getItem().getType() == Material.ROTTEN_FLESH) {
             character.setHealth(character.getHealth() - 5);
