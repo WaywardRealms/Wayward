@@ -27,7 +27,7 @@ public class SnareShotSkill extends AttackSkillBase {
 
     public SnareShotSkill() {
         setName("SnareShot");
-        setCoolDown(180);
+        setCoolDown(30);
         setType(SkillType.RANGED_DEFENCE);
         setPower(5);
         setAttackStat(Stat.RANGED_ATTACK);

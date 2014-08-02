@@ -7,6 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class EntityDamageByEntityListener implements Listener {
 
@@ -68,9 +70,24 @@ public class EntityDamageByEntityListener implements Listener {
                         newArrow.setMetadata("isRazorShot", new FixedMetadataValue(plugin, true));
                     }
                 }
-            } else if (arrow.getMetadata("isPowerShot") != null) {
+            }
+            if (arrow.getMetadata("isPowerShot") != null) {
                 if (!arrow.getMetadata("isPowerShot").isEmpty()) {
                     event.setDamage(9999D);
+                }
+            }
+            if (arrow.getMetadata("isPoisonArrow") != null) {
+                if (!arrow.getMetadata("isPoisonArrow").isEmpty()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 2, 300));
+                    }
+                }
+            }
+            if (arrow.getMetadata("isSnareShot") != null) {
+                if (!arrow.getMetadata("isSnareShot").isEmpty()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 7, 300));
+                    }
                 }
             }
         } else if (event.getDamager() instanceof Player) {
