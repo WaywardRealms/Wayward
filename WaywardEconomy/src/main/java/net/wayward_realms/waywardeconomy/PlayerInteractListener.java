@@ -57,6 +57,8 @@ public class PlayerInteractListener implements Listener {
                                     sign.setLine(2, "1");
                                     sign.update();
                                     break;
+                                default:
+                                    break;
                             }
                         } else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                             if (sign.getLine(1).equalsIgnoreCase("withdraw")) {

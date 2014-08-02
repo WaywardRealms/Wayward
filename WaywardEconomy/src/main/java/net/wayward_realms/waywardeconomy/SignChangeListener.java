@@ -96,7 +96,11 @@ public class SignChangeListener implements Listener {
                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "Second line must be: \"withdraw\", \"deposit\" or \"balance\"");
                 return;
             }
-            event.setLine(2, "1");
+            if (event.getLine(1).equalsIgnoreCase("balance")) {
+                event.setLine(2, "");
+            } else {
+                event.setLine(2, "1");
+            }
             if (plugin.getCurrency(event.getLine(3)) == null) {
                 event.setLine(3, plugin.getPrimaryCurrency().getName());
             }
