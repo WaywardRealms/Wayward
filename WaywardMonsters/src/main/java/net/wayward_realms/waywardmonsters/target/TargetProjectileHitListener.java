@@ -40,27 +40,31 @@ public class TargetProjectileHitListener implements Listener {
                     if (block.getState() instanceof Sign) {
                         Sign sign = (Sign) block.getState();
                         if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_RED + "[target]")) {
-                            int uses = 0;
-                            try {
-                                uses = Integer.parseInt(sign.getLine(1));
-                            } catch (NumberFormatException exception) {
-                                player.sendMessage(ChatColor.RED + "Could not parse target hits");
-                            }
-                            if (uses >= 4) {
-                                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                                if (classesPluginProvider != null) {
-                                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                                    classesPlugin.giveExperience(player, 1);
+                            if (hit.getLocation().distanceSquared(player.getLocation()) >= 256) {
+                                int uses = 0;
+                                try {
+                                    uses = Integer.parseInt(sign.getLine(1));
+                                } catch (NumberFormatException exception) {
+                                    player.sendMessage(ChatColor.RED + "Could not parse target hits");
                                 }
-                                uses = 0;
+                                if (uses >= 4) {
+                                    RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                                    if (classesPluginProvider != null) {
+                                        ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                                        classesPlugin.giveExperience(player, 1);
+                                    }
+                                    uses = 0;
+                                } else {
+                                    uses++;
+                                }
+                                player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_CHEW_WOODEN_DOOR, 0);
+                                player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Hit!");
+                                player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + (5 - uses) + " hits remaining!");
+                                sign.setLine(1, "" + uses);
+                                sign.update();
                             } else {
-                                uses++;
+                                player.sendMessage(plugin.getPrefix() + ChatColor.RED + "Please move further away.");
                             }
-                            player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_CHEW_WOODEN_DOOR, 0);
-                            player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Hit!");
-                            player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + (5 - uses) + " hits remaining!");
-                            sign.setLine(1, "" + uses);
-                            sign.update();
                         }
                     }
                 }
