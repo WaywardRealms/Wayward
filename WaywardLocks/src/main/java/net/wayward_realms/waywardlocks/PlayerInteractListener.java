@@ -287,6 +287,7 @@ public class PlayerInteractListener implements Listener {
                             ItemStack oneLockpick = new ItemStack(lockpick);
                             oneLockpick.setAmount(1);
                             player.getInventory().removeItem(oneLockpick);
+                            break;
                         }
                     }
                 }
