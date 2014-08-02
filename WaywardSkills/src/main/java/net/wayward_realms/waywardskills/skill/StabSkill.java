@@ -12,6 +12,8 @@ import net.wayward_realms.waywardlib.util.vector.VectorUtils;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -54,7 +56,14 @@ public class StabSkill extends AttackSkillBase {
             Vector3D maximum = targetPos.add(0.5, 1.67, 0.5);
             if (target != player && VectorUtils.hasIntersection(observerStart, observerEnd, minimum, maximum)) {
                 player.teleport(target);
-                target.damage(10D, player);
+                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, target, EntityDamageEvent.DamageCause.MAGIC, 10D);
+                Bukkit.getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                        event.getEntity().setLastDamageCause(event);
+                    }
+                }
             }
         }
         return true;

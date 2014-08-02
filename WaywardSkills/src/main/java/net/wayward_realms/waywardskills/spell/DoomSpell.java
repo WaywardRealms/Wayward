@@ -10,6 +10,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -33,7 +35,14 @@ public class DoomSpell extends SpellBase {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    entity.damage(9999D, player);
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, 9999D);
+                    plugin.getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        if (event.getEntity() instanceof LivingEntity) {
+                            ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                            event.getEntity().setLastDamageCause(event);
+                        }
+                    }
                 }
             }, 400L);
         }

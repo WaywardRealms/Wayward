@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -12,6 +13,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -62,7 +65,14 @@ public class OvergrowthSpell extends AttackSpellBase {
         if (successful) {
             for (LivingEntity entity : player.getWorld().getLivingEntities()) {
                 if (entity.getLocation().distanceSquared(targetBlock.getLocation()) <= 256) {
-                    entity.damage(15D, player);
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, 15D);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        if (event.getEntity() instanceof LivingEntity) {
+                            ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                            event.getEntity().setLastDamageCause(event);
+                        }
+                    }
                 }
             }
         } else {

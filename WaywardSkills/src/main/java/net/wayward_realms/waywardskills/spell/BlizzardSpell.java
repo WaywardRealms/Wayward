@@ -17,6 +17,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -140,7 +142,16 @@ public class BlizzardSpell extends AttackSpellBase {
         }
         for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (entity.getLocation().distanceSquared(player.getLocation()) <= 64) {
-                if (!invulnerableEntities.contains(entity)) entity.damage(entity.getHealth() / 2, player);
+                if (!invulnerableEntities.contains(entity)) {
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, entity.getHealth() / 2D);
+                    plugin.getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        if (event.getEntity() instanceof LivingEntity) {
+                            ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                            event.getEntity().setLastDamageCause(event);
+                        }
+                    }
+                }
             }
         }
         return true;

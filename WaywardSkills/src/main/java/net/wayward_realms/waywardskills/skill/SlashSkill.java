@@ -13,6 +13,8 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -35,7 +37,14 @@ public class SlashSkill extends AttackSkillBase {
         for (LivingEntity livingEntity : player.getWorld().getLivingEntities()) {
             if (livingEntity == player) continue;
             if (player.getLocation().distanceSquared(livingEntity.getLocation()) <= 64) {
-                livingEntity.damage(4D, player);
+                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, livingEntity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 4D);
+                Bukkit.getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                        event.getEntity().setLastDamageCause(event);
+                    }
+                }
             }
         }
         return true;
