@@ -29,6 +29,7 @@ public class DoomSpell extends SpellBase {
     public boolean use(final Player player) {
         for (final LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (entity == player) continue;
+            if (entity.getLocation().distanceSquared(player.getLocation()) > 256) continue;
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
