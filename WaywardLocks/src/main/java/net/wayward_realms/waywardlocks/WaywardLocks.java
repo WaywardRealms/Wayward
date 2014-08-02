@@ -249,11 +249,11 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
     public boolean isLockpickCooledDown(Block block) {
         File lockpickCooldownFile = new File(getDataFolder(), "lockpick-cooldowns.yml");
         YamlConfiguration lockpickCooldownConfig = YamlConfiguration.loadConfiguration(lockpickCooldownFile);
-        if (lockpickCooldownConfig.get(LocationUtils.toString(block.getLocation())) != null) {
-            if (System.currentTimeMillis() < lockpickCooldownConfig.getLong(LocationUtils.toString(block.getLocation()))) {
+        if (lockpickCooldownConfig.get(LocationUtils.toString(block.getLocation()).replace(".", "_")) != null) {
+            if (System.currentTimeMillis() < lockpickCooldownConfig.getLong(LocationUtils.toString(block.getLocation()).replace(".", "_"))) {
                 return false;
             } else {
-                lockpickCooldownConfig.set(LocationUtils.toString(block.getLocation()), null);
+                lockpickCooldownConfig.set(LocationUtils.toString(block.getLocation()).replace(".", "_"), null);
                 try {
                     lockpickCooldownConfig.save(lockpickCooldownFile);
                 } catch (IOException exception) {
@@ -267,7 +267,7 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
     public void setLockpickCooldown(Block block, long time) {
         File lockpickCooldownFile = new File(getDataFolder(), "lockpick-cooldowns.yml");
         YamlConfiguration lockpickCooldownConfig = YamlConfiguration.loadConfiguration(lockpickCooldownFile);
-        lockpickCooldownConfig.set(LocationUtils.toString(block.getLocation()), System.currentTimeMillis() + time);
+        lockpickCooldownConfig.set(LocationUtils.toString(block.getLocation()).replace(".", "_"), System.currentTimeMillis() + time);
         try {
             lockpickCooldownConfig.save(lockpickCooldownFile);
         } catch (IOException exception) {
