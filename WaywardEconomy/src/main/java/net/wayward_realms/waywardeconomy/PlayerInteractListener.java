@@ -69,6 +69,11 @@ public class PlayerInteractListener implements Listener {
                                 } else {
                                     plugin.setBankBalance(character, currency, plugin.getBankBalance(character, currency) - Integer.parseInt(sign.getLine(2)));
                                     plugin.addMoney(character, currency, Integer.parseInt(sign.getLine(2)));
+                                    event.getPlayer().sendMessage(new String[] {
+                                            plugin.getPrefix() + ChatColor.GREEN + "Withdrew " + sign.getLine(2) + " " + (Integer.parseInt(sign.getLine(2)) == 1 ? currency.getNameSingular() : currency.getNamePlural()),
+                                            ChatColor.GRAY + "Wallet balance: " + plugin.getMoney(character, currency),
+                                            ChatColor.GRAY + "Bank balance: " + plugin.getBankBalance(character, currency)
+                                    });
                                 }
                             } else if (sign.getLine(1).equalsIgnoreCase("deposit")) {
                                 if (Integer.parseInt(sign.getLine(2)) > plugin.getMoney(character, currency)) {
@@ -76,6 +81,11 @@ public class PlayerInteractListener implements Listener {
                                 } else {
                                     plugin.setBankBalance(character, currency, plugin.getBankBalance(character, currency) + Integer.parseInt(sign.getLine(2)));
                                     plugin.addMoney(character, currency, -Integer.parseInt(sign.getLine(2)));
+                                    event.getPlayer().sendMessage(new String[] {
+                                            plugin.getPrefix() + ChatColor.GREEN + "Deposited " + sign.getLine(2) + " " + (Integer.parseInt(sign.getLine(2)) == 1 ? currency.getNameSingular() : currency.getNamePlural()),
+                                            ChatColor.GRAY + "Wallet balance: " + plugin.getMoney(character, currency),
+                                            ChatColor.GRAY + "Bank balance: " + plugin.getBankBalance(character, currency)
+                                    });
                                 }
                             } else if (sign.getLine(1).equalsIgnoreCase("balance")) {
                                 event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Balance: " + plugin.getBankBalance(character, currency));
