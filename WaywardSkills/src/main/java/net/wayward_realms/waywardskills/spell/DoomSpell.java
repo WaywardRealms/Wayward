@@ -32,7 +32,7 @@ public class DoomSpell extends SpellBase {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    entity.damage(entity.getHealth(), player);
+                    entity.damage(9999D, player);
                 }
             }, 400L);
         }
