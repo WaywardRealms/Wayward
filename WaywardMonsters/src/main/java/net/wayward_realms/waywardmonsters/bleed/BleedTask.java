@@ -7,7 +7,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BleedTask implements Runnable {
@@ -51,11 +53,14 @@ public class BleedTask implements Runnable {
                 final Map.Entry<Block, Integer> entry = iterator.next();
                 entry.setValue(entry.getValue() - interval);
                 int timeLeft = entry.getValue();
-                if (timeLeft > 0 && entry.getKey() != null && entry.getKey().getLocation() != null) {
-                    Block block = entry.getKey();
-                    if (block.getType() == Material.REDSTONE_WIRE && block.getMetadata("isBlood") != null && block.getMetadata("isBlood").size() > 0) {
-                        block.setType(Material.AIR);
-                        block.removeMetadata("isBlood", plugin);
+                if (entry.getKey() != null) {
+                    if (timeLeft <= 0) {
+                        Block block = entry.getKey();
+                        if (block.getType() == Material.REDSTONE_WIRE && block.getMetadata("isBlood") != null && block.getMetadata("isBlood").size() > 0) {
+                            block.setType(Material.AIR);
+                            block.removeMetadata("isBlood", plugin);
+                        }
+                        iterator.remove();
                     }
                 } else {
                     iterator.remove();
