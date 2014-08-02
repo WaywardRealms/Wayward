@@ -119,7 +119,7 @@ public class CurrencyManager {
             YamlConfiguration characterSave = YamlConfiguration.loadConfiguration(characterFile);
             return characterSave.getInt("currencies." + currency.getName(), 0);
         }
-        return currency.getDefaultAmount();
+        return 0;
     }
 
     public void setBankBalance(Character character, Currency currency, int amount) {
