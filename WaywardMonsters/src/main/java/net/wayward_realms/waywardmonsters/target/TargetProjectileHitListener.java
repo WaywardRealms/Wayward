@@ -30,7 +30,7 @@ public class TargetProjectileHitListener implements Listener {
             Block hit = null;
             while (iterator.hasNext()) {
                 hit = iterator.next();
-                if (!hit.getType().isSolid()) {
+                if (hit.getType().isSolid()) {
                     break;
                 }
             }
