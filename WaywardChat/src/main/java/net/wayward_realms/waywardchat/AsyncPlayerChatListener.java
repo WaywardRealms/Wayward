@@ -219,7 +219,7 @@ public class AsyncPlayerChatListener implements Listener {
                                 .link(link)
                                 .tooltip(link);
                     }
-                    if (endIndex < message.length() - 1) {
+                    if (endIndex <= message.length() - 1) {
                         fancy.then(message.substring(endIndex, message.length()));
                         if (chatColour != null) fancy.color(chatColour);
                         if (chatFormat != null) fancy.style(chatFormat);
