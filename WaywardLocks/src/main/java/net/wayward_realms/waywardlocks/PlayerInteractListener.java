@@ -160,11 +160,20 @@ public class PlayerInteractListener implements Listener {
                                 if (block.getType() == Material.CHEST) {
                                     if (plugin.isLockpickCooledDown(block)) {
                                         Chest chest = (Chest) block.getState();
-                                        ItemStack item = chest.getInventory().getItem(random.nextInt(chest.getInventory().getSize()));
+                                        int slot = random.nextInt(chest.getInventory().getSize());
+                                        ItemStack item = chest.getInventory().getItem(slot);
                                         if (item != null) {
                                             for (ItemStack drop : player.getInventory().addItem(item).values()) {
                                                 player.getWorld().dropItem(player.getLocation(), drop);
                                             }
+                                            ItemStack fingerprints = new ItemStack(Material.PAPER);
+                                            ItemMeta meta = fingerprints.getItemMeta();
+                                            meta.setDisplayName(player.getDisplayName() + "'s fingerprints");
+                                            List<String> lore = new ArrayList<>();
+                                            lore.add("In the place of the " + item.getAmount() + " " + item.getType().toString().toLowerCase().replace('_', ' ') + (item.getAmount() == 1 ? "" : "s") + " are " + player.getDisplayName() + "'s fingerprints");
+                                            meta.setLore(lore);
+                                            fingerprints.setItemMeta(meta);
+                                            chest.getInventory().setItem(slot, fingerprints);
                                             player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You managed to recover " + item.getAmount() + " " + item.getType().toString().toLowerCase().replace('_', ' ') + (item.getAmount() != 1 ? "s" : "") + " before the chest slammed shut again.");
                                         } else {
                                             player.sendMessage(plugin.getPrefix() + ChatColor.RED + "You managed to open the container, but failed to find any items before it slammed shut again.");
