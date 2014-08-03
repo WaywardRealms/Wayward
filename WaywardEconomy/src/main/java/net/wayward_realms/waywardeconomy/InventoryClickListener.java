@@ -55,8 +55,14 @@ public class InventoryClickListener implements Listener {
                                 Sign sign = (Sign) chest.getBlock().getRelative(BlockFace.UP).getState();
                                 if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_PURPLE + "[shop]")) {
                                     if (sign.getLine(1).contains("sell ")) {
-                                        ((Player) event.getWhoClicked()).sendMessage(plugin.getPrefix() + ChatColor.RED + "This is a sell shop, you may not steal items.");
-                                        event.setCancelled(true);
+                                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                                        if (characterPluginProvider != null) {
+                                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                            if (sign.getLine(3).equalsIgnoreCase("admin") || characterPlugin.getActiveCharacter(player).getId() != Integer.parseInt(sign.getLine(3))) {
+                                                ((Player) event.getWhoClicked()).sendMessage(plugin.getPrefix() + ChatColor.RED + "This is a sell shop, you may not steal items.");
+                                                event.setCancelled(true);
+                                            }
+                                        }
                                         return;
                                     }
                                     RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);

@@ -409,14 +409,14 @@ public class CharacterImpl implements Character {
 
     @Override
     public void addTemporaryStatModification(TemporaryStatModification modification) {
-        List<TemporaryStatModification> statModifications = (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+        List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
         statModifications.add(modification);
         setFieldValue("temporary-stat-modifications", statModifications);
     }
 
     @Override
     public void removeTemporaryStatModification(TemporaryStatModification modification) {
-        List<TemporaryStatModification> statModifications = (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications");
+        List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
         for (Iterator<TemporaryStatModification> iterator = statModifications.iterator(); iterator.hasNext(); ) {
             TemporaryStatModification modification1 = iterator.next();
             if (modification.equals(modification1)) iterator.remove();
