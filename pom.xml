@@ -54,6 +54,35 @@
             </roles>
             <timezone>0</timezone>
         </developer>
+        <developer>
+            <id>Exodin</id>
+            <name>Exodin</name>
+            <email>stephenbell98@hotmail.co.uk</email>
+            <url>https://Exodin.github.io/</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>Xslare</id>
+            <name>Xslare</name>
+            <email>Xslare@gmail.com</email>
+            <url>https://Xslare.github.io/</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>PsychoTea</id>
+            <name>PsychoTea</name>
+            <url>https://PsychoTea.github.io/</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:https://github.com/WaywardRealms/Wayward.git</connection>
