@@ -250,12 +250,20 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     }
 
     public void saveDefaultPrefixes() {
-        YamlConfiguration prefixConfig = new YamlConfiguration();
-        prefixConfig.set("admin", " &e[admin] ");
-        try {
-            prefixConfig.save(new File(getDataFolder(), "prefixes.yml"));
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        File prefixConfigFile = new File(getDataFolder(), "prefixes.yml");
+        if (!prefixConfigFile.exists()) {
+            YamlConfiguration prefixConfig = new YamlConfiguration();
+            prefixConfig.set("admin", "&e[admin] ");
+            prefixConfig.set("mod", "&9[mod] ");
+            prefixConfig.set("dev", "&a[dev] ");
+            prefixConfig.set("et", "&6[et] ");
+            prefixConfig.set("at", "&d[at] ");
+            prefixConfig.set("bt", "&4[bt] ");
+            try {
+                prefixConfig.save(prefixConfigFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
