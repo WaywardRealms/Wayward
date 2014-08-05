@@ -31,14 +31,11 @@ public class AsyncPlayerChatListener implements Listener {
     private WaywardChat plugin;
     private RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider;
     private YamlConfiguration pluginConfig;
-    private YamlConfiguration prefixConfig;
     private Map<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
 
     public AsyncPlayerChatListener(WaywardChat plugin) {
         this.plugin = plugin;
         this.pluginConfig = (YamlConfiguration)plugin.getConfig();
-        prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
-        prefixConfig.set("admin", " &e[admin] ");
         essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
         // SET UP FUCKING PLAYER LOCATION GETTER SHIT COLLECTION
         Bukkit.getScheduler().runTaskTimer(
@@ -130,7 +127,8 @@ public class AsyncPlayerChatListener implements Listener {
         }
     }
 
-    public String getPlayerPrefix(final Permissible player) {
+    public String getPlayerPrefix(Permissible player) {
+        YamlConfiguration prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
         for (String key : prefixConfig.getKeys(false)) {
             if (player.hasPermission("wayward.chat.prefix." + key)) {
                 return ChatColor.translateAlternateColorCodes('&', prefixConfig.getString(key));
