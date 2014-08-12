@@ -79,7 +79,7 @@ public class InventoryClickListener implements Listener {
                             if (!event.getCurrentItem().getItemMeta().hasLore() || !event.getCurrentItem().getItemMeta().getLore().contains("-")) {
                                 Random random = new Random();
                                 int brewingEfficiency = plugin.getBrewingEfficiency(character);
-                                int amount = (int) ((double) (random.nextInt(100) <= 75 ? (brewingEfficiency > 10 ? random.nextInt(brewingEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) event.getCurrentItem().getAmount());
+                                int amount = (int) Math.min(1, Math.round(((double) brewingEfficiency / 50D) * (double) event.getCurrentItem().getAmount()));
                                 event.getCurrentItem().setAmount(amount);
                                 plugin.setBrewingEfficiency(character, plugin.getBrewingEfficiency(character) + (random.nextInt(100) <= 75 ? random.nextInt(3) + 1 : 0));
                                 ItemMeta meta = event.getCurrentItem().getItemMeta();
