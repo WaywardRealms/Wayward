@@ -395,7 +395,7 @@ public class CharacterImpl implements Character {
             ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
             int value = (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat) + getRace().getStatBonus(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
             for (TemporaryStatModification modification : getTemporaryStatModifications()) {
-                value = modification.apply(stat, value);
+                if (modification != null) value = modification.apply(stat, value);
             }
             return value;
         }
@@ -417,10 +417,7 @@ public class CharacterImpl implements Character {
     @Override
     public void removeTemporaryStatModification(TemporaryStatModification modification) {
         List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
-        for (Iterator<TemporaryStatModification> iterator = statModifications.iterator(); iterator.hasNext(); ) {
-            TemporaryStatModification modification1 = iterator.next();
-            if (modification.equals(modification1)) iterator.remove();
-        }
+        statModifications.remove(modification);
         setFieldValue("temporary-stat-modifications", statModifications);
     }
 
