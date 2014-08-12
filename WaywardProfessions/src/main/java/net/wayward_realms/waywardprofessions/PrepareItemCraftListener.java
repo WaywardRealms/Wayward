@@ -8,14 +8,9 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Random;
 
 public class PrepareItemCraftListener implements Listener {
 
@@ -36,9 +31,8 @@ public class PrepareItemCraftListener implements Listener {
                         if (plugin.canGainCraftEfficiency(craftedItem.getType())) {
                             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                             net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) viewer);
-                            Random random = new Random();
                             int craftEfficiency = plugin.getCraftEfficiency(character, craftedItem.getType());
-                            int amount = (int) ((double) (random.nextInt(100) <= 30 ? (craftEfficiency > 10 ? random.nextInt(craftEfficiency) : random.nextInt(10)) : 25) * (4D / 100D) * (double) craftedItem.getAmount());
+                            int amount = (int) Math.min(1, Math.round(((double) craftEfficiency / 50D) * (double) craftedItem.getAmount()));
                             craftedItem.setAmount(amount);
                             if (ToolType.getToolType(event.getInventory().getResult().getType()) != null) {
                                 ToolType type = ToolType.getToolType(event.getInventory().getResult().getType());
