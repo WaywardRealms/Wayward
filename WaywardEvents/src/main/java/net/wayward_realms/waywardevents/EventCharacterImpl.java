@@ -427,7 +427,7 @@ public class EventCharacterImpl implements EventCharacter {
     public int getStatValue(Stat stat) {
         int value = getFieldIntValue("stats." + stat.toString().toLowerCase());
         for (TemporaryStatModification modification : getTemporaryStatModifications()) {
-            value = modification.apply(stat, value);
+            if (modification != null) value = modification.apply(stat, value);
         }
         return value;
     }
@@ -447,10 +447,7 @@ public class EventCharacterImpl implements EventCharacter {
     @Override
     public void removeTemporaryStatModification(TemporaryStatModification modification) {
         List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
-        for (Iterator<TemporaryStatModification> iterator = statModifications.iterator(); iterator.hasNext(); ) {
-            TemporaryStatModification modification1 = iterator.next();
-            if (modification.equals(modification1)) iterator.remove();
-        }
+        statModifications.remove(modification);
         setFieldValue("temporary-stat-modifications", statModifications);
     }
 
