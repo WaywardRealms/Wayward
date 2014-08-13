@@ -7,6 +7,7 @@ import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -51,10 +52,10 @@ public class EntityDeathListener implements Listener {
             if (player != null) {
                 int exp;
                 int money;
-                int expScale = plugin.getConfig().getInt("experience-multiplier." + event.getEntityType().toString(), 0);
+                double expScale = plugin.getConfig().getDouble("experience-multiplier." + event.getEntityType().toString(), 0);
                 int entityLevel = plugin.getEntityLevelManager().getEntityLevel(event.getEntity());
-                exp = (int) Math.ceil(((double) entityLevel * (double) expScale));
-                money = random.nextInt(100) < 5 ? random.nextInt(5) : 0;
+                exp = (int) Math.ceil(((double) entityLevel * expScale));
+                money = event.getEntity() instanceof Monster && random.nextInt(100) < 10 ? random.nextInt(5) : 0;
                 if (exp > 0) {
                     RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
                     if (classesPluginProvider != null) {
