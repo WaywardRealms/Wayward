@@ -20,7 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class StabSkill extends AttackSkillBase {
 
-    private int reach = 16;
+    private int reach = 8;
 
     public StabSkill() {
         setName("Stab");
@@ -47,7 +47,7 @@ public class StabSkill extends AttackSkillBase {
         Location observerPos = player.getEyeLocation();
         Vector3D observerDir = new Vector3D(observerPos.getDirection());
         Vector3D observerStart = new Vector3D(observerPos);
-        Vector3D observerEnd = observerStart.add(observerDir.multiply(reach));
+        Vector3D observerEnd = observerStart.add(observerDir.multiply(getReach()));
         // Get nearby entities
         for (LivingEntity target : player.getWorld().getLivingEntities()) {
             // Bounding box of the given player
@@ -56,7 +56,7 @@ public class StabSkill extends AttackSkillBase {
             Vector3D maximum = targetPos.add(0.5, 1.67, 0.5);
             if (target != player && VectorUtils.hasIntersection(observerStart, observerEnd, minimum, maximum)) {
                 player.teleport(target);
-                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, target, EntityDamageEvent.DamageCause.MAGIC, 10D);
+                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, target, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 10D);
                 Bukkit.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     if (event.getEntity() instanceof LivingEntity) {
