@@ -4,3 +4,7 @@ version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardlib.Wayward
 depend: [ProtocolLib]
+commands:
+    refreshprofile:
+        description: Invalidates your profile so it has to be re-requested next time it is needed
+        usage: /<command>
