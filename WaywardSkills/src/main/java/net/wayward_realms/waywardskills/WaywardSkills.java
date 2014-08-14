@@ -354,11 +354,11 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public Specialisation getSpecialisation(String name) {
-        return specialisations.get(name);
+        return specialisations.get(name.toLowerCase());
     }
 
     private void addSpecialisation(Specialisation specialisation) {
-        specialisations.put(specialisation.getName(), specialisation);
+        specialisations.put(specialisation.getName().toLowerCase(), specialisation);
         for (Specialisation child : specialisation.getChildSpecialisations()) {
             addSpecialisation(child);
         }
