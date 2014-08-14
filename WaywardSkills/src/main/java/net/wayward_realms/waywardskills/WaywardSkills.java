@@ -9,6 +9,7 @@ import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
 import net.wayward_realms.waywardskills.spell.SpellManager;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -310,12 +311,23 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public int getSpecialisationValue(Character character, Specialisation specialisation) {
-        return 0;
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        return characterConfig.getInt(specialisation.getName());
     }
 
     @Override
     public void setSpecialisationValue(Character character, Specialisation specialisation, int value) {
-
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        characterConfig.set(specialisation.getName(), value);
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }
