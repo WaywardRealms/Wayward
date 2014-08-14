@@ -15,6 +15,7 @@ public class ArmedMeleeOffenceSpecialisation extends SpecialisationBase {
         addChildSpecialisation(new StaffOffenceSpecialisation(this));
         addChildSpecialisation(new KnuckleOffenceSpecialisation(this));
         addChildSpecialisation(new ClawOffenceSpecialisation(this));
+        addChildSpecialisation(new HammerOffenceSpecialisation(this));
     }
 
     @Override
