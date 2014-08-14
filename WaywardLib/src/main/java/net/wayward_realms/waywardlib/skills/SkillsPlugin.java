@@ -2,6 +2,7 @@ package net.wayward_realms.waywardlib.skills;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.Pet;
 
 import java.io.File;
 import java.util.Collection;
@@ -112,5 +113,33 @@ public interface SkillsPlugin extends WaywardPlugin {
      * @param value the percentage completion of the specialisation
      */
     public void setSpecialisationValue(Character character, Specialisation specialisation, int value);
+
+    /**
+     * Gets how far a pet has specialised into a given specialisation.
+     * Numbers are out of 100, with 100 being the maximum possible in any given specialisation.
+     *
+     * @param pet the pet
+     * @param specialisation the specialisation
+     * @return the percentage completion of the specialisation
+     */
+    public int getSpecialisationValue(Pet pet, Specialisation specialisation);
+
+    /**
+     * Sets how far a pet has specialised into a given specialisation.
+     * Numbers are out of 100, with 100 being the maximum possible in any given specialisation.
+     *
+     * @param pet the pet
+     * @param specialisation the specialisation
+     * @param value the percentage completion of the specialisation
+     */
+    public void setSpecialisationValue(Pet pet, Specialisation specialisation, int value);
+
+    /**
+     * Gets a specialisation by name
+     *
+     * @param name the name of the specialisation
+     * @return the specialisation
+     */
+    public Specialisation getSpecialisation(String name);
 
 }

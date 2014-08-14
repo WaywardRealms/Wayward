@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardskills;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.Pet;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Specialisation;
@@ -22,10 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -34,12 +32,15 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     private SpellManager spellManager;
     private SkillManager skillManager;
     private Specialisation rootSpecialisation;
+    private Map<String, Specialisation> specialisations;
 
     @Override
     public void onEnable() {
         spellManager = new SpellManager(this);
         skillManager = new SkillManager(this);
         rootSpecialisation = new RootSpecialisation();
+        specialisations = new HashMap<>();
+        addSpecialisation(rootSpecialisation);
         registerListeners(new PlayerInteractListener(this), new EntityDamageByEntityListener(this), new EntityTargetListener(this), new ProjectileHitListener(), new InventoryClickListener());
         getCommand("skill").setExecutor(new SkillCommand(this));
         getCommand("spell").setExecutor(new SpellCommand(this));
@@ -327,6 +328,39 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             characterConfig.save(characterFile);
         } catch (IOException exception) {
             exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getSpecialisationValue(Pet pet, Specialisation specialisation) {
+        File specialisationDirectory = new File(getDataFolder(), "pet-specialisations");
+        File petFile = new File(specialisationDirectory, pet.getId() + ".yml");
+        YamlConfiguration petConfig = YamlConfiguration.loadConfiguration(petFile);
+        return petConfig.getInt(specialisation.getName());
+    }
+
+    @Override
+    public void setSpecialisationValue(Pet pet, Specialisation specialisation, int value) {
+        File specialisationDirectory = new File(getDataFolder(), "pet-specialisations");
+        File petFile = new File(specialisationDirectory, pet.getId() + ".yml");
+        YamlConfiguration petConfig = YamlConfiguration.loadConfiguration(petFile);
+        petConfig.set(specialisation.getName(), value);
+        try {
+            petConfig.save(petFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public Specialisation getSpecialisation(String name) {
+        return specialisations.get(name);
+    }
+
+    private void addSpecialisation(Specialisation specialisation) {
+        specialisations.put(specialisation.getName(), specialisation);
+        for (Specialisation child : specialisation.getChildSpecialisations()) {
+            addSpecialisation(child);
         }
     }
 
