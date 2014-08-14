@@ -390,7 +390,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         File newCharacterDirectory = new File(getDataFolder(), "characters-new");
         File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
         if (newCharacterFile.exists()) {
-            Character character = new CharacterImpl(this, newCharacterFile);
+            Character character = new CharacterImpl(newCharacterFile);
             character.getPlayer(); // UUID conversion
             return character;
         } else {

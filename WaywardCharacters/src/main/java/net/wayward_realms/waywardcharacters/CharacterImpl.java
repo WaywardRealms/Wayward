@@ -1,9 +1,7 @@
 package net.wayward_realms.waywardcharacters;
 
+import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.character.Gender;
-import net.wayward_realms.waywardlib.character.Race;
-import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.skills.SkillType;
@@ -38,16 +36,12 @@ public class CharacterImpl implements Character {
         CharacterImpl.nextId = id;
     }
 
-    private WaywardCharacters plugin;
     private File file;
     private static final int MAX_THIRST = 20;
     private static final int MIN_THIRST = 0;
 
-    private CharacterImpl() {}
-
     public CharacterImpl(WaywardCharacters plugin, OfflinePlayer player) {
         int id = CharacterImpl.nextAvailableId();
-        this.plugin = plugin;
         this.file = new File(new File(plugin.getDataFolder(), "characters-new"), id + ".yml");
         setId(id);
         setPlayer(player);
@@ -66,8 +60,7 @@ public class CharacterImpl implements Character {
         setNamePlate("");
     }
 
-    public CharacterImpl(WaywardCharacters plugin, File file) {
-        this.plugin = plugin;
+    public CharacterImpl(File file) {
         this.file = file;
     }
 
@@ -294,6 +287,16 @@ public class CharacterImpl implements Character {
     @Override
     public void setBoots(ItemStack boots) {
         setFieldValue("boots", boots);
+    }
+
+    @Override
+    public Equipment getEquipment() {
+        return getFieldValue("equipment") != null ? (Equipment) getFieldValue("equipment") : new EquipmentImpl(null, null, null, new ItemStack[9]);
+    }
+
+    @Override
+    public void setEquipment(Equipment equipment) {
+        setFieldValue("equipment", equipment);
     }
 
     @Override

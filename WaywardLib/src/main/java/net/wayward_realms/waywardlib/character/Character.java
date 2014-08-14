@@ -324,6 +324,20 @@ public interface Character extends Combatant {
     public void setBoots(ItemStack boots);
 
     /**
+     * Gets the equipment
+     *
+     * @return the equipment
+     */
+    public Equipment getEquipment();
+
+    /**
+     * Sets the equipment
+     *
+     * @param equipment the equipment to set
+     */
+    public void setEquipment(Equipment equipment);
+
+    /**
      * Gets the inventory contents of this character
      *
      * @return an array of itemstacks containing the inventory contents of this character
