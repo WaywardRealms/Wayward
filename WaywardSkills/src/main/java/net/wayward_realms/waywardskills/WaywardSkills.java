@@ -1,10 +1,13 @@
 package net.wayward_realms.waywardskills;
 
+import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
+import net.wayward_realms.waywardlib.skills.Specialisation;
 import net.wayward_realms.waywardlib.skills.Spell;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
+import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
 import net.wayward_realms.waywardskills.spell.SpellManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -29,11 +32,13 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     private SpellManager spellManager;
     private SkillManager skillManager;
+    private Specialisation rootSpecialisation;
 
     @Override
     public void onEnable() {
         spellManager = new SpellManager(this);
         skillManager = new SkillManager(this);
+        rootSpecialisation = new RootSpecialisation();
         registerListeners(new PlayerInteractListener(this), new EntityDamageByEntityListener(this), new EntityTargetListener(this), new ProjectileHitListener(), new InventoryClickListener());
         getCommand("skill").setExecutor(new SkillCommand(this));
         getCommand("spell").setExecutor(new SpellCommand(this));
@@ -296,6 +301,21 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
                 }
             }
         }, 100L, 100L);
+    }
+
+    @Override
+    public Specialisation getRootSpecialisation() {
+        return rootSpecialisation;
+    }
+
+    @Override
+    public int getSpecialisationValue(Character character, Specialisation specialisation) {
+        return 0;
+    }
+
+    @Override
+    public void setSpecialisationValue(Character character, Specialisation specialisation, int value) {
+
     }
 
 }

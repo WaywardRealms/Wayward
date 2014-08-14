@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardlib.skills;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
+import net.wayward_realms.waywardlib.character.Character;
 
 import java.io.File;
 import java.util.Collection;
@@ -84,5 +85,32 @@ public interface SkillsPlugin extends WaywardPlugin {
      * @return the skill
      */
     public Skill loadSkill(Class<? extends Skill> clazz);
+
+    /**
+     * Gets the root specialisation
+     *
+     * @return the root specialisation
+     */
+    public Specialisation getRootSpecialisation();
+
+    /**
+     * Gets how far a character has specialised into a given specialisation.
+     * Numbers are out of 100, with 100 being the maximum possible in any given specialisation.
+     *
+     * @param character the character
+     * @param specialisation the specialisation
+     * @return the percentage completion of the specialisation
+     */
+    public int getSpecialisationValue(net.wayward_realms.waywardlib.character.Character character, Specialisation specialisation);
+
+    /**
+     * Sets how far a character has specialised into a given specialisation.
+     * Numbers are out of 100, with 100 being the maximum possible in any given specialisation.
+     *
+     * @param character the character
+     * @param specialisation the specialisation
+     * @param value the percentage completion of the specialisation
+     */
+    public void setSpecialisationValue(Character character, Specialisation specialisation, int value);
 
 }
