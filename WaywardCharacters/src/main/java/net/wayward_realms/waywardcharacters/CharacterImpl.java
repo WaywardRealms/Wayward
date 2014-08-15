@@ -3,7 +3,7 @@ package net.wayward_realms.waywardcharacters;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;

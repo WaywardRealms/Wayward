@@ -3,7 +3,7 @@ package net.wayward_realms.waywardcharacters;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.Class;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.Stat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

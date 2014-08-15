@@ -2,7 +2,7 @@ package net.wayward_realms.waywardevents;
 
 import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.skills.SkillType;

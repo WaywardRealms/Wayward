@@ -19,8 +19,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
-import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_DEFENCE;
+import static net.wayward_realms.waywardlib.skills.Stat.MAGIC_ATTACK;
+import static net.wayward_realms.waywardlib.skills.Stat.MAGIC_DEFENCE;
 
 public class LightningSpell extends AttackSpellBase {
 
