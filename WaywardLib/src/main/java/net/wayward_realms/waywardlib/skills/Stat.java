@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardlib.classes;
+package net.wayward_realms.waywardlib.skills;
 
 public enum Stat {
 

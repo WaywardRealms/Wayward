@@ -2,7 +2,7 @@ package net.wayward_realms.waywardlib.events;
 
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.Stat;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 

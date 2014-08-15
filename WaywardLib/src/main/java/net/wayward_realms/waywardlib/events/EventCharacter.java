@@ -1,7 +1,7 @@
 package net.wayward_realms.waywardlib.events;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.Stat;
 
 /**
  * Represents a character used in events
