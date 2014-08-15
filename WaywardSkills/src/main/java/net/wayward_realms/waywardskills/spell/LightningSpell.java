@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.lineofsight.LineOfSightUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,7 +28,6 @@ public class LightningSpell extends AttackSpellBase {
         setName("Lightning");
         setManaCost(100);
         setCoolDown(90);
-        setType(SkillType.MAGIC_OFFENCE);
         setCriticalChance(20);
         setCriticalMultiplier(4D);
         setPower(90);
@@ -80,7 +78,7 @@ public class LightningSpell extends AttackSpellBase {
     }
 
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 50;
+        return true;
     }
 
     @Override

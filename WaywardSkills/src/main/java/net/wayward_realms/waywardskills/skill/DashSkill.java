@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +21,6 @@ public class DashSkill extends SkillBase {
     public DashSkill() {
         setName("Dash");
         setCoolDown(120);
-        setType(SkillType.SPEED_NIMBLE);
     }
 
     @Override
@@ -69,7 +67,7 @@ public class DashSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.SPEED_NIMBLE) >= 1;
+        return true;
     }
 
 }

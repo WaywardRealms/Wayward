@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +25,6 @@ public class MultiShotSkill extends AttackSkillBase {
         setCoolDown(20);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
-        setType(SkillType.RANGED_OFFENCE);
     }
 
     @Override
@@ -98,7 +96,7 @@ public class MultiShotSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 8;
+        return true;
     }
 
     @Override

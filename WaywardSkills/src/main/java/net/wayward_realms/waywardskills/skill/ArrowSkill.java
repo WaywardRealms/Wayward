@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +21,6 @@ public class ArrowSkill extends AttackSkillBase {
     public ArrowSkill() {
         setName("Arrow");
         setCoolDown(5);
-        setType(SkillType.RANGED_OFFENCE);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
         setCriticalChance(2);
@@ -86,7 +84,7 @@ public class ArrowSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 1;
+        return true;
     }
 
     @Override

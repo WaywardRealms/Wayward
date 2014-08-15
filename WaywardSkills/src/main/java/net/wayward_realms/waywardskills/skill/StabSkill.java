@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
 import net.wayward_realms.waywardlib.util.vector.VectorUtils;
 import org.bukkit.*;
@@ -25,7 +24,6 @@ public class StabSkill extends AttackSkillBase {
     public StabSkill() {
         setName("Stab");
         setCoolDown(60);
-        setType(SkillType.MELEE_OFFENCE);
         setAttackStat(Stat.MELEE_ATTACK);
         setDefenceStat(Stat.MELEE_DEFENCE);
         setPower(40);
@@ -104,7 +102,7 @@ public class StabSkill extends AttackSkillBase {
     }
 
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 5;
+        return true;
     }
 
     @Override

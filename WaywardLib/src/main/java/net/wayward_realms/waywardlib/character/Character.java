@@ -2,7 +2,6 @@ package net.wayward_realms.waywardlib.character;
 
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -393,14 +392,6 @@ public interface Character extends Combatant {
      * @param modification the modification to remove
      */
     public void removeTemporaryStatModification(TemporaryStatModification modification);
-
-    /**
-     * Gets the amount of skill points the character has for a certain skill type
-     *
-     * @param type the type of skill
-     * @return the amount of skill points the character has of the skill type
-     */
-    public int getSkillPoints(SkillType type);
 
     /**
      * Checks whether the class is hidden

@@ -3,7 +3,6 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -24,7 +23,6 @@ public class DoomSpell extends SpellBase {
         setName("Doom");
         setCoolDown(240);
         setManaCost(60);
-        setType(SkillType.MAGIC_OFFENCE);
     }
 
     @Override
@@ -74,7 +72,7 @@ public class DoomSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character)  {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 80;
+        return true;
     }
 
     @Override

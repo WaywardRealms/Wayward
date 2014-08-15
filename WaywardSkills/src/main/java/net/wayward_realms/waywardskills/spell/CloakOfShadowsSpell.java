@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -23,7 +22,6 @@ public class CloakOfShadowsSpell extends SpellBase {
         setName("CloakOfShadows");
         setCoolDown(300);
         setManaCost(50);
-        setType(SkillType.MAGIC_ILLUSION);
     }
 
     @Override
@@ -73,7 +71,7 @@ public class CloakOfShadowsSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 45;
+        return true;
     }
 
     @Override

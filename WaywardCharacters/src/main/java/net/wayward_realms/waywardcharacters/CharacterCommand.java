@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -230,31 +229,6 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " extenddescription [info]");
                 }
-            } else if (args[0].equalsIgnoreCase("assignstatpoint") || args[0].equalsIgnoreCase("asp")) {
-                if (args.length >= 2) {
-                    Character character = plugin.getActiveCharacter((Player) sender);
-                    if (character instanceof CharacterImpl) {
-                        CharacterImpl characterImpl = (CharacterImpl) character;
-                        if (characterImpl.getUnassignedStatPoints() >= 1) {
-                            try {
-                                Stat stat = Stat.valueOf(args[1].toUpperCase());
-                                characterImpl.assignStatPoint(stat);
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Stat point assigned to " + stat.toString().toLowerCase().replace("_", " "));
-                            } catch (IllegalArgumentException exception) {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That stat doesn't exist! Try one of the following:");
-                                for (Stat stat : Stat.values()) {
-                                    sender.sendMessage(ChatColor.RED + stat.toString().toLowerCase());
-                                }
-                            }
-                        } else {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have any unassigned stat points.");
-                        }
-                    } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are using a non-default character implementation, stat points are unsupported for this character type.");
-                    }
-                } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0].toLowerCase() + " [stat]");
-                }
             } else if (args[0].equalsIgnoreCase("list")) {
                 Player player = (Player) sender;
                 if (sender.hasPermission("wayward.characters.command.character.list.others")) {
@@ -371,31 +345,6 @@ public class CharacterCommand implements CommandExecutor {
                         }
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " transfer [character id] [player]");
-                    }
-                } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
-                }
-            } else if (args[0].equalsIgnoreCase("resetstatpoints") || args[0].equalsIgnoreCase("rsp")) {
-                if (sender.hasPermission("wayward.characters.command.character.resetstatpoints")) {
-                    if (args.length > 1) {
-                        try {
-                            int cid = Integer.parseInt(args[1]);
-                            Character character = plugin.getCharacter(cid);
-                            if (character != null) {
-                                if (character instanceof CharacterImpl) {
-                                    ((CharacterImpl) character).resetStatPoints();
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Reset " + character.getName() + "'s stat points.");
-                                } else {
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character is using a non-default character implementation, and cannot use stat points.");
-                                }
-                            } else {
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character does not exist.");
-                            }
-                        } catch (NumberFormatException exception) {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
-                        }
-                    } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
                     }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");

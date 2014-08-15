@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,7 +23,6 @@ public class QuickStepSkill extends SkillBase {
     public QuickStepSkill() {
         setName("QuickStep");
         setCoolDown(30);
-        setType(SkillType.SPEED_NIMBLE);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class QuickStepSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.SPEED_NIMBLE) >= 5;
+        return true;
     }
 
 }

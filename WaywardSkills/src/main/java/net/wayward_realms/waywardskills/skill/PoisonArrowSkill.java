@@ -7,7 +7,6 @@ import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,7 +28,6 @@ public class PoisonArrowSkill extends AttackSkillBase {
     public PoisonArrowSkill() {
         setName("PoisonArrow");
         setCoolDown(20);
-        setType(SkillType.RANGED_OFFENCE);
         setPower(30);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
@@ -95,7 +93,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 5;
+        return true;
     }
 
     @Override

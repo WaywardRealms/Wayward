@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,7 +27,6 @@ public class CureSpell extends SpellBase {
         setName("Cure");
         setManaCost(5);
         setCoolDown(20);
-        setType(SkillType.MAGIC_HEALING);
     }
 
     @Override
@@ -103,7 +101,7 @@ public class CureSpell extends SpellBase {
     }
 
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 2;
+        return true;
     }
 
     @Override

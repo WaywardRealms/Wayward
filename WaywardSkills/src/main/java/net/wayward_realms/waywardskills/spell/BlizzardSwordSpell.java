@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.professions.ToolType;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +20,6 @@ public class BlizzardSwordSpell extends SpellBase {
         setName("BlizzardSword");
         setManaCost(100);
         setCoolDown(1800);
-        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -63,7 +61,7 @@ public class BlizzardSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 70;
+        return true;
     }
 
     @Override

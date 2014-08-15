@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,7 +27,6 @@ public class EsunaSpell extends SpellBase {
         setName("Esuna");
         setManaCost(5);
         setCoolDown(5);
-        setType(SkillType.MAGIC_HEALING);
     }
 
     @Override
@@ -88,7 +86,7 @@ public class EsunaSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 3;
+        return true;
     }
 
     @Override

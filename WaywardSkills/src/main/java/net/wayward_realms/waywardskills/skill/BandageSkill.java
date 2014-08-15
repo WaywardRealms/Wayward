@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,7 +23,6 @@ public class BandageSkill extends SkillBase {
     public BandageSkill() {
         setName("Bandage");
         setCoolDown(30);
-        setType(SkillType.MAGIC_HEALING);
     }
 
     public int getReach() {
@@ -121,7 +119,7 @@ public class BandageSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) > 0;
+        return true;
     }
 
     @Override

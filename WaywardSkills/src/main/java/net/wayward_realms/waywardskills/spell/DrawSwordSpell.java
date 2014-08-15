@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,7 +22,6 @@ public class DrawSwordSpell extends SpellBase {
         setName("DrawSword");
         setManaCost(50);
         setCoolDown(300);
-        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -69,7 +67,7 @@ public class DrawSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 20;
+        return true;
     }
 
     @Override

@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,7 +28,6 @@ public class FireballSpell extends AttackSpellBase {
         setName("Fireball");
         setManaCost(5);
         setCoolDown(15);
-        setType(SkillType.MAGIC_OFFENCE);
         setCriticalChance(2);
         setPower(50);
         setAttackStat(MAGIC_ATTACK);
@@ -77,7 +75,7 @@ public class FireballSpell extends AttackSpellBase {
     }
 
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 30;
+        return true;
     }
 
     @Override

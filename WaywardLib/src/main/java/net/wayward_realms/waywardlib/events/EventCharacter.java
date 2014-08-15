@@ -2,7 +2,6 @@ package net.wayward_realms.waywardlib.events;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.Stat;
-import net.wayward_realms.waywardlib.skills.SkillType;
 
 /**
  * Represents a character used in events
@@ -16,14 +15,6 @@ public interface EventCharacter extends Character {
      * @param value the value to set
      */
     public void setStatValue(Stat stat, int value);
-
-    /**
-     * Sets the amount of skill points for a skill type
-     *
-     * @param skillType the skill type
-     * @param points the amount of points to set
-     */
-    public void setSkillPoints(SkillType skillType, int points);
 
     /**
      * Sets the max health of the character

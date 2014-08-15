@@ -41,7 +41,6 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getCommand("character").setExecutor(new CharacterCommand(this));
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
-        getCommand("skillpoints").setExecutor(new SkillPointsCommand(this));
         getCommand("togglethirst").setExecutor(new ToggleThirstCommand(this));
         getCommand("togglehunger").setExecutor(new ToggleHungerCommand(this));
         getCommand("party").setExecutor(new PartyCommand(this));

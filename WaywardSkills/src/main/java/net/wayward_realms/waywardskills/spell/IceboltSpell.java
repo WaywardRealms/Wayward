@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +31,6 @@ public class IceboltSpell extends AttackSpellBase {
         setName("Icebolt");
         setManaCost(10);
         setCoolDown(0);
-        setType(SkillType.MAGIC_OFFENCE);
         setPower(55);
         setCriticalChance(2);
         setAttackStat(MAGIC_ATTACK);
@@ -77,7 +75,7 @@ public class IceboltSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 20;
+        return true;
     }
 
     @Override

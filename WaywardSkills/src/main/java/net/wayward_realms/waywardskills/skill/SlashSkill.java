@@ -6,7 +6,6 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +23,6 @@ public class SlashSkill extends AttackSkillBase {
     public SlashSkill() {
         setName("Slash");
         setCoolDown(30);
-        setType(SkillType.MELEE_OFFENCE);
         setCriticalChance(2);
         setHitChance(95);
         setAttackStat(Stat.MELEE_ATTACK);
@@ -81,7 +79,7 @@ public class SlashSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 1;
+        return true;
     }
 
     @Override

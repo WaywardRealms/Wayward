@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -24,7 +23,6 @@ public class EmpowerSpell extends SpellBase {
         setName("Empower");
         setCoolDown(300);
         setManaCost(10);
-        setType(SkillType.SUPPORT_PERFORM);
     }
 
     @Override
@@ -71,7 +69,7 @@ public class EmpowerSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.SUPPORT_PERFORM) >= 7;
+        return true;
     }
 
     @Override

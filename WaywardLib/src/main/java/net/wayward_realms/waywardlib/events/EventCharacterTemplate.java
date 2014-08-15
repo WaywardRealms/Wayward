@@ -3,7 +3,6 @@ package net.wayward_realms.waywardlib.events;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.classes.Stat;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -213,21 +212,5 @@ public interface EventCharacterTemplate {
      * @param value the value to set
      */
     public void setStatValue(Stat stat, int value);
-
-    /**
-     * Gets the skill points of a given type
-     *
-     * @param type the type
-     * @return the amount of skill points
-     */
-    public int getSkillPoints(SkillType type);
-
-    /**
-     * Sets the skill points of a given type
-     *
-     * @param type the type
-     * @param skillPoints the amount of skill points to set
-     */
-    public void setSkillPoints(SkillType type, int skillPoints);
 
 }

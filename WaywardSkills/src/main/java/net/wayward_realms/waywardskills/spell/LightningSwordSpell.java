@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.professions.ToolType;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,7 +20,6 @@ public class LightningSwordSpell extends AttackSpellBase {
         setName("LightningSword");
         setManaCost(100);
         setCoolDown(3600);
-        setType(SkillType.MAGIC_SWORD);
         setCriticalMultiplier(4D);
         setCriticalChance(15);
         setPower(90);
@@ -78,7 +76,7 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 80;
+        return true;
     }
 
     @Override

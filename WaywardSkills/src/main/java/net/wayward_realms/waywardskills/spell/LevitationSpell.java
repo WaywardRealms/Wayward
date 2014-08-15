@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -20,7 +19,6 @@ public class LevitationSpell extends SpellBase {
         setCoolDown(300);
         setManaCost(50);
         setName("Levitation");
-        setType(SkillType.MAGIC_ILLUSION);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class LevitationSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 50;
+        return true;
     }
 
     @Override

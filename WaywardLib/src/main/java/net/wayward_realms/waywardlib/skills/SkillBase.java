@@ -15,7 +15,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 public abstract class SkillBase implements Skill {
 
     private String name;
-    private SkillType type;
     private int coolDown;
     private int coolDownTurns = 0;
 
@@ -47,16 +46,6 @@ public abstract class SkillBase implements Skill {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
     }
 
     @Override

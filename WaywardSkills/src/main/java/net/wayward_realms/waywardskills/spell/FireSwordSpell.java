@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,7 +16,6 @@ public class FireSwordSpell extends SpellBase {
         setName("FireSword");
         setCoolDown(1800);
         setManaCost(100);
-        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -51,7 +49,7 @@ public class FireSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 25;
+        return true;
     }
 
     @Override

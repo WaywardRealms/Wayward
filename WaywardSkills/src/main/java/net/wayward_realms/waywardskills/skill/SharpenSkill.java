@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +20,6 @@ public class SharpenSkill extends SkillBase {
     public SharpenSkill() {
         setName("Sharpen");
         setCoolDown(60);
-        setType(SkillType.MELEE_OFFENCE);
     }
 
     @Override
@@ -83,7 +81,7 @@ public class SharpenSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 3;
+        return true;
     }
 
 }

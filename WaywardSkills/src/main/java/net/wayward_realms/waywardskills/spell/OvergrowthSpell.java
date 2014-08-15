@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,7 +31,6 @@ public class OvergrowthSpell extends AttackSpellBase {
         setDefenceStat(Stat.MAGIC_DEFENCE);
         setHitChance(80);
         setCriticalMultiplier(2.5D);
-        setType(SkillType.MAGIC_NATURE);
     }
 
     @Override
@@ -92,7 +90,7 @@ public class OvergrowthSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 80;
+        return true;
     }
 
     @Override

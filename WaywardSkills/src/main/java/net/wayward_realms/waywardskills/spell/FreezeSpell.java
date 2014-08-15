@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import org.bukkit.Bukkit;
@@ -26,7 +25,6 @@ public class FreezeSpell extends SpellBase {
         setName("Freeze");
         setManaCost(20);
         setCoolDown(0);
-        setType(SkillType.MAGIC_NATURE);
     }
 
     @Override
@@ -59,7 +57,7 @@ public class FreezeSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 4 || character.getSkillPoints(SkillType.MAGIC_DEFENCE) >= 8;
+        return true || true;
     }
 
     @Override

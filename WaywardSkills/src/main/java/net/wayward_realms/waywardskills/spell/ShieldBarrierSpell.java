@@ -3,7 +3,6 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -23,7 +22,6 @@ public class ShieldBarrierSpell extends SpellBase {
         setName("ShieldBarrier");
         setManaCost(20);
         setCoolDown(120);
-        setType(SkillType.MAGIC_DEFENCE);
     }
 
     @Override
@@ -94,7 +92,7 @@ public class ShieldBarrierSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_DEFENCE) >= 40;
+        return true;
     }
 
     @Override
