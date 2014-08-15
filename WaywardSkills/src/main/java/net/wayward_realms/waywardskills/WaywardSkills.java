@@ -315,7 +315,11 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
         File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
-        return characterConfig.getInt(specialisation.getName());
+        int value = characterConfig.getInt("specialisations." + specialisation.getName());
+        if (specialisation.getParentSpecialisation() != null) {
+            value += getSpecialisationValue(character, specialisation.getParentSpecialisation()) / 10;
+        }
+        return value;
     }
 
     @Override
@@ -323,7 +327,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
         File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
-        characterConfig.set(specialisation.getName(), value);
+        characterConfig.set("specialisations." + specialisation.getName(), value);
         try {
             characterConfig.save(characterFile);
         } catch (IOException exception) {
@@ -336,7 +340,11 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File specialisationDirectory = new File(getDataFolder(), "pet-specialisations");
         File petFile = new File(specialisationDirectory, pet.getId() + ".yml");
         YamlConfiguration petConfig = YamlConfiguration.loadConfiguration(petFile);
-        return petConfig.getInt(specialisation.getName());
+        int value = petConfig.getInt("specialisations." + specialisation.getName());
+        if (specialisation.getParentSpecialisation() != null) {
+            value += getSpecialisationValue(pet, specialisation.getParentSpecialisation()) / 10;
+        }
+        return value;
     }
 
     @Override
@@ -344,7 +352,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File specialisationDirectory = new File(getDataFolder(), "pet-specialisations");
         File petFile = new File(specialisationDirectory, pet.getId() + ".yml");
         YamlConfiguration petConfig = YamlConfiguration.loadConfiguration(petFile);
-        petConfig.set(specialisation.getName(), value);
+        petConfig.set("specialisations." + specialisation.getName(), value);
         try {
             petConfig.save(petFile);
         } catch (IOException exception) {
@@ -357,11 +365,82 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         return specialisations.get(name.toLowerCase());
     }
 
+    public Collection<Specialisation> getSpecialisations() {
+        return specialisations.values();
+    }
+
+    public int getAssignedSpecialisationPoints(Character character) {
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        return characterConfig.getInt("assigned-specialisation-points");
+    }
+
+    public int getUnassignedSpecialisationPoints(Character character) {
+        return getLevel(character) - getAssignedSpecialisationPoints(character);
+    }
+
     private void addSpecialisation(Specialisation specialisation) {
         specialisations.put(specialisation.getName().toLowerCase(), specialisation);
         for (Specialisation child : specialisation.getChildSpecialisations()) {
             addSpecialisation(child);
         }
+    }
+
+    @Override
+    public int getTotalExperience(Character character) {
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        return characterConfig.getInt("experience");
+    }
+
+    @Override
+    public void setTotalExperience(Character character, int experience) {
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        characterConfig.set("experience", experience);
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getExperience(Character character) {
+        return getTotalExperience(character) - getTotalExperienceForLevel(getLevel(character));
+    }
+
+    @Override
+    public void setExperience(Character character, int experience) {
+        setTotalExperience(character, getTotalExperienceForLevel(getLevel(character)) + experience);
+    }
+
+    @Override
+    public int getLevel(Character character) {
+        return getTotalExperience(character) / 5000;
+    }
+
+    @Override
+    public void setLevel(Character character, int level) {
+        setTotalExperience(character, getTotalExperienceForLevel(level));
+    }
+
+    @Override
+    public void giveExperience(Character character, int amount) {
+        setTotalExperience(character, getTotalExperience(character) + amount);
+    }
+
+    @Override
+    public int getExperienceForLevel(int level) {
+        return 5000;
+    }
+
+    @Override
+    public int getTotalExperienceForLevel(int level) {
+        return 5000 * (level - 1);
     }
 
 }

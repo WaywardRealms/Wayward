@@ -102,7 +102,7 @@ public interface SkillsPlugin extends WaywardPlugin {
      * @param specialisation the specialisation
      * @return the percentage completion of the specialisation
      */
-    public int getSpecialisationValue(net.wayward_realms.waywardlib.character.Character character, Specialisation specialisation);
+    public int getSpecialisationValue(Character character, Specialisation specialisation);
 
     /**
      * Sets how far a character has specialised into a given specialisation.
@@ -141,5 +141,77 @@ public interface SkillsPlugin extends WaywardPlugin {
      * @return the specialisation
      */
     public Specialisation getSpecialisation(String name);
+
+    /**
+     * Gets the total experience earnt by a character
+     *
+     * @param character the character
+     * @return the total amount of experience earnt
+     */
+    public int getTotalExperience(Character character);
+
+    /**
+     * Sets the total experience earnt by a character
+     *
+     * @param character the character
+     * @param experience the amount of experience to set
+     */
+    public void setTotalExperience(Character character, int experience);
+
+    /**
+     * Gets the amount of experience earnt by a character since the last time they levelled up
+     *
+     * @param character the character
+     * @return the amount of experience earnt by the character since the last time they levelled up
+     */
+    public int getExperience(Character character);
+
+    /**
+     * Sets the amount of experience earnt by a character since the last time they levelled up
+     *
+     * @param character the character
+     * @param experience the amount of experience to set
+     */
+    public void setExperience(Character character, int experience);
+
+    /**
+     * Gets a character's level
+     *
+     * @param character the character
+     * @return the level
+     */
+    public int getLevel(Character character);
+
+    /**
+     * Sets a character's level
+     *
+     * @param character the character
+     * @param level the level
+     */
+    public void setLevel(Character character, int level);
+
+    /**
+     * Gives experience to a character, showing any messages to the player if online
+     *
+     * @param character the character
+     * @param amount the amount of experience to add
+     */
+    public void giveExperience(Character character, int amount);
+
+    /**
+     * Gets the amount of experience to level up to a level from the one before
+     *
+     * @param level the level
+     * @return the amount of experience to level up to the level from the one before
+     */
+    public int getExperienceForLevel(int level);
+
+    /**
+     * Gets the total amount of experience for a level from level 1
+     *
+     * @param level the level
+     * @return the total amount of experience for the level, from level 1
+     */
+    public int getTotalExperienceForLevel(int level);
 
 }
