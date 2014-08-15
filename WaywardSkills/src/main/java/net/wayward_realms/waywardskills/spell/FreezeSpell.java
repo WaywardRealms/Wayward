@@ -57,7 +57,7 @@ public class FreezeSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true || true;
+        return true;
     }
 
     @Override
