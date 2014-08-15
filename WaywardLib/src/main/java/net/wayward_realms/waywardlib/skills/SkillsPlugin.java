@@ -142,6 +142,12 @@ public interface SkillsPlugin extends WaywardPlugin {
      */
     public Specialisation getSpecialisation(String name);
 
+    Collection<Specialisation> getSpecialisations();
+
+    int getAssignedSpecialisationPoints(Character character);
+
+    int getUnassignedSpecialisationPoints(Character character);
+
     /**
      * Gets the total experience earnt by a character
      *
@@ -214,4 +220,5 @@ public interface SkillsPlugin extends WaywardPlugin {
      */
     public int getTotalExperienceForLevel(int level);
 
+    int getMaxLevel();
 }

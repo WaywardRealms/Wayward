@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardskills;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Pet;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
@@ -10,10 +11,7 @@ import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
 import net.wayward_realms.waywardskills.spell.SpellManager;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -22,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.BufferedReader;
@@ -372,10 +371,12 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         return specialisations.get(name.toLowerCase());
     }
 
+    @Override
     public Collection<Specialisation> getSpecialisations() {
         return specialisations.values();
     }
 
+    @Override
     public int getAssignedSpecialisationPoints(Character character) {
         File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
         File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
@@ -383,6 +384,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         return characterConfig.getInt("assigned-specialisation-points");
     }
 
+    @Override
     public int getUnassignedSpecialisationPoints(Character character) {
         return getLevel(character) - getAssignedSpecialisationPoints(character);
     }
@@ -440,6 +442,10 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+        if (character.getPlayer().isOnline()) {
+            updateExp(character.getPlayer().getPlayer());
+            updateHealth(character.getPlayer().getPlayer());
+        }
     }
 
     @Override
@@ -477,8 +483,27 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         return 5000 * (level - 1);
     }
 
+    @Override
     public int getMaxLevel() {
         return 50;
+    }
+
+    public void updateExp(Player player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Character character = characterPlugin.getActiveCharacter(player);
+            player.setExp((float) getExperience(character) / (float) getExperienceForLevel(getLevel(character)));
+            player.setLevel(getLevel(character));
+        }
+    }
+
+    public void updateHealth(Player player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            player.setMaxHealth(characterPlugin.getActiveCharacter(player).getMaxHealth());
+        }
     }
 
 }
