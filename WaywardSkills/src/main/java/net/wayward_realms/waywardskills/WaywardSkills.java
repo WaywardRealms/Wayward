@@ -10,10 +10,17 @@ import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
 import net.wayward_realms.waywardskills.spell.SpellManager;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -397,6 +404,33 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public void setTotalExperience(Character character, int experience) {
+        int i = 0;
+        while (experience >= getTotalExperienceForLevel(getLevel(character) + i + 1) && getLevel(character) + i < getMaxLevel()) {
+            i += 1;
+        }
+        if (i >= 1) {
+            if (character.getPlayer().isOnline()) {
+                Player player = character.getPlayer().getPlayer();
+                player.sendMessage(getPrefix() + ChatColor.YELLOW + "Level up!");
+                for (int x = player.getLocation().getBlockX() - 4; x < player.getLocation().getBlockX() + 4; x++) {
+                    for (int z = player.getLocation().getBlockZ() - 4; z < player.getLocation().getBlockZ() + 4; z++) {
+                        Location location = player.getWorld().getBlockAt(x, player.getLocation().getBlockY(), z).getLocation();
+                        if (player.getLocation().distanceSquared(location) > 9 && player.getLocation().distanceSquared(location) < 25) {
+                            Firework firework = (Firework) player.getWorld().spawnEntity(location, EntityType.FIREWORK);
+                            FireworkMeta meta = firework.getFireworkMeta();
+                            meta.setPower(0);
+                            FireworkEffect effect = FireworkEffect.builder()
+                                    .withColor(Color.YELLOW, Color.RED)
+                                    .with(FireworkEffect.Type.BURST)
+                                    .trail(true)
+                                    .build();
+                            meta.addEffect(effect);
+                            firework.setFireworkMeta(meta);
+                        }
+                    }
+                }
+            }
+        }
         File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
         File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
@@ -441,6 +475,10 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     @Override
     public int getTotalExperienceForLevel(int level) {
         return 5000 * (level - 1);
+    }
+
+    public int getMaxLevel() {
+        return 50;
     }
 
 }
