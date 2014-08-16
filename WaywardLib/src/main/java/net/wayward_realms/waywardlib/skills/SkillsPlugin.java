@@ -242,4 +242,13 @@ public interface SkillsPlugin extends WaywardPlugin {
      * @return the max mana
      */
     public int getMaxMana(Character character);
+
+    /**
+     * Gets the value of a character's stat
+     *
+     * @param character the character
+     * @param stat the stat
+     * @return the value of the stat
+     */
+    public int getStatValue(Character character, Stat stat);
 }

@@ -4,10 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Pet;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.skills.Skill;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Specialisation;
-import net.wayward_realms.waywardlib.skills.Spell;
+import net.wayward_realms.waywardlib.skills.*;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
@@ -536,6 +533,11 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public int getMaxMana(Character character) {
+        return 0;
+    }
+
+    @Override
+    public int getStatValue(Character character, Stat stat) {
         return 0;
     }
 

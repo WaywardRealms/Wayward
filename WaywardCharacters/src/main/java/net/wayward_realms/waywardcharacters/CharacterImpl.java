@@ -395,6 +395,15 @@ public class CharacterImpl implements Character {
 
     @Override
     public int getStatValue(Stat stat) {
+        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        if (skillsPluginProvider != null) {
+            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+            int value = skillsPlugin.getStatValue(this, stat);
+            for (TemporaryStatModification modification : getTemporaryStatModifications()) {
+                if (modification != null) value = modification.apply(stat, value);
+            }
+            return value;
+        }
         return 0;
     }
 
