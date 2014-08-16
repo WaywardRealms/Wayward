@@ -2,15 +2,20 @@ package net.wayward_realms.waywardcharacters;
 
 import mkremins.fanciful.FancyMessage;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.Equipment;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class CharacterCommand implements CommandExecutor {
 
@@ -340,11 +345,40 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
                 }
+            } else if (args[0].equalsIgnoreCase("equipment")) {
+                if (sender instanceof Player) {
+                    Character character = plugin.getActiveCharacter((Player) sender);
+                    Equipment equipment = character.getEquipment();
+                    Inventory equipmentInventory = plugin.getServer().createInventory(null, 27, "Equipment");
+                    if (equipment.getOnHandItem() != null)
+                        equipmentInventory.setItem(10, character.getEquipment().getOnHandItem());
+                    if (equipment.getOffHandItem() != null)
+                        equipmentInventory.setItem(11, character.getEquipment().getOffHandItem());
+                    if (equipment.getPet() != null) {
+                        ItemStack petItem = new ItemStack(Material.MONSTER_EGG);
+                        ItemMeta meta = petItem.getItemMeta();
+                        meta.setDisplayName(character.getEquipment().getPet().getName());
+                        petItem.setItemMeta(meta);
+                        equipmentInventory.setItem(13, petItem);
+                    }
+                    for (int i = 0; i < 9; i++) {
+                        if (equipment.getScrolls()[i] != null) {
+                            if (i < 3) {
+                                equipmentInventory.setItem(i + 6, equipment.getScrolls()[i]);
+                            } else if (i < 6) {
+                                equipmentInventory.setItem(i + 12, equipment.getScrolls()[i]);
+                            } else {
+                                equipmentInventory.setItem(i + 18, equipment.getScrolls()[i]);
+                            }
+                        }
+                    }
+                    ((Player) sender).openInventory(equipmentInventory);
+                }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide|transfer|equipment]");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide|transfer|equipment]");
         }
         return true;
     }

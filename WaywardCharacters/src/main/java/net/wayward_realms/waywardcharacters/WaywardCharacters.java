@@ -614,7 +614,9 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public boolean isSafeWater(Biome biome) {
         switch (biome) {
             case BEACH:
+            case STONE_BEACH:
             case COLD_BEACH:
+            case DEEP_OCEAN:
             case FROZEN_OCEAN:
             case OCEAN:
             case SWAMPLAND:
