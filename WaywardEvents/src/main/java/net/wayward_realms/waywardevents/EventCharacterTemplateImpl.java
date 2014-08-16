@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,9 +42,6 @@ public class EventCharacterTemplateImpl implements EventCharacterTemplate {
             for (Stat stat : Stat.values()) {
                 setStatValue(stat, eventCharacter.getStatValue(stat));
             }
-            for (SkillType skillType : SkillType.values()) {
-                setSkillPoints(skillType, eventCharacter.getSkillPoints(skillType));
-            }
         }
     }
 
@@ -70,9 +66,6 @@ public class EventCharacterTemplateImpl implements EventCharacterTemplate {
             setInventoryContents(template.getInventoryContents());
             for (Stat stat : Stat.values()) {
                 setStatValue(stat, template.getStatValue(stat));
-            }
-            for (SkillType skillType : SkillType.values()) {
-                setSkillPoints(skillType, template.getSkillPoints(skillType));
             }
         }
     }
@@ -268,16 +261,6 @@ public class EventCharacterTemplateImpl implements EventCharacterTemplate {
     @Override
     public void setStatValue(Stat stat, int value) {
         setFieldValue("stats." + stat.toString().toLowerCase(), value);
-    }
-
-    @Override
-    public int getSkillPoints(SkillType type) {
-        return getFieldIntValue("skill-points." + type.toString().toLowerCase());
-    }
-
-    @Override
-    public void setSkillPoints(SkillType type, int skillPoints) {
-        setFieldValue("skill-points." + type.toString().toLowerCase(), skillPoints);
     }
 
 }

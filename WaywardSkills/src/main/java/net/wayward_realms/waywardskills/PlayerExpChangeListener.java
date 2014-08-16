@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardclasses;
+package net.wayward_realms.waywardskills;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -1,4 +1,4 @@
-package net.wayward_realms.waywardclasses;
+package net.wayward_realms.waywardskills;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import org.bukkit.entity.Player;
@@ -9,9 +9,9 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class EntityDamageListener implements Listener {
 
-    private WaywardClasses plugin;
+    private WaywardSkills plugin;
 
-    public EntityDamageListener(WaywardClasses plugin) {
+    public EntityDamageListener(WaywardSkills plugin) {
         this.plugin = plugin;
     }
 

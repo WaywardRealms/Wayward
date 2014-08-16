@@ -4,7 +4,6 @@ import mkremins.fanciful.FancyMessage;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -51,7 +50,6 @@ public class CharacterCommand implements CommandExecutor {
                 }
                 if (player != null) {
                     Character character = plugin.getActiveCharacter(player);
-                    ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
                     if (sender instanceof Player) {
                         FancyMessage message = new FancyMessage("")
                                 .then(character.getName() + "'s ")
@@ -70,13 +68,6 @@ public class CharacterCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
                     if (!character.isRaceHidden())
                         sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
-                    if (classesPlugin != null) {
-                        if (classesPlugin.getClass(character) != null) {
-                            if (!character.isClassHidden()) {
-                                sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
-                            }
-                        }
-                    }
                     if (!character.isDescriptionHidden())
                         sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
                 } else {

@@ -11,12 +11,14 @@ import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
 import net.wayward_realms.waywardskills.spell.SpellManager;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,6 +35,8 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
+
 public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     private SpellManager spellManager;
@@ -47,7 +51,17 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         rootSpecialisation = new RootSpecialisation();
         specialisations = new HashMap<>();
         addSpecialisation(rootSpecialisation);
-        registerListeners(new PlayerInteractListener(this), new EntityDamageByEntityListener(this), new EntityTargetListener(this), new ProjectileHitListener(), new InventoryClickListener());
+        registerListeners(
+                this,
+                new PlayerInteractListener(this),
+                new EntityDamageByEntityListener(this),
+                new EntityTargetListener(this),
+                new ProjectileHitListener(),
+                new InventoryClickListener(),
+                new EntityDamageListener(this),
+                new PlayerDeathListener(),
+                new PlayerExpChangeListener()
+        );
         getCommand("skill").setExecutor(new SkillCommand(this));
         getCommand("spell").setExecutor(new SpellCommand(this));
         getCommand("bindskill").setExecutor(new BindSkillCommand(this));
@@ -55,12 +69,6 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         getCommand("skillinfo").setExecutor(new SkillInfoCommand(this));
         getCommand("spellinfo").setExecutor(new SpellInfoCommand(this));
         setupMageArmourChecker();
-    }
-
-    private void registerListeners(Listener... listeners) {
-        for (Listener listener : listeners) {
-            getServer().getPluginManager().registerEvents(listener, this);
-        }
     }
 
     @Override
@@ -486,6 +494,16 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     @Override
     public int getMaxLevel() {
         return 50;
+    }
+
+    @Override
+    public double getMaxHealth(Character character) {
+        return 0;
+    }
+
+    @Override
+    public int getMaxMana(Character character) {
+        return 0;
     }
 
     public void updateExp(Player player) {

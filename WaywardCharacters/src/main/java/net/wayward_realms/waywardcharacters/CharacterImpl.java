@@ -2,7 +2,7 @@ package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.*;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
@@ -354,10 +354,10 @@ public class CharacterImpl implements Character {
 
     @Override
     public double getMaxHealth() {
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getHpBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
+        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        if (skillsPluginProvider != null) {
+            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+            return skillsPlugin.getMaxHealth(this);
         }
         return 0;
     }
@@ -374,10 +374,10 @@ public class CharacterImpl implements Character {
 
     @Override
     public int getMaxMana() {
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 20D);
+        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        if (skillsPluginProvider != null) {
+            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+            return skillsPlugin.getMaxMana(this);
         }
         return 0;
     }

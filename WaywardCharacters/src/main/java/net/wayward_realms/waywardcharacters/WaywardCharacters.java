@@ -2,7 +2,7 @@ package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
@@ -376,11 +376,11 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         player.setMaxHealth(character.getMaxHealth());
         player.setHealth(Math.max(character.getHealth(), 0));
         player.setFoodLevel(character.getFoodLevel());
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (classesPluginProvider != null) {
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            player.setExp((float) classesPlugin.getExperienceTowardsNextLevel(player) / (float) classesPlugin.getExpToNextLevel(classesPlugin.getLevel(player)));
-            player.setLevel(classesPlugin.getLevel(player));
+        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        if (skillsPluginProvider != null) {
+            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+            player.setExp((float) skillsPlugin.getExperience(character) / (float) skillsPlugin.getExperienceForLevel(skillsPlugin.getLevel(character)));
+            player.setLevel(skillsPlugin.getLevel(character));
         }
     }
 

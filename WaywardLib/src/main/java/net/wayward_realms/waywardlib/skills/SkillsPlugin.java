@@ -220,5 +220,26 @@ public interface SkillsPlugin extends WaywardPlugin {
      */
     public int getTotalExperienceForLevel(int level);
 
-    int getMaxLevel();
+    /**
+     * Gets the max level a character may reach
+     *
+     * @return the max level
+     */
+    public int getMaxLevel();
+
+    /**
+     * Gets the max health the character has
+     *
+     * @param character the character
+     * @return the max health
+     */
+    public double getMaxHealth(Character character);
+
+    /**
+     * Gets the max mana the character has
+     *
+     * @param character the character
+     * @return the max mana
+     */
+    public int getMaxMana(Character character);
 }

@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.death.DeathPlugin;
-import net.wayward_realms.waywardlib.donation.DonationPlugin;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
@@ -69,9 +68,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     }
                     if (plugin instanceof DeathPlugin) {
                         servicesManager.register(DeathPlugin.class, (DeathPlugin) plugin, plugin, ServicePriority.Normal);
-                    }
-                    if (plugin instanceof DonationPlugin) {
-                        servicesManager.register(DonationPlugin.class, (DonationPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     if (plugin instanceof EconomyPlugin) {
                         servicesManager.register(EconomyPlugin.class, (EconomyPlugin) plugin, plugin, ServicePriority.Normal);
@@ -140,7 +136,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
             }
             loadPluginState(EconomyPlugin.class);
         }
-        loadPluginState(DonationPlugin.class);
         loadPluginState(LockPlugin.class);
         loadPluginState(ModerationPlugin.class);
         loadPluginState(PermissionsPlugin.class);
@@ -178,7 +173,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
             }
             savePluginState(EconomyPlugin.class);
         }
-        savePluginState(DonationPlugin.class);
         savePluginState(LockPlugin.class);
         savePluginState(ModerationPlugin.class);
         savePluginState(PermissionsPlugin.class);

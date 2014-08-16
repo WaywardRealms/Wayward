@@ -1,15 +1,9 @@
 package net.wayward_realms.waywardcombat;
 
-import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class RollsCommand implements CommandExecutor {
 
@@ -33,17 +27,7 @@ public class RollsCommand implements CommandExecutor {
             }
         }
         if (player != null) {
-            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-            if (characterPluginProvider != null && classesPluginProvider != null) {
-                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                Character character = characterPlugin.getActiveCharacter(player);
-                sender.sendMessage(plugin.getPrefix() + ChatColor.GRAY + "==== " + ChatColor.GREEN + character.getName() + "'s rolls " + ChatColor.GRAY + " ====");
-                sender.sendMessage(ChatColor.GRAY + "Melee: Attack " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MELEE_ATTACK) + ChatColor.GRAY + " | " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MELEE_DEFENCE) + ChatColor.GRAY + " Defence");
-                sender.sendMessage(ChatColor.GRAY + "Ranged: Attack " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.RANGED_ATTACK) + ChatColor.GRAY + " | " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.RANGED_DEFENCE) + ChatColor.GRAY + " Defence");
-                sender.sendMessage(ChatColor.GRAY + "Magic: Attack " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MAGIC_ATTACK) + ChatColor.GRAY + " | " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MAGIC_DEFENCE) + ChatColor.GRAY + " Defence");
-                sender.sendMessage(ChatColor.GRAY + "Speed: " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.SPEED));
-            }
+            //TODO Do something with rolls here
         }
         return true;
     }
