@@ -81,7 +81,7 @@ public class PowerShotSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 50;
     }
 
     @Override

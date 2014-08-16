@@ -1,26 +1,26 @@
 package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class SlashSkill extends AttackSkillBase {
 
-    public SlashSkill() {
+    private WaywardSkills plugin;
+
+    public SlashSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Slash");
         setCoolDown(30);
         setCriticalChance(2);
@@ -73,23 +73,8 @@ public class SlashSkill extends AttackSkillBase {
     }
 
     @Override
-    public boolean canUse(Combatant combatant) {
-        return canUse((Character) combatant);
-    }
-
-    @Override
     public boolean canUse(Character character) {
-        return true;
-    }
-
-    @Override
-    public boolean canUse(OfflinePlayer player) {
-        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        if (characterPluginProvider != null) {
-            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            return canUse(characterPlugin.getActiveCharacter(player));
-        }
-        return false;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Offence")) >= 3;
     }
 
     @Override

@@ -2,9 +2,9 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,7 +20,10 @@ import java.util.Iterator;
 
 public class QuickStepSkill extends SkillBase {
 
-    public QuickStepSkill() {
+    private WaywardSkills plugin;
+
+    public QuickStepSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("QuickStep");
         setCoolDown(30);
     }
@@ -57,11 +60,6 @@ public class QuickStepSkill extends SkillBase {
     }
 
     @Override
-    public boolean canUse(Combatant combatant) {
-        return canUse((Character) combatant);
-    }
-
-    @Override
     public boolean canUse(OfflinePlayer player) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
@@ -78,7 +76,7 @@ public class QuickStepSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Nimble")) >= 10;
     }
 
 }

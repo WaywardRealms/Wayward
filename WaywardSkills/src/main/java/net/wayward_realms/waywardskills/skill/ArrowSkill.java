@@ -2,10 +2,10 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +18,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class ArrowSkill extends AttackSkillBase {
 
-    public ArrowSkill() {
+    private WaywardSkills plugin;
+
+    public ArrowSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Arrow");
         setCoolDown(5);
         setAttackStat(Stat.RANGED_ATTACK);
@@ -78,13 +81,8 @@ public class ArrowSkill extends AttackSkillBase {
     }
 
     @Override
-    public boolean canUse(Combatant combatant) {
-        return canUse((Character) combatant);
-    }
-
-    @Override
     public boolean canUse(Character character) {
-        return true;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 3;
     }
 
     @Override

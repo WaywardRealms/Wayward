@@ -104,7 +104,7 @@ public class SpinningSweepSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Offence")) >= 3;
     }
 
     @Override

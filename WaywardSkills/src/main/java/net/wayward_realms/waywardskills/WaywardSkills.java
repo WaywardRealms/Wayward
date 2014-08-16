@@ -358,8 +358,10 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
         int value = characterConfig.getInt("specialisations." + specialisation.getName());
-        if (specialisation.getParentSpecialisation() != null) {
-            value += getSpecialisationValue(character, specialisation.getParentSpecialisation()) / 10;
+        if (!specialisation.getParentSpecialisations().isEmpty()) {
+            for (Specialisation parent : specialisation.getParentSpecialisations()) {
+                value += getSpecialisationValue(character, parent) / 10;
+            }
         }
         return value;
     }
@@ -385,8 +387,10 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File petFile = new File(specialisationDirectory, pet.getId() + ".yml");
         YamlConfiguration petConfig = YamlConfiguration.loadConfiguration(petFile);
         int value = petConfig.getInt("specialisations." + specialisation.getName());
-        if (specialisation.getParentSpecialisation() != null) {
-            value += getSpecialisationValue(pet, specialisation.getParentSpecialisation()) / 10;
+        if (!specialisation.getParentSpecialisations().isEmpty()) {
+            for (Specialisation parent : specialisation.getParentSpecialisations()) {
+                value += getSpecialisationValue(pet, parent) / 10;
+            }
         }
         return value;
     }
@@ -428,7 +432,13 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     }
 
     private void addSpecialisation(Specialisation specialisation) {
-        specialisations.put(specialisation.getName().toLowerCase(), specialisation);
+        if (!specialisations.containsKey(specialisation.getName())) {
+            specialisations.put(specialisation.getName().toLowerCase(), specialisation);
+        } else {
+            for (Specialisation parent : specialisation.getParentSpecialisations()) {
+                specialisations.get(specialisation.getName()).addParentSpecialisation(parent);
+            }
+        }
         for (Specialisation child : specialisation.getChildSpecialisations()) {
             addSpecialisation(child);
         }
@@ -513,12 +523,12 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public int getExperienceForLevel(int level) {
-        return 5000;
+        return 250 * (level - 1);
     }
 
     @Override
     public int getTotalExperienceForLevel(int level) {
-        return 5000 * (level - 1);
+        return level * (level - 1) * 125;
     }
 
     @Override
@@ -563,7 +573,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             Character character = characterPlugin.getActiveCharacter(player);
-            player.setExp((float) getExperience(character) / (float) getExperienceForLevel(getLevel(character)));
+            player.setExp((float) getExperience(character) / (float) getExperienceForLevel(getLevel(character) + 1));
             player.setLevel(getLevel(character));
         }
     }

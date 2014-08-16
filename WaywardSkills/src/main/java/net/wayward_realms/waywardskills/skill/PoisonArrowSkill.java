@@ -2,12 +2,13 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,7 +26,10 @@ import java.util.Map;
 
 public class PoisonArrowSkill extends AttackSkillBase {
 
-    public PoisonArrowSkill() {
+    private WaywardSkills plugin;
+
+    public PoisonArrowSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("PoisonArrow");
         setCoolDown(20);
         setPower(30);
@@ -93,7 +97,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 9;
     }
 
     @Override

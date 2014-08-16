@@ -7,17 +7,18 @@ import java.util.Set;
 
 public abstract class SpecialisationBase implements Specialisation {
 
-    private Specialisation parent;
+    private Set<Specialisation> parents;
     private Set<Specialisation> children;
 
     public SpecialisationBase(Specialisation parent) {
-        this.parent = parent;
+        this.parents = new HashSet<>();
+        parents.add(parent);
         this.children = new HashSet<>();
     }
 
     @Override
-    public Specialisation getParentSpecialisation() {
-        return parent;
+    public Set<Specialisation> getParentSpecialisations() {
+        return parents;
     }
 
     @Override
@@ -30,4 +31,8 @@ public abstract class SpecialisationBase implements Specialisation {
         children.add(specialisation);
     }
 
+    @Override
+    public void addParentSpecialisation(Specialisation specialisation) {
+        parents.add(specialisation);
+    }
 }

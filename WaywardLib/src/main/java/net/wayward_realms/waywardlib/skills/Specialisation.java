@@ -15,7 +15,7 @@ public interface Specialisation {
      */
     public String getName();
 
-    public Specialisation getParentSpecialisation();
+    public Set<Specialisation> getParentSpecialisations();
 
     /**
      * Gets the child specialisations
@@ -32,6 +32,13 @@ public interface Specialisation {
      * @return the tier
      */
     public int getTier();
+
+    /**
+     * Adds a parent specialisation
+     *
+     * @param specialisation the specialisation to add
+     */
+    public void addParentSpecialisation(Specialisation specialisation);
 
     /**
      * Adds a child specialisation

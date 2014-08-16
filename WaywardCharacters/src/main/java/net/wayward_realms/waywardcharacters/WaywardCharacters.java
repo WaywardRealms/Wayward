@@ -379,7 +379,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
         if (skillsPluginProvider != null) {
             SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            player.setExp((float) skillsPlugin.getExperience(character) / (float) skillsPlugin.getExperienceForLevel(skillsPlugin.getLevel(character)));
+            player.setExp((float) skillsPlugin.getExperience(character) / (float) skillsPlugin.getExperienceForLevel(skillsPlugin.getLevel(character) + 1));
             player.setLevel(skillsPlugin.getLevel(character));
         }
     }

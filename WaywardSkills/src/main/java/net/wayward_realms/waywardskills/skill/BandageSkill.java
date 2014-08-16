@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillBase;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -17,10 +18,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class BandageSkill extends SkillBase {
 
+    private WaywardSkills plugin;
+
     private int reach = 16;
     private double healthRestore = 10D;
 
-    public BandageSkill() {
+    public BandageSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Bandage");
         setCoolDown(30);
     }
@@ -119,7 +123,7 @@ public class BandageSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Healing")) >= 3;
     }
 
     @Override

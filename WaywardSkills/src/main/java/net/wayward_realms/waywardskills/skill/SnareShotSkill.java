@@ -1,30 +1,31 @@
 package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SnareShotSkill extends AttackSkillBase {
 
-    public SnareShotSkill() {
+    private WaywardSkills plugin;
+
+    public SnareShotSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("SnareShot");
         setCoolDown(30);
         setPower(5);
@@ -71,23 +72,13 @@ public class SnareShotSkill extends AttackSkillBase {
     }
 
     @Override
-    public boolean canUse(OfflinePlayer player) {
-        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        if (characterPluginProvider != null) {
-            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            return canUse(characterPlugin.getActiveCharacter(player));
-        }
-        return false;
-    }
-
-    @Override
     public String getDescription() {
         return "If your ranged attack roll is higher than your target's ranged defence roll, prevent your target from making a move for 3 turns";
     }
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 8;
     }
 
     @Override
