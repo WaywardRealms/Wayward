@@ -43,6 +43,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 new EntityDamageListener(this),
                 new EntityRegainHealthListener(this),
                 new FoodLevelChangeListener(this),
+                new InventoryClickListener(this),
                 new InventoryCloseListener(this),
                 new PlayerItemConsumeListener(this),
                 new PlayerInteractListener(this),
@@ -130,20 +131,20 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         final float finalNewExhaustStartLevel = newExhaustStartLevel;
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
-            for (Player player : getServer().getOnlinePlayers()) {
-                if (isHungerDisabled(player)) {
-                    player.setFoodLevel(20);
-                    player.setExhaustion(0.0F);
-                } else {
-                    float currentExhaustion = player.getExhaustion();
-                    if (((currentExhaustion > -1.0F ? 1 : 0) & (currentExhaustion < 0.0F ? 1 : 0)) != 0) {
-                        player.setExhaustion(4.0F);
-                    }
-                    if (((currentExhaustion > 0.0F ? 1 : 0) & (currentExhaustion < 4.0F ? 1 : 0)) != 0) {
-                        player.setExhaustion(finalNewExhaustStartLevel);
+                for (Player player : getServer().getOnlinePlayers()) {
+                    if (isHungerDisabled(player)) {
+                        player.setFoodLevel(20);
+                        player.setExhaustion(0.0F);
+                    } else {
+                        float currentExhaustion = player.getExhaustion();
+                        if (((currentExhaustion > -1.0F ? 1 : 0) & (currentExhaustion < 0.0F ? 1 : 0)) != 0) {
+                            player.setExhaustion(4.0F);
+                        }
+                        if (((currentExhaustion > 0.0F ? 1 : 0) & (currentExhaustion < 4.0F ? 1 : 0)) != 0) {
+                            player.setExhaustion(finalNewExhaustStartLevel);
+                        }
                     }
                 }
-            }
             }
         }, 0L, 1L);
     }
