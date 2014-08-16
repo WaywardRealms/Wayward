@@ -23,3 +23,10 @@ commands:
     skillinfo:
         description: Shows the description for a skill
         usage: /<command> [skill]
+    getscroll:
+        description: Creates a scroll for a spell
+        usage: /<command> [spell]
+permissions:
+    wayward.skills.command.getscroll:
+        description: Allows you to get a scroll for a spell
+        default: op

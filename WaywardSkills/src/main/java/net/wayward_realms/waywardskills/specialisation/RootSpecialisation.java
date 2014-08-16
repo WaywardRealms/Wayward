@@ -11,6 +11,7 @@ public class RootSpecialisation extends SpecialisationBase {
         addChildSpecialisation(new ProfessionSpecialisation(this));
         addChildSpecialisation(new EscapeArtistSpecialisation(this));
         addChildSpecialisation(new LockpickSpecialisation(this));
+        addChildSpecialisation(new ScribeSpecialisation(this));
     }
 
     @Override
