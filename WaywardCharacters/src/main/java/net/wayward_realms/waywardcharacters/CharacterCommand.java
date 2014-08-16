@@ -17,6 +17,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CharacterCommand implements CommandExecutor {
 
     private WaywardCharacters plugin;
@@ -357,7 +360,10 @@ public class CharacterCommand implements CommandExecutor {
                     if (equipment.getPet() != null) {
                         ItemStack petItem = new ItemStack(Material.MONSTER_EGG);
                         ItemMeta meta = petItem.getItemMeta();
-                        meta.setDisplayName(character.getEquipment().getPet().getName());
+                        meta.setDisplayName(equipment.getPet().getName());
+                        List<String> lore = new ArrayList<>();
+                        lore.add(Integer.toString(equipment.getPet().getId()));
+                        meta.setLore(lore);
                         petItem.setItemMeta(meta);
                         equipmentInventory.setItem(13, petItem);
                     }

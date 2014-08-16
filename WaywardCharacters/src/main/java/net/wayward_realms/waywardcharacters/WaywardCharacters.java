@@ -1,13 +1,12 @@
 package net.wayward_realms.waywardcharacters;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
-
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -15,7 +14,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
+
 public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     private Map<String, Gender> genders = new HashMap<>();
@@ -33,11 +33,27 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public void onEnable() {
+        ConfigurationSerialization.registerClass(EquipmentImpl.class);
         ConfigurationSerialization.registerClass(GenderImpl.class);
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
         saveDefaultConfig();
-        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener(this));
+        registerListeners(
+                this,
+                new EntityDamageListener(this),
+                new EntityRegainHealthListener(this),
+                new FoodLevelChangeListener(this),
+                new InventoryCloseListener(this),
+                new PlayerItemConsumeListener(this),
+                new PlayerInteractListener(this),
+                new PlayerInteractEntityListener(this),
+                new PlayerJoinListener(this),
+                new PlayerLoginListener(this),
+                new PlayerRespawnListener(this),
+                new SignChangeListener(this),
+                new PlayerEditBookListener(this),
+                new PlayerNamePlateChangeListener(this)
+        );
         getCommand("character").setExecutor(new CharacterCommand(this));
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
@@ -135,12 +151,6 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void onDisable() {
         saveState();
-    }
-
-    private void registerListeners(Listener... listeners) {
-        for (Listener listener : listeners) {
-            this.getServer().getPluginManager().registerEvents(listener, this);
-        }
     }
 
     @Override
