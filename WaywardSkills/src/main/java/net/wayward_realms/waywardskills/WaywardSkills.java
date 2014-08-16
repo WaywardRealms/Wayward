@@ -528,17 +528,34 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public double getMaxHealth(Character character) {
-        return 0;
+        return getLevel(character) * 2D;
     }
 
     @Override
     public int getMaxMana(Character character) {
-        return 0;
+        return getLevel(character) * 10;
     }
 
     @Override
     public int getStatValue(Character character, Stat stat) {
-        return 0;
+        switch (stat) {
+            case MELEE_ATTACK:
+                return getSpecialisationValue(character, getSpecialisation("Melee Offence"));
+            case MELEE_DEFENCE:
+                return getSpecialisationValue(character, getSpecialisation("Melee Defence"));
+            case RANGED_ATTACK:
+                return getSpecialisationValue(character, getSpecialisation("Ranged Offence"));
+            case RANGED_DEFENCE:
+                return getSpecialisationValue(character, getSpecialisation("Ranged Defence"));
+            case MAGIC_ATTACK:
+                return getSpecialisationValue(character, getSpecialisation("Magic Offence"));
+            case MAGIC_DEFENCE:
+                return getSpecialisationValue(character, getSpecialisation("Magic Defence"));
+            case SPEED:
+                return getSpecialisationValue(character, getSpecialisation("Nimble"));
+            default:
+                return getSpecialisationValue(character, getRootSpecialisation());
+        }
     }
 
     public void updateExp(Player player) {
