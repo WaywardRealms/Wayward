@@ -114,7 +114,7 @@ public class DrinkManager {
     }
 
     public void setupRecipes() {
-        ShapelessRecipe beerRecipe = new ShapelessRecipe(getDrink("Beer")).addIngredient(Material.WHEAT).addIngredient(Material.POTION).addIngredient(Material.FERMENTED_SPIDER_EYE).addIngredient(Material.SUGAR);
+        ShapelessRecipe beerRecipe = new ShapelessRecipe(getDrink("Beer")).addIngredient(Material.WHEAT).addIngredient(Material.POTION).addIngredient(Material.POTATO).addIngredient(Material.SUGAR);
         plugin.getServer().addRecipe(beerRecipe);
         ShapelessRecipe wineRecipe = new ShapelessRecipe(getDrink("Wine")).addIngredient(Material.MELON).addIngredient(Material.POTION);
         plugin.getServer().addRecipe(wineRecipe);
