@@ -1,10 +1,11 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.professions.ToolType;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,7 +17,10 @@ import java.util.List;
 
 public class LightningSwordSpell extends AttackSpellBase {
 
-    public LightningSwordSpell() {
+    private WaywardSkills plugin;
+
+    public LightningSwordSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("LightningSword");
         setManaCost(100);
         setCoolDown(3600);
@@ -76,7 +80,7 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Lightning Magic")) >= 25 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 30;
     }
 
     @Override

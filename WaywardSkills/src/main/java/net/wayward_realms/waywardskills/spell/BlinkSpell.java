@@ -73,7 +73,7 @@ public class BlinkSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Illusory Magic")) >= 6;
     }
 
     @Override

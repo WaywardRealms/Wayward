@@ -3,9 +3,9 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
-import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SpellBase;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +19,10 @@ import java.util.Set;
 
 public class EmpowerSpell extends SpellBase {
 
-    public EmpowerSpell() {
+    private WaywardSkills plugin;
+
+    public EmpowerSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Empower");
         setCoolDown(300);
         setManaCost(10);
@@ -69,22 +72,7 @@ public class EmpowerSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
-    }
-
-    @Override
-    public boolean canUse(Combatant combatant) {
-        return canUse((Character) combatant);
-    }
-
-    @Override
-    public boolean canUse(OfflinePlayer player) {
-        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        if (characterPluginProvider != null) {
-            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            return canUse(characterPlugin.getActiveCharacter(player));
-        }
-        return false;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Buff")) >= 3;
     }
 
     @Override

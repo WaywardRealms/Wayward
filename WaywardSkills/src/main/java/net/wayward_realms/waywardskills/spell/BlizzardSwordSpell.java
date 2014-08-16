@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.professions.ToolType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,7 +17,10 @@ import java.util.List;
 
 public class BlizzardSwordSpell extends SpellBase {
 
-    public BlizzardSwordSpell() {
+    private WaywardSkills plugin;
+
+    public BlizzardSwordSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("BlizzardSword");
         setManaCost(100);
         setCoolDown(1800);
@@ -61,7 +65,7 @@ public class BlizzardSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 50 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Water Magic")) >= 20;
     }
 
     @Override

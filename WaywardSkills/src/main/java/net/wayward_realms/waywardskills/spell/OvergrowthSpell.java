@@ -1,9 +1,10 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +22,10 @@ import static net.wayward_realms.waywardlib.util.lineofsight.LineOfSightUtils.ge
 
 public class OvergrowthSpell extends AttackSpellBase {
 
-    public OvergrowthSpell() {
+    private WaywardSkills plugin;
+
+    public OvergrowthSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Overgrowth");
         setPower(65);
         setCoolDown(1500);
@@ -90,7 +94,7 @@ public class OvergrowthSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Nature Magic")) >= 50;
     }
 
     @Override

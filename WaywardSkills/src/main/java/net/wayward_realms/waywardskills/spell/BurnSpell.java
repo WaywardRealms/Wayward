@@ -3,11 +3,12 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,10 +26,13 @@ import java.util.Set;
 
 public class BurnSpell extends AttackSpellBase {
 
+    private WaywardSkills plugin;
+
     private int radius = 8;
     private int fireTicks = 200;
 
-    public BurnSpell() {
+    public BurnSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Burn");
         setManaCost(15);
         setCoolDown(5);
@@ -94,7 +98,7 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 3;
     }
 
     @Override

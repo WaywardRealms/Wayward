@@ -5,6 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SpellBase;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +19,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class DrawSwordSpell extends SpellBase {
 
-    public DrawSwordSpell() {
+    private WaywardSkills plugin;
+
+    public DrawSwordSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("DrawSword");
         setManaCost(50);
         setCoolDown(300);
@@ -67,7 +71,7 @@ public class DrawSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 10;
     }
 
     @Override

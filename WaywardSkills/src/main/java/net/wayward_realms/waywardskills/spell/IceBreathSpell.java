@@ -58,7 +58,7 @@ public class IceBreathSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Water Magic")) >= 5;
     }
 
     @Override

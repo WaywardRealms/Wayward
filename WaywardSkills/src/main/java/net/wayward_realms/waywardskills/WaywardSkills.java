@@ -428,7 +428,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public int getUnassignedSpecialisationPoints(Character character) {
-        return (getLevel(character) * 3) - getAssignedSpecialisationPoints(character);
+        return (getLevel(character) * 5) - getAssignedSpecialisationPoints(character);
     }
 
     private void addSpecialisation(Specialisation specialisation) {

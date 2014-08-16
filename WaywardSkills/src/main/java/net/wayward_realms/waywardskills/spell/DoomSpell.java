@@ -72,7 +72,7 @@ public class DoomSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character)  {
-        return true;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Dark Magic")) >= 50;
     }
 
     @Override
