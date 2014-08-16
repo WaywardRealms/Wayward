@@ -3,6 +3,7 @@ package net.wayward_realms.waywardskills;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Pet;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Specialisation;
@@ -46,6 +47,9 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public void onEnable() {
+        if (!getConfig().getBoolean("conversion-completed")) {
+            convertFromClasses();
+        }
         spellManager = new SpellManager(this);
         skillManager = new SkillManager(this);
         rootSpecialisation = new RootSpecialisation();
@@ -69,6 +73,33 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         getCommand("skillinfo").setExecutor(new SkillInfoCommand(this));
         getCommand("spellinfo").setExecutor(new SpellInfoCommand(this));
         setupMageArmourChecker();
+    }
+
+    private void convertFromClasses() {
+        getLogger().warning("Conversion from old class levels has not yet taken place!");
+        getLogger().info("Starting conversion...");
+        long startTime = System.currentTimeMillis();
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+        if (characterPluginProvider != null && classesPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+            int i = 1;
+            while (characterPlugin.getCharacter(i) != null) {
+                Character character = characterPlugin.getCharacter(i);
+                int experience = 0;
+                for (net.wayward_realms.waywardlib.classes.Class clazz : classesPlugin.getClasses()) {
+                    experience += classesPlugin.getTotalExperience(character, clazz);
+                }
+                setTotalExperience(character, experience);
+                getLogger().info("Converted [" + character.getId() + "] " + character.getName() + " to new experience.");
+                i++;
+            }
+            i--;
+            getConfig().set("conversion-completed", true);
+            saveConfig();
+            getLogger().info("Converted " + i + " characters in " + (System.currentTimeMillis() - startTime) + "ms");
+        }
     }
 
     @Override
@@ -341,6 +372,8 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
         File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        int originalValue = characterConfig.getInt("specialisations." + specialisation.getName());
+        characterConfig.set("assigned-specialisation-points", characterConfig.getInt("assigned-specialisation-points") + (value - originalValue));
         characterConfig.set("specialisations." + specialisation.getName(), value);
         try {
             characterConfig.save(characterFile);
@@ -394,7 +427,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public int getUnassignedSpecialisationPoints(Character character) {
-        return getLevel(character) - getAssignedSpecialisationPoints(character);
+        return (getLevel(character) * 3) - getAssignedSpecialisationPoints(character);
     }
 
     private void addSpecialisation(Specialisation specialisation) {
@@ -444,7 +477,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
         File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
         YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
-        characterConfig.set("experience", experience);
+        characterConfig.set("experience", Math.min(experience, getTotalExperienceForLevel(getMaxLevel())));
         try {
             characterConfig.save(characterFile);
         } catch (IOException exception) {

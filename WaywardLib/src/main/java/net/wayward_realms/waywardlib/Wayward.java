@@ -133,6 +133,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         if (loadPluginState(CharacterPlugin.class)) {
             if (loadPluginState(ClassesPlugin.class)) {
                 loadPluginState(CombatPlugin.class);
+                loadPluginState(SkillsPlugin.class);
             }
             loadPluginState(EconomyPlugin.class);
         }
@@ -146,7 +147,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(ChatPlugin.class);
         loadPluginState(MonstersPlugin.class);
         loadPluginState(ProfessionsPlugin.class);
-        loadPluginState(SkillsPlugin.class);
         loadPluginState(WorldgenPlugin.class);
         loadPluginState(ItemsPlugin.class);
         loadPluginState(MechanicsPlugin.class);
