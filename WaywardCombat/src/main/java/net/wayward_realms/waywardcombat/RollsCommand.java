@@ -48,7 +48,7 @@ public class RollsCommand implements CommandExecutor {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                 Character character = characterPlugin.getActiveCharacter(player);
                 Equipment equipment = character.getEquipment();
-                int i = 0;
+                int i = 1;
                 for (Specialisation specialisation : skillsPlugin.getSpecialisations()) {
                     StringBuilder pageBuilder = new StringBuilder();
                     pageBuilder.append(ChatColor.BOLD).append(specialisation.getName()).append(ChatColor.RESET).append("\n");
