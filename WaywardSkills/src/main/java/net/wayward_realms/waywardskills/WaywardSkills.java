@@ -15,9 +15,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Wool;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,7 +58,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
                 new EntityDamageByEntityListener(this),
                 new EntityTargetListener(this),
                 new ProjectileHitListener(),
-                new InventoryClickListener(),
+                new InventoryClickListener(this),
                 new EntityDamageListener(this),
                 new PlayerDeathListener(),
                 new PlayerExpChangeListener()
@@ -68,6 +70,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         getCommand("skillinfo").setExecutor(new SkillInfoCommand(this));
         getCommand("spellinfo").setExecutor(new SpellInfoCommand(this));
         getCommand("getscroll").setExecutor(new GetScrollCommand(this));
+        getCommand("specialisation").setExecutor(new SpecialisationCommand(this));
         setupMageArmourChecker();
     }
 
@@ -605,6 +608,45 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         } else {
             return "0d100";
         }
+    }
+
+    public Inventory getSpecialisationInventory(Specialisation root, Character character) {
+        Inventory inventory = getServer().createInventory(null, 45, "Specialise");
+        ItemMeta meta;
+        List<String> lore;
+        int i = 0;
+        for (Specialisation parent : root.getParentSpecialisations()) {
+            ItemStack parentItem = new ItemStack(Material.WOOL);
+            meta = parentItem.getItemMeta();
+            meta.setDisplayName(parent.getName());
+            lore = new ArrayList<>();
+            lore.add("Points: " + getSpecialisationValue(character, parent));
+            meta.setLore(lore);
+            parentItem.setItemMeta(meta);
+            inventory.setItem(i, parentItem);
+            i++;
+        }
+        ItemStack rootItem = new ItemStack(Material.WOOL);
+        rootItem.setData(new Wool(DyeColor.GREEN));
+        meta = rootItem.getItemMeta();
+        meta.setDisplayName(root.getName());
+        lore = new ArrayList<>();
+        lore.add("Points: " + getSpecialisationValue(character, root));
+        meta.setLore(lore);
+        rootItem.setItemMeta(meta);
+        inventory.setItem(23, rootItem);
+        i = 36;
+        for (Specialisation child : root.getChildSpecialisations()) {
+            ItemStack childItem = new ItemStack(Material.WOOL);
+            meta = childItem.getItemMeta();
+            meta.setDisplayName(child.getName());
+            lore = new ArrayList<>();
+            lore.add("Points: " + getSpecialisationValue(character, child));
+            meta.setLore(lore);
+            childItem.setItemMeta(meta);
+            inventory.setItem(i, childItem);
+        }
+        return inventory;
     }
 
 }

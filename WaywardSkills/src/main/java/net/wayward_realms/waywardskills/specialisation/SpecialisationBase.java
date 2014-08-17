@@ -13,7 +13,7 @@ public abstract class SpecialisationBase implements Specialisation {
 
     public SpecialisationBase(Specialisation parent) {
         this.parents = new HashSet<>();
-        parents.add(parent);
+        if (parent != null) parents.add(parent);
         this.children = new HashSet<>();
     }
 

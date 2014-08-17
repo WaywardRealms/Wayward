@@ -26,6 +26,10 @@ commands:
     getscroll:
         description: Creates a scroll for a spell
         usage: /<command> [spell]
+    specialisation:
+        description: Opens the specialisation inventory
+        usage: /<command>
+        aliases: [specialise, spec]
 permissions:
     wayward.skills.command.getscroll:
         description: Allows you to get a scroll for a spell
