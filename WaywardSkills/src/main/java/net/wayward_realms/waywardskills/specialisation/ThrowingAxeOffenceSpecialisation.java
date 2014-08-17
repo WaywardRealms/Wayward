@@ -21,7 +21,7 @@ public class ThrowingAxeOffenceSpecialisation extends SpecialisationBase {
 
     @Override
     public boolean meetsAttackRequirement(ItemStack item) {
-        return item.getType() == Material.WOOD_AXE || item.getType() == Material.STONE_AXE || item.getType() == Material.IRON_AXE || item.getType() == Material.GOLD_AXE || item.getType() == Material.DIAMOND_AXE;
+        return item != null && (item.getType() == Material.WOOD_AXE || item.getType() == Material.STONE_AXE || item.getType() == Material.IRON_AXE || item.getType() == Material.GOLD_AXE || item.getType() == Material.DIAMOND_AXE);
     }
 
 }

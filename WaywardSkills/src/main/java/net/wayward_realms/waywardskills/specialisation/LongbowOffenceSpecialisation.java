@@ -21,6 +21,6 @@ public class LongbowOffenceSpecialisation extends SpecialisationBase {
 
     @Override
     public boolean meetsAttackRequirement(ItemStack item) {
-        return item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("longbow");
+        return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("longbow");
     }
 }

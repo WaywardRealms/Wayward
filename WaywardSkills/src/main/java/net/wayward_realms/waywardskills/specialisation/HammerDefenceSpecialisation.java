@@ -21,6 +21,6 @@ public class HammerDefenceSpecialisation extends SpecialisationBase {
 
     @Override
     public boolean meetsDefenceRequirement(ItemStack item) {
-        return item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("hammer");
+        return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("hammer");
     }
 }

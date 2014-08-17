@@ -21,7 +21,7 @@ public class StaffDefenceSpecialisation extends SpecialisationBase {
 
     @Override
     public boolean meetsDefenceRequirement(ItemStack item) {
-        return item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("staff");
+        return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("staff");
     }
 
 }

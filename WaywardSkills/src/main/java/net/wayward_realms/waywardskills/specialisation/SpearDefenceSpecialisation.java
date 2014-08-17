@@ -21,6 +21,6 @@ public class SpearDefenceSpecialisation extends SpecialisationBase {
 
     @Override
     public boolean meetsDefenceRequirement(ItemStack item) {
-        return item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("spear");
+        return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("spear");
     }
 }

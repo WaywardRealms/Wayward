@@ -25,6 +25,6 @@ public class BowOffenceSpecialisation extends SpecialisationBase {
 
     @Override
     public boolean meetsAttackRequirement(ItemStack item) {
-        return item.getType() == Material.BOW;
+        return item != null && item.getType() == Material.BOW;
     }
 }
