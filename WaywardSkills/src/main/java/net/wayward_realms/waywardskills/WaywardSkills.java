@@ -44,9 +44,6 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public void onEnable() {
-        if (!getConfig().getBoolean("conversion-completed")) {
-            convertFromClasses();
-        }
         spellManager = new SpellManager(this);
         skillManager = new SkillManager(this);
         rootSpecialisation = new RootSpecialisation();
@@ -98,6 +95,8 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             getConfig().set("conversion-completed", true);
             saveConfig();
             getLogger().info("Converted " + i + " characters in " + (System.currentTimeMillis() - startTime) + "ms");
+        } else {
+            getLogger().info("Characters and/or classes plugin not found. Waiting for next plugin load...");
         }
     }
 
@@ -211,6 +210,9 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             for (File file : skillDirectory.listFiles(new YamlFileFilter())) {
                 loadSkill(file);
             }
+        }
+        if (!getConfig().getBoolean("conversion-completed")) {
+            convertFromClasses();
         }
     }
 
