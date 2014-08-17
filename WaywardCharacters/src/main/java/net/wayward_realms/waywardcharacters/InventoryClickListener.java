@@ -22,7 +22,7 @@ public class InventoryClickListener implements Listener {
                 return;
             }
             if (Arrays.asList(6, 7, 8, 15, 16, 17, 24, 25, 26).contains(event.getRawSlot())) {
-                if (event.getCursor().getType() != Material.PAPER || !event.getCursor().hasItemMeta() || !event.getCursor().getItemMeta().hasDisplayName() || !event.getCursor().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Scroll")) {
+                if ((event.getCursor().getType() != Material.PAPER || !event.getCursor().hasItemMeta() || !event.getCursor().getItemMeta().hasDisplayName() || !event.getCursor().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Scroll")) && event.getCursor().getType() != Material.AIR) {
                     event.setCancelled(true);
                     return;
                 }
