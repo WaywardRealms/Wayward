@@ -69,6 +69,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         getCommand("spellinfo").setExecutor(new SpellInfoCommand(this));
         getCommand("getscroll").setExecutor(new GetScrollCommand(this));
         getCommand("specialisation").setExecutor(new SpecialisationCommand(this));
+        getCommand("level").setExecutor(new LevelCommand(this));
         setupMageArmourChecker();
     }
 

@@ -30,7 +30,13 @@ commands:
         description: Opens the specialisation inventory
         usage: /<command>
         aliases: [specialise, spec]
+    level:
+        description: Shows information on your current level
+        usage: /<command>
 permissions:
     wayward.skills.command.getscroll:
         description: Allows you to get a scroll for a spell
+        default: op
+    wayward.skills.command.level:
+        description: Allows you to see other peoples levels
         default: op
