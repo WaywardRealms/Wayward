@@ -647,6 +647,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             meta.setLore(lore);
             childItem.setItemMeta(meta);
             inventory.setItem(i, childItem);
+            i++;
         }
         return inventory;
     }
