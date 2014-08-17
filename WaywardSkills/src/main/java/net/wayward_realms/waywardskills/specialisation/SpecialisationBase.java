@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardskills.specialisation;
 
 import net.wayward_realms.waywardlib.skills.Specialisation;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,4 +36,15 @@ public abstract class SpecialisationBase implements Specialisation {
     public void addParentSpecialisation(Specialisation specialisation) {
         parents.add(specialisation);
     }
+
+    @Override
+    public boolean meetsAttackRequirement(ItemStack item) {
+        return false;
+    }
+
+    @Override
+    public boolean meetsDefenceRequirement(ItemStack item) {
+        return false;
+    }
+
 }

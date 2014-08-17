@@ -2,6 +2,7 @@ package net.wayward_realms.waywardskills;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Equipment;
 import net.wayward_realms.waywardlib.character.Pet;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.skills.*;
@@ -9,10 +10,7 @@ import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
 import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
 import net.wayward_realms.waywardskills.spell.SpellManager;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -584,6 +582,28 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
             player.setMaxHealth(characterPlugin.getActiveCharacter(player).getMaxHealth());
+        }
+    }
+
+    @Override
+    public String getAttackRoll(Character character, Specialisation attack, boolean onHand) {
+        Equipment equipment = character.getEquipment();
+        ItemStack weapon = onHand ? equipment.getOnHandItem() : equipment.getOffHandItem();
+        if (attack.meetsAttackRequirement(weapon)) {
+            return "1d100+" + Math.round((double) getSpecialisationValue(character, attack) * ((equipment.getOffHandItem() == null || equipment.getOffHandItem().getType() == Material.AIR) ? 2D : (onHand ? 1D : 0.75D)));
+        } else {
+            return "0d100";
+        }
+    }
+
+    @Override
+    public String getDefenceRoll(Character character, Specialisation defence, boolean onHand) {
+        Equipment equipment = character.getEquipment();
+        ItemStack weapon = onHand ? equipment.getOnHandItem() : equipment.getOffHandItem();
+        if (defence.meetsDefenceRequirement(weapon)) {
+            return "1d100+" + Math.round((double) getSpecialisationValue(character, defence) * ((equipment.getOffHandItem() == null || equipment.getOffHandItem().getType() == Material.AIR) ? 2D : (onHand ? 1D : 0.75D)));
+        } else {
+            return "0d100";
         }
     }
 

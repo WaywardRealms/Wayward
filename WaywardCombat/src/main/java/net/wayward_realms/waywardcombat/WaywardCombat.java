@@ -22,9 +22,9 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
         saveDefaultConfig();
         rollsManager = new RollsManager(this);
         registerListeners(new InventoryClickListener(this));
-        getCommand("fight").setExecutor(new FightCommand(this));
-        getCommand("turn").setExecutor(new TurnCommand(this));
-        getCommand("flee").setExecutor(new FleeCommand(this));
+        //getCommand("fight").setExecutor(new FightCommand(this));
+        //getCommand("turn").setExecutor(new TurnCommand(this));
+        //getCommand("flee").setExecutor(new FleeCommand(this));
         getCommand("rolls").setExecutor(new RollsCommand(this));
         getCommand("roll").setExecutor(new RollCommand(this));
     }

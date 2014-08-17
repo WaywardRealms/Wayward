@@ -1,6 +1,8 @@
 package net.wayward_realms.waywardskills.specialisation;
 
 import net.wayward_realms.waywardlib.skills.Specialisation;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class UnarmedBlockingSpecialisation extends SpecialisationBase {
 
@@ -18,4 +20,8 @@ public class UnarmedBlockingSpecialisation extends SpecialisationBase {
         return 4;
     }
 
+    @Override
+    public boolean meetsDefenceRequirement(ItemStack item) {
+        return item == null || item.getType() == Material.AIR;
+    }
 }

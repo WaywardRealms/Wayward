@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardskills.specialisation;
 
 import net.wayward_realms.waywardlib.skills.Specialisation;
+import org.bukkit.inventory.ItemStack;
 
 public class ElementalMagicSpecialisation extends SpecialisationBase {
 
@@ -22,6 +23,11 @@ public class ElementalMagicSpecialisation extends SpecialisationBase {
     @Override
     public int getTier() {
         return 3;
+    }
+
+    @Override
+    public boolean meetsAttackRequirement(ItemStack item) {
+        return true;
     }
 
 }

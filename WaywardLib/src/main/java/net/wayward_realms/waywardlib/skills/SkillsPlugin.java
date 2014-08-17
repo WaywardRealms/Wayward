@@ -251,4 +251,25 @@ public interface SkillsPlugin extends WaywardPlugin {
      * @return the value of the stat
      */
     public int getStatValue(Character character, Stat stat);
+
+    /**
+     * Gets the character's attack roll
+     *
+     * @param character the character
+     * @param attack the specialisation being used to attack
+     * @param onHand whether the character is using their onhand weapon
+     * @return the roll string
+     */
+    public String getAttackRoll(Character character, Specialisation attack, boolean onHand);
+
+    /**
+     * Gets the character's defence roll
+     *
+     * @param character the character
+     * @param defence the specialisation being used to defend
+     * @param onHand whether the character is using their onhand weapon
+     * @return the roll string
+     */
+    public String getDefenceRoll(Character character, Specialisation defence, boolean onHand);
+
 }

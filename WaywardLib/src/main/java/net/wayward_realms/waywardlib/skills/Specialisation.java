@@ -1,5 +1,7 @@
 package net.wayward_realms.waywardlib.skills;
 
+import org.bukkit.inventory.ItemStack;
+
 import java.util.Set;
 
 /**
@@ -46,4 +48,21 @@ public interface Specialisation {
      * @param specialisation the specialisation to add
      */
     public void addChildSpecialisation(Specialisation specialisation);
+
+    /**
+     * Returns whether the given item meets the requirements to attack using this specialisation
+     *
+     * @param item the item
+     * @return whether the item is suitable to use for an attack using this specialisation
+     */
+    public boolean meetsAttackRequirement(ItemStack item);
+
+    /**
+     * Returns whether the given item meets the requirements to defend using this specialisation
+     *
+     * @param item the item
+     * @return whether the item is suitable to use for a defence using this specialisation
+     */
+    public boolean meetsDefenceRequirement(ItemStack item);
+
 }
