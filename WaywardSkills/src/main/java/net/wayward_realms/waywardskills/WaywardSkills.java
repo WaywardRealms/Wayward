@@ -550,7 +550,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public double getMaxHealth(Character character) {
-        return getLevel(character) * 2D;
+        return 8D + (getLevel(character) * 2D);
     }
 
     @Override

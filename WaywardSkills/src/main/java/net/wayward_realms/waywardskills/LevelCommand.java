@@ -39,7 +39,7 @@ public class LevelCommand implements CommandExecutor {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                 Character character = characterPlugin.getActiveCharacter(player);
                 sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + player.getDisplayName() + ChatColor.GREEN + " is currently lv" + plugin.getLevel(character));
-                sender.sendMessage(ChatColor.GRAY + " (Progress towards level " + (plugin.getLevel(character) + 1) + ": " + plugin.getExperience(character) + "/" + plugin.getExperienceForLevel(plugin.getLevel(character)) + ")");
+                sender.sendMessage(ChatColor.GRAY + " (Progress towards level " + (plugin.getLevel(character) + 1) + ": " + plugin.getExperience(character) + "/" + plugin.getExperienceForLevel(plugin.getLevel(character) + 1) + ")");
             }
         }
         return true;
