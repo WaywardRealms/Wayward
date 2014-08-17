@@ -37,8 +37,16 @@ public class GetScrollCommand implements CommandExecutor {
                     lore.add(ChatColor.GRAY + "Cooldown (turns): " + spell.getCoolDownTurns());
                     meta.setLore(lore);
                     scroll.setItemMeta(meta);
+                    ((Player) sender).getInventory().addItem(scroll);
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Here is the scroll for " + spell.getName());
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify the spell.");
                 }
+            } else {
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
             }
+        } else {
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
         }
         return true;
     }
