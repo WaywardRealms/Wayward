@@ -8,7 +8,6 @@ public class RootSpecialisation extends SpecialisationBase {
         addChildSpecialisation(new RangedSpecialisation(this));
         addChildSpecialisation(new MagicSpecialisation(this));
         addChildSpecialisation(new MechanicsSpecialisation(this));
-        addChildSpecialisation(new ProfessionSpecialisation(this));
         addChildSpecialisation(new EscapeArtistSpecialisation(this));
         addChildSpecialisation(new LockpickSpecialisation(this));
         addChildSpecialisation(new ScribeSpecialisation(this));

@@ -37,6 +37,12 @@ permissions:
     wayward.skills.command.getscroll:
         description: Allows you to get a scroll for a spell
         default: op
-    wayward.skills.command.level:
+    wayward.skills.command.level.info:
         description: Allows you to see other peoples levels
+        default: op
+    wayward.skills.command.level.setlevel:
+        description: Allows you to set levels
+        default: op
+    wayward.skills.command.level.addexp:
+        description: Allows you to add experience
         default: op
