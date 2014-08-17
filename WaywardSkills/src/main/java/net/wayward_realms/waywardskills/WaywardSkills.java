@@ -19,7 +19,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Wool;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -632,8 +631,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             inventory.setItem(i, parentItem);
             i++;
         }
-        ItemStack rootItem = new ItemStack(Material.WOOL);
-        rootItem.setData(new Wool(DyeColor.GREEN));
+        ItemStack rootItem = new ItemStack(Material.WOOL, 1, (short) 5);
         meta = rootItem.getItemMeta();
         meta.setDisplayName(root.getName());
         lore = new ArrayList<>();
@@ -642,7 +640,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         lore.add("(You have " + getUnassignedSpecialisationPoints(character) + " unassigned specialisation points remaining)");
         meta.setLore(lore);
         rootItem.setItemMeta(meta);
-        inventory.setItem(23, rootItem);
+        inventory.setItem(22, rootItem);
         i = 36;
         for (Specialisation child : root.getChildSpecialisations()) {
             ItemStack childItem = new ItemStack(Material.WOOL);
