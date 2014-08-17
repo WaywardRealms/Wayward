@@ -515,7 +515,11 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public int getLevel(Character character) {
-        return getTotalExperience(character) / 5000;
+        int level = 1;
+        while (getTotalExperienceForLevel(level + 1) <= getTotalExperience(character)) {
+            level += 1;
+        }
+        return level;
     }
 
     @Override
