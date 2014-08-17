@@ -32,7 +32,7 @@ public class InventoryClickListener implements Listener {
                         Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
                         if (plugin.getUnassignedSpecialisationPoints(character) > 0) {
                             plugin.setSpecialisationValue(character, specialisation, plugin.getSpecialisationValue(character, specialisation) + 1);
-                            ((Player) event.getWhoClicked()).sendMessage(ChatColor.GREEN + "Assigned a specialisation point to " + specialisation.getName() + ChatColor.GRAY + "(" + plugin.getUnassignedSpecialisationPoints(character) + " remaining)");
+                            ((Player) event.getWhoClicked()).sendMessage(ChatColor.GREEN + "Assigned a specialisation point to " + specialisation.getName() + ChatColor.GRAY + " (" + plugin.getUnassignedSpecialisationPoints(character) + " remaining)");
                             event.getWhoClicked().closeInventory();
                             event.getWhoClicked().openInventory(plugin.getSpecialisationInventory(specialisation, character));
                         } else {
