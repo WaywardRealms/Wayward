@@ -5,17 +5,17 @@ description: ${project.description}
 main: net.wayward_realms.waywardcombat.WaywardCombat
 depend: [WaywardLib]
 commands:
-    fight:
-        usage: /<command> [create|join|leave|start|end]
-        description: Used for managing fights
-        aliases: f
-    turn:
-        usage: /<command> [skill|target|weapon|complete]
-        description: Used for setting turn options
-        aliases: t
-    flee:
-        usage: /<command>
-        description: Run away from a fight
+#    fight:
+#        usage: /<command> [create|join|leave|start|end]
+#        description: Used for managing fights
+#        aliases: f
+#    turn:
+#        usage: /<command> [skill|target|weapon|complete]
+#        description: Used for setting turn options
+#        aliases: t
+#    flee:
+#        usage: /<command>
+#        description: Run away from a fight
     rolls:
         usage: /<command>
         description: Calculates and shows rolls
