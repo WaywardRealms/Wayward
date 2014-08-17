@@ -17,16 +17,14 @@ public class InventoryClickListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (event.getInventory() == event.getView().getTopInventory()) {
-                if (Arrays.asList(0, 1, 2, 3, 4, 5, 9, 12, 13, 14, 18, 19, 20, 21, 22, 23).contains(event.getSlot())) {
+            if (Arrays.asList(0, 1, 2, 3, 4, 5, 9, 12, 13, 14, 18, 19, 20, 21, 22, 23).contains(event.getRawSlot())) {
+                event.setCancelled(true);
+                return;
+            }
+            if (Arrays.asList(6, 7, 8, 15, 16, 17, 24, 25, 26).contains(event.getRawSlot())) {
+                if (event.getCursor().getType() != Material.PAPER || !event.getCursor().hasItemMeta() || !event.getCursor().getItemMeta().hasDisplayName() || !event.getCursor().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Scroll")) {
                     event.setCancelled(true);
                     return;
-                }
-                if (Arrays.asList(6, 7, 8, 15, 16, 17, 24, 25, 26).contains(event.getSlot())) {
-                    if (event.getCursor().getType() != Material.PAPER || !event.getCursor().hasItemMeta() || !event.getCursor().getItemMeta().hasDisplayName() || !event.getCursor().getItemMeta().getDisplayName().equals(ChatColor.YELLOW + "Scroll")) {
-                        event.setCancelled(true);
-                        return;
-                    }
                 }
             }
         }
