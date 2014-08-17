@@ -634,6 +634,8 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         meta.setDisplayName(root.getName());
         lore = new ArrayList<>();
         lore.add("Points: " + getSpecialisationValue(character, root));
+        lore.add("Click to assign one specialisation point");
+        lore.add("(You have " + getUnassignedSpecialisationPoints(character) + " unassigned specialisation points remaining)");
         meta.setLore(lore);
         rootItem.setItemMeta(meta);
         inventory.setItem(23, rootItem);
