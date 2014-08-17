@@ -48,7 +48,6 @@ public class RollsCommand implements CommandExecutor {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                 Character character = characterPlugin.getActiveCharacter(player);
                 Equipment equipment = character.getEquipment();
-                int i = 1;
                 for (Specialisation specialisation : skillsPlugin.getSpecialisations()) {
                     StringBuilder pageBuilder = new StringBuilder();
                     pageBuilder.append(ChatColor.BOLD).append(specialisation.getName()).append(ChatColor.RESET).append("\n");
@@ -64,8 +63,7 @@ public class RollsCommand implements CommandExecutor {
                     if (specialisation.meetsDefenceRequirement(equipment.getOffHandItem())) {
                         pageBuilder.append("Defence roll with offhand item: ").append(skillsPlugin.getDefenceRoll(character, specialisation, false)).append("\n");
                     }
-                    meta.setPage(i, pageBuilder.toString());
-                    i++;
+                    meta.addPage(pageBuilder.toString());
                 }
                 book.setItemMeta(meta);
                 player.getInventory().addItem(book);
