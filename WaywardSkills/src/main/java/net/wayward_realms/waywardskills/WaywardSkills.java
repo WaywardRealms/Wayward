@@ -37,6 +37,8 @@ import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerLi
 
 public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
+    private static final int SPECIALISATION_POINTS_PER_LEVEL = 5;
+
     private SpellManager spellManager;
     private SkillManager skillManager;
     private Specialisation rootSpecialisation;
@@ -432,7 +434,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public int getUnassignedSpecialisationPoints(Character character) {
-        return (getLevel(character) * 5) - getAssignedSpecialisationPoints(character);
+        return (getLevel(character) * SPECIALISATION_POINTS_PER_LEVEL) - getAssignedSpecialisationPoints(character);
     }
 
     private void addSpecialisation(Specialisation specialisation) {
@@ -466,6 +468,8 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             if (character.getPlayer().isOnline()) {
                 Player player = character.getPlayer().getPlayer();
                 player.sendMessage(getPrefix() + ChatColor.YELLOW + "Level up!");
+                player.sendMessage(ChatColor.YELLOW + "+" + SPECIALISATION_POINTS_PER_LEVEL + " Specialisation Points" + ChatColor.GRAY + "(Total: " + (getUnassignedSpecialisationPoints(character) + 5) + ")");
+                player.sendMessage(ChatColor.GRAY + "(Use /specialisation to assign them)");
                 for (int x = player.getLocation().getBlockX() - 4; x < player.getLocation().getBlockX() + 4; x++) {
                     for (int z = player.getLocation().getBlockZ() - 4; z < player.getLocation().getBlockZ() + 4; z++) {
                         Location location = player.getWorld().getBlockAt(x, player.getLocation().getBlockY(), z).getLocation();
