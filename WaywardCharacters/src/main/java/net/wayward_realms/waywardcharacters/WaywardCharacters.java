@@ -43,7 +43,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                 new EntityDamageListener(this),
                 new EntityRegainHealthListener(this),
                 new FoodLevelChangeListener(this),
-                new InventoryClickListener(this),
+                new InventoryClickListener(),
                 new InventoryCloseListener(this),
                 new PlayerItemConsumeListener(this),
                 new PlayerInteractListener(this),
