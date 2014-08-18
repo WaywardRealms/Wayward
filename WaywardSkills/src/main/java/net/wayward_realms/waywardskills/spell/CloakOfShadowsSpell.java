@@ -13,9 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class CloakOfShadowsSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -83,8 +80,8 @@ public class CloakOfShadowsSpell extends SpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "20 Illusory Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "20 Illusory Magic points required";
     }
 
 }

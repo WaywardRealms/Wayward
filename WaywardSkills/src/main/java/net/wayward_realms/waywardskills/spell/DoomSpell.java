@@ -14,9 +14,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class DoomSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -84,8 +81,8 @@ public class DoomSpell extends SpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "50 Dark Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "50 Dark Magic points required";
     }
 
 }

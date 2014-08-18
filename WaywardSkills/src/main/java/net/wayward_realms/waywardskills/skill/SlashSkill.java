@@ -15,9 +15,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class SlashSkill extends AttackSkillBase {
 
     private WaywardSkills plugin;
@@ -86,8 +83,8 @@ public class SlashSkill extends AttackSkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "3 Sword Offence points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Sword Offence points required";
     }
 
 }

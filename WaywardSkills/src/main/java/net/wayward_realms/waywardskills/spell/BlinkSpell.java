@@ -13,9 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class BlinkSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -85,8 +82,8 @@ public class BlinkSpell extends SpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "6 Illusory Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "6 Illusory Magic points required";
     }
 
 }

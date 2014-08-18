@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MageArmourSpell extends SpellBase {
@@ -123,8 +122,8 @@ public class MageArmourSpell extends SpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "5 Shielding Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "5 Shielding Magic points required";
     }
 
 }

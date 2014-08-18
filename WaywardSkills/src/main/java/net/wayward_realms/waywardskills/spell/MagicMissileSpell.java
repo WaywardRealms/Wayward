@@ -16,9 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class MagicMissileSpell extends AttackSpellBase {
 
     private WaywardSkills plugin;
@@ -82,8 +79,8 @@ public class MagicMissileSpell extends AttackSpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "3 Magic Offence points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Magic Offence points required";
     }
 
 }

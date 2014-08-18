@@ -14,9 +14,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class EmpowerSpell extends SpellBase {
@@ -83,8 +81,8 @@ public class EmpowerSpell extends SpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "3 Buff points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Buff points required";
     }
 
 }

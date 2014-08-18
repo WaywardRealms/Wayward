@@ -19,9 +19,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class EsunaSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -101,8 +98,8 @@ public class EsunaSpell extends SpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "3 Regenerative Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Regenerative Magic points required";
     }
 
 }

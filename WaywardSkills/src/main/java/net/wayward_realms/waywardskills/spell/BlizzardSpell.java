@@ -203,8 +203,8 @@ public class BlizzardSpell extends AttackSpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "50 Water Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "50 Water Magic points required";
     }
 
 }

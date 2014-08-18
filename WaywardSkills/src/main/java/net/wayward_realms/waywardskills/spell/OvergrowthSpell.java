@@ -18,9 +18,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static net.wayward_realms.waywardlib.util.lineofsight.LineOfSightUtils.getTargetBlock;
 
 public class OvergrowthSpell extends AttackSpellBase {
@@ -106,8 +103,8 @@ public class OvergrowthSpell extends AttackSpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "50 Nature Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "50 Nature Magic points required";
     }
 
 }

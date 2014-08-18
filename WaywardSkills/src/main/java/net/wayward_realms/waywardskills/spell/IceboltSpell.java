@@ -16,9 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import static net.wayward_realms.waywardlib.skills.Stat.MAGIC_ATTACK;
@@ -112,8 +110,8 @@ public class IceboltSpell extends AttackSpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "20 Water Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "20 Water Magic points required";
     }
 
 }

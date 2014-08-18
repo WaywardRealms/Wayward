@@ -2,9 +2,9 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,9 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SummonSpiderSpell extends AttackSpellBase {
 
@@ -91,8 +88,8 @@ public class SummonSpiderSpell extends AttackSpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "20 Summoning Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "20 Summoning Magic points required";
     }
 
 }

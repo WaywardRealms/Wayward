@@ -15,9 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class MultiShotSkill extends AttackSkillBase {
 
     private WaywardSkills plugin;
@@ -112,8 +109,8 @@ public class MultiShotSkill extends AttackSkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "20 Bow Offence points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "20 Bow Offence points required";
     }
 
 }

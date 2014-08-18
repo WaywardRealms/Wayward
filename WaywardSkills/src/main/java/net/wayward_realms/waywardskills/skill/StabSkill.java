@@ -18,9 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class StabSkill extends AttackSkillBase {
 
     private WaywardSkills plugin;
@@ -123,8 +120,8 @@ public class StabSkill extends AttackSkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "12 Sword Offence points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "12 Sword Offence points required";
     }
 
 }

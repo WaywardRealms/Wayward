@@ -16,9 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class BandageSkill extends SkillBase {
 
     private WaywardSkills plugin;
@@ -135,8 +132,8 @@ public class BandageSkill extends SkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "3 Healing points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Healing points required";
     }
 
 }

@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class LightningSwordSpell extends AttackSpellBase {
@@ -90,8 +89,8 @@ public class LightningSwordSpell extends AttackSpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "25 Lightning Magic and 30 Sword Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "25 Lightning Magic and 30 Sword Magic points required";
     }
 
 }

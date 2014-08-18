@@ -13,9 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.BlockIterator;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 public class QuickStepSkill extends SkillBase {
 
@@ -79,8 +77,8 @@ public class QuickStepSkill extends SkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "10 Nimble points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "10 Nimble points required";
     }
 
 }

@@ -16,9 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class FreezeSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -83,8 +80,8 @@ public class FreezeSpell extends SpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "10 Water Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "10 Water Magic points required";
     }
 
 }

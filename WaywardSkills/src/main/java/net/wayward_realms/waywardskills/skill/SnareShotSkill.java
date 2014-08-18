@@ -17,9 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SnareShotSkill extends AttackSkillBase {
@@ -106,8 +104,8 @@ public class SnareShotSkill extends AttackSkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "8 Bow Offence points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "8 Bow Offence points required";
     }
 
 }

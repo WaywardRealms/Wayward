@@ -16,9 +16,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class DashSkill extends SkillBase {
 
     private WaywardSkills plugin;
@@ -72,8 +69,8 @@ public class DashSkill extends SkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "3 Nimble points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Nimble points required";
     }
 
 }

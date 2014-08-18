@@ -1,9 +1,9 @@
 package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
 import net.wayward_realms.waywardlib.util.vector.VectorUtils;
 import net.wayward_realms.waywardskills.WaywardSkills;
@@ -16,9 +16,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SpinningSweepSkill extends AttackSkillBase {
 
@@ -116,8 +113,8 @@ public class SpinningSweepSkill extends AttackSkillBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "3 Sword Offence points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Sword Offence points required";
     }
 
 }

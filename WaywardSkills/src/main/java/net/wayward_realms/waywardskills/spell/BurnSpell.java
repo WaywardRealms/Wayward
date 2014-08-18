@@ -126,8 +126,8 @@ public class BurnSpell extends AttackSpellBase {
     }
 
     @Override
-    public List<String> getSpecialisationInfo() {
-        return Arrays.asList(ChatColor.GRAY + "5 Fire Magic points required");
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "5 Fire Magic points required";
     }
 
 }

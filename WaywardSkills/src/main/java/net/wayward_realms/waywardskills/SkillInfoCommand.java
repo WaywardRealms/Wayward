@@ -21,7 +21,7 @@ public class SkillInfoCommand implements CommandExecutor {
             if (skill != null) {
                 sender.sendMessage(new String[] {
                     ChatColor.GRAY + "== " + ChatColor.GREEN + "Skill: " + skill.getName() + ChatColor.GRAY + " ==",
-                    ChatColor.GRAY + skill.getDescription(),
+                    skill.getSpecialisationInfo(),
                     ChatColor.YELLOW + "Cooldown turns: " + ChatColor.GRAY + skill.getCoolDownTurns()
                 });
             }
