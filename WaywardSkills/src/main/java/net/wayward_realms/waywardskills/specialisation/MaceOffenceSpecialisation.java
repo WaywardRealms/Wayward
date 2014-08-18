@@ -24,4 +24,11 @@ public class MaceOffenceSpecialisation extends SpecialisationBase {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("mace");
     }
 
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("mace")) return 5;
+        }
+        return 0;
+    }
 }

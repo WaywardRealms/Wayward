@@ -24,4 +24,12 @@ public class DartOffenceSpecialisation extends SpecialisationBase {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("dart");
     }
 
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("dart")) return 3;
+        }
+        return 0;
+    }
+
 }

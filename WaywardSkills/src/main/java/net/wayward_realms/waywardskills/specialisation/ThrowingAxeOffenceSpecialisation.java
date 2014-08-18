@@ -24,4 +24,16 @@ public class ThrowingAxeOffenceSpecialisation extends SpecialisationBase {
         return item != null && (item.getType() == Material.WOOD_AXE || item.getType() == Material.STONE_AXE || item.getType() == Material.IRON_AXE || item.getType() == Material.GOLD_AXE || item.getType() == Material.DIAMOND_AXE);
     }
 
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.getType() == Material.WOOD_AXE) return 5;
+            if (item.getType() == Material.STONE_AXE) return 6;
+            if (item.getType() == Material.GOLD_AXE) return 5;
+            if (item.getType() == Material.IRON_AXE) return 7;
+            if (item.getType() == Material.DIAMOND_AXE) return 8;
+        }
+        return 0;
+    }
+
 }

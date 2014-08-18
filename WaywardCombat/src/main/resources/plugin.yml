@@ -23,6 +23,9 @@ commands:
     roll:
         description: Rolls
         usage: /<command> [roll|stat]
+    damage:
+        description: Deals damage based on a specialisation, your weapon and a targets armour
+        usage: /<command> [player] [onhand|offhand] [specialisation]
 permissions:
     wayward.combat.command.rolls.other:
         description: Allows viewing other peoples rolls

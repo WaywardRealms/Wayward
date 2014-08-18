@@ -65,4 +65,12 @@ public interface Specialisation {
      */
     public boolean meetsDefenceRequirement(ItemStack item);
 
+    /**
+     * Gets the attack roll bonus
+     *
+     * @param item the item to check
+     * @return the bonus given to rolls in this specialisation by the item
+     */
+    public int getDamageRollBonus(ItemStack item);
+
 }

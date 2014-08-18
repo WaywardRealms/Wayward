@@ -24,4 +24,11 @@ public class KnuckleOffenceSpecialisation extends SpecialisationBase {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("knuckle");
     }
 
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("knuckle")) return 4;
+        }
+        return 0;
+    }
 }

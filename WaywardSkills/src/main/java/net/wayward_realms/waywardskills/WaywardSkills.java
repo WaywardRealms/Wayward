@@ -620,6 +620,58 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         }
     }
 
+    @Override
+    public String getDamageRoll(Character attacking, Specialisation specialisation, boolean onHand, Character defending) {
+        return "1d8+" + (specialisation.getDamageRollBonus(onHand ? attacking.getEquipment().getOnHandItem() : attacking.getEquipment().getOffHandItem()) - getArmourRating(defending));
+    }
+
+    @Override
+    public int getArmourRating(Character character) {
+        OfflinePlayer offlinePlayer = character.getPlayer();
+        if (offlinePlayer.isOnline()) {
+            Player player = offlinePlayer.getPlayer();
+            int armourBonus = 100;
+            if (player.getInventory().getHelmet() != null) {
+                switch (player.getInventory().getHelmet().getType()) {
+                    case LEATHER_HELMET: armourBonus += 1; break;
+                    case GOLD_HELMET: armourBonus += 2; break;
+                    case IRON_HELMET: armourBonus += 2; break;
+                    case CHAINMAIL_HELMET: armourBonus += 2; break;
+                    case DIAMOND_HELMET: armourBonus += 3; break;
+                }
+            }
+            if (player.getInventory().getChestplate() != null) {
+                switch (player.getInventory().getChestplate().getType()) {
+                    case LEATHER_CHESTPLATE: armourBonus += 3; break;
+                    case GOLD_CHESTPLATE: armourBonus += 5; break;
+                    case IRON_CHESTPLATE: armourBonus += 6; break;
+                    case CHAINMAIL_CHESTPLATE: armourBonus += 5; break;
+                    case DIAMOND_HELMET: armourBonus += 8; break;
+                }
+            }
+            if (player.getInventory().getLeggings() != null) {
+                switch (player.getInventory().getLeggings().getType()) {
+                    case LEATHER_LEGGINGS: armourBonus += 2; break;
+                    case GOLD_LEGGINGS: armourBonus += 3; break;
+                    case IRON_LEGGINGS: armourBonus += 5; break;
+                    case CHAINMAIL_LEGGINGS: armourBonus += 4; break;
+                    case DIAMOND_LEGGINGS: armourBonus += 6; break;
+                }
+            }
+            if (player.getInventory().getBoots() != null) {
+                switch (player.getInventory().getBoots().getType()) {
+                    case LEATHER_BOOTS: armourBonus += 1; break;
+                    case GOLD_BOOTS: armourBonus += 1; break;
+                    case IRON_BOOTS: armourBonus += 2; break;
+                    case CHAINMAIL_BOOTS: armourBonus += 1; break;
+                    case DIAMOND_BOOTS: armourBonus += 1; break;
+                }
+            }
+            return armourBonus;
+        }
+        return 0;
+    }
+
     public Inventory getSpecialisationInventory(Specialisation root, Character character) {
         Inventory inventory = getServer().createInventory(null, 45, "Specialise");
         ItemMeta meta;

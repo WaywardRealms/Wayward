@@ -272,4 +272,22 @@ public interface SkillsPlugin extends WaywardPlugin {
      */
     public String getDefenceRoll(Character character, Specialisation defence, boolean onHand);
 
+    /**
+     * Gets the damage roll
+     *
+     * @param attacking the character attacking
+     * @param specialisation the specialisation the character is using
+     * @param onHand whether the character is using their onhand weapon
+     * @param defending the character defending
+     * @return the roll string for calculating damage
+     */
+    public String getDamageRoll(Character attacking, Specialisation specialisation, boolean onHand, Character defending);
+
+    /**
+     * Gets the armour rating for a character
+     *
+     * @param character the character
+     * @return the armour rating
+     */
+    public int getArmourRating(Character character);
 }

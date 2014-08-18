@@ -1,13 +1,11 @@
 package net.wayward_realms.waywardcombat;
 
-import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.skills.Stat;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class RollsManager {
 
@@ -17,90 +15,67 @@ public class RollsManager {
         this.plugin = plugin;
     }
 
-    public String getRoll(Character character, Stat stat) {
-        return "1d" + character.getStatValue(stat) + "+" + (int) Math.round(getArmourBonus(character, stat) + getWeaponBonus(character, stat));
-    }
+    public int roll(Player roller, String rollString) {
+        try {
+            int amount = 1;
+            int maxRoll;
+            int plus = 0;
 
-    private double getArmourBonus(Character character, Stat stat) {
-        Player player = character.getPlayer().getPlayer();
-        double bonus = 0D;
-        // Helmets
-        if (player.getInventory().getHelmet() != null) {
-            ItemStack helmet = player.getInventory().getHelmet();
-            Material helmetType = helmet.getType();
-            bonus += plugin.getConfig().getDouble("rolls.armour." + helmetType.toString() + "." + stat.toString());
-            bonus += getEtBonus(helmet, stat);
-            bonus += getEnchantmentBonus(helmet, stat);
-        }
-        // Chestplates
-        if (player.getInventory().getChestplate() != null) {
-            ItemStack chestplate = player.getInventory().getChestplate();
-            Material chestplateType = chestplate.getType();
-            bonus += plugin.getConfig().getDouble("rolls.armour." + chestplateType.toString() + "." + stat.toString());
-            bonus += getEtBonus(chestplate, stat);
-            bonus += getEnchantmentBonus(chestplate, stat);
-        }
-        // Leggings
-        if (player.getInventory().getLeggings() != null) {
-            ItemStack leggings = player.getInventory().getLeggings();
-            Material leggingsType = leggings.getType();
-            bonus += plugin.getConfig().getDouble("rolls.armour." + leggingsType.toString() + "." + stat.toString());
-            bonus += getEtBonus(leggings, stat);
-            bonus += getEnchantmentBonus(leggings, stat);
-        }
-        // Boots
-        if (player.getInventory().getBoots() != null) {
-            ItemStack boots = player.getInventory().getBoots();
-            Material bootsType = boots.getType();
-            bonus += plugin.getConfig().getDouble("rolls.armour." + bootsType.toString() + "." + stat.toString());
-            bonus += getEtBonus(boots, stat);
-            bonus += getEnchantmentBonus(boots, stat);
-        }
-        return bonus;
-    }
-
-    private double getWeaponBonus(Character character, Stat stat) {
-        double bonus = 0D;
-        Player player = character.getPlayer().getPlayer();
-        Material weaponType = player.getItemInHand().getType();
-        bonus += plugin.getConfig().getDouble("rolls.weapons." + weaponType.toString() + "." + stat.toString());
-        bonus += getEtBonus(player.getItemInHand(), stat);
-        bonus += getEnchantmentBonus(player.getItemInHand(), stat);
-        return bonus;
-    }
-
-    private double getEtBonus(ItemStack item, Stat stat) {
-        double bonus = 0D;
-        if (item.hasItemMeta()) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta.hasLore()) {
-                for (String lore : meta.getLore()) {
-                    if (lore.startsWith("et:")) {
-                        if (StringUtils.countMatches(lore, ":") == 2) {
-                            Stat stat1 = Stat.valueOf(lore.split(":")[1].toUpperCase().replace(' ', '_'));
-                            if (stat1 == stat) {
-                                double etBonus = Double.parseDouble(lore.split(":")[2]);
-                                bonus += etBonus;
-                            }
-                        }
+            String secondHalf;
+            if (rollString.contains("d")) {
+                amount = Integer.parseInt(rollString.split("d")[0]);
+                secondHalf = rollString.split("d")[1];
+            } else {
+                secondHalf = rollString;
+            }
+            if (amount >= 100) {
+                roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "You can't roll that many times!");
+                return -1;
+            }
+            if (rollString.contains("+")) {
+                plus = Integer.parseInt(secondHalf.split("\\+")[1]);
+                maxRoll = Integer.parseInt(secondHalf.split("\\+")[0]);
+            } else if (rollString.contains("-")) {
+                plus = -Integer.parseInt(secondHalf.split("\\-")[1]);
+                maxRoll = Integer.parseInt(secondHalf.split("\\-")[0]);
+            } else {
+                maxRoll = Integer.parseInt(secondHalf);
+            }
+            if (maxRoll <= 0) {
+                roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "You can't roll a zero or negative number!");
+                return -1;
+            }
+            List<Integer> rolls = new ArrayList<>();
+            Random random = new Random();
+            for (int i = 0; i < amount; i++) {
+                rolls.add(random.nextInt(maxRoll) + 1);
+            }
+            String output = ChatColor.GRAY + "(";
+            int rollTotal = 0;
+            for (int roll : rolls) {
+                output += roll;
+                output += "+";
+                rollTotal += roll;
+            }
+            rollTotal += plus;
+            output += plus + ") = " + rollTotal;
+            for (Player player : roller.getWorld().getPlayers()) {
+                if (player.getLocation().distanceSquared(roller.getLocation()) <= 256) {
+                    if (plus > 0) {
+                        player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + roller.getName() + ChatColor.GRAY + "/" + ChatColor.GREEN + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll + "+" + plus);
+                    } else if (plus < 0) {
+                        player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + roller.getName() + ChatColor.GRAY + "/" + ChatColor.GREEN + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll + "" + plus);
+                    } else if (plus == 0) {
+                        player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + roller.getName() + ChatColor.GRAY + "/" + ChatColor.GREEN + roller.getDisplayName() + ChatColor.GRAY + " rolled " + ChatColor.YELLOW + amount + "d" + maxRoll);
                     }
+                    player.sendMessage(plugin.getPrefix() + output);
                 }
             }
+            return rollTotal;
+        } catch (NumberFormatException exception) {
+            roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /roll [roll|[attack|defence] [onhand|offhand] [specialisation]]");
+            return -1;
         }
-        return bonus;
-    }
-
-    private double getEnchantmentBonus(ItemStack item, Stat stat) {
-        double bonus = 0D;
-        if (item.hasItemMeta()) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta.hasEnchants()) {
-                for (Enchantment enchantment : meta.getEnchants().keySet()) {
-                    bonus += meta.getEnchants().get(enchantment) * plugin.getConfig().getDouble("rolls.enchants." + enchantment.getName() + "." + stat.toString());
-                }
-            }
-        }
-        return bonus;
     }
 
 }

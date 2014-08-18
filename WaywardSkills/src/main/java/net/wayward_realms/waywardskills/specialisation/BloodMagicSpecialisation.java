@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardskills.specialisation;
 
 import net.wayward_realms.waywardlib.skills.Specialisation;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class BloodMagicSpecialisation extends SpecialisationBase {
@@ -27,5 +28,13 @@ public class BloodMagicSpecialisation extends SpecialisationBase {
     @Override
     public boolean meetsDefenceRequirement(ItemStack item) {
         return true;
+    }
+
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.getType() == Material.REDSTONE_WIRE) return 6;
+        }
+        return 0;
     }
 }

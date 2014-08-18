@@ -27,6 +27,7 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
         //getCommand("flee").setExecutor(new FleeCommand(this));
         getCommand("rolls").setExecutor(new RollsCommand(this));
         getCommand("roll").setExecutor(new RollCommand(this));
+        getCommand("damage").setExecutor(new DamageCommand(this));
     }
 
     @Override

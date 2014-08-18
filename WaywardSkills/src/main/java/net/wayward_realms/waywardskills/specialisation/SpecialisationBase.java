@@ -47,4 +47,11 @@ public abstract class SpecialisationBase implements Specialisation {
         return false;
     }
 
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        return 0;
+    }
+
+
+
 }

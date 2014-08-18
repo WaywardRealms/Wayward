@@ -25,4 +25,9 @@ public class FisticuffsOffenceSpecialisation extends SpecialisationBase {
         return item == null || item.getType() == Material.AIR;
     }
 
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) return 3;
+        return 0;
+    }
 }

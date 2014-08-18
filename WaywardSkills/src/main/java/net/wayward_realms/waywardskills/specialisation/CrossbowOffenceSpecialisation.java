@@ -23,4 +23,13 @@ public class CrossbowOffenceSpecialisation extends SpecialisationBase {
     public boolean meetsAttackRequirement(ItemStack item) {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("crossbow");
     }
+
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("crossbow")) return 7;
+        }
+        return 0;
+    }
+
 }

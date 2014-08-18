@@ -27,4 +27,12 @@ public class BowOffenceSpecialisation extends SpecialisationBase {
     public boolean meetsAttackRequirement(ItemStack item) {
         return item != null && item.getType() == Material.BOW;
     }
+
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.getType() == Material.BOW) return 6;
+        }
+        return 0;
+    }
 }

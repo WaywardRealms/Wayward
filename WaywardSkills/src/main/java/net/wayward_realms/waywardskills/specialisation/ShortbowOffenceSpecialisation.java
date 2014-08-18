@@ -23,4 +23,12 @@ public class ShortbowOffenceSpecialisation extends SpecialisationBase {
     public boolean meetsAttackRequirement(ItemStack item) {
         return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("shortbow");
     }
+
+    @Override
+    public int getDamageRollBonus(ItemStack item) {
+        if (item != null) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().toLowerCase().contains("shortbow")) return 5;
+        }
+        return 0;
+    }
 }
