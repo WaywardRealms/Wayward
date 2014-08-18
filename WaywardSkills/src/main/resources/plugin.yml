@@ -31,8 +31,8 @@ commands:
         usage: /<command>
         aliases: [specialise, spec]
     level:
-        description: Shows information on your current level
-        usage: /<command>
+        description: Level management commands
+        usage: /<command> [info|setlevel|addexp]
 permissions:
     wayward.skills.command.getscroll:
         description: Allows you to get a scroll for a spell
