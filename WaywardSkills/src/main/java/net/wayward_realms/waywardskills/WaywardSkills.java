@@ -442,7 +442,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             specialisations.put(specialisation.getName().toLowerCase(), specialisation);
         } else {
             for (Specialisation parent : specialisation.getParentSpecialisations()) {
-                specialisations.get(specialisation.getName()).addParentSpecialisation(parent);
+                specialisations.get(specialisation.getName().toLowerCase()).addParentSpecialisation(parent);
             }
         }
         for (Specialisation child : specialisation.getChildSpecialisations()) {
