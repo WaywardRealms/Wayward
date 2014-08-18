@@ -26,6 +26,9 @@ commands:
     damage:
         description: Deals damage based on a specialisation, your weapon and a targets armour
         usage: /<command> [player] [onhand|offhand] [specialisation]
+    calculatedamage:
+        description: Calculates the damage to deal against a given armour rating without dealing it
+        usage: /<command> [armour rating] [onhand|offhand] [specialisation]
 permissions:
     wayward.combat.command.rolls.other:
         description: Allows viewing other peoples rolls

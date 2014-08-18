@@ -622,7 +622,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
 
     @Override
     public String getDamageRoll(Character attacking, Specialisation specialisation, boolean onHand, Character defending) {
-        return "1d8+" + (specialisation.getDamageRollBonus(onHand ? attacking.getEquipment().getOnHandItem() : attacking.getEquipment().getOffHandItem()) - getArmourRating(defending));
+        return getDamageRoll(attacking, specialisation, onHand, getArmourRating(defending));
     }
 
     @Override
@@ -670,6 +670,11 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             return armourBonus;
         }
         return 0;
+    }
+
+    @Override
+    public String getDamageRoll(Character attacking, Specialisation specialisation, boolean onHand, int armourRating) {
+        return "1d8+" + (specialisation.getDamageRollBonus(onHand ? attacking.getEquipment().getOnHandItem() : attacking.getEquipment().getOffHandItem()) - armourRating);
     }
 
     public Inventory getSpecialisationInventory(Specialisation root, Character character) {
