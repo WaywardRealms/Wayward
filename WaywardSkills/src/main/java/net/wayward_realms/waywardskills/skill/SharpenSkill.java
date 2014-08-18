@@ -11,6 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SharpenSkill extends SkillBase {
 
     private WaywardSkills plugin;
@@ -65,7 +68,12 @@ public class SharpenSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Profession")) >= 5;
+        return false;//plugin.getSpecialisationValue(character, plugin.getSpecialisation("Smithing")) >= 5;
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "Not currently obtainable");
     }
 
 }

@@ -12,7 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import static net.wayward_realms.waywardlib.skills.Stat.MAGIC_ATTACK;
@@ -87,6 +89,11 @@ public class FireballSpell extends AttackSpellBase {
     @Override
     public int getStatusEffectChance(StatusEffect statusEffect) {
         return 30;
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "30 Fire Magic points required");
     }
 
 }

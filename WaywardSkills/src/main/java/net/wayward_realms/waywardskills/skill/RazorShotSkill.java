@@ -13,6 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class RazorShotSkill extends AttackSkillBase {
 
     private WaywardSkills plugin;
@@ -87,6 +90,11 @@ public class RazorShotSkill extends AttackSkillBase {
     @Override
     public String getDescription() {
         return "If your ranged attack roll is greater than your opponent's ranged defence roll, 3 damage is dealt to your opponent every turn for 5 turns";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "75 Bow Offence points required");
     }
 
 }

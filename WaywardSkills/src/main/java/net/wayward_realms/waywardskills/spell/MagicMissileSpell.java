@@ -16,6 +16,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MagicMissileSpell extends AttackSpellBase {
 
     private WaywardSkills plugin;
@@ -77,4 +80,10 @@ public class MagicMissileSpell extends AttackSpellBase {
     public String getFightFailManaMessage(Character attacking, Character defending) {
         return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to form a magic missile, but did not have enough mana.";
     }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "3 Magic Offence points required");
+    }
+
 }

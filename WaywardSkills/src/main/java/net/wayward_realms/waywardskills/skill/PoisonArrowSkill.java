@@ -21,7 +21,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PoisonArrowSkill extends AttackSkillBase {
@@ -121,4 +123,10 @@ public class PoisonArrowSkill extends AttackSkillBase {
         statusEffects.put(StatusEffect.POISON, 5);
         return statusEffects;
     }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "9 Bow Offence points required");
+    }
+
 }

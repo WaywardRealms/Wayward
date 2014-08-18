@@ -7,6 +7,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 /**
  * Represents a skill
  */
@@ -121,5 +123,12 @@ public interface Skill {
      * @param coolDownTurns the amount of turns the skill takes to cool down
      */
     public void setCoolDownTurns(int coolDownTurns);
+
+    /**
+     * Gets the information on the specialisations required to unlock the skill
+     *
+     * @return the information on specialisations required
+     */
+    public List<String> getSpecialisationInfo();
 
 }

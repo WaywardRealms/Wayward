@@ -16,6 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ArmourUpSkill extends SkillBase {
 
     private WaywardSkills plugin;
@@ -129,6 +132,11 @@ public class ArmourUpSkill extends SkillBase {
     @Override
     public String getDescription() {
         return "Add 25% to each of your defence rolls";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "3 Shield Defence points required");
     }
 
 }

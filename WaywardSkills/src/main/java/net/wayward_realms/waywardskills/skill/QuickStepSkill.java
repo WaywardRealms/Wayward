@@ -5,10 +5,7 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.BlockIterator;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 public class QuickStepSkill extends SkillBase {
 
@@ -77,6 +76,11 @@ public class QuickStepSkill extends SkillBase {
     @Override
     public boolean canUse(Character character) {
         return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Nimble")) >= 10;
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "10 Nimble points required");
     }
 
 }

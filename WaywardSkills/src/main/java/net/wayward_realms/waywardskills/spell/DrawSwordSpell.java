@@ -17,6 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DrawSwordSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -92,6 +95,11 @@ public class DrawSwordSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "Draw a sword from the material you are standing on";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "10 Sword Magic points required");
     }
 
 }

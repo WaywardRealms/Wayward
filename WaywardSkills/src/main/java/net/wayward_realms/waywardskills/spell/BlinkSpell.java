@@ -13,6 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class BlinkSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -80,4 +83,10 @@ public class BlinkSpell extends SpellBase {
     public String getDescription() {
         return "Attacks miss you for 3 turns";
     }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "6 Illusory Magic points required");
+    }
+
 }

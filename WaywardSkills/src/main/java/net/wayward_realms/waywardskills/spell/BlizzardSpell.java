@@ -23,10 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.BlockIterator;
 
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BlizzardSpell extends AttackSpellBase {
 
@@ -203,6 +200,11 @@ public class BlizzardSpell extends AttackSpellBase {
     @Override
     public int getStatusEffectChance(StatusEffect statusEffect) {
         return 20;
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "50 Water Magic points required");
     }
 
 }

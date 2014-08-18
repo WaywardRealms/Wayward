@@ -35,6 +35,7 @@ public class GetScrollCommand implements CommandExecutor {
                     lore.add(ChatColor.GRAY + "Mana cost: " + spell.getManaCost());
                     lore.add(ChatColor.GRAY + "Cooldown (seconds): " + spell.getCoolDown());
                     lore.add(ChatColor.GRAY + "Cooldown (turns): " + spell.getCoolDownTurns());
+                    lore.addAll(spell.getSpecialisationInfo());
                     meta.setLore(lore);
                     scroll.setItemMeta(meta);
                     ((Player) sender).getInventory().addItem(scroll);

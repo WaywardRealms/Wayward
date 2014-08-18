@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CopyBookSkill extends SkillBase {
 
     private WaywardSkills plugin;
@@ -54,6 +57,11 @@ public class CopyBookSkill extends SkillBase {
     @Override
     public String getDescription() {
         return "Copies a book.";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "5 Scribe points required");
     }
 
 }

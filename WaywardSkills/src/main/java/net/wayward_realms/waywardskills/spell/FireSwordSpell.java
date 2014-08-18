@@ -11,6 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FireSwordSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -59,6 +62,11 @@ public class FireSwordSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "For the next three turns, melee attacks cause 3 burn damage for 3 turns after the attack";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "15 Fire Magic and 25 Sword Magic points required");
     }
 
 }

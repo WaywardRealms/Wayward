@@ -19,10 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BurnSpell extends AttackSpellBase {
 
@@ -98,7 +95,7 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 3;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 5;
     }
 
     @Override
@@ -127,4 +124,10 @@ public class BurnSpell extends AttackSpellBase {
         statusEffects.put(StatusEffect.BURNED, 5);
         return statusEffects;
     }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "5 Fire Magic points required");
+    }
+
 }

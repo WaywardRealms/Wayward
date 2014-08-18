@@ -14,6 +14,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DoomSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -77,5 +80,12 @@ public class DoomSpell extends SpellBase {
 
     @Override
     public String getDescription()  {
-        return "Dooms the opponent, causing them to become unconscious in 5 turns.";}
+        return "Dooms the opponent, causing them to become unconscious in 5 turns.";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "50 Dark Magic points required");
+    }
+
 }

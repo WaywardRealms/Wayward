@@ -15,6 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MultiShotSkill extends AttackSkillBase {
 
     private WaywardSkills plugin;
@@ -106,6 +109,11 @@ public class MultiShotSkill extends AttackSkillBase {
     @Override
     public String getDescription() {
         return "Deals one fifth of the difference between your ranged attack roll and your target's ranged defence roll five times";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "20 Bow Offence points required");
     }
 
 }

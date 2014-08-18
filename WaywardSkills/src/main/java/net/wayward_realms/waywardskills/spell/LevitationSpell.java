@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class LevitationSpell extends SpellBase {
 
     private final WaywardSkills plugin;
@@ -57,6 +60,11 @@ public class LevitationSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "Prevents melee attacks from hitting for 5 turns";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "15 Illusory Magic points required");
     }
 
 }

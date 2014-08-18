@@ -14,6 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class FireBreathSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -65,6 +68,11 @@ public class FireBreathSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "Deal 5 damage to the opposing party for 5 turns";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "3 Fire Magic points required");
     }
 
 }

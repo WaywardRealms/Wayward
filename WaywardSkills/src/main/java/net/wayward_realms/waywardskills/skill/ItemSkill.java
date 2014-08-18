@@ -12,6 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ItemSkill extends SkillBase {
 
     public ItemSkill() {
@@ -88,6 +91,11 @@ public class ItemSkill extends SkillBase {
     @Override
     public String getDescription() {
         return "Uses an item in battle";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "No points required");
     }
 
 }

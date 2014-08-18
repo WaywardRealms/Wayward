@@ -16,6 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ArrowSkill extends AttackSkillBase {
 
     private WaywardSkills plugin;
@@ -98,6 +101,11 @@ public class ArrowSkill extends AttackSkillBase {
     @Override
     public String getDescription() {
         return "Deal damage equal to the difference between your ranged attack roll and your target's ranged defence roll";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "3 Bow Offence points required");
     }
 
 }

@@ -18,6 +18,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static net.wayward_realms.waywardlib.util.lineofsight.LineOfSightUtils.getTargetBlock;
 
 public class OvergrowthSpell extends AttackSpellBase {
@@ -100,6 +103,11 @@ public class OvergrowthSpell extends AttackSpellBase {
     @Override
     public String getDescription() {
         return "Deals damage equal to 3 times the difference between your magic attack roll and target's magic defence roll to up to 3 targets, and prevents them from making one move";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "50 Nature Magic points required");
     }
 
 }

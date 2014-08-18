@@ -17,6 +17,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SpinningSweepSkill extends AttackSkillBase {
 
     private WaywardSkills plugin;
@@ -111,4 +114,10 @@ public class SpinningSweepSkill extends AttackSkillBase {
     public String getDescription() {
         return "Deal damage equal to half the difference between your melee attack roll and your opponent's melee defence roll for each member of the opposing party";
     }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "3 Sword Offence points required");
+    }
+
 }

@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BlizzardSwordSpell extends SpellBase {
@@ -71,6 +72,11 @@ public class BlizzardSwordSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "Add 10 to your melee attack roll for 3 turns";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "50 Sword Magic and 20 Water Magic points required");
     }
 
 }

@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ShieldBarrierSpell extends SpellBase {
 
     private WaywardSkills plugin;
@@ -98,6 +101,11 @@ public class ShieldBarrierSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "Prevents your party taking damage for 1 turn";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "45 Shielding Magic points required");
     }
 
 }

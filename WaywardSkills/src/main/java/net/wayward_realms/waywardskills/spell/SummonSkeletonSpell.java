@@ -16,6 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SummonSkeletonSpell extends AttackSpellBase {
 
     private WaywardSkills plugin;
@@ -85,6 +88,11 @@ public class SummonSkeletonSpell extends AttackSpellBase {
     @Override
     public String getDescription() {
         return "Allows you to deal the difference between your magic attack roll and your opponent's ranged defence roll for 3 turns in addition to taking another action";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "30 Summoning Magic points required");
     }
 
 }

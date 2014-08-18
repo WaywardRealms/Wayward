@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ExplosiveSpellSpell extends AttackSpellBase {
 
     private WaywardSkills plugin;
@@ -79,4 +82,10 @@ public class ExplosiveSpellSpell extends AttackSpellBase {
     public String getDescription() {
         return "Deal damage equal to five times the difference between your magic attack roll and your opponent's magic defence roll";
     }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "75 Fire Magic points required");
+    }
+
 }

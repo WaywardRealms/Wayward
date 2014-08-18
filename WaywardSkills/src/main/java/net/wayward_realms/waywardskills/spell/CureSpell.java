@@ -16,7 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CureSpell extends SpellBase {
@@ -105,6 +107,11 @@ public class CureSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "Restore HP equal to 25% of your magic defence stat to one target";
+    }
+
+    @Override
+    public List<String> getSpecialisationInfo() {
+        return Arrays.asList(ChatColor.GRAY + "6 Regenerative Magic points required");
     }
 
 }
