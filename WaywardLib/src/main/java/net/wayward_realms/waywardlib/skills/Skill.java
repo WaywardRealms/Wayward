@@ -7,8 +7,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 /**
  * Represents a skill
  */
@@ -129,6 +127,6 @@ public interface Skill {
      *
      * @return the information on specialisations required
      */
-    public List<String> getSpecialisationInfo();
+    public String getSpecialisationInfo();
 
 }

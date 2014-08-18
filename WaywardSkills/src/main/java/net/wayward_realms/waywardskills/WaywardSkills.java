@@ -366,7 +366,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         int value = characterConfig.getInt("specialisations." + specialisation.getName());
         if (!specialisation.getParentSpecialisations().isEmpty()) {
             for (Specialisation parent : specialisation.getParentSpecialisations()) {
-                value += getSpecialisationValue(character, parent) / 10;
+                value += getSpecialisationValue(character, parent) / 5;
             }
         }
         return value;
@@ -395,7 +395,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         int value = petConfig.getInt("specialisations." + specialisation.getName());
         if (!specialisation.getParentSpecialisations().isEmpty()) {
             for (Specialisation parent : specialisation.getParentSpecialisations()) {
-                value += getSpecialisationValue(pet, parent) / 10;
+                value += getSpecialisationValue(pet, parent) / 5;
             }
         }
         return value;
