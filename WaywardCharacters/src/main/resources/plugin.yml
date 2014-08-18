@@ -25,6 +25,9 @@ commands:
     party:
         description: Parent command for party commands
         usage: /<command> [invite|join|leave|members|disband]
+    freezehealth:
+        description: Freezes health regen
+        usage: /<command>
 permissions:
     wayward.characters.createmasheekwell:
         default: op
