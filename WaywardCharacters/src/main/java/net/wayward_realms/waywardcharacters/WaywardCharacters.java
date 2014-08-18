@@ -45,6 +45,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         getCommand("togglethirst").setExecutor(new ToggleThirstCommand(this));
         getCommand("togglehunger").setExecutor(new ToggleHungerCommand(this));
         getCommand("party").setExecutor(new PartyCommand(this));
+        getCommand("freezehealth").setExecutor(new FreezeHealthCommand(this));
         setupRegen();
         setupHungerSlowdown();
         setupPartyCleanup();
@@ -81,21 +82,25 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                         if (manaRegen > 0) {
                             player.sendMessage(getPrefix() + ChatColor.GREEN + "Mana regenerated: " + manaRegen);
                         }
-                        if (player.getFoodLevel() >= 15) {
-                            double healthRegen;
-                            if (player.isSleeping()) {
-                                healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()) - character.getHealth();
-                                character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()));
-                            } else {
-                                healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()) - character.getHealth();
-                                character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()));
+                        if (!isHealthFrozen(player)) {
+                            if (player.getFoodLevel() >= 15) {
+                                double healthRegen;
+                                if (player.isSleeping()) {
+                                    healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()) - character.getHealth();
+                                    character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 5), character.getMaxHealth()));
+                                } else {
+                                    healthRegen = Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()) - character.getHealth();
+                                    character.setHealth(Math.min(character.getHealth() + (character.getMaxHealth() / 20), character.getMaxHealth()));
+                                }
+                                if (healthRegen > 0) {
+                                    player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + (Math.round(healthRegen * 100D) / 100D));
+                                }
                             }
-                            if (healthRegen > 0) {
-                                player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + (Math.round(healthRegen * 100D) / 100D));
-                            }
+                            player.setMaxHealth(character.getMaxHealth());
+                            player.setHealth(Math.max(character.getHealth(), 0));
+                        } else {
+                            player.sendMessage(ChatColor.RED + "Health regen is disabled.");
                         }
-                        player.setMaxHealth(character.getMaxHealth());
-                        player.setHealth(Math.max(character.getHealth(), 0));
                     }
                 }
             }
@@ -630,17 +635,36 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public boolean isHungerDisabled(OfflinePlayer player) {
         File hungerDisabledFile = new File(getDataFolder(), "hunger-disabled.yml");
         YamlConfiguration hungerDisabledConfig = YamlConfiguration.loadConfiguration(hungerDisabledFile);
-        return hungerDisabledConfig.getStringList("disabled").contains(player.getName());
+        return hungerDisabledConfig.getStringList("disabled").contains(player.getUniqueId().toString());
     }
 
     public void setHungerDisabled(OfflinePlayer player, boolean disabled) {
         File hungerDisabledFile = new File(getDataFolder(), "hunger-disabled.yml");
         YamlConfiguration hungerDisabledConfig = YamlConfiguration.loadConfiguration(hungerDisabledFile);
         List<String> hungerDisabled = hungerDisabledConfig.getStringList("disabled");
-        if (disabled) hungerDisabled.add(player.getName()); else hungerDisabled.remove(player.getName());
+        if (disabled) hungerDisabled.add(player.getUniqueId().toString()); else hungerDisabled.remove(player.getUniqueId().toString());
         hungerDisabledConfig.set("disabled", hungerDisabled);
         try {
             hungerDisabledConfig.save(hungerDisabledFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public boolean isHealthFrozen(OfflinePlayer player) {
+        File healthFrozenFile = new File(getDataFolder(), "health-frozen.yml");
+        YamlConfiguration healthFrozenConfig = YamlConfiguration.loadConfiguration(healthFrozenFile);
+        return healthFrozenConfig.getStringList("frozen").contains(player.getUniqueId().toString());
+    }
+
+    public void setHealthFrozen(OfflinePlayer player, boolean frozen) {
+        File healthFrozenFile = new File(getDataFolder(), "health-frozen.yml");
+        YamlConfiguration healthFrozenConfig = YamlConfiguration.loadConfiguration(healthFrozenFile);
+        List<String> hungerDisabled = healthFrozenConfig.getStringList("frozen");
+        if (frozen) hungerDisabled.add(player.getUniqueId().toString()); else hungerDisabled.remove(player.getUniqueId().toString());
+        healthFrozenConfig.set("frozen", hungerDisabled);
+        try {
+            healthFrozenConfig.save(healthFrozenFile);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
