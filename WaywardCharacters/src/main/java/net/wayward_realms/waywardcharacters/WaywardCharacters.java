@@ -572,14 +572,14 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public boolean isThirstDisabled(OfflinePlayer player) {
         File thirstDisabledFile = new File(getDataFolder(), "thirst-disabled.yml");
         YamlConfiguration thirstDisabledConfig = YamlConfiguration.loadConfiguration(thirstDisabledFile);
-        return thirstDisabledConfig.getStringList("disabled").contains(player.getName());
+        return thirstDisabledConfig.getStringList("disabled").contains(player.getUniqueId().toString());
     }
 
     public void setThirstDisabled(OfflinePlayer player, boolean disabled) {
         File thirstDisabledFile = new File(getDataFolder(), "thirst-disabled.yml");
         YamlConfiguration thirstDisabledConfig = YamlConfiguration.loadConfiguration(thirstDisabledFile);
         List<String> thirstDisabled = thirstDisabledConfig.getStringList("disabled");
-        if (disabled) thirstDisabled.add(player.getName()); else thirstDisabled.remove(player.getName());
+        if (disabled) thirstDisabled.add(player.getUniqueId().toString()); else thirstDisabled.remove(player.getUniqueId().toString());
         thirstDisabledConfig.set("disabled", thirstDisabled);
         try {
             thirstDisabledConfig.save(thirstDisabledFile);
