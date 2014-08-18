@@ -438,7 +438,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     }
 
     private void addSpecialisation(Specialisation specialisation) {
-        if (!specialisations.containsKey(specialisation.getName())) {
+        if (!specialisations.containsKey(specialisation.getName().toLowerCase())) {
             specialisations.put(specialisation.getName().toLowerCase(), specialisation);
         } else {
             for (Specialisation parent : specialisation.getParentSpecialisations()) {
