@@ -3,6 +3,7 @@ package net.wayward_realms.waywardcombat;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Specialisation;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,16 +38,18 @@ public class DamageCommand implements CommandExecutor {
                             String damageRollString = skillsPlugin.getDamageRoll(characterPlugin.getActiveCharacter((Player) sender), specialisation, true, characterPlugin.getActiveCharacter(defendingPlayer));
                             int damageRoll = plugin.getRollsManager().roll((Player) sender, damageRollString);
                             defendingPlayer.damage(damageRoll);
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Dealt " + damageRoll + " damage");
                         } else if (args[2].equalsIgnoreCase("offhand") || args[1].equalsIgnoreCase("off")) {
                             String damageRollString = skillsPlugin.getDamageRoll(characterPlugin.getActiveCharacter((Player) sender), specialisation, false, characterPlugin.getActiveCharacter(defendingPlayer));
                             int damageRoll = plugin.getRollsManager().roll((Player) sender, damageRollString);
                             defendingPlayer.damage(damageRoll);
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Dealt " + damageRoll + " damage");
                         }
                     }
                 }
             }
         }
-        return false;
+        return true;
     }
 
 }
