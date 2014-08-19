@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.skills.Specialisation;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +21,7 @@ public class InventoryClickListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onRollInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getTitle().equalsIgnoreCase("Hand")) {
             event.setCancelled(true);
             if (event.getCurrentItem() != null
@@ -36,7 +37,7 @@ public class InventoryClickListener implements Listener {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
                     event.getWhoClicked().closeInventory();
-                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory(skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation", skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
                 }
             } else if (event.getCurrentItem() != null
                     && event.getCurrentItem().hasItemMeta()
@@ -51,7 +52,7 @@ public class InventoryClickListener implements Listener {
                     CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
                     event.getWhoClicked().closeInventory();
-                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory(skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation", skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
                 }
             }
         } else if (event.getInventory().getTitle().equalsIgnoreCase("Specialisation")) {
@@ -74,7 +75,145 @@ public class InventoryClickListener implements Listener {
                             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                             Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
                             event.getWhoClicked().closeInventory();
-                            event.getWhoClicked().openInventory(plugin.getSpecialisationInventory(specialisation, character));
+                            event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation", specialisation, character));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDamageInventoryClick(InventoryClickEvent event) {
+        if (event.getInventory().getTitle().equalsIgnoreCase("Hand [d]")) {
+            event.setCancelled(true);
+            if (event.getCurrentItem() != null
+                    && event.getCurrentItem().hasItemMeta()
+                    && event.getCurrentItem().getItemMeta().hasDisplayName()
+                    && event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Onhand")) {
+                DamageContext context = plugin.getDamageContext((Player) event.getWhoClicked());
+                context.setOnHand(true);
+                plugin.setDamageContext((Player) event.getWhoClicked(), context);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                if (characterPluginProvider != null && skillsPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                    event.getWhoClicked().closeInventory();
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation [d]", skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
+                }
+            } else if (event.getCurrentItem() != null
+                    && event.getCurrentItem().hasItemMeta()
+                    && event.getCurrentItem().getItemMeta().hasDisplayName()
+                    && event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Offhand")) {
+                DamageContext context = plugin.getDamageContext((Player) event.getWhoClicked());
+                context.setOnHand(false);
+                plugin.setDamageContext((Player) event.getWhoClicked(), context);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                if (characterPluginProvider != null && skillsPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                    event.getWhoClicked().closeInventory();
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation [d]", skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
+                }
+            }
+        } else if (event.getInventory().getTitle().equalsIgnoreCase("Specialisation [d]")) {
+            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+            if (skillsPluginProvider != null) {
+                SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                event.setCancelled(true);
+                if (event.getCurrentItem().getType() == Material.WOOL) {
+                    if (event.getCurrentItem().getDurability() == (short) 5) {
+                        Specialisation specialisation = skillsPlugin.getSpecialisation(event.getCurrentItem().getItemMeta().getDisplayName());
+                        DamageContext context = plugin.getDamageContext((Player) event.getWhoClicked());
+                        context.setSpecialisation(specialisation);
+                        int damage = plugin.roll((Player) event.getWhoClicked(), context.getRoll());
+                        context.getDefending().getPlayer().getPlayer().damage(damage);
+                        context.getDefending().setHealth(context.getDefending().getPlayer().getPlayer().getHealth());
+                        for (Player player : event.getWhoClicked().getWorld().getPlayers()) {
+                            if (player.getLocation().distanceSquared(event.getWhoClicked().getLocation()) <= 64) {
+                                player.sendMessage(ChatColor.YELLOW + ((Player) event.getWhoClicked()).getDisplayName() + " dealt " + damage + " damage to " + (context.getDefending().isNameHidden() ? ChatColor.MAGIC : "") + context.getDefending().getName());
+                            }
+                        }
+                        plugin.setDamageContext((Player) event.getWhoClicked(), null);
+                        event.getWhoClicked().closeInventory();
+                    } else {
+                        Specialisation specialisation = skillsPlugin.getSpecialisation(event.getCurrentItem().getItemMeta().getDisplayName());
+                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                        if (characterPluginProvider != null) {
+                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                            event.getWhoClicked().closeInventory();
+                            event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation [d]", specialisation, character));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDamageCalculationInventoryClick(InventoryClickEvent event) {
+        if (event.getInventory().getTitle().equalsIgnoreCase("Hand [dc]")) {
+            event.setCancelled(true);
+            if (event.getCurrentItem() != null
+                    && event.getCurrentItem().hasItemMeta()
+                    && event.getCurrentItem().getItemMeta().hasDisplayName()
+                    && event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Onhand")) {
+                DamageCalculationContext context = plugin.getDamageCalculationContext((Player) event.getWhoClicked());
+                context.setOnHand(true);
+                plugin.setDamageCalculationContext((Player) event.getWhoClicked(), context);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                if (characterPluginProvider != null && skillsPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                    event.getWhoClicked().closeInventory();
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation [dc]", skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
+                }
+            } else if (event.getCurrentItem() != null
+                    && event.getCurrentItem().hasItemMeta()
+                    && event.getCurrentItem().getItemMeta().hasDisplayName()
+                    && event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Offhand")) {
+                DamageCalculationContext context = plugin.getDamageCalculationContext((Player) event.getWhoClicked());
+                context.setOnHand(false);
+                plugin.setDamageCalculationContext((Player) event.getWhoClicked(), context);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                if (characterPluginProvider != null && skillsPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                    event.getWhoClicked().closeInventory();
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation [dc]", skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
+                }
+            }
+        } else if (event.getInventory().getTitle().equalsIgnoreCase("Specialisation [dc]")) {
+            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+            if (skillsPluginProvider != null) {
+                SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                event.setCancelled(true);
+                if (event.getCurrentItem().getType() == Material.WOOL) {
+                    if (event.getCurrentItem().getDurability() == (short) 5) {
+                        Specialisation specialisation = skillsPlugin.getSpecialisation(event.getCurrentItem().getItemMeta().getDisplayName());
+                        DamageCalculationContext context = plugin.getDamageCalculationContext((Player) event.getWhoClicked());
+                        context.setSpecialisation(specialisation);
+                        int damage = plugin.roll((Player) event.getWhoClicked(), context.getRoll());
+                        for (Player player : event.getWhoClicked().getWorld().getPlayers()) {
+                            if (player.getLocation().distanceSquared(event.getWhoClicked().getLocation()) <= 64) {
+                                player.sendMessage(ChatColor.YELLOW + ((Player) event.getWhoClicked()).getDisplayName() + " dealt " + damage + " damage");
+                            }
+                        }
+                        plugin.setDamageCalculationContext((Player) event.getWhoClicked(), null);
+                        event.getWhoClicked().closeInventory();
+                    } else {
+                        Specialisation specialisation = skillsPlugin.getSpecialisation(event.getCurrentItem().getItemMeta().getDisplayName());
+                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                        if (characterPluginProvider != null) {
+                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                            event.getWhoClicked().closeInventory();
+                            event.getWhoClicked().openInventory(plugin.getSpecialisationInventory("Specialisation [dc]", specialisation, character));
                         }
                     }
                 }

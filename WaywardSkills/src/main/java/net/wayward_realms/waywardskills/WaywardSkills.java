@@ -630,7 +630,7 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
         OfflinePlayer offlinePlayer = character.getPlayer();
         if (offlinePlayer.isOnline()) {
             Player player = offlinePlayer.getPlayer();
-            int armourBonus = 100;
+            int armourBonus = 0;
             if (player.getInventory().getHelmet() != null) {
                 switch (player.getInventory().getHelmet().getType()) {
                     case LEATHER_HELMET: armourBonus += 1; break;

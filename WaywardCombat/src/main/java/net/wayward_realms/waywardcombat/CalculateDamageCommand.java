@@ -1,8 +1,6 @@
 package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Specialisation;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,37 +19,20 @@ public class CalculateDamageCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (characterPluginProvider != null && skillsPluginProvider != null) {
+        if (characterPluginProvider != null) {
             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            if (args.length > 2) {
+            if (args.length > 0) {
                 int armourRating;
                 try {
                     armourRating = Integer.parseInt(args[0]);
                 } catch (NumberFormatException exception) {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Event character armour rating must be an integer.");
                     return true;
                 }
-                StringBuilder builder = new StringBuilder();
-                for (int i = 2; i < args.length; i++) {
-                    builder.append(args[i]).append(" ");
-                }
-                Specialisation specialisation = skillsPlugin.getSpecialisation(builder.toString());
-                if (specialisation != null) {
-                    if (args[2].equalsIgnoreCase("onhand") || args[1].equalsIgnoreCase("on")) {
-                        String damageRollString = skillsPlugin.getDamageRoll(characterPlugin.getActiveCharacter((Player) sender), specialisation, true, armourRating);
-                        int damageRoll = plugin.getRollsManager().roll((Player) sender, damageRollString);
-                        for (Player player : ((Player) sender).getWorld().getPlayers()) {
-                            if (player.getLocation().distanceSquared(((Player) sender).getLocation()) <= 64) player.sendMessage(ChatColor.GREEN + player.getDisplayName() + "'s damage calculation resulted in " + damageRoll);
-                        }
-                    } else if (args[2].equalsIgnoreCase("offhand") || args[1].equalsIgnoreCase("off")) {
-                        String damageRollString = skillsPlugin.getDamageRoll(characterPlugin.getActiveCharacter((Player) sender), specialisation, false, armourRating);
-                        int damageRoll = plugin.getRollsManager().roll((Player) sender, damageRollString);
-                        for (Player player : ((Player) sender).getWorld().getPlayers()) {
-                            if (player.getLocation().distanceSquared(((Player) sender).getLocation()) <= 64) player.sendMessage(ChatColor.GREEN + player.getDisplayName() + "'s damage calculation resulted in " + damageRoll);
-                        }
-                    }
-                }
+                plugin.setDamageCalculationContext((Player) sender, new DamageCalculationContext(characterPlugin.getActiveCharacter((Player) sender), armourRating));
+                ((Player) sender).openInventory(plugin.getHandSelectionInventory("Hand [dc]"));
+            } else {
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify the armour rating of the event character you are attacking.");
             }
         }
         return true;

@@ -32,6 +32,8 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
     @Override
     public void onEnable() {
         ConfigurationSerialization.registerClass(RollContext.class);
+        ConfigurationSerialization.registerClass(DamageContext.class);
+        ConfigurationSerialization.registerClass(DamageCalculationContext.class);
         saveDefaultConfig();
         rollsManager = new RollsManager(this);
         registerListeners(new InventoryClickListener(this));
@@ -103,8 +105,8 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
         return rollsManager;
     }
 
-    public Inventory getHandSelectionInventory() {
-        Inventory handInventory = getServer().createInventory(null, 9, "Hand");
+    public Inventory getHandSelectionInventory(String title) {
+        Inventory handInventory = getServer().createInventory(null, 9, title);
         ItemStack onHandItem = new ItemStack(Material.WOOL);
         ItemMeta onHandMeta = onHandItem.getItemMeta();
         onHandMeta.setDisplayName("Onhand");
@@ -118,11 +120,11 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
         return handInventory;
     }
 
-    public Inventory getSpecialisationInventory(Specialisation root, Character character) {
+    public Inventory getSpecialisationInventory(String title, Specialisation root, Character character) {
         RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
         if (skillsPluginProvider != null) {
             SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            Inventory inventory = getServer().createInventory(null, 45, "Specialisation");
+            Inventory inventory = getServer().createInventory(null, 45, title);
             ItemMeta meta;
             List<String> lore;
             int i = 0;
@@ -173,6 +175,46 @@ public class WaywardCombat extends JavaPlugin implements CombatPlugin {
 
     public void setRollContext(OfflinePlayer player, RollContext context) {
         File contextDirectory = new File(getDataFolder(), "roll-contexts");
+        File contextFile = new File(contextDirectory, player.getUniqueId().toString() + ".yml");
+        if (context != null) {
+            YamlConfiguration contextConfiguration = YamlConfiguration.loadConfiguration(contextFile);
+            contextConfiguration.set("context", context);
+            try {
+                contextConfiguration.save(contextFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            contextFile.delete();
+        }
+    }
+
+    public DamageContext getDamageContext(OfflinePlayer player) {
+        return (DamageContext) YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "damage-contexts"), player.getUniqueId().toString() + ".yml")).get("context");
+    }
+
+    public void setDamageContext(OfflinePlayer player, DamageContext context) {
+        File contextDirectory = new File(getDataFolder(), "damage-contexts");
+        File contextFile = new File(contextDirectory, player.getUniqueId().toString() + ".yml");
+        if (context != null) {
+            YamlConfiguration contextConfiguration = YamlConfiguration.loadConfiguration(contextFile);
+            contextConfiguration.set("context", context);
+            try {
+                contextConfiguration.save(contextFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            contextFile.delete();
+        }
+    }
+
+    public DamageCalculationContext getDamageCalculationContext(OfflinePlayer player) {
+        return (DamageCalculationContext) YamlConfiguration.loadConfiguration(new File(new File(getDataFolder(), "damage-calculation-contexts"), player.getUniqueId().toString() + ".yml")).get("context");
+    }
+
+    public void setDamageCalculationContext(OfflinePlayer player, DamageCalculationContext context) {
+        File contextDirectory = new File(getDataFolder(), "damage-calculation-contexts");
         File contextFile = new File(contextDirectory, player.getUniqueId().toString() + ".yml");
         if (context != null) {
             YamlConfiguration contextConfiguration = YamlConfiguration.loadConfiguration(contextFile);
