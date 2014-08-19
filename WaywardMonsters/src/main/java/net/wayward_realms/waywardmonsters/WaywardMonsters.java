@@ -40,6 +40,7 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
                 new TrainingDummyPlayerInteractListener(this), new TrainingDummySignChangeListener(this)
                 );
         getCommand("bleed").setExecutor(new BleedCommand(this));
+        getCommand("entitylevel").setExecutor(new EntityLevelCommand(this));
         bleedTask = new BleedTask(this);
         getServer().getScheduler().runTaskTimer(this, bleedTask, 10L, 10L);
     }
