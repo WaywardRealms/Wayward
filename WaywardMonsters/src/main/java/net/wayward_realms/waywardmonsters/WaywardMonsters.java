@@ -12,13 +12,11 @@ import net.wayward_realms.waywardmonsters.target.TargetProjectileHitListener;
 import net.wayward_realms.waywardmonsters.target.TargetSignChangeListener;
 import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummyPlayerInteractListener;
 import net.wayward_realms.waywardmonsters.trainingdummy.TrainingDummySignChangeListener;
-import org.bukkit.Location;
+import org.bukkit.Chunk;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Collection;
 
 import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
 
@@ -42,8 +40,7 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
                 new TrainingDummyPlayerInteractListener(this), new TrainingDummySignChangeListener(this)
                 );
         getCommand("bleed").setExecutor(new BleedCommand(this));
-        getCommand("zeropoint").setExecutor(new ZeroPointCommand(this));
-        getCommand("viewzeropoints").setExecutor(new ViewZeroPointsCommand(this));
+        getCommand("entitylevel").setExecutor(new EntityLevelCommand(this));
         bleedTask = new BleedTask(this);
         getServer().getScheduler().runTaskTimer(this, bleedTask, 10L, 10L);
     }
@@ -51,21 +48,6 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
     @Override
     public void onDisable() {
         saveState();
-    }
-
-    @Override
-    public Collection<Location> getZeroPoints() {
-        return entityLevelManager.getZeroPoints();
-    }
-
-    @Override
-    public void addZeroPoint(Location zeroPoint) {
-        entityLevelManager.addZeroPoint(zeroPoint);
-    }
-
-    @Override
-    public void removeZeroPoint(Location zeroPoint) {
-        entityLevelManager.removeZeroPoint(zeroPoint);
     }
 
     @Override
@@ -103,6 +85,14 @@ public class WaywardMonsters extends JavaPlugin implements MonstersPlugin {
 
     public void bleed(LivingEntity entity) {
         bleedTask.add(entity);
+    }
+
+    public int getChunkEntityLevel(Chunk chunk) {
+        return getEntityLevelManager().getChunkEntityLevel(chunk);
+    }
+
+    public void setChunkEntityLevel(Chunk chunk, int level, int radius) {
+        getEntityLevelManager().setChunkEntityLevel(chunk, level, radius);
     }
 
 }
