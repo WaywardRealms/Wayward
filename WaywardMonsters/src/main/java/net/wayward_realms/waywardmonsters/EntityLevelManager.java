@@ -1,13 +1,8 @@
 package net.wayward_realms.waywardmonsters;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import org.bukkit.Chunk;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.util.math.MathUtils;
-import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -27,7 +22,7 @@ public class EntityLevelManager {
 
     public EntityLevelManager(WaywardMonsters plugin) {
         this.plugin = plugin;
-        levelMapFile = new File(plugin.getDataFolder(), "level-map");
+        levelMapFile = new File(plugin.getDataFolder(), "level-map.png");
         if (levelMapFile.exists()) {
             try {
                 levelMap = ImageIO.read(levelMapFile);
@@ -65,11 +60,8 @@ public class EntityLevelManager {
         int y = chunk.getZ() - yOrigin;
         if (x >= 0 && x < levelMap.getWidth() && y >= 0 && y < levelMap.getHeight()) {
             Graphics2D graphics = levelMap.createGraphics();
-            for (int i = radius; i > 0; i--) {
-                int c = level - (int) Math.round(((double) i / (double) radius) * (double) level);
-                graphics.setColor(new Color(c, c, c));
-                graphics.fillRect(x - i, y - i, i * 2, i * 2);
-            }
+            graphics.setColor(new Color(level, level, level));
+            graphics.fillOval(x - radius, y - radius, radius, radius);
             graphics.dispose();
             try {
                 ImageIO.write(levelMap, "png", levelMapFile);
