@@ -61,7 +61,7 @@ public class EntityLevelManager {
         if (x >= 0 && x < levelMap.getWidth() && y >= 0 && y < levelMap.getHeight()) {
             Graphics2D graphics = levelMap.createGraphics();
             graphics.setColor(new Color(level, level, level));
-            graphics.fillOval(x - radius, y - radius, radius, radius);
+            graphics.fillOval(x - radius, y - radius, radius * 2, radius * 2);
             graphics.dispose();
             try {
                 ImageIO.write(levelMap, "png", levelMapFile);
