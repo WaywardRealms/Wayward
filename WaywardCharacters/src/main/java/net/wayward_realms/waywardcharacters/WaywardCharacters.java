@@ -112,6 +112,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                                     player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + (Math.round(healthRegen * 100D) / 100D));
                                 }
                             }
+                            if (character.getHealth() > character.getMaxHealth()) character.setHealth(character.getMaxHealth());
                             player.setMaxHealth(character.getMaxHealth());
                             player.setHealth(Math.max(character.getHealth(), 0));
                         } else {
