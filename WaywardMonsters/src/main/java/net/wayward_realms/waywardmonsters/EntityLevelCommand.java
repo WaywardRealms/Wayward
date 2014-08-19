@@ -26,7 +26,7 @@ public class EntityLevelCommand implements CommandExecutor {
                                 int level = Integer.parseInt(args[1]);
                                 int radius = Integer.parseInt(args[2]);
                                 plugin.setChunkEntityLevel(((Player) sender).getLocation().getChunk(), level, radius);
-                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Chunk's entity level set to " + level + ", fading over " + radius + " chunks.");
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Chunk's entity level set to " + level + ", radius " + radius + " chunks.");
                             } catch (NumberFormatException exception) {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [level] [radius]");
                             }
