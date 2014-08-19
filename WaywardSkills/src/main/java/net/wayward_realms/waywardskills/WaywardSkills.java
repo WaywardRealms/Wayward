@@ -76,30 +76,36 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
     private void convertFromClasses() {
         getLogger().warning("Conversion from old class levels has not yet taken place!");
         getLogger().info("Starting conversion...");
-        long startTime = System.currentTimeMillis();
-        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-        if (characterPluginProvider != null && classesPluginProvider != null) {
-            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-            int i = 1;
-            while (characterPlugin.getCharacter(i) != null) {
-                Character character = characterPlugin.getCharacter(i);
-                int experience = 0;
-                for (net.wayward_realms.waywardlib.classes.Class clazz : classesPlugin.getClasses()) {
-                    experience += classesPlugin.getTotalExperience(character, clazz);
+        getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                long startTime = System.currentTimeMillis();
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                if (characterPluginProvider != null && classesPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                    int i = 1;
+                    while (characterPlugin.getCharacter(i) != null) {
+                        Character character = characterPlugin.getCharacter(i);
+                        int experience = 0;
+                        for (net.wayward_realms.waywardlib.classes.Class clazz : classesPlugin.getClasses()) {
+                            experience += classesPlugin.getTotalExperience(character, clazz);
+                        }
+                        setTotalExperience(character, experience);
+                        getLogger().info("Converted [" + character.getId() + "] " + character.getName() + " to new experience.");
+                        i++;
+                    }
+                    i--;
+                    getConfig().set("conversion-completed", true);
+                    saveConfig();
+                    getLogger().info("Converted " + i + " characters in " + (System.currentTimeMillis() - startTime) + "ms");
+                } else {
+                    getLogger().info("Characters and/or classes plugin not found. Waiting for next plugin load...");
                 }
-                setTotalExperience(character, experience);
-                getLogger().info("Converted [" + character.getId() + "] " + character.getName() + " to new experience.");
-                i++;
             }
-            i--;
-            getConfig().set("conversion-completed", true);
-            saveConfig();
-            getLogger().info("Converted " + i + " characters in " + (System.currentTimeMillis() - startTime) + "ms");
-        } else {
-            getLogger().info("Characters and/or classes plugin not found. Waiting for next plugin load...");
-        }
+        });
+
     }
 
     @Override
