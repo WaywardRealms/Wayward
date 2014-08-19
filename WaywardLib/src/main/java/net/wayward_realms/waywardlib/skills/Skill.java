@@ -95,20 +95,6 @@ public interface Skill {
     public String getDescription();
 
     /**
-     * Gets the type of skill
-     *
-     * @return the type
-     */
-    public SkillType getType();
-
-    /**
-     * Sets the type of skill
-     *
-     * @param type the type to set
-     */
-    public void setType(SkillType type);
-
-    /**
      * Gets the cooldown for the skill
      *
      * @return the cooldown for the skill, in seconds
@@ -135,5 +121,12 @@ public interface Skill {
      * @param coolDownTurns the amount of turns the skill takes to cool down
      */
     public void setCoolDownTurns(int coolDownTurns);
+
+    /**
+     * Gets the information on the specialisations required to unlock the skill
+     *
+     * @return the information on specialisations required
+     */
+    public String getSpecialisationInfo();
 
 }

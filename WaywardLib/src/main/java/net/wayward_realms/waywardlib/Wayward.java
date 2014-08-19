@@ -5,7 +5,6 @@ import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.death.DeathPlugin;
-import net.wayward_realms.waywardlib.donation.DonationPlugin;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
@@ -22,7 +21,12 @@ import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableChunk;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import net.wayward_realms.waywardlib.worldgen.WorldgenPlugin;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -65,9 +69,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     if (plugin instanceof DeathPlugin) {
                         servicesManager.register(DeathPlugin.class, (DeathPlugin) plugin, plugin, ServicePriority.Normal);
                     }
-                    if (plugin instanceof DonationPlugin) {
-                        servicesManager.register(DonationPlugin.class, (DonationPlugin) plugin, plugin, ServicePriority.Normal);
-                    }
                     if (plugin instanceof EconomyPlugin) {
                         servicesManager.register(EconomyPlugin.class, (EconomyPlugin) plugin, plugin, ServicePriority.Normal);
                     }
@@ -108,6 +109,18 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                 }
             }
         }, this);
+        getCommand("refreshprofile").setExecutor(new CommandExecutor() {
+            @Override
+            public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+                if (sender instanceof Player) {
+                    PlayerNamePlateUtils.invalidate((Player) sender);
+                    sender.sendMessage(getPrefix() + ChatColor.GREEN + "Your profile has been invalidated, it will be re-requested from Mojang's servers as needed.");
+                } else {
+                    sender.sendMessage(getPrefix() + ChatColor.RED + "You cannot attempt to refresh your profile if you are not a player.");
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -120,10 +133,10 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         if (loadPluginState(CharacterPlugin.class)) {
             if (loadPluginState(ClassesPlugin.class)) {
                 loadPluginState(CombatPlugin.class);
+                loadPluginState(SkillsPlugin.class);
             }
             loadPluginState(EconomyPlugin.class);
         }
-        loadPluginState(DonationPlugin.class);
         loadPluginState(LockPlugin.class);
         loadPluginState(ModerationPlugin.class);
         loadPluginState(PermissionsPlugin.class);
@@ -134,7 +147,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(ChatPlugin.class);
         loadPluginState(MonstersPlugin.class);
         loadPluginState(ProfessionsPlugin.class);
-        loadPluginState(SkillsPlugin.class);
         loadPluginState(WorldgenPlugin.class);
         loadPluginState(ItemsPlugin.class);
         loadPluginState(MechanicsPlugin.class);
@@ -161,7 +173,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
             }
             savePluginState(EconomyPlugin.class);
         }
-        savePluginState(DonationPlugin.class);
         savePluginState(LockPlugin.class);
         savePluginState(ModerationPlugin.class);
         savePluginState(PermissionsPlugin.class);

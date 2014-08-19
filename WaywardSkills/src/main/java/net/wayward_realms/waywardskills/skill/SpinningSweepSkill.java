@@ -1,10 +1,9 @@
 package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
 import net.wayward_realms.waywardlib.util.vector.VectorUtils;
 import net.wayward_realms.waywardskills.WaywardSkills;
@@ -25,7 +24,6 @@ public class SpinningSweepSkill extends AttackSkillBase {
     public SpinningSweepSkill(WaywardSkills plugin) {
         this.plugin = plugin;
         setName("SpinningSweep");
-        setType(SkillType.MELEE_OFFENCE);
         setCoolDown(30);
         setAttackStat(Stat.MELEE_ATTACK);
         setDefenceStat(Stat.MELEE_DEFENCE);
@@ -106,11 +104,17 @@ public class SpinningSweepSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 10;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Offence")) >= 3;
     }
 
     @Override
     public String getDescription() {
         return "Deal damage equal to half the difference between your melee attack roll and your opponent's melee defence roll for each member of the opposing party";
     }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Sword Offence points required";
+    }
+
 }

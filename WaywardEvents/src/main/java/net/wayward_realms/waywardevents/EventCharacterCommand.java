@@ -1,11 +1,11 @@
 package net.wayward_realms.waywardevents;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Race;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -49,18 +49,6 @@ public class EventCharacterCommand implements CommandExecutor {
                                     } else {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set stat [stat] [value]");
                                     }
-                                } else if (args[1].equalsIgnoreCase("skillpoints") || args[1].equalsIgnoreCase("sp")) {
-                                    if (args.length >= 4) {
-                                        try {
-                                            SkillType type = SkillType.valueOf(args[2].toUpperCase());
-                                            eventCharacter.setSkillPoints(type, Integer.parseInt(args[3]));
-                                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Skill points set.");
-                                        } catch (IllegalArgumentException exception) {
-                                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + "[skill type] [value]");
-                                        }
-                                    } else {
-                                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set " + args[1] + "[skill type] [value]");
-                                    }
                                 } else if (args[1].equalsIgnoreCase("health") || args[1].equalsIgnoreCase("hp")) {
                                     if (args.length >= 3) {
                                         try {
@@ -100,13 +88,13 @@ public class EventCharacterCommand implements CommandExecutor {
                                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a race.");
                                     }
                                 } else {
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana|race]");
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [stat|health|mana|race]");
                                 }
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be using an event character.");
                             }
                         } else {
-                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [skillpoints|stat|health|mana|race]");
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " set [stat|health|mana|race]");
                         }
                     } else if (args[0].equalsIgnoreCase("createtemplate")) {
                         Character character = characterPlugin.getActiveCharacter((Player) sender);

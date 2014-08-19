@@ -187,4 +187,9 @@ public class PlayerDisplayModifier {
         // Refresh the displayed entity
         protocolManager.updateEntity(player, protocolManager.getEntityTrackers(player));
     }
+
+    public void invalidate(Player player) {
+        profileCache.invalidate(player.getName());
+    }
+
 }

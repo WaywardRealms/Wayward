@@ -23,6 +23,7 @@ public class RecipeManager {
         setupChainmailChestplateRecipe();
         setupChainmailLeggingsRecipe();
         setupChainmailBootsRecipe();
+        setupBlazeRodRecipe();
     }
 
     private void setupSaddleRecipe() {
@@ -76,6 +77,12 @@ public class RecipeManager {
     private void setupChainmailBootsRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.CHAINMAIL_BOOTS));
         recipe.shape("i i", "s s").setIngredient('s', Material.STRING).setIngredient('i', Material.IRON_INGOT);
+        plugin.getServer().addRecipe(recipe);
+    }
+
+    private void setupBlazeRodRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.BLAZE_ROD));
+        recipe.shape("igi", "igi", "ifi").setIngredient('i', Material.IRON_INGOT).setIngredient('g', Material.GLASS).setIngredient('f', Material.FLINT_AND_STEEL);
         plugin.getServer().addRecipe(recipe);
     }
 

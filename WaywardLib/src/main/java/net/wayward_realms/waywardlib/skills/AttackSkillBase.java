@@ -2,7 +2,6 @@ package net.wayward_realms.waywardlib.skills;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
@@ -32,10 +31,10 @@ public abstract class AttackSkillBase extends SkillBase {
         if (random.nextInt(100) < getHitChance()) {
             animate(fight, attacking, defending, weapon);
             int attackerLevel = 0;
-            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-            if (classesPluginProvider != null) {
-                ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                attackerLevel = classesPlugin.getLevel(attacking);
+            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+            if (skillsPluginProvider != null) {
+                SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                attackerLevel = skillsPlugin.getLevel(attacking);
             }
             int attack = attacking.getStatValue(getAttackStat());
             int defence = defending.getStatValue(getDefenceStat());

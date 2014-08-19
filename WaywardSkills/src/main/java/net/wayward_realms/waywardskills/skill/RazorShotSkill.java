@@ -1,10 +1,9 @@
 package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +21,6 @@ public class RazorShotSkill extends AttackSkillBase {
         this.plugin = plugin;
         setName("RazorShot");
         setCoolDown(60);
-        setType(SkillType.RANGED_OFFENCE);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
         setCriticalChance(15);
@@ -83,12 +81,17 @@ public class RazorShotSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 32;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 75;
     }
 
     @Override
     public String getDescription() {
         return "If your ranged attack roll is greater than your opponent's ranged defence roll, 3 damage is dealt to your opponent every turn for 5 turns";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "75 Bow Offence points required";
     }
 
 }

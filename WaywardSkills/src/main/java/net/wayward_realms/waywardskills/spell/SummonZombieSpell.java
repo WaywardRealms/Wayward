@@ -2,10 +2,9 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,7 +27,6 @@ public class SummonZombieSpell extends AttackSpellBase {
         setCoolDown(60);
         setAttackStat(Stat.MAGIC_ATTACK);
         setDefenceStat(Stat.MAGIC_DEFENCE);
-        setType(SkillType.MAGIC_SUMMONING);
         setPower(90);
         setCriticalChance(5);
         setHitChance(30);
@@ -81,12 +79,17 @@ public class SummonZombieSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SUMMONING) >= 5;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Summoning Magic")) >= 10;
     }
 
     @Override
     public String getDescription() {
         return "Allows you to deal the difference between your magic attack roll and your opponent's melee defence roll for 3 turns in addition to taking another action";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "10 Summoning Magic points required";
     }
 
 }

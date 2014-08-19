@@ -1,13 +1,9 @@
 name: ${project.name}
-author: Lucariatias
+authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardclasses.WaywardClasses
 depend: [WaywardLib]
-commands:
-    class:
-        description: Parent command for all class commands
-        usage: /<command> [set|info|list|setlevel|addexp]
 permissions:
     wayward.classes.command.addexp:
         description: Old node that allows you to add exp
