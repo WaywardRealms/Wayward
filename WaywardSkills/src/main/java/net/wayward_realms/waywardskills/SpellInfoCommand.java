@@ -20,10 +20,9 @@ public class SpellInfoCommand implements CommandExecutor {
             Spell spell = plugin.getSpell(args[0]);
             if (spell != null) {
                 sender.sendMessage(new String[] {
-                        ChatColor.GRAY + "== " + ChatColor.GREEN + "Spell: " + spell.getName() + ChatColor.GRAY + " ==",
-                        ChatColor.GRAY + spell.getDescription(),
-                        ChatColor.YELLOW + "Cooldown turns: " + ChatColor.GRAY + spell.getCoolDownTurns(),
-                        ChatColor.YELLOW + "Type: " + ChatColor.GRAY + spell.getType()
+                    ChatColor.GRAY + "== " + ChatColor.GREEN + "Spell: " + spell.getName() + ChatColor.GRAY + " ==",
+                    spell.getSpecialisationInfo(),
+                    ChatColor.YELLOW + "Cooldown turns: " + ChatColor.GRAY + spell.getCoolDownTurns()
                 });
             }
         }

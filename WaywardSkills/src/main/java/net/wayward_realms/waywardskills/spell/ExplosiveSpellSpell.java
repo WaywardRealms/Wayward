@@ -1,11 +1,11 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.lineofsight.LineOfSightUtils;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,9 +15,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class ExplosiveSpellSpell extends AttackSpellBase {
 
-    public ExplosiveSpellSpell() {
+    private WaywardSkills plugin;
+
+    public ExplosiveSpellSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("ExplosiveSpell");
-        setType(SkillType.MAGIC_OFFENCE);
         setAttackStat(Stat.MAGIC_ATTACK);
         setDefenceStat(Stat.MAGIC_DEFENCE);
         setHitChance(100);
@@ -70,11 +72,17 @@ public class ExplosiveSpellSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 24;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 75;
     }
 
     @Override
     public String getDescription() {
         return "Deal damage equal to five times the difference between your magic attack roll and your opponent's magic defence roll";
     }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "75 Fire Magic points required";
+    }
+
 }

@@ -97,7 +97,7 @@ public class WaywardEvents extends JavaPlugin implements EventsPlugin {
     }
 
     @Override
-    public EventCharacter getEventCharacter(long id) {
+    public EventCharacter getEventCharacter(int id) {
         File eventCharacterDirectory = new File(getDataFolder(), "event-characters");
         File eventCharacterFile = new File(eventCharacterDirectory, id + ".yml");
         if (eventCharacterFile.exists()) return new EventCharacterImpl(eventCharacterFile);

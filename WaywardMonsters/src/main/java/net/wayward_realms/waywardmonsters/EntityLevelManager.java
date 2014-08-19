@@ -4,12 +4,13 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.util.math.MathUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -89,17 +90,18 @@ public class EntityLevelManager {
             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
             if (characterPluginProvider != null) {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                if (classesPluginProvider != null) {
-                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                    return classesPlugin.getLevel(characterPlugin.getActiveCharacter((Player) entity));
+                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                if (skillsPluginProvider != null) {
+                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                    return skillsPlugin.getLevel(characterPlugin.getActiveCharacter((Player) entity));
                 }
             }
-        }
-        try {
-            return levelCache.get(entity);
-        } catch (ExecutionException exception) {
-            exception.printStackTrace();
+        } else if (entity instanceof Monster) {
+            try {
+                return levelCache.get(entity);
+            } catch (ExecutionException exception) {
+                exception.printStackTrace();
+            }
         }
         return 0;
     }

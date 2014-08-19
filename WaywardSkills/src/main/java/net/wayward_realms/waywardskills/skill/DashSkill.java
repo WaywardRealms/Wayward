@@ -2,10 +2,9 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,10 +18,12 @@ import org.bukkit.potion.PotionEffectType;
 
 public class DashSkill extends SkillBase {
 
-    public DashSkill() {
+    private WaywardSkills plugin;
+
+    public DashSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Dash");
         setCoolDown(120);
-        setType(SkillType.SPEED_NIMBLE);
     }
 
     @Override
@@ -48,11 +49,6 @@ public class DashSkill extends SkillBase {
     }
 
     @Override
-    public boolean canUse(Combatant combatant) {
-        return canUse((Character) combatant);
-    }
-
-    @Override
     public boolean canUse(OfflinePlayer player) {
         RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterPluginProvider != null) {
@@ -69,7 +65,12 @@ public class DashSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.SPEED_NIMBLE) >= 1;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Nimble")) >= 3;
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Nimble points required";
     }
 
 }

@@ -1,14 +1,10 @@
 package net.wayward_realms.waywardevents;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.character.Gender;
-import net.wayward_realms.waywardlib.character.Race;
-import net.wayward_realms.waywardlib.character.TemporaryStatModification;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.character.*;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
@@ -287,6 +283,16 @@ public class EventCharacterImpl implements EventCharacter {
     }
 
     @Override
+    public Equipment getEquipment() {
+        return getFieldValue("equipment") != null ? (Equipment) getFieldValue("equipment") : new EquipmentImpl(null, null, null, new ItemStack[9]);
+    }
+
+    @Override
+    public void setEquipment(Equipment equipment) {
+        setFieldValue("equipment", equipment);
+    }
+
+    @Override
     public ItemStack[] getInventoryContents() {
         if (getFieldValue("inventory-contents") instanceof List<?>) {
             return ((List<ItemStack>) getFieldValue("inventory-contents")).toArray(new ItemStack[36]);
@@ -347,11 +353,6 @@ public class EventCharacterImpl implements EventCharacter {
     }
 
     @Override
-    public void setSkillPoints(SkillType skillType, int points) {
-        setFieldValue("skill-points." + skillType.toString().toLowerCase(), points);
-    }
-
-    @Override
     public void setMaxHealth(double maxHealth) {
         setFieldValue("max-health", maxHealth);
     }
@@ -389,9 +390,6 @@ public class EventCharacterImpl implements EventCharacter {
         setHealth(template.getMaxHealth());
         for (Stat stat : Stat.values()) {
             setStatValue(stat, template.getStatValue(stat));
-        }
-        for (SkillType skillType : SkillType.values()) {
-            setSkillPoints(skillType, template.getSkillPoints(skillType));
         }
         setMaxMana(template.getMaxMana());
         setMana(template.getMaxMana());
@@ -449,11 +447,6 @@ public class EventCharacterImpl implements EventCharacter {
         List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
         statModifications.remove(modification);
         setFieldValue("temporary-stat-modifications", statModifications);
-    }
-
-    @Override
-    public int getSkillPoints(SkillType type) {
-        return getFieldIntValue("skill-points." + type.toString().toLowerCase());
     }
 
     public boolean isClassHidden() {

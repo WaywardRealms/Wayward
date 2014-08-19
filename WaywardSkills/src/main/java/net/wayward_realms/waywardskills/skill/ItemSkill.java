@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -18,7 +17,6 @@ public class ItemSkill extends SkillBase {
     public ItemSkill() {
         setName("Item");
         setCoolDown(0);
-        setType(SkillType.SUPPORT_PERFORM);
     }
 
     @Override
@@ -90,6 +88,11 @@ public class ItemSkill extends SkillBase {
     @Override
     public String getDescription() {
         return "Uses an item in battle";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "No points required";
     }
 
 }
