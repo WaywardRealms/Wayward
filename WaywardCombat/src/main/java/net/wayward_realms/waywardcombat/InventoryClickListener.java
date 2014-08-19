@@ -2,20 +2,14 @@ package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.combat.Turn;
-import net.wayward_realms.waywardlib.skills.Skill;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Spell;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.wayward_realms.waywardlib.skills.Specialisation;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class InventoryClickListener implements Listener {
 
@@ -27,90 +21,153 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        CharacterPlugin characterPlugin = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
-        if (event.getInventory().getTitle().equals("Skill type")) {
+        if (event.getInventory().getTitle().equalsIgnoreCase("Hand")) {
             event.setCancelled(true);
-            if (event.getSlot() >= 0 && event.getSlot() <= 12) {
-                Set<Skill> skills = new HashSet<>();
-                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-                if (skillsPluginProvider != null) {
+            if (event.getCurrentItem() != null
+                    && event.getCurrentItem().hasItemMeta()
+                    && event.getCurrentItem().getItemMeta().hasDisplayName()
+                    && event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Onhand")) {
+                RollContext context = plugin.getRollContext((Player) event.getWhoClicked());
+                context.setOnHand(true);
+                plugin.setRollContext((Player) event.getWhoClicked(), context);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                if (characterPluginProvider != null && skillsPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                     SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-                    skills.addAll(skillsPlugin.getSkills());
-                    skills.addAll(skillsPlugin.getSpells());
+                    event.getWhoClicked().closeInventory();
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory(skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
                 }
-                Set<Skill> skillsToRemove = new HashSet<>();
-                for (Skill skill : skills) {
-                    if (!skill.canUse((Player) event.getWhoClicked())) {
-                        skillsToRemove.add(skill);
-                    }
+            } else if (event.getCurrentItem() != null
+                    && event.getCurrentItem().hasItemMeta()
+                    && event.getCurrentItem().getItemMeta().hasDisplayName()
+                    && event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase("Offhand")) {
+                RollContext context = plugin.getRollContext((Player) event.getWhoClicked());
+                context.setOnHand(false);
+                plugin.setRollContext((Player) event.getWhoClicked(), context);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                if (characterPluginProvider != null && skillsPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                    event.getWhoClicked().closeInventory();
+                    event.getWhoClicked().openInventory(plugin.getSpecialisationInventory(skillsPlugin.getRootSpecialisation(), characterPlugin.getActiveCharacter((Player) event.getWhoClicked())));
                 }
-                skills.removeAll(skillsToRemove);
-                event.getWhoClicked().closeInventory();
-                FightImpl fight = (FightImpl) plugin.getActiveFight(characterPlugin.getActiveCharacter((Player) event.getWhoClicked()));
-                fight.showSkillOptions((Player) event.getWhoClicked(), skills);
             }
-        } else if (event.getInventory().getTitle().equals("Skill")) {
-            event.setCancelled(true);
-            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+        } else if (event.getInventory().getTitle().equalsIgnoreCase("Specialisation")) {
+            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
             if (skillsPluginProvider != null) {
                 SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-                for (Skill skill : skillsPlugin.getSkills()) {
-                    if (skill.getIcon().equals(event.getCurrentItem())) {
-                        Character attacking = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-                        FightImpl fight = (FightImpl) plugin.getActiveFight(attacking);
-                        Turn turn = fight.getActiveTurn();
-                        turn.setSkill(skill);
+                event.setCancelled(true);
+                if (event.getCurrentItem().getType() == Material.WOOL) {
+                    if (event.getCurrentItem().getDurability() == (short) 5) {
+                        Specialisation specialisation = skillsPlugin.getSpecialisation(event.getCurrentItem().getItemMeta().getDisplayName());
+                        RollContext context = plugin.getRollContext((Player) event.getWhoClicked());
+                        context.setSpecialisation(specialisation);
+                        plugin.roll((Player) event.getWhoClicked(), context.getRoll());
+                        plugin.setRollContext((Player) event.getWhoClicked(), null);
                         event.getWhoClicked().closeInventory();
-                        ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
-                                (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
-                                (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
-                                (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
-                                (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
-                        break;
-                    }
-                }
-                for (Spell spell : skillsPlugin.getSpells()) {
-                    if (spell.getIcon().equals(event.getCurrentItem())) {
-                        Character attacking = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-                        FightImpl fight = (FightImpl) plugin.getActiveFight(attacking);
-                        Turn turn = fight.getActiveTurn();
-                        turn.setSkill(spell);
-                        event.getWhoClicked().closeInventory();
-                        ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
-                                (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
-                                (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
-                                (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
-                                (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
-                        break;
+                    } else {
+                        Specialisation specialisation = skillsPlugin.getSpecialisation(event.getCurrentItem().getItemMeta().getDisplayName());
+                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                        if (characterPluginProvider != null) {
+                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+                            event.getWhoClicked().closeInventory();
+                            event.getWhoClicked().openInventory(plugin.getSpecialisationInventory(specialisation, character));
+                        }
                     }
                 }
             }
-
-        } else if (event.getInventory().getTitle().equals("Target")) {
-            event.setCancelled(true);
-            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-            FightImpl fight = (FightImpl) plugin.getActiveFight(character);
-            Turn turn = fight.getActiveTurn();
-            turn.setDefender(characterPlugin.getCharacter(Integer.parseInt(event.getCurrentItem().getItemMeta().getLore().get(0))));
-            event.getWhoClicked().closeInventory();
-            ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
-                    (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
-                    (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
-                    (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
-                    (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
-        } else if (event.getInventory().getTitle().equals("Weapon")) {
-            event.setCancelled(true);
-            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
-            FightImpl fight = (FightImpl) plugin.getActiveFight(character);
-            Turn turn = fight.getActiveTurn();
-            turn.setWeapon(event.getCurrentItem());
-            event.getWhoClicked().closeInventory();
-            ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
-                    (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
-                    (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
-                    (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
-                    (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
         }
     }
+
+//    @EventHandler
+//    public void onInventoryClick(InventoryClickEvent event) {
+//        CharacterPlugin characterPlugin = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
+//        if (event.getInventory().getTitle().equals("Skill type")) {
+//            event.setCancelled(true);
+//            if (event.getSlot() >= 0 && event.getSlot() <= 12) {
+//                Set<Skill> skills = new HashSet<>();
+//                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+//                if (skillsPluginProvider != null) {
+//                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+//                    skills.addAll(skillsPlugin.getSkills());
+//                    skills.addAll(skillsPlugin.getSpells());
+//                }
+//                Set<Skill> skillsToRemove = new HashSet<>();
+//                for (Skill skill : skills) {
+//                    if (!skill.canUse((Player) event.getWhoClicked())) {
+//                        skillsToRemove.add(skill);
+//                    }
+//                }
+//                skills.removeAll(skillsToRemove);
+//                event.getWhoClicked().closeInventory();
+//                FightImpl fight = (FightImpl) plugin.getActiveFight(characterPlugin.getActiveCharacter((Player) event.getWhoClicked()));
+//                fight.showSkillOptions((Player) event.getWhoClicked(), skills);
+//            }
+//        } else if (event.getInventory().getTitle().equals("Skill")) {
+//            event.setCancelled(true);
+//            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+//            if (skillsPluginProvider != null) {
+//                SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+//                for (Skill skill : skillsPlugin.getSkills()) {
+//                    if (skill.getIcon().equals(event.getCurrentItem())) {
+//                        Character attacking = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+//                        FightImpl fight = (FightImpl) plugin.getActiveFight(attacking);
+//                        Turn turn = fight.getActiveTurn();
+//                        turn.setSkill(skill);
+//                        event.getWhoClicked().closeInventory();
+//                        ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
+//                                (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
+//                                (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
+//                                (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
+//                                (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
+//                        break;
+//                    }
+//                }
+//                for (Spell spell : skillsPlugin.getSpells()) {
+//                    if (spell.getIcon().equals(event.getCurrentItem())) {
+//                        Character attacking = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+//                        FightImpl fight = (FightImpl) plugin.getActiveFight(attacking);
+//                        Turn turn = fight.getActiveTurn();
+//                        turn.setSkill(spell);
+//                        event.getWhoClicked().closeInventory();
+//                        ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
+//                                (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
+//                                (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
+//                                (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
+//                                (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
+//                        break;
+//                    }
+//                }
+//            }
+//
+//        } else if (event.getInventory().getTitle().equals("Target")) {
+//            event.setCancelled(true);
+//            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+//            FightImpl fight = (FightImpl) plugin.getActiveFight(character);
+//            Turn turn = fight.getActiveTurn();
+//            turn.setDefender(characterPlugin.getCharacter(Integer.parseInt(event.getCurrentItem().getItemMeta().getLore().get(0))));
+//            event.getWhoClicked().closeInventory();
+//            ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
+//                    (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
+//                    (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
+//                    (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
+//                    (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
+//        } else if (event.getInventory().getTitle().equals("Weapon")) {
+//            event.setCancelled(true);
+//            Character character = characterPlugin.getActiveCharacter((Player) event.getWhoClicked());
+//            FightImpl fight = (FightImpl) plugin.getActiveFight(character);
+//            Turn turn = fight.getActiveTurn();
+//            turn.setWeapon(event.getCurrentItem());
+//            event.getWhoClicked().closeInventory();
+//            ((Player) event.getWhoClicked()).sendMessage(new String[] {plugin.getPrefix() + ChatColor.GREEN + "Current turn:",
+//                    (turn.getSkill() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Skill: " + (turn.getSkill() != null ? ChatColor.GREEN + turn.getSkill().getName() : ChatColor.RED + "NOT CHOSEN - use /turn skill to choose"),
+//                    (turn.getDefender() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Target: " + (turn.getDefender() != null ? ChatColor.GREEN + (((Character) turn.getDefender()).isNameHidden() ? ChatColor.MAGIC + turn.getDefender().getName() + ChatColor.RESET : turn.getDefender().getName()) + ChatColor.GREEN + " (" + ((Character) turn.getDefender()).getPlayer().getName() + "'s character)" : ChatColor.RED + "NOT CHOSEN - use /turn target to choose"),
+//                    (turn.getWeapon() != null ? ChatColor.GREEN + "\u2611" : ChatColor.RED + "\u2612") + ChatColor.GRAY + "Weapon: " + (turn.getWeapon() != null ? ChatColor.GREEN + turn.getWeapon().getType().toString() : ChatColor.RED + "NOT CHOSEN - use /turn weapon to choose"),
+//                    (turn.getSkill() != null && turn.getDefender() != null && turn.getWeapon() != null ? ChatColor.GREEN + "Ready to make a move! Use /turn complete to complete your turn." : ChatColor.RED + "There are still some options you must set before completing your turn.")});
+//        }
+//    }
 
 }
