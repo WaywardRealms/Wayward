@@ -2,7 +2,6 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -20,7 +19,6 @@ public class LevitationSpell extends SpellBase {
         setCoolDown(300);
         setManaCost(50);
         setName("Levitation");
-        setType(SkillType.MAGIC_ILLUSION);
     }
 
     @Override
@@ -46,14 +44,24 @@ public class LevitationSpell extends SpellBase {
     public ItemStack getIcon() {
         ItemStack icon = new ItemStack(Material.FEATHER);
         ItemMeta meta = icon.getItemMeta();
-        meta.setDisplayName("Levitate");
+        meta.setDisplayName("Levitation");
         icon.setItemMeta(meta);
         return icon;
     }
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 50;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Illusory Magic")) >= 15;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Prevents melee attacks from hitting for 5 turns";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "15 Illusory Magic points required";
     }
 
 }

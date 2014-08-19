@@ -30,6 +30,10 @@ public class EmoteModeCommand implements CommandExecutor {
                 }
             } else {
                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify an emote mode.");
+                sender.sendMessage(ChatColor.RED + "Possibilities are: ");
+                for (EmoteMode emoteMode : EmoteMode.values()) {
+                    sender.sendMessage(ChatColor.RED + emoteMode.toString().toLowerCase());
+                }
             }
         } else {
             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to set your emote mode.");

@@ -1,9 +1,9 @@
 name: ${project.name}
-author: Lucariatias
+authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardmoderation.WaywardModeration
-depend: [WaywardLib, TagAPI]
+depend: [WaywardLib]
 commands:
     reputation:
         description: Manages reputation

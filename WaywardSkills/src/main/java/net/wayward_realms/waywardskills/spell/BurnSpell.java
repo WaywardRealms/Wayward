@@ -2,34 +2,37 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 public class BurnSpell extends AttackSpellBase {
+
+    private WaywardSkills plugin;
 
     private int radius = 8;
     private int fireTicks = 200;
 
-    public BurnSpell() {
+    public BurnSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Burn");
         setManaCost(15);
         setCoolDown(5);
-        setType(SkillType.MAGIC_OFFENCE);
         setAttackStat(Stat.MAGIC_ATTACK);
         setDefenceStat(Stat.MAGIC_DEFENCE);
         setHitChance(100);
@@ -39,9 +42,21 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public boolean use(Player player) {
-        for (Entity entity : player.getWorld().getEntities()) {
+        Set<LivingEntity> invulnerableEntities = new HashSet<>();
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Party party = characterPlugin.getParty(characterPlugin.getActiveCharacter(player));
+            if (party != null) {
+                for (Character member : party.getMembers()) {
+                    OfflinePlayer memberPlayer = member.getPlayer();
+                    if (memberPlayer.isOnline()) invulnerableEntities.add(memberPlayer.getPlayer());
+                }
+            }
+        }
+        for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
-                if (entity != player) {
+                if (!invulnerableEntities.contains(entity)) {
                     entity.setFireTicks(fireTicks);
                 }
             }
@@ -74,8 +89,13 @@ public class BurnSpell extends AttackSpellBase {
     }
 
     @Override
+    public String getDescription() {
+        return "Deal 3 burn damage to the opposing party for 5 turns";
+    }
+
+    @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 20;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 5;
     }
 
     @Override
@@ -90,12 +110,12 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " set " + defending.getName() + " alight with magic, dealing " + damage + " points of damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " set " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " alight with magic, dealing " + damage + " points of damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to set " + defending.getName() + " alight with magic, but did not have enough mana.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to set " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " alight with magic, but did not have enough mana.";
     }
 
     @Override
@@ -104,4 +124,10 @@ public class BurnSpell extends AttackSpellBase {
         statusEffects.put(StatusEffect.BURNED, 5);
         return statusEffects;
     }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "5 Fire Magic points required";
+    }
+
 }

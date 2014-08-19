@@ -2,12 +2,11 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,13 +18,15 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class BandageSkill extends SkillBase {
 
+    private WaywardSkills plugin;
+
     private int reach = 16;
     private double healthRestore = 10D;
 
-    public BandageSkill() {
+    public BandageSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Bandage");
         setCoolDown(30);
-        setType(SkillType.MAGIC_HEALING);
     }
 
     public int getReach() {
@@ -67,15 +68,8 @@ public class BandageSkill extends SkillBase {
                                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                                 Character character = characterPlugin.getActiveCharacter(target);
                                 target.setHealth(character.getHealth());
-                                double initialHealth = target.getHealth();
                                 character.setHealth(Math.min(character.getHealth() + healthRestore, character.getMaxHealth()));
                                 target.setHealth(character.getHealth());
-                                double newHealth = target.getHealth();
-                                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                                if (classesPluginProvider != null) {
-                                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                                    classesPlugin.giveExperience(player, (int) Math.round(Math.max(newHealth - initialHealth, 0) * 16));
-                                }
                                 target.sendMessage(ChatColor.GREEN + player.getDisplayName() + " applied a bandage to your wounds.");
                                 player.sendMessage(ChatColor.GREEN + "Applied a bandage to " + target.getDisplayName() + "'s wounds.");
                                 return true;
@@ -109,10 +103,10 @@ public class BandageSkill extends SkillBase {
             if (itemsPlugin.getMaterial("Bandage").isMaterial(weapon)) {
                 defending.setHealth(defending.getHealth() + getHealthRestore());
                 attacking.getPlayer().getPlayer().getInventory().removeItem(itemsPlugin.createNewItemStack(itemsPlugin.getMaterial("Bandage"), 1).toMinecraftItemStack());
-                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " applied a bandage to " + defending.getName());
+                fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " applied a bandage to " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()));
                 return true;
             } else {
-                fight.sendMessage(ChatColor.RED + attacking.getName() + " attempted to use " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " as a bandage. It didn't work very well.");
+                fight.sendMessage(ChatColor.RED + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.RED + " attempted to use " + weapon.getType().toString().toLowerCase().replace('_', ' ') + " as a bandage. It didn't work very well.");
             }
         }
         return false;
@@ -129,7 +123,17 @@ public class BandageSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) > 0;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Healing")) >= 3;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Restores " + (int) Math.round(getHealthRestore()) + " HP to one target, and uses one bandage";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Healing points required";
     }
 
 }

@@ -53,15 +53,15 @@ public class DrinkManager {
         }
         if (character.getPlayer().getPlayer().isOnline()) {
             if (getDrunkenness(character) == 100) {
-                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + character.getName() + " died from alcohol poisoning.");
+                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + " died from alcohol poisoning.");
             } else if (getDrunkenness(character) >= 75) {
-                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + character.getName() + " is feeling very ill.");
+                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + " is feeling very ill.");
             } else if (getDrunkenness(character) >= 50) {
-                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + character.getName() + " is feeling very drunk.");
+                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + " is feeling very drunk.");
             } else if (getDrunkenness(character) >= 10) {
-                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + character.getName() + " is feeling quite drunk.");
+                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + " is feeling quite drunk.");
             } else if (getDrunkenness(character) >= 5) {
-                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + character.getName() + " is feeling a bit tipsy.");
+                character.getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + (character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName()) + " is feeling a bit tipsy.");
             }
         }
         if (character.getPlayer().isOnline()) {

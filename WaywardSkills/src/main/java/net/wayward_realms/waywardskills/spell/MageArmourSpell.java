@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
@@ -29,7 +28,6 @@ public class MageArmourSpell extends SpellBase {
         setName("MageArmour");
         setManaCost(25);
         setCoolDown(180);
-        setType(SkillType.MAGIC_DEFENCE);
     }
 
     @Override
@@ -82,7 +80,7 @@ public class MageArmourSpell extends SpellBase {
 
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
         if (attacking.getMana() >= 10) {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " formed a resistant barrier!");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " formed a resistant barrier!");
             return use(attacking.getPlayer().getPlayer());
         }
         return false;
@@ -100,7 +98,7 @@ public class MageArmourSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_DEFENCE) >= 5;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Shielding Magic")) >= 5;
     }
 
     @Override
@@ -116,6 +114,16 @@ public class MageArmourSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Increases defensive rolls by 25% for 5 turns";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "5 Shielding Magic points required";
     }
 
 }

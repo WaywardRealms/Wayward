@@ -1,5 +1,5 @@
 name: ${project.name}
-author: Lucariatias
+authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardeconomy.WaywardEconomy
@@ -26,4 +26,7 @@ permissions:
         default: false
     wayward.economy.shop.admin:
         description: Allows you to create admin shops
+        default: op
+    wayward.economy.bank.create:
+        description: Allows you to create banks
         default: op

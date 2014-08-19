@@ -1,10 +1,13 @@
 package net.wayward_realms.waywardmonsters;
 
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
-import org.bukkit.Bukkit;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -16,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Collection;
 import java.util.Random;
 
 public class EntityDeathListener implements Listener {
@@ -46,35 +50,53 @@ public class EntityDeathListener implements Listener {
             }
             Random random = new Random();
             if (player != null) {
-                int exp;
-                int money;
-                int expScale = plugin.getConfig().getInt("experience-multiplier." + event.getEntityType().toString(), 0);
-                int entityLevel = plugin.getEntityLevelManager().getEntityLevel(event.getEntity());
-                exp = (int) Math.ceil(((double) entityLevel * (double) expScale));
-                money = random.nextInt(100) < 5 ? random.nextInt(5) : 0;
-                if (exp > 0) {
-                    RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                    if (classesPluginProvider != null) {
-                        ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                        classesPlugin.giveExperience(player, exp);
+                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                if (characterPluginProvider != null) {
+                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                    Character character = characterPlugin.getActiveCharacter(player);
+                    int exp;
+                    int money;
+                    double expScale = plugin.getConfig().getDouble("experience-multiplier." + event.getEntityType().toString(), 0);
+                    int entityLevel = plugin.getEntityLevelManager().getEntityLevel(event.getEntity());
+                    exp = (int) Math.ceil(((double) entityLevel * expScale));
+                    money = event.getEntity() instanceof Monster && random.nextInt(100) < 10 ? random.nextInt(5) : 0;
+                    if (exp > 0) {
+                        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                        if (skillsPluginProvider != null) {
+                            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                            Party party = characterPlugin.getParty(character);
+                            if (party != null) {
+                                Collection<? extends Character> partyMembers = party.getMembers();
+                                if (partyMembers.size() > 1) {
+                                    exp = (int) Math.round((exp * 1.5D) / (double) partyMembers.size());
+                                    for (Character partyMember : partyMembers) {
+                                        if (partyMember.getPlayer().isOnline()) skillsPlugin.giveExperience(partyMember, exp);
+                                    }
+                                } else {
+                                    skillsPlugin.giveExperience(character, exp);
+                                }
+                            } else {
+                                skillsPlugin.giveExperience(character, exp);
+                            }
+                        }
                     }
-                }
-                if (!(event.getEntity() instanceof Player)) {
-                    event.getDrops().clear();
-                    event.getDrops().addAll(plugin.getMobDropManager().getDrops(event.getEntity().getType(), entityLevel));
-                }
-                if (money > 0) {
-                    RegisteredServiceProvider<EconomyPlugin> economyPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EconomyPlugin.class);
-                    if (economyPluginProvider != null) {
-                        EconomyPlugin economyPlugin = economyPluginProvider.getProvider();
-                        ItemStack coins = new ItemStack(Material.GOLD_NUGGET, money);
-                        ItemMeta coinMeta = coins.getItemMeta();
-                        coinMeta.setDisplayName(economyPlugin.getPrimaryCurrency().getNameSingular());
-                        coins.setItemMeta(coinMeta);
-                        event.getDrops().add(coins);
+                    if (!(event.getEntity() instanceof Player)) {
+                        event.getDrops().clear();
+                        event.getDrops().addAll(plugin.getMobDropManager().getDrops(event.getEntity().getType(), entityLevel));
                     }
+                    if (money > 0) {
+                        RegisteredServiceProvider<EconomyPlugin> economyPluginProvider = plugin.getServer().getServicesManager().getRegistration(EconomyPlugin.class);
+                        if (economyPluginProvider != null) {
+                            EconomyPlugin economyPlugin = economyPluginProvider.getProvider();
+                            ItemStack coins = new ItemStack(Material.GOLD_NUGGET, money);
+                            ItemMeta coinMeta = coins.getItemMeta();
+                            coinMeta.setDisplayName(economyPlugin.getPrimaryCurrency().getNameSingular());
+                            coins.setItemMeta(coinMeta);
+                            event.getDrops().add(coins);
+                        }
+                    }
+                    event.setDroppedExp(0);
                 }
-                event.setDroppedExp(0);
             } else {
                 if (!(event.getEntity() instanceof Player)) {
                     event.getDrops().clear();

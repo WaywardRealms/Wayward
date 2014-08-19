@@ -4,8 +4,8 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,11 +19,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class DrawSwordSpell extends SpellBase {
 
-    public DrawSwordSpell() {
+    private WaywardSkills plugin;
+
+    public DrawSwordSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("DrawSword");
         setManaCost(50);
         setCoolDown(300);
-        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class DrawSwordSpell extends SpellBase {
 
     @Override
     public boolean use(Fight fight, Character attacking, Character defending, ItemStack weapon) {
-        fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " drew a sword from the ground!");
+        fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + " drew a sword from the ground!");
         return use((attacking).getPlayer().getPlayer());
     }
 
@@ -69,7 +71,7 @@ public class DrawSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 20;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 10;
     }
 
     @Override
@@ -85,6 +87,16 @@ public class DrawSwordSpell extends SpellBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Draw a sword from the material you are standing on";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "10 Sword Magic points required";
     }
 
 }

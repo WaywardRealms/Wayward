@@ -1,5 +1,5 @@
 name: ${project.name}
-author: Lucariatias
+authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardmonsters.WaywardMonsters
@@ -8,7 +8,27 @@ commands:
     entitylevel:
         description: Manages entity levels
         usage: /<command> [get|set]
+    bleed:
+        description: Forces a player to bleed
+        usage: /<command> [player]
+    zeropoint:
+        description: Sets a mob-level-zero point at your location
+        usage: /<command>
+        aliases: [zp]
+    viewzeropoints:
+        description: Shows zero points
+        usage: /<command>
+        aliases: [showzeropoints]
 permissions:
+    wayward.monsters.command.bleed:
+        description: Allows you to force players to bleed
+        default: op
+    wayward.monsters.command.zeropoint:
+        description: Allows you to set zero points
+        default: op
+    wayward.monsters.command.viewzeropoints:
+        description: Allows you to view the locations of zero points
+        default: op
     wayward.monsters.trainingdummy:
         description: Allows you to create training dummies
         default: op
@@ -17,4 +37,7 @@ permissions:
         default: op
     wayward.monsters.command.entitylevel.get:
         description: Allows you to get entity levels
+        default: op
+    wayward.monsters.target:
+        description: Allows you to create targets
         default: op

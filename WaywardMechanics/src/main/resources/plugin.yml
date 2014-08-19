@@ -1,5 +1,5 @@
 name: ${project.name}
-author: Lucariatias
+authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardmechanics.WaywardMechanics
@@ -7,4 +7,10 @@ depend: [WaywardLib]
 permissions:
     wayward.mechanics.secretswitch:
         description: Allows creation of secret switches
+        default: op
+    wayward.mechanics.portcullis.create:
+        description: Allows creation of portcullises
+        default: op
+    wayward.mechanics.drawbridge.create:
+        description: Allows creation of drawbridges
         default: op

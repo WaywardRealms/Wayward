@@ -1,15 +1,25 @@
 package net.wayward_realms.waywardskills;
 
-import net.wayward_realms.waywardlib.skills.Skill;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Spell;
+import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Equipment;
+import net.wayward_realms.waywardlib.character.Pet;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.skills.*;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardskills.skill.SkillManager;
+import net.wayward_realms.waywardskills.specialisation.RootSpecialisation;
 import net.wayward_realms.waywardskills.spell.SpellManager;
+import org.bukkit.*;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.BufferedReader;
@@ -18,33 +28,77 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
+
 public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
+
+    private static final int SPECIALISATION_POINTS_PER_LEVEL = 5;
 
     private SpellManager spellManager;
     private SkillManager skillManager;
+    private Specialisation rootSpecialisation;
+    private Map<String, Specialisation> specialisations;
 
     @Override
     public void onEnable() {
         spellManager = new SpellManager(this);
         skillManager = new SkillManager(this);
-        registerListeners(new PlayerInteractListener(this), new EntityDamageByEntityListener(), new EntityTargetListener(this), new ProjectileHitListener(), new InventoryClickListener());
+        rootSpecialisation = new RootSpecialisation();
+        specialisations = new HashMap<>();
+        addSpecialisation(rootSpecialisation);
+        registerListeners(
+                this,
+                new PlayerInteractListener(this),
+                new EntityDamageByEntityListener(this),
+                new EntityTargetListener(this),
+                new ProjectileHitListener(),
+                new InventoryClickListener(this),
+                new EntityDamageListener(this),
+                new PlayerDeathListener(),
+                new PlayerExpChangeListener()
+        );
         getCommand("skill").setExecutor(new SkillCommand(this));
         getCommand("spell").setExecutor(new SpellCommand(this));
         getCommand("bindskill").setExecutor(new BindSkillCommand(this));
         getCommand("bindspell").setExecutor(new BindSpellCommand(this));
+        getCommand("skillinfo").setExecutor(new SkillInfoCommand(this));
+        getCommand("spellinfo").setExecutor(new SpellInfoCommand(this));
+        getCommand("getscroll").setExecutor(new GetScrollCommand(this));
+        getCommand("specialisation").setExecutor(new SpecialisationCommand(this));
+        getCommand("level").setExecutor(new LevelCommand(this));
         setupMageArmourChecker();
     }
 
-    private void registerListeners(Listener... listeners) {
-        for (Listener listener : listeners) {
-            getServer().getPluginManager().registerEvents(listener, this);
+    private void convertFromClasses() {
+        getLogger().warning("Conversion from old class levels has not yet taken place!");
+        getLogger().info("Starting conversion...");
+        long startTime = System.currentTimeMillis();
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+        if (characterPluginProvider != null && classesPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+            int i = 1;
+            while (characterPlugin.getCharacter(i) != null) {
+                Character character = characterPlugin.getCharacter(i);
+                int experience = 0;
+                for (net.wayward_realms.waywardlib.classes.Class clazz : classesPlugin.getClasses()) {
+                    experience += classesPlugin.getTotalExperience(character, clazz);
+                }
+                setTotalExperience(character, experience);
+                getLogger().info("Converted [" + character.getId() + "] " + character.getName() + " to new experience.");
+                i++;
+            }
+            i--;
+            getConfig().set("conversion-completed", true);
+            saveConfig();
+            getLogger().info("Converted " + i + " characters in " + (System.currentTimeMillis() - startTime) + "ms");
+        } else {
+            getLogger().info("Characters and/or classes plugin not found. Waiting for next plugin load...");
         }
     }
 
@@ -158,6 +212,9 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
             for (File file : skillDirectory.listFiles(new YamlFileFilter())) {
                 loadSkill(file);
             }
+        }
+        if (!getConfig().getBoolean("conversion-completed")) {
+            convertFromClasses();
         }
     }
 
@@ -294,6 +351,371 @@ public class WaywardSkills extends JavaPlugin implements SkillsPlugin {
                 }
             }
         }, 100L, 100L);
+    }
+
+    @Override
+    public Specialisation getRootSpecialisation() {
+        return rootSpecialisation;
+    }
+
+    @Override
+    public int getSpecialisationValue(Character character, Specialisation specialisation) {
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        int value = characterConfig.getInt("specialisations." + specialisation.getName());
+        if (!specialisation.getParentSpecialisations().isEmpty()) {
+            for (Specialisation parent : specialisation.getParentSpecialisations()) {
+                value += getSpecialisationValue(character, parent) / 5;
+            }
+        }
+        return value;
+    }
+
+    @Override
+    public void setSpecialisationValue(Character character, Specialisation specialisation, int value) {
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        int originalValue = characterConfig.getInt("specialisations." + specialisation.getName());
+        characterConfig.set("assigned-specialisation-points", characterConfig.getInt("assigned-specialisation-points") + (value - originalValue));
+        characterConfig.set("specialisations." + specialisation.getName(), value);
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getSpecialisationValue(Pet pet, Specialisation specialisation) {
+        File specialisationDirectory = new File(getDataFolder(), "pet-specialisations");
+        File petFile = new File(specialisationDirectory, pet.getId() + ".yml");
+        YamlConfiguration petConfig = YamlConfiguration.loadConfiguration(petFile);
+        int value = petConfig.getInt("specialisations." + specialisation.getName());
+        if (!specialisation.getParentSpecialisations().isEmpty()) {
+            for (Specialisation parent : specialisation.getParentSpecialisations()) {
+                value += getSpecialisationValue(pet, parent) / 5;
+            }
+        }
+        return value;
+    }
+
+    @Override
+    public void setSpecialisationValue(Pet pet, Specialisation specialisation, int value) {
+        File specialisationDirectory = new File(getDataFolder(), "pet-specialisations");
+        File petFile = new File(specialisationDirectory, pet.getId() + ".yml");
+        YamlConfiguration petConfig = YamlConfiguration.loadConfiguration(petFile);
+        petConfig.set("specialisations." + specialisation.getName(), value);
+        try {
+            petConfig.save(petFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public Specialisation getSpecialisation(String name) {
+        return specialisations.get(name.toLowerCase());
+    }
+
+    @Override
+    public Collection<Specialisation> getSpecialisations() {
+        return specialisations.values();
+    }
+
+    @Override
+    public int getAssignedSpecialisationPoints(Character character) {
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        return characterConfig.getInt("assigned-specialisation-points");
+    }
+
+    @Override
+    public int getUnassignedSpecialisationPoints(Character character) {
+        return (getLevel(character) * SPECIALISATION_POINTS_PER_LEVEL) - getAssignedSpecialisationPoints(character);
+    }
+
+    private void addSpecialisation(Specialisation specialisation) {
+        if (!specialisations.containsKey(specialisation.getName().toLowerCase())) {
+            specialisations.put(specialisation.getName().toLowerCase(), specialisation);
+        } else {
+            for (Specialisation parent : specialisation.getParentSpecialisations()) {
+                specialisations.get(specialisation.getName().toLowerCase()).addParentSpecialisation(parent);
+            }
+        }
+        for (Specialisation child : specialisation.getChildSpecialisations()) {
+            addSpecialisation(child);
+        }
+    }
+
+    @Override
+    public int getTotalExperience(Character character) {
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        return characterConfig.getInt("experience");
+    }
+
+    @Override
+    public void setTotalExperience(Character character, int experience) {
+        int i = 0;
+        while (experience >= getTotalExperienceForLevel(getLevel(character) + i + 1) && getLevel(character) + i < getMaxLevel()) {
+            i += 1;
+        }
+        if (i >= 1) {
+            if (character.getPlayer().isOnline()) {
+                Player player = character.getPlayer().getPlayer();
+                player.sendMessage(getPrefix() + ChatColor.YELLOW + "Level up!");
+                player.sendMessage(ChatColor.YELLOW + "+" + (SPECIALISATION_POINTS_PER_LEVEL * i) + " Specialisation Points" + ChatColor.GRAY + " (Total: " + (getUnassignedSpecialisationPoints(character) + (SPECIALISATION_POINTS_PER_LEVEL * i)) + ")");
+                player.sendMessage(ChatColor.GRAY + "(Use /specialisation to assign them)");
+                for (int x = player.getLocation().getBlockX() - 4; x < player.getLocation().getBlockX() + 4; x++) {
+                    for (int z = player.getLocation().getBlockZ() - 4; z < player.getLocation().getBlockZ() + 4; z++) {
+                        Location location = player.getWorld().getBlockAt(x, player.getLocation().getBlockY(), z).getLocation();
+                        if (player.getLocation().distanceSquared(location) > 9 && player.getLocation().distanceSquared(location) < 25) {
+                            Firework firework = (Firework) player.getWorld().spawnEntity(location, EntityType.FIREWORK);
+                            FireworkMeta meta = firework.getFireworkMeta();
+                            meta.setPower(0);
+                            FireworkEffect effect = FireworkEffect.builder()
+                                    .withColor(Color.YELLOW, Color.RED)
+                                    .with(FireworkEffect.Type.BURST)
+                                    .trail(true)
+                                    .build();
+                            meta.addEffect(effect);
+                            firework.setFireworkMeta(meta);
+                        }
+                    }
+                }
+            }
+        }
+        File specialisationDirectory = new File(getDataFolder(), "character-specialisations");
+        File characterFile = new File(specialisationDirectory, character.getId() + ".yml");
+        YamlConfiguration characterConfig = YamlConfiguration.loadConfiguration(characterFile);
+        characterConfig.set("experience", Math.min(experience, getTotalExperienceForLevel(getMaxLevel())));
+        try {
+            characterConfig.save(characterFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        if (character.getPlayer().isOnline()) {
+            updateExp(character.getPlayer().getPlayer());
+            updateHealth(character.getPlayer().getPlayer());
+        }
+    }
+
+    @Override
+    public int getExperience(Character character) {
+        return getTotalExperience(character) - getTotalExperienceForLevel(getLevel(character));
+    }
+
+    @Override
+    public void setExperience(Character character, int experience) {
+        setTotalExperience(character, getTotalExperienceForLevel(getLevel(character)) + experience);
+    }
+
+    @Override
+    public int getLevel(Character character) {
+        int level = 1;
+        while (getTotalExperienceForLevel(level + 1) <= getTotalExperience(character)) {
+            level += 1;
+        }
+        return level;
+    }
+
+    @Override
+    public void setLevel(Character character, int level) {
+        setTotalExperience(character, getTotalExperienceForLevel(level));
+    }
+
+    @Override
+    public void giveExperience(Character character, int amount) {
+        setTotalExperience(character, getTotalExperience(character) + amount);
+    }
+
+    @Override
+    public int getExperienceForLevel(int level) {
+        return 250 * (level - 1);
+    }
+
+    @Override
+    public int getTotalExperienceForLevel(int level) {
+        return level * (level - 1) * 125;
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return 50;
+    }
+
+    @Override
+    public double getMaxHealth(Character character) {
+        return 8D + (getLevel(character) * 2D);
+    }
+
+    @Override
+    public int getMaxMana(Character character) {
+        return getLevel(character) * 10;
+    }
+
+    @Override
+    public int getStatValue(Character character, Stat stat) {
+        switch (stat) {
+            case MELEE_ATTACK:
+                return getSpecialisationValue(character, getSpecialisation("Melee Offence"));
+            case MELEE_DEFENCE:
+                return getSpecialisationValue(character, getSpecialisation("Melee Defence"));
+            case RANGED_ATTACK:
+                return getSpecialisationValue(character, getSpecialisation("Ranged Offence"));
+            case RANGED_DEFENCE:
+                return getSpecialisationValue(character, getSpecialisation("Ranged Defence"));
+            case MAGIC_ATTACK:
+                return getSpecialisationValue(character, getSpecialisation("Magic Offence"));
+            case MAGIC_DEFENCE:
+                return getSpecialisationValue(character, getSpecialisation("Magic Defence"));
+            case SPEED:
+                return getSpecialisationValue(character, getSpecialisation("Nimble"));
+            default:
+                return getSpecialisationValue(character, getRootSpecialisation());
+        }
+    }
+
+    public void updateExp(Player player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Character character = characterPlugin.getActiveCharacter(player);
+            player.setExp((float) getExperience(character) / (float) getExperienceForLevel(getLevel(character) + 1));
+            player.setLevel(getLevel(character));
+        }
+    }
+
+    public void updateHealth(Player player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            player.setMaxHealth(characterPlugin.getActiveCharacter(player).getMaxHealth());
+        }
+    }
+
+    @Override
+    public String getAttackRoll(Character character, Specialisation attack, boolean onHand) {
+        Equipment equipment = character.getEquipment();
+        ItemStack weapon = onHand ? equipment.getOnHandItem() : equipment.getOffHandItem();
+        if (attack.meetsAttackRequirement(weapon)) {
+            return "1d100+" + Math.round((double) getSpecialisationValue(character, attack) * ((equipment.getOffHandItem() == null || equipment.getOffHandItem().getType() == Material.AIR) ? 2D : (onHand ? 1D : 0.75D)));
+        } else {
+            return "0d100";
+        }
+    }
+
+    @Override
+    public String getDefenceRoll(Character character, Specialisation defence, boolean onHand) {
+        Equipment equipment = character.getEquipment();
+        ItemStack weapon = onHand ? equipment.getOnHandItem() : equipment.getOffHandItem();
+        if (defence.meetsDefenceRequirement(weapon)) {
+            return "1d100+" + Math.round((double) getSpecialisationValue(character, defence) * ((equipment.getOffHandItem() == null || equipment.getOffHandItem().getType() == Material.AIR) ? 2D : (onHand ? 1D : 0.75D)));
+        } else {
+            return "0d100";
+        }
+    }
+
+    @Override
+    public String getDamageRoll(Character attacking, Specialisation specialisation, boolean onHand, Character defending) {
+        return getDamageRoll(attacking, specialisation, onHand, getArmourRating(defending));
+    }
+
+    @Override
+    public int getArmourRating(Character character) {
+        OfflinePlayer offlinePlayer = character.getPlayer();
+        if (offlinePlayer.isOnline()) {
+            Player player = offlinePlayer.getPlayer();
+            int armourBonus = 0;
+            if (player.getInventory().getHelmet() != null) {
+                switch (player.getInventory().getHelmet().getType()) {
+                    case LEATHER_HELMET: armourBonus += 1; break;
+                    case GOLD_HELMET: armourBonus += 2; break;
+                    case IRON_HELMET: armourBonus += 2; break;
+                    case CHAINMAIL_HELMET: armourBonus += 2; break;
+                    case DIAMOND_HELMET: armourBonus += 3; break;
+                }
+            }
+            if (player.getInventory().getChestplate() != null) {
+                switch (player.getInventory().getChestplate().getType()) {
+                    case LEATHER_CHESTPLATE: armourBonus += 3; break;
+                    case GOLD_CHESTPLATE: armourBonus += 5; break;
+                    case IRON_CHESTPLATE: armourBonus += 6; break;
+                    case CHAINMAIL_CHESTPLATE: armourBonus += 5; break;
+                    case DIAMOND_HELMET: armourBonus += 8; break;
+                }
+            }
+            if (player.getInventory().getLeggings() != null) {
+                switch (player.getInventory().getLeggings().getType()) {
+                    case LEATHER_LEGGINGS: armourBonus += 2; break;
+                    case GOLD_LEGGINGS: armourBonus += 3; break;
+                    case IRON_LEGGINGS: armourBonus += 5; break;
+                    case CHAINMAIL_LEGGINGS: armourBonus += 4; break;
+                    case DIAMOND_LEGGINGS: armourBonus += 6; break;
+                }
+            }
+            if (player.getInventory().getBoots() != null) {
+                switch (player.getInventory().getBoots().getType()) {
+                    case LEATHER_BOOTS: armourBonus += 1; break;
+                    case GOLD_BOOTS: armourBonus += 1; break;
+                    case IRON_BOOTS: armourBonus += 2; break;
+                    case CHAINMAIL_BOOTS: armourBonus += 1; break;
+                    case DIAMOND_BOOTS: armourBonus += 1; break;
+                }
+            }
+            return armourBonus;
+        }
+        return 0;
+    }
+
+    @Override
+    public String getDamageRoll(Character attacking, Specialisation specialisation, boolean onHand, int armourRating) {
+        return "1d8+" + (specialisation.getDamageRollBonus(onHand ? attacking.getEquipment().getOnHandItem() : attacking.getEquipment().getOffHandItem()) - armourRating);
+    }
+
+    public Inventory getSpecialisationInventory(Specialisation root, Character character) {
+        Inventory inventory = getServer().createInventory(null, 45, "Specialise");
+        ItemMeta meta;
+        List<String> lore;
+        int i = 0;
+        for (Specialisation parent : root.getParentSpecialisations()) {
+            ItemStack parentItem = new ItemStack(Material.WOOL);
+            meta = parentItem.getItemMeta();
+            meta.setDisplayName(parent.getName());
+            lore = new ArrayList<>();
+            lore.add("Points: " + getSpecialisationValue(character, parent));
+            meta.setLore(lore);
+            parentItem.setItemMeta(meta);
+            inventory.setItem(i, parentItem);
+            i++;
+        }
+        ItemStack rootItem = new ItemStack(Material.WOOL, 1, (short) 5);
+        meta = rootItem.getItemMeta();
+        meta.setDisplayName(root.getName());
+        lore = new ArrayList<>();
+        lore.add("Points: " + getSpecialisationValue(character, root));
+        lore.add("Click to assign one specialisation point");
+        lore.add("(You have " + getUnassignedSpecialisationPoints(character) + " unassigned specialisation points remaining)");
+        meta.setLore(lore);
+        rootItem.setItemMeta(meta);
+        inventory.setItem(22, rootItem);
+        i = 27;
+        for (Specialisation child : root.getChildSpecialisations()) {
+            ItemStack childItem = new ItemStack(Material.WOOL);
+            meta = childItem.getItemMeta();
+            meta.setDisplayName(child.getName());
+            lore = new ArrayList<>();
+            lore.add("Points: " + getSpecialisationValue(character, child));
+            meta.setLore(lore);
+            childItem.setItemMeta(meta);
+            inventory.setItem(i, childItem);
+            i++;
+        }
+        return inventory;
     }
 
 }

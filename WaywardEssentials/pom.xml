@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.wayward-realms</groupId>
         <artifactId>wayward</artifactId>
-        <version>0.7.4-SNAPSHOT</version>
+        <version>0.9.5-SNAPSHOT</version>
     </parent>
     <artifactId>waywardessentials</artifactId>
     <name>WaywardEssentials</name>
@@ -12,12 +12,7 @@
         <dependency>
             <groupId>net.wayward-realms</groupId>
             <artifactId>waywardlib</artifactId>
-            <version>0.7.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kohsuke</groupId>
-            <artifactId>github-api</artifactId>
-            <version>1.47</version>
+            <version>0.9.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -49,33 +44,6 @@
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.kohsuke:github-api</include>
-                                    <include>commons-lang:commons-lang</include>
-                                    <include>commons-codec:commons-codec</include>
-                                    <include>com.fasterxml.jackson.core:jackson-databind</include>
-                                    <include>com.fasterxml.jackson.core:jackson-annotations</include>
-                                    <include>com.fasterxml.jackson.core:jackson-core</include>
-                                    <include>commons-io:commons-io</include>
-                                </includes>
-                            </artifactSet>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>

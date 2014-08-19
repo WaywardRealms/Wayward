@@ -62,8 +62,8 @@ public class WarningImpl implements Warning {
     public static WarningImpl deserialize(Map<String, Object> serialised) {
         WarningImpl deserialised = new WarningImpl();
         deserialised.reason = (String) serialised.get("reason");
-        deserialised.player = serialised.containsKey("player-uuid") ? Bukkit.getOfflinePlayer((String) serialised.get("player")).getUniqueId() : UUID.fromString((String) serialised.get("player-uuid"));
-        deserialised.issuer = serialised.containsKey("issuer-uuid") ? Bukkit.getOfflinePlayer((String) serialised.get("issuer")).getUniqueId() : UUID.fromString((String) serialised.get("issuer-uuid"));
+        deserialised.player = serialised.containsKey("player-uuid") ? UUID.fromString((String) serialised.get("player-uuid")) : Bukkit.getOfflinePlayer((String) serialised.get("player")).getUniqueId();
+        deserialised.issuer = serialised.containsKey("issuer-uuid") ? UUID.fromString((String) serialised.get("issuer-uuid")) : Bukkit.getOfflinePlayer((String) serialised.get("issuer")).getUniqueId();
         deserialised.time = (Date) serialised.get("time");
         return deserialised;
     }

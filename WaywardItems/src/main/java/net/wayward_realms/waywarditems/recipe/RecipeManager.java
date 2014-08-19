@@ -19,6 +19,11 @@ public class RecipeManager {
         setupIronHorseArmourRecipe();
         setupGoldHorseArmourRecipe();
         setupDiamondHorseArmourRecipe();
+        setupChainmailHelmetRecipe();
+        setupChainmailChestplateRecipe();
+        setupChainmailLeggingsRecipe();
+        setupChainmailBootsRecipe();
+        setupBlazeRodRecipe();
     }
 
     private void setupSaddleRecipe() {
@@ -48,6 +53,36 @@ public class RecipeManager {
     private void setupDiamondHorseArmourRecipe() {
         ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.DIAMOND_BARDING));
         recipe.shape("  d", "lDl", "d d").setIngredient('d', Material.DIAMOND).setIngredient('l', Material.LEATHER).setIngredient('D', Material.DIAMOND_BLOCK);
+        plugin.getServer().addRecipe(recipe);
+    }
+
+    private void setupChainmailHelmetRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.CHAINMAIL_HELMET));
+        recipe.shape("sis", "i i").setIngredient('s', Material.STRING).setIngredient('i', Material.IRON_INGOT);
+        plugin.getServer().addRecipe(recipe);
+    }
+
+    private void setupChainmailChestplateRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+        recipe.shape("s s", "isi", "sis").setIngredient('s', Material.STRING).setIngredient('i', Material.IRON_INGOT);
+        plugin.getServer().addRecipe(recipe);
+    }
+
+    private void setupChainmailLeggingsRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.CHAINMAIL_LEGGINGS));
+        recipe.shape("sis", "i i", "s s").setIngredient('s', Material.STRING).setIngredient('i', Material.IRON_INGOT);
+        plugin.getServer().addRecipe(recipe);
+    }
+
+    private void setupChainmailBootsRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.CHAINMAIL_BOOTS));
+        recipe.shape("i i", "s s").setIngredient('s', Material.STRING).setIngredient('i', Material.IRON_INGOT);
+        plugin.getServer().addRecipe(recipe);
+    }
+
+    private void setupBlazeRodRecipe() {
+        ShapedRecipe recipe = new ShapedRecipe(new ItemStack(Material.BLAZE_ROD));
+        recipe.shape("igi", "igi", "ifi").setIngredient('i', Material.IRON_INGOT).setIngredient('g', Material.GLASS).setIngredient('f', Material.FLINT_AND_STEEL);
         plugin.getServer().addRecipe(recipe);
     }
 

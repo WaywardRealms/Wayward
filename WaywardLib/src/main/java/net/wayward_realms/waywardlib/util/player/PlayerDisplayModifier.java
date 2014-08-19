@@ -1,5 +1,5 @@
 package net.wayward_realms.waywardlib.util.player;
- 
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.comphenix.protocol.wrappers.WrappedSignedProperty;
 import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
@@ -33,14 +34,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-
-// For ProtocolLib 3.3.1 and lower
-// For ProtocolLib 3.4.0
-//import com.comphenix.protocol.wrappers.WrappedSignedProperty;
  
 public class PlayerDisplayModifier {
 
-    private static final String PROFILE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
     private static final int WORKER_THREADS = 4;
  
     private ProtocolManager protocolManager;
@@ -106,7 +102,7 @@ public class PlayerDisplayModifier {
  
     // This will be cached by Guava
     private String getProfileJson(String name) throws IOException {
-        final URL url = new URL(PROFILE_URL + extractUUID(name).toString().replace("-", ""));
+        final URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + extractUUID(name).toString().replace("-", "") + "?unsigned=false");
         final URLConnection uc = url.openConnection();
  
         return CharStreams.toString(new InputSupplier<InputStreamReader>() {
@@ -128,8 +124,7 @@ public class PlayerDisplayModifier {
                 String value = (String) property.get("value");
                 String signature = (String) property.get("signature"); // May be NULL
 
-                // Uncomment for ProtocolLib 3.4.0
-                //profile.getProperties().put(name, new WrappedSignedProperty(name, value, signature));
+                profile.getProperties().put(name, new WrappedSignedProperty(name, value, signature));
                 ((GameProfile) profile.getHandle()).getProperties().put(name, new Property(name, value, signature));
             }
         } catch (Exception e) {
@@ -192,4 +187,9 @@ public class PlayerDisplayModifier {
         // Refresh the displayed entity
         protocolManager.updateEntity(player, protocolManager.getEntityTrackers(player));
     }
+
+    public void invalidate(Player player) {
+        profileCache.invalidate(player.getName());
+    }
+
 }

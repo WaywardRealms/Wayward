@@ -1,5 +1,5 @@
 name: ${project.name}
-author: Lucariatias
+authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardessentials.WaywardEssentials
@@ -108,9 +108,6 @@ commands:
 permissions:
     wayward.essentials.boatsigns.create:
         description: Allows you to create boat signs
-        default: op
-    wayward.essentials.portcullissigns.create:
-        description: Allows you to create portcullis signs
         default: op
     wayward.essentials.warpsigns.create:
         description: Allows you to create warp signs

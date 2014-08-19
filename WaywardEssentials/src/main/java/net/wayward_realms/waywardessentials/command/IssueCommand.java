@@ -38,10 +38,10 @@ public class IssueCommand implements CommandExecutor {
                             if (player.getItemInHand().getItemMeta() instanceof BookMeta) {
                                 BookMeta meta = (BookMeta) player.getItemInHand().getItemMeta();
                                 StringBuilder issueBody = new StringBuilder();
-                                issueBody.append("Submitted by ").append(sender.getName()).append('\n');
                                 for (String pageText : meta.getPages()) {
-                                    issueBody.append("> ").append(pageText).append('\n');
+                                    issueBody.append("> ").append(pageText.replace("\n", "\n> ")).append('\n');
                                 }
+                                issueBody.append("> &mdash; ").append(sender.getName()).append("\n");
                                 try {
                                     GHRepository repo = plugin.getGitHub().getRepository("WaywardRealms/Wayward");
                                     GHIssue issue = repo.createIssue(meta.hasTitle() ? meta.getTitle() : "Issue").body(issueBody.toString()).create();

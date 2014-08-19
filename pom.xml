@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.wayward-realms</groupId>
     <artifactId>wayward</artifactId>
-    <version>0.7.4-SNAPSHOT</version>
+    <version>0.9.5-SNAPSHOT</version>
     <name>Wayward</name>
     <description>Plugins designed for Wayward Realms server</description>
     <url>http://wayward-realms.net/</url>
@@ -19,7 +19,6 @@
         <module>WaywardSkills</module>
         <module>WaywardMonsters</module>
         <module>WaywardCombat</module>
-        <module>WaywardDonations</module>
         <module>WaywardEvents</module>
         <module>WaywardEconomy</module>
         <module>WaywardEssentials</module>
@@ -49,6 +48,35 @@
             <name>Lucariatias</name>
             <email>lucariatias@gmail.com</email>
             <url>https://lucariatias.github.io/</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>Exodin</id>
+            <name>Exodin</name>
+            <email>stephenbell98@hotmail.co.uk</email>
+            <url>https://Exodin.github.io/</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>Xslare</id>
+            <name>Xslare</name>
+            <email>Xslare@gmail.com</email>
+            <url>https://Xslare.github.io/</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
+        <developer>
+            <id>PsychoTea</id>
+            <name>PsychoTea</name>
+            <url>https://PsychoTea.github.io/</url>
             <roles>
                 <role>developer</role>
             </roles>

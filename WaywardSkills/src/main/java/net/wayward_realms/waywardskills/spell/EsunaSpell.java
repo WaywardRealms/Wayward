@@ -2,11 +2,11 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.combat.Combatant;
+import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,22 +21,42 @@ import org.bukkit.potion.PotionEffectType;
 
 public class EsunaSpell extends SpellBase {
 
+    private WaywardSkills plugin;
+
     private int radius = 8;
 
-    public EsunaSpell() {
+    public EsunaSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Esuna");
         setManaCost(5);
         setCoolDown(5);
-        setType(SkillType.MAGIC_HEALING);
     }
 
     @Override
     public boolean use(Player player) {
-        for (LivingEntity entity : player.getWorld().getEntitiesByClass(LivingEntity.class)) {
-            if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
-                for (PotionEffectType potionEffectType : PotionEffectType.values()) {
-                    if (potionEffectType != null) {
-                        entity.addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Party party = characterPlugin.getParty(characterPlugin.getActiveCharacter(player));
+            if (party != null) {
+                for (Character member : party.getMembers()) {
+                    OfflinePlayer memberPlayer = member.getPlayer();
+                    if (memberPlayer.isOnline()) {
+                        for (PotionEffectType potionEffectType : PotionEffectType.values()) {
+                            if (potionEffectType != null) {
+                                memberPlayer.getPlayer().addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (LivingEntity entity : player.getWorld().getEntitiesByClass(LivingEntity.class)) {
+                    if (player.getLocation().distanceSquared(entity.getLocation()) <= radius * radius) {
+                        for (PotionEffectType potionEffectType : PotionEffectType.values()) {
+                            if (potionEffectType != null) {
+                                entity.addPotionEffect(new PotionEffect(potionEffectType, 0, 0), true);
+                            }
+                        }
                     }
                 }
             }
@@ -50,10 +70,10 @@ public class EsunaSpell extends SpellBase {
             for (StatusEffect statusEffect : StatusEffect.values()) {
                 fight.setStatusTurns(defending, statusEffect, 0);
             }
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cured " + defending.getName() + "'s status effects");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " cured " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + "'s status effects");
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to cure " + defending.getName() + "'s status effects, but did not have enough mana!");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to cure " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + "'s status effects, but did not have enough mana!");
             return false;
         }
     }
@@ -69,22 +89,17 @@ public class EsunaSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 1;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Regenerative Magic")) >= 3;
     }
 
     @Override
-    public boolean canUse(Combatant combatant) {
-        return canUse((Character) combatant);
+    public String getDescription() {
+        return "Cure all status ailments (burn, bleed, paralyse, etc) for one target";
     }
 
     @Override
-    public boolean canUse(OfflinePlayer player) {
-        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-        if (characterPluginProvider != null) {
-            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-            return canUse(characterPlugin.getActiveCharacter(player));
-        }
-        return false;
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Regenerative Magic points required";
     }
 
 }

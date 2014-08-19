@@ -1,7 +1,9 @@
 package net.wayward_realms.waywardchat;
 
+import mkremins.fanciful.FancyMessage;
 import net.wayward_realms.waywardchat.irc.*;
 import net.wayward_realms.waywardlib.chat.Channel;
+import net.wayward_realms.waywardlib.chat.ChatGroup;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,6 +25,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
@@ -143,15 +147,96 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     }
     
     public void handleChat(User talking, org.pircbotx.Channel ircChannel, String message) {
-        String format;
         Channel channel = getChannelFromIrcChannel(ircChannel.getName());
-        channel.log("(irc)" + talking.getRealName() + "/" + talking.getNick() + ": " + message);
+        channel.log("(irc) " + talking.getRealName() + "/" + talking.getNick() + ": " + message);
         for (Player player : new HashSet<>(channel.getListeners())) {
             if (player != null) {
-                format = channel.getFormat().replace("%channel%", channel.getName()).replace("%player%", talking.getNick()).replace("%ign%", talking.getNick()).replace("&", ChatColor.COLOR_CHAR + "").replace("%message%", message);
-                player.sendMessage(format);
+                formatChannel(ircChannel, talking, message).send(player);
             }
         }
+    }
+
+    public FancyMessage formatChannel(org.pircbotx.Channel ircChannel, User talking, String message) {
+        Channel channel = getChannelFromIrcChannel(ircChannel.getName());
+        FancyMessage fancy = new FancyMessage("");
+        String format = channel.getFormat();
+        ChatColor chatColour = null;
+        ChatColor chatFormat = null;
+        for (int i = 0; i < format.length(); i++) {
+            if (format.charAt(i) == '&') {
+                ChatColor colourOrFormat = ChatColor.getByChar(format.charAt(i + 1));
+                if (colourOrFormat.isColor()) chatColour = colourOrFormat;
+                if (colourOrFormat.isFormat()) chatFormat = colourOrFormat;
+                i += 1;
+            } else if (format.substring(i, i + ("%channel%").length()).equalsIgnoreCase("%channel%")) {
+                fancy.then(channel.getName());
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%channel%").length() - 1;
+            } else if (format.substring(i, i + ("%player%").length()).equalsIgnoreCase("%player%")) {
+                fancy.then(talking.getNick());
+                fancy.tooltip("IRC user");
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%player%").length() - 1;
+            } else if (format.substring(i, i + ("%prefix%").length()).equalsIgnoreCase("%prefix%")) {
+                i += ("%prefix%").length() - 1;
+            } else if (format.substring(i, i + ("%ign%").length()).equalsIgnoreCase("%ign%")) {
+                fancy.then(talking.getNick());
+                fancy.tooltip("IRC user");
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+                i += ("%ign%").length() - 1;
+            } else if (format.substring(i, i + ("%message%").length()).equalsIgnoreCase("%message%")) {
+                /*
+                (
+                  ( // brackets covering match for protocol (optional) and domain
+                    ([A-Za-z]{3,9}:(?:\/\/)?) // match protocol, allow in format http:// or mailto:
+                    (?:[\-;:&=\+\$,\w]+@)? // allow something@ for email addresses
+                    [A-Za-z0-9\.\-]+ // anything looking at all like a domain, non-unicode domains
+                    | // or instead of above
+                    (?:www\.|[\-;:&=\+\$,\w]+@) // starting with something@ or www.
+                    [A-Za-z0-9\.\-]+   // anything looking at all like a domain
+                  )
+                  ( // brackets covering match for path, query string and anchor
+                    (?:\/[\+~%\/\.\w\-]*) // allow optional /path
+                    ?\??(?:[\-\+=&;%@\.\w]*) // allow optional query string starting with ?
+                    #?(?:[\.\!\/\\\w]*) // allow optional anchor #anchor
+                  )? // make URL suffix optional
+                )
+                */
+                String urlRegex = "((([A-Za-z]{3,9}:(?://)?)(?:[\\-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9\\.\\-]+|(?:www\\.|[\\-;:&=\\+\\$,\\w]+@)[A-Za-z0-9\\.\\-]+)((?:/[\\+~%/\\.\\w\\-_]*)?\\??(?:[\\-\\+=&;%@\\.\\w_]*)#?(?:[\\.!/\\\\\\w]*))?)";
+                Matcher matcher = Pattern.compile(urlRegex).matcher(message);
+                int index = 0;
+                int startIndex;
+                int endIndex = 0;
+                while (matcher.find()) {
+                    startIndex = matcher.start();
+                    endIndex = matcher.end();
+                    if (startIndex > index) {
+                        fancy.then(message.substring(index, startIndex));
+                    }
+                    String link = message.substring(startIndex, endIndex);
+                    if (!link.contains("://")) link = "http://" + link;
+                    fancy.then("[link]")
+                            .color(ChatColor.BLUE)
+                            .style(ChatColor.UNDERLINE)
+                            .link(link)
+                            .tooltip(link);
+                }
+                if (endIndex < message.length() - 1) {
+                    fancy.then(message.substring(endIndex, message.length()));
+                    if (chatColour != null) fancy.color(chatColour);
+                    if (chatFormat != null) fancy.style(chatFormat);
+                }
+                i += ("%message%").length() - 1;
+            } else {
+                fancy.then(format.charAt(i));
+                if (chatColour != null) fancy.color(chatColour);
+                if (chatFormat != null) fancy.style(chatFormat);
+            }
+        }
+        return fancy;
     }
 
     public String getPlayerPrefix(Permissible player) {
@@ -165,12 +250,20 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
     }
 
     public void saveDefaultPrefixes() {
-        YamlConfiguration prefixConfig = new YamlConfiguration();
-        prefixConfig.set("admin", " &e[admin] ");
-        try {
-            prefixConfig.save(new File(getDataFolder(), "prefixes.yml"));
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        File prefixConfigFile = new File(getDataFolder(), "prefixes.yml");
+        if (!prefixConfigFile.exists()) {
+            YamlConfiguration prefixConfig = new YamlConfiguration();
+            prefixConfig.set("admin", "&e[admin] ");
+            prefixConfig.set("mod", "&9[mod] ");
+            prefixConfig.set("dev", "&a[dev] ");
+            prefixConfig.set("et", "&6[et] ");
+            prefixConfig.set("at", "&d[at] ");
+            prefixConfig.set("bt", "&4[bt] ");
+            try {
+                prefixConfig.save(prefixConfigFile);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
@@ -388,7 +481,8 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
         return chatGroups.get(name.toLowerCase());
     }
 
-    public void removeChatGroup(String name) {
+    public void removeChatGroup(ChatGroup chatGroup) {
+        String name = chatGroup.getName();
         chatGroups.remove(name.toLowerCase());
         for (Iterator<Map.Entry<String, ChatGroup>> iterator = chatGroups.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, ChatGroup> entry = iterator.next();
@@ -402,8 +496,10 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
 
     public void sendPrivateMessage(Player sender, ChatGroup recipients, String message) {
         recipients.sendMessage(sender, message);
-        for (UUID recipient : recipients.getPlayers()) {
-            lastPrivateMessage.put(recipient, recipients);
+        if (recipients instanceof ChatGroupImpl) {
+            for (UUID recipient : ((ChatGroupImpl) recipients).getPlayerUUIDs()) {
+                lastPrivateMessage.put(recipient, recipients);
+            }
         }
     }
 
@@ -436,7 +532,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
             @Override
             public void run() {
                 for (ChatGroup chatGroup : chatGroups.values()) {
-                    chatGroup.disposeIfUnused();
+                    if (chatGroup instanceof ChatGroupImpl) ((ChatGroupImpl) chatGroup).disposeIfUnused();
                 }
             }
         }, 0L, 900000L);

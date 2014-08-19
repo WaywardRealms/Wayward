@@ -4,7 +4,6 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -23,7 +22,6 @@ public class CloakOfShadowsSpell extends SpellBase {
         setName("CloakOfShadows");
         setCoolDown(300);
         setManaCost(50);
-        setType(SkillType.MAGIC_ILLUSION);
     }
 
     @Override
@@ -54,10 +52,10 @@ public class CloakOfShadowsSpell extends SpellBase {
             for (Combatant combatant : fight.getCombatants()) {
                 fight.setStatusTurns(combatant, StatusEffect.BLIND, 3);
             }
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " cloaked themselves in shadows.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " cloaked themselves in shadows.");
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " attempted to hide in the shadows, but did not have enough mana.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to hide in the shadows, but did not have enough mana.");
             return false;
         }
     }
@@ -73,7 +71,17 @@ public class CloakOfShadowsSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_ILLUSION) >= 45;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Illusory Magic")) >= 20;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Causes every attack targeted at you to miss for 5 turns";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "20 Illusory Magic points required";
     }
 
 }

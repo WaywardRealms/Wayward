@@ -15,8 +15,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 public abstract class SkillBase implements Skill {
 
     private String name;
-    private SkillType type;
     private int coolDown;
+    private int coolDownTurns = 0;
 
     @Override
     public boolean use(Fight fight, Combatant attacking, Combatant defending, ItemStack weapon) {
@@ -46,16 +46,6 @@ public abstract class SkillBase implements Skill {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public SkillType getType() {
-        return type;
-    }
-
-    @Override
-    public void setType(SkillType type) {
-        this.type = type;
     }
 
     @Override
@@ -102,6 +92,13 @@ public abstract class SkillBase implements Skill {
         return 1D;
     }
 
+    @Override
+    public int getCoolDownTurns() {
+        return coolDownTurns;
+    }
 
-
+    @Override
+    public void setCoolDownTurns(int coolDownTurns) {
+        this.coolDownTurns = coolDownTurns;
+    }
 }

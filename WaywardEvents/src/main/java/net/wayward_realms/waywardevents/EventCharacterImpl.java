@@ -1,16 +1,14 @@
 package net.wayward_realms.waywardevents;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.character.Gender;
-import net.wayward_realms.waywardlib.character.Race;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.character.*;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,10 +17,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class EventCharacterImpl implements EventCharacter {
 
@@ -55,6 +50,7 @@ public class EventCharacterImpl implements EventCharacter {
             setMaxMana(20);
             setMana(getMaxMana());
             setThirst(20);
+            setNamePlate("");
         }
 
     }
@@ -103,6 +99,11 @@ public class EventCharacterImpl implements EventCharacter {
         return save.getItemStack("character." + field);
     }
 
+    private List<?> getFieldListValue(String field) {
+        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
+        return save.getList("character." + field);
+    }
+
     @Override
     public int getId() {
         return getFieldIntValue("id");
@@ -122,7 +123,7 @@ public class EventCharacterImpl implements EventCharacter {
         setFieldValue("name", name);
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
-            player.getPlayer().setDisplayName(isNameHidden() ? "???" : name);
+            player.getPlayer().setDisplayName(isNameHidden() ? ChatColor.MAGIC + name + ChatColor.RESET : name);
             PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
@@ -133,6 +134,11 @@ public class EventCharacterImpl implements EventCharacter {
 
     public void setNameHidden(boolean nameHidden) {
         setFieldValue("name-hidden", nameHidden);
+        OfflinePlayer player = getPlayer();
+        if (player.isOnline()) {
+            player.getPlayer().setDisplayName(nameHidden ? ChatColor.MAGIC + getName() + ChatColor.RESET : getName());
+            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
+        }
     }
 
     @Override
@@ -277,6 +283,16 @@ public class EventCharacterImpl implements EventCharacter {
     }
 
     @Override
+    public Equipment getEquipment() {
+        return getFieldValue("equipment") != null ? (Equipment) getFieldValue("equipment") : new EquipmentImpl(null, null, null, new ItemStack[9]);
+    }
+
+    @Override
+    public void setEquipment(Equipment equipment) {
+        setFieldValue("equipment", equipment);
+    }
+
+    @Override
     public ItemStack[] getInventoryContents() {
         if (getFieldValue("inventory-contents") instanceof List<?>) {
             return ((List<ItemStack>) getFieldValue("inventory-contents")).toArray(new ItemStack[36]);
@@ -337,11 +353,6 @@ public class EventCharacterImpl implements EventCharacter {
     }
 
     @Override
-    public void setSkillPoints(SkillType skillType, int points) {
-        setFieldValue("skill-points." + skillType.toString().toLowerCase(), points);
-    }
-
-    @Override
     public void setMaxHealth(double maxHealth) {
         setFieldValue("max-health", maxHealth);
     }
@@ -380,9 +391,6 @@ public class EventCharacterImpl implements EventCharacter {
         for (Stat stat : Stat.values()) {
             setStatValue(stat, template.getStatValue(stat));
         }
-        for (SkillType skillType : SkillType.values()) {
-            setSkillPoints(skillType, template.getSkillPoints(skillType));
-        }
         setMaxMana(template.getMaxMana());
         setMana(template.getMaxMana());
     }
@@ -415,12 +423,30 @@ public class EventCharacterImpl implements EventCharacter {
 
     @Override
     public int getStatValue(Stat stat) {
-        return getFieldIntValue("stats." + stat.toString().toLowerCase());
+        int value = getFieldIntValue("stats." + stat.toString().toLowerCase());
+        for (TemporaryStatModification modification : getTemporaryStatModifications()) {
+            if (modification != null) value = modification.apply(stat, value);
+        }
+        return value;
     }
 
     @Override
-    public int getSkillPoints(SkillType type) {
-        return getFieldIntValue("skill-points." + type.toString().toLowerCase());
+    public Collection<TemporaryStatModification> getTemporaryStatModifications() {
+        return getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
+    }
+
+    @Override
+    public void addTemporaryStatModification(TemporaryStatModification modification) {
+        List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
+        statModifications.add(modification);
+        setFieldValue("temporary-stat-modifications", statModifications);
+    }
+
+    @Override
+    public void removeTemporaryStatModification(TemporaryStatModification modification) {
+        List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
+        statModifications.remove(modification);
+        setFieldValue("temporary-stat-modifications", statModifications);
     }
 
     public boolean isClassHidden() {
@@ -432,41 +458,13 @@ public class EventCharacterImpl implements EventCharacter {
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        return new HashMap<>();
+    public String getNamePlate() {
+        return getFieldStringValue("nameplate");
     }
 
-    public static EventCharacterImpl deserialize(Map<String, Object> serialised) {
-        CharacterPlugin plugin = Bukkit.getServicesManager().getRegistration(CharacterPlugin.class).getProvider();
-        EventCharacterImpl character = new EventCharacterImpl(new File(new File(plugin.getDataFolder(), "event-characters"), ((long) serialised.get("id")) + ".yml"));
-        character.setId((int) serialised.get("id"));
-        if (character.getId() > plugin.getNextAvailableId()) {
-            plugin.setNextAvailableId(character.getId());
-        }
-        character.setPlayer(Bukkit.getOfflinePlayer(UUID.fromString((String) serialised.get("uuid"))));
-        character.setName((String) serialised.get("name"));
-        character.setGender((Gender) serialised.get("gender"));
-        character.setAge((int) serialised.get("age"));
-        character.setRace((Race) serialised.get("race"));
-        character.setDescription((String) serialised.get("description"));
-        character.setDead((boolean) serialised.get("dead"));
-        character.setLocation(((SerialisableLocation) serialised.get("location")).toLocation());
-        if (serialised.get("inventory-contents") instanceof List<?>) {
-            character.setInventoryContents(((List<ItemStack>) serialised.get("inventory-contents")).toArray(new ItemStack[36]));
-        } else {
-            character.setInventoryContents(new ItemStack[36]);
-        }
-        character.setHealth((double) serialised.get("health"));
-        character.setFoodLevel((int) serialised.get("food-level"));
-        character.setMana((int) serialised.get("mana"));
-        character.setThirst((int) serialised.get("thirst"));
-        character.setNameHidden(serialised.get("name-hidden") != null && (boolean) serialised.get("name-hidden"));
-        character.setGenderHidden(serialised.get("gender-hidden") != null && (boolean) serialised.get("gender-hidden"));
-        character.setAgeHidden(serialised.get("age-hidden") != null && (boolean) serialised.get("age-hidden"));
-        character.setRaceHidden(serialised.get("race-hidden") != null && (boolean) serialised.get("race-hidden"));
-        character.setDescriptionHidden(serialised.get("description-hidden") != null && (boolean) serialised.get("description-hidden"));
-        character.setClassHidden(serialised.get("class-hidden") != null && (boolean) serialised.get("class-hidden"));
-        return character;
+    @Override
+    public void setNamePlate(String namePlate) {
+        setFieldValue("nameplate", namePlate);
     }
 
 }

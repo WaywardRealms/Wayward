@@ -1,11 +1,11 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.professions.ToolType;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,11 +17,13 @@ import java.util.List;
 
 public class LightningSwordSpell extends AttackSpellBase {
 
-    public LightningSwordSpell() {
+    private WaywardSkills plugin;
+
+    public LightningSwordSpell(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("LightningSword");
         setManaCost(100);
         setCoolDown(3600);
-        setType(SkillType.MAGIC_SWORD);
         setCriticalMultiplier(4D);
         setCriticalChance(15);
         setPower(90);
@@ -43,12 +45,12 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " imbued their weapon with lightning and hit " + defending.getName() + ", dealing " + damage;
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " imbued their weapon with lightning and hit " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", dealing " + damage;
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " attempted to imbue their weapon with lightning, but did not have enough mana.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " attempted to imbue their weapon with lightning, but did not have enough mana.";
     }
 
     @Override
@@ -78,6 +80,17 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 80;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Lightning Magic")) >= 25 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 30;
     }
+
+    @Override
+    public String getDescription() {
+        return "Add 20 to your melee attack rolls for 3 turns";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "25 Lightning Magic and 30 Sword Magic points required";
+    }
+
 }

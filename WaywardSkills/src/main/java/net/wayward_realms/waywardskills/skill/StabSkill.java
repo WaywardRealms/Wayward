@@ -2,32 +2,32 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Class;
-import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
 import net.wayward_realms.waywardlib.util.vector.VectorUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import net.wayward_realms.waywardskills.WaywardSkills;
+import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class StabSkill extends AttackSkillBase {
 
-    private int reach = 16;
+    private WaywardSkills plugin;
 
-    public StabSkill() {
+    private int reach = 8;
+
+    public StabSkill(WaywardSkills plugin) {
+        this.plugin = plugin;
         setName("Stab");
         setCoolDown(60);
-        setType(SkillType.MELEE_OFFENCE);
         setAttackStat(Stat.MELEE_ATTACK);
         setDefenceStat(Stat.MELEE_DEFENCE);
         setPower(40);
@@ -49,7 +49,7 @@ public class StabSkill extends AttackSkillBase {
         Location observerPos = player.getEyeLocation();
         Vector3D observerDir = new Vector3D(observerPos.getDirection());
         Vector3D observerStart = new Vector3D(observerPos);
-        Vector3D observerEnd = observerStart.add(observerDir.multiply(reach));
+        Vector3D observerEnd = observerStart.add(observerDir.multiply(getReach()));
         // Get nearby entities
         for (LivingEntity target : player.getWorld().getLivingEntities()) {
             // Bounding box of the given player
@@ -58,7 +58,14 @@ public class StabSkill extends AttackSkillBase {
             Vector3D maximum = targetPos.add(0.5, 1.67, 0.5);
             if (target != player && VectorUtils.hasIntersection(observerStart, observerEnd, minimum, maximum)) {
                 player.teleport(target);
-                target.damage(10D, player);
+                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, target, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 10D);
+                Bukkit.getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                        event.getEntity().setLastDamageCause(event);
+                    }
+                }
             }
         }
         return true;
@@ -81,7 +88,7 @@ public class StabSkill extends AttackSkillBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " stabbed at " + defending.getName() + " dealing " + (Math.round(damage * 100D) / 100D) + " points of damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " stabbed at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " dealing " + (Math.round(damage * 100D) / 100D) + " points of damage.";
     }
 
     @Override
@@ -93,17 +100,8 @@ public class StabSkill extends AttackSkillBase {
         return icon;
     }
 
-    public boolean canUse(Class clazz, int level) {
-        return clazz.getSkillPointBonus(SkillType.MELEE_OFFENCE) * level >= 5;
-    }
-
-    @Override
-    public boolean canUse(Combatant combatant) {
-        return canUse((Character) combatant);
-    }
-
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MELEE_OFFENCE) >= 5;
+        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Offence")) >= 12;
     }
 
     @Override
@@ -114,6 +112,16 @@ public class StabSkill extends AttackSkillBase {
             return canUse(characterPlugin.getActiveCharacter(player));
         }
         return false;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deals damage equal to the difference between your melee attack roll and your target's melee defence roll";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "12 Sword Offence points required";
     }
 
 }

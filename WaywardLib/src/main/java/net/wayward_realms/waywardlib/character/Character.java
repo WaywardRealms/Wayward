@@ -1,18 +1,18 @@
 package net.wayward_realms.waywardlib.character;
 
-import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
 
 /**
  * Represents a character
  * 
  */
-public interface Character extends Combatant, ConfigurationSerializable {
+public interface Character extends Combatant {
 
     /**
      * Gets the character's unique ID
@@ -323,6 +323,20 @@ public interface Character extends Combatant, ConfigurationSerializable {
     public void setBoots(ItemStack boots);
 
     /**
+     * Gets the equipment
+     *
+     * @return the equipment
+     */
+    public Equipment getEquipment();
+
+    /**
+     * Sets the equipment
+     *
+     * @param equipment the equipment to set
+     */
+    public void setEquipment(Equipment equipment);
+
+    /**
      * Gets the inventory contents of this character
      *
      * @return an array of itemstacks containing the inventory contents of this character
@@ -359,12 +373,25 @@ public interface Character extends Combatant, ConfigurationSerializable {
     public int getStatValue(Stat stat);
 
     /**
-     * Gets the amount of skill points the character has for a certain skill type
+     * Gets the temporary stat modifications currently applying to the character
      *
-     * @param type the type of skill
-     * @return the amount of skill points the character has of the skill type
+     * @return the temporary stat modifications
      */
-    public int getSkillPoints(SkillType type);
+    public Collection<TemporaryStatModification> getTemporaryStatModifications();
+
+    /**
+     * Adds a temporary stat modification to the character
+     *
+     * @param modification the modification to add
+     */
+    public void addTemporaryStatModification(TemporaryStatModification modification);
+
+    /**
+     * Removes a temporary stat modification from a character
+     *
+     * @param modification the modification to remove
+     */
+    public void removeTemporaryStatModification(TemporaryStatModification modification);
 
     /**
      * Checks whether the class is hidden
@@ -379,5 +406,19 @@ public interface Character extends Combatant, ConfigurationSerializable {
      * @param hidden whether to hide the class
      */
     public void setClassHidden(boolean hidden);
+
+    /**
+     * Gets what to use for the name plate
+     *
+     * @return the name plate
+     */
+    public String getNamePlate();
+
+    /**
+     * Sets what to use for the name plate
+     *
+     * @param namePlate the name plate to set
+     */
+    public void setNamePlate(String namePlate);
 
 }

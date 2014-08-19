@@ -1,15 +1,12 @@
 package net.wayward_realms.waywardchat;
 
 import mkremins.fanciful.FancyMessage;
-
 import net.wayward_realms.waywardlib.chat.Channel;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.util.math.MathUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,28 +18,24 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AsyncPlayerChatListener implements Listener {
 
     private WaywardChat plugin;
     private RegisteredServiceProvider<EssentialsPlugin> essentialsPluginProvider;
     private YamlConfiguration pluginConfig;
-    private YamlConfiguration emoteModeConfig;
-    private YamlConfiguration prefixConfig;
-    private ConcurrentHashMap<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
+    private Map<UUID, Location> uuidLocations = new ConcurrentHashMap<>();
 
     public AsyncPlayerChatListener(WaywardChat plugin) {
         this.plugin = plugin;
         this.pluginConfig = (YamlConfiguration)plugin.getConfig();
-        emoteModeConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "emote-mode.yml"));
-        prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
-        prefixConfig.set("admin", " &e[admin] ");
         essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
         // SET UP FUCKING PLAYER LOCATION GETTER SHIT COLLECTION
         Bukkit.getScheduler().runTaskTimer(
@@ -69,45 +62,63 @@ public class AsyncPlayerChatListener implements Listener {
     public void handleAsyncChat(final Player talking, String message) {
         if (!message.equals("")) {
             final String format;
-            if (getEmoteMode(talking).isEmote(message)) {
+            if (plugin.getEmoteMode(talking).isEmote(message)) {
+                int emoteRadius = pluginConfig.getInt("emotes.radius");
                 plugin.getChannel(pluginConfig.getString("default-channel")).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                for (Player player : new ArrayList<>(talking.getWorld().getPlayers())) {
-                    formatEmote(talking, message).send(player);
+                for (UUID uuid : uuidLocations.keySet()) {
+                    Player player = plugin.getServer().getPlayer(uuid); // I hope this is threadsafe...
+                    if (player != null) {
+                        Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
+                        Location playerLocation = correlateUUIDtoLocation(uuid);
+                        if (emoteRadius < 0
+                                || (talkingLocation != null
+                                && playerLocation != null
+                                && talkingLocation.getWorld() == playerLocation.getWorld()
+                                && talkingLocation.distanceSquared(playerLocation) <= (double) (emoteRadius * emoteRadius))) {
+                            formatEmote(talking, message).send(player);
+                        }
+                    }
                 }
             } else {
-                if (plugin.getPlayerChannel(talking) != null) {
-                    plugin.getPlayerChannel(talking).log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
-                    synchronized (plugin.getPlayerChannel(talking).getListeners()) {
-                        for (Player player : new HashSet<>(plugin.getPlayerChannel(talking).getListeners())) {
+                final Channel channel = plugin.getPlayerChannel(talking);
+                if (channel != null) {
+                    channel.log(talking.getName() + "/" + talking.getDisplayName() + ": " + message);
+                    synchronized (channel.getListeners()) {
+                        for (Player player : new HashSet<>(channel.getListeners())) {
                             if (player != null) {
-                                if (plugin.getPlayerChannel(talking).getRadius() >= 0) {
-                                    if (talking.getWorld().equals(player.getWorld())) {
-                                        if (MathUtils.fastsqrt(correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId()))) <= (double) plugin.getPlayerChannel(talking).getRadius()) {
-                                            FancyMessage fancy = formatChannel(plugin.getPlayerChannel(talking), talking, player, message);
-                                            fancy.send(player);
+                                int radius = channel.getRadius();
+                                if (radius >= 0) {
+                                    Location talkingLocation = correlateUUIDtoLocation(talking.getUniqueId());
+                                    Location playerLocation = correlateUUIDtoLocation(player.getUniqueId());
+                                    if (talkingLocation != null && playerLocation != null) {
+                                        if (talkingLocation.getWorld() == playerLocation.getWorld()) {
+                                            if (correlateUUIDtoLocation(talking.getUniqueId()).distanceSquared(correlateUUIDtoLocation(player.getUniqueId())) <= (double) (radius * radius)) {
+                                                FancyMessage fancy = formatChannel(channel, talking, player, message);
+                                                fancy.send(player);
+                                            }
                                         }
                                     }
                                 } else {
-                                    formatChannel(plugin.getPlayerChannel(talking), talking, player, message).send(player);
+                                    formatChannel(channel, talking, player, message).send(player);
                                 }
                             }
                         }
                     }
-                    if (plugin.getPlayerChannel(talking).isIrcEnabled()) {
-                        format = plugin.getPlayerChannel(talking).getFormat()
-                                .replace("%channel%", plugin.getPlayerChannel(talking).getName())
+                    if (channel.isIrcEnabled()) {
+                        format = channel.getFormat()
+                                .replace("%channel%", channel.getName())
                                 .replace("%prefix%", getPlayerPrefix(talking))
                                 .replace("%player%", talking.getDisplayName())
                                 .replace("%ign%", talking.getName())
                                 .replace("&", ChatColor.COLOR_CHAR + "")
                                 .replace("%message%", message);
-                    //SCHEDULE TASK TO PASS TO IRCBOT
+                        //SCHEDULE TASK TO PASS TO IRCBOT
                         Bukkit.getScheduler().runTask(plugin, new Runnable() {
                             public void run() {
-                                plugin.getIrcBot().sendIRC().message(plugin.getPlayerChannel(talking).getIrcChannel(), ChatColor.stripColor(format));
+                                plugin.getIrcBot().sendIRC().message(channel.getIrcChannel(), ChatColor.stripColor(format));
                             }
                         });
-                    //TASK FUCKING PASSED
+                        //TASK FUCKING PASSED
                     }
                 } else {
                     talking.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must talk in a channel! Use /chathelp for help.");
@@ -116,14 +127,8 @@ public class AsyncPlayerChatListener implements Listener {
         }
     }
 
-    public EmoteMode getEmoteMode(OfflinePlayer player) {
-        if (emoteModeConfig.get(player.getName()) != null)
-            return EmoteMode.valueOf(emoteModeConfig.getString(player.getName()));
-        else
-            return EmoteMode.TWO_ASTERISKS;
-    }
-
-    public String getPlayerPrefix(final Permissible player) {
+    public String getPlayerPrefix(Permissible player) {
+        YamlConfiguration prefixConfig = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "prefixes.yml"));
         for (String key : prefixConfig.getKeys(false)) {
             if (player.hasPermission("wayward.chat.prefix." + key)) {
                 return ChatColor.translateAlternateColorCodes('&', prefixConfig.getString(key));
@@ -176,10 +181,48 @@ public class AsyncPlayerChatListener implements Listener {
                         fancy.then(garbledMessage);
                     }
                 } else {
-                    fancy.then(message);
+                    /*
+                    (
+                      ( // brackets covering match for protocol (optional) and domain
+                        ([A-Za-z]{3,9}:(?:\/\/)?) // match protocol, allow in format http:// or mailto:
+                        (?:[\-;:&=\+\$,\w]+@)? // allow something@ for email addresses
+                        [A-Za-z0-9\.\-]+ // anything looking at all like a domain, non-unicode domains
+                        | // or instead of above
+                        (?:www\.|[\-;:&=\+\$,\w]+@) // starting with something@ or www.
+                        [A-Za-z0-9\.\-]+   // anything looking at all like a domain
+                      )
+                      ( // brackets covering match for path, query string and anchor
+                        (?:\/[\+~%\/\.\w\-]*) // allow optional /path
+                        ?\??(?:[\-\+=&;%@\.\w]*) // allow optional query string starting with ?
+                        #?(?:[\.\!\/\\\w]*) // allow optional anchor #anchor
+                      )? // make URL suffix optional
+                    )
+                    */
+                    String urlRegex = "((([A-Za-z]{3,9}:(?://)?)(?:[\\-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9\\.\\-]+|(?:www\\.|[\\-;:&=\\+\\$,\\w]+@)[A-Za-z0-9\\.\\-]+)((?:/[\\+~%/\\.\\w\\-_]*)?\\??(?:[\\-\\+=&;%@\\.\\w_]*)#?(?:[\\.!/\\\\\\w]*))?)";
+                    Matcher matcher = Pattern.compile(urlRegex).matcher(message);
+                    int index = 0;
+                    int startIndex;
+                    int endIndex = 0;
+                    while (matcher.find()) {
+                        startIndex = matcher.start();
+                        endIndex = matcher.end();
+                        if (startIndex > index) {
+                            fancy.then(message.substring(index, startIndex));
+                        }
+                        String link = message.substring(startIndex, endIndex);
+                        if (!link.contains("://")) link = "http://" + link;
+                        fancy.then("[link]")
+                                .color(ChatColor.BLUE)
+                                .style(ChatColor.UNDERLINE)
+                                .link(link)
+                                .tooltip(link);
+                    }
+                    if (endIndex <= message.length() - 1) {
+                        fancy.then(message.substring(endIndex, message.length()));
+                        if (chatColour != null) fancy.color(chatColour);
+                        if (chatFormat != null) fancy.style(chatFormat);
+                    }
                 }
-                if (chatColour != null) fancy.color(chatColour);
-                if (chatFormat != null) fancy.style(chatFormat);
                 i += ("%message%").length() - 1;
             } else {
                 fancy.then(format.charAt(i));

@@ -1,23 +1,29 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.Party;
+import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardskills.WaywardSkills;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.util.BlockIterator;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 public class BlizzardSpell extends AttackSpellBase {
 
@@ -28,7 +34,6 @@ public class BlizzardSpell extends AttackSpellBase {
         setName("Blizzard");
         setManaCost(50);
         setCoolDown(120);
-        setType(SkillType.MAGIC_OFFENCE);
         setAttackStat(Stat.MAGIC_ATTACK);
         setDefenceStat(Stat.MAGIC_DEFENCE);
         setHitChance(50);
@@ -79,12 +84,12 @@ public class BlizzardSpell extends AttackSpellBase {
 
     @Override
     public String getFightUseMessage(Character attacking, Character defending, double damage) {
-        return attacking.getName() + " summoned a blizzard at " + defending.getName() + ", dealing " + damage + " damage.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " summoned a blizzard at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", dealing " + damage + " damage.";
     }
 
     @Override
     public String getFightFailManaMessage(Character attacking, Character defending) {
-        return attacking.getName() + " began summoning strong winds, but didn't have enough mana to summon a blizzard.";
+        return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " began summoning strong winds, but didn't have enough mana to summon a blizzard.";
     }
 
     @Override
@@ -118,9 +123,30 @@ public class BlizzardSpell extends AttackSpellBase {
             delay += 5L;
             i++;
         }
+        Set<LivingEntity> invulnerableEntities = new HashSet<>();
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            Party party = characterPlugin.getParty(characterPlugin.getActiveCharacter(player));
+            if (party != null) {
+                for (Character member : party.getMembers()) {
+                    OfflinePlayer memberPlayer = member.getPlayer();
+                    if (memberPlayer.isOnline()) invulnerableEntities.add(memberPlayer.getPlayer());
+                }
+            }
+        }
         for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (entity.getLocation().distanceSquared(player.getLocation()) <= 64) {
-                entity.damage(entity.getHealth() / 2, player);
+                if (!invulnerableEntities.contains(entity)) {
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, entity.getHealth() / 2D);
+                    plugin.getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        if (event.getEntity() instanceof LivingEntity) {
+                            ((LivingEntity) event.getEntity()).damage(event.getDamage(), event.getDamager());
+                            event.getEntity().setLastDamageCause(event);
+                        }
+                    }
+                }
             }
         }
         return true;
@@ -156,7 +182,12 @@ public class BlizzardSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 40;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Water Magic")) >= 50;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deals damage equal to the difference between your magic attack roll and your opponent's magic defence roll for every member of the opposing party";
     }
 
     @Override
@@ -169,6 +200,11 @@ public class BlizzardSpell extends AttackSpellBase {
     @Override
     public int getStatusEffectChance(StatusEffect statusEffect) {
         return 20;
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "50 Water Magic points required";
     }
 
 }

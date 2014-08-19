@@ -106,7 +106,7 @@ public class AuctionImpl implements Auction {
         EconomyPlugin plugin = Bukkit.getServicesManager().getRegistration(EconomyPlugin.class).getProvider();
         plugin.transferMoney(getHighestBid().getCharacter(), getCharacter(), getHighestBid().getAmount());
         getHighestBid().getCharacter().getPlayer().getPlayer().getInventory().addItem(getItem());
-        getHighestBid().getCharacter().getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You won " + getCharacter().getName() + "'s auction. Here is your " + getItem().getType().toString().toLowerCase().replace('_', ' '));
+        getHighestBid().getCharacter().getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You won " + (getCharacter().isNameHidden() ? ChatColor.MAGIC + getCharacter().getName() + ChatColor.RESET : getCharacter().getName()) + "'s auction. Here is your " + getItem().getType().toString().toLowerCase().replace('_', ' '));
     }
 
     @Override

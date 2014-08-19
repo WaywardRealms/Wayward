@@ -3,7 +3,6 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -23,7 +22,6 @@ public class IceBreathSpell extends SpellBase {
         setName("IceBreath");
         setManaCost(8);
         setCoolDown(90);
-        setType(SkillType.MAGIC_NATURE);
     }
 
     @Override
@@ -40,11 +38,11 @@ public class IceBreathSpell extends SpellBase {
                 Player player = attacking.getPlayer().getPlayer();
                 player.launchProjectile(Snowball.class);
                 fight.setStatusTurns(attacking, StatusEffect.FROZEN, 5);
-                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed an ice cold wind at " + defending.getName() + ", freezing them.");
+                fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " breathed an ice cold wind at " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + ", freezing them.");
             }
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed an ice cold wind, but nothing happened.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " breathed an ice cold wind, but nothing happened.");
         }
         return false;
     }
@@ -60,7 +58,17 @@ public class IceBreathSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 20;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Water Magic")) >= 5;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Prevents one target from moving for 5 turns";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "5 Water Magic points required";
     }
 
 }

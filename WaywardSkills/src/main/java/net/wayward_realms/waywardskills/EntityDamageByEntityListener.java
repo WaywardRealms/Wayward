@@ -6,8 +6,17 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class EntityDamageByEntityListener implements Listener {
+
+    private WaywardSkills plugin;
+
+    public EntityDamageByEntityListener(WaywardSkills plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
@@ -47,7 +56,37 @@ public class EntityDamageByEntityListener implements Listener {
                     if (!fireball.getMetadata("isFireBreath").isEmpty()) {
                         event.getEntity().setFireTicks(400);
                         event.setCancelled(true);
-                        event.getEntity().remove();
+                        fireball.remove();
+                    }
+                }
+            }
+        } else if (event.getDamager() instanceof Arrow) {
+            Arrow arrow = (Arrow) event.getDamager();
+            if (arrow.getMetadata("isRazorShot") != null) {
+                if (!arrow.getMetadata("isRazorShot").isEmpty()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        event.setDamage(9999D);
+                        Arrow newArrow = ((LivingEntity) event.getEntity()).launchProjectile(Arrow.class, arrow.getVelocity());
+                        newArrow.setMetadata("isRazorShot", new FixedMetadataValue(plugin, true));
+                    }
+                }
+            }
+            if (arrow.getMetadata("isPowerShot") != null) {
+                if (!arrow.getMetadata("isPowerShot").isEmpty()) {
+                    event.setDamage(9999D);
+                }
+            }
+            if (arrow.getMetadata("isPoisonArrow") != null) {
+                if (!arrow.getMetadata("isPoisonArrow").isEmpty()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 2, 300));
+                    }
+                }
+            }
+            if (arrow.getMetadata("isSnareShot") != null) {
+                if (!arrow.getMetadata("isSnareShot").isEmpty()) {
+                    if (event.getEntity() instanceof LivingEntity) {
+                        ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 7, 300));
                     }
                 }
             }

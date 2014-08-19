@@ -3,7 +3,6 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
-import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -22,7 +21,6 @@ public class FireBreathSpell extends SpellBase {
     public FireBreathSpell(WaywardSkills plugin) {
         this.plugin = plugin;
         setName("FireBreath");
-        setType(SkillType.MAGIC_OFFENCE);
         setCoolDown(15);
         setManaCost(5);
     }
@@ -41,11 +39,11 @@ public class FireBreathSpell extends SpellBase {
                 Player player = attacking.getPlayer().getPlayer();
                 player.launchProjectile(Snowball.class);
                 fight.setStatusTurns(attacking, StatusEffect.BURNED, 5);
-                fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " scorched " + defending.getName() + " with burning hot breath.");
+                fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " scorched " + (defending.isNameHidden() ? ChatColor.MAGIC + defending.getName() + ChatColor.RESET : defending.getName()) + ChatColor.YELLOW + " with burning hot breath.");
             }
             return true;
         } else {
-            fight.sendMessage(ChatColor.YELLOW + attacking.getName() + " breathed a burning hot wind, but nothing happened.");
+            fight.sendMessage(ChatColor.YELLOW + (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " breathed a burning hot wind, but nothing happened.");
         }
         return false;
     }
@@ -61,7 +59,17 @@ public class FireBreathSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 5;
+        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 3;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Deal 5 damage to the opposing party for 5 turns";
+    }
+
+    @Override
+    public String getSpecialisationInfo() {
+        return ChatColor.GRAY + "3 Fire Magic points required";
     }
 
 }

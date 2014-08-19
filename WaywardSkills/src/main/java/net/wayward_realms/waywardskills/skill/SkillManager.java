@@ -22,17 +22,23 @@ public class SkillManager {
 
     public SkillManager(WaywardSkills plugin) {
         this.plugin = plugin;
-        addSkill(new ArrowSkill());
-        addSkill(new BandageSkill());
-        addSkill(new DashSkill());
+        addSkill(new ArmourUpSkill(plugin));
+        addSkill(new ArrowSkill(plugin));
+        addSkill(new BandageSkill(plugin));
+        addSkill(new CopyBookSkill(plugin));
+        addSkill(new CopyScrollSkill(plugin));
+        addSkill(new DashSkill(plugin));
         addSkill(new ItemSkill());
-        addSkill(new PoisonArrowSkill());
-        addSkill(new QuickStepSkill());
-        addSkill(new SharpenSkill());
-        addSkill(new SlashSkill());
-        addSkill(new StabSkill());
+        addSkill(new PoisonArrowSkill(plugin));
+        addSkill(new QuickStepSkill(plugin));
+        addSkill(new SharpenSkill(plugin));
+        addSkill(new SlashSkill(plugin));
+        addSkill(new StabSkill(plugin));
         addSkill(new SpinningSweepSkill(plugin));
-        addSkill(new MultiShotSkill());
+        addSkill(new MultiShotSkill(plugin));
+        addSkill(new RazorShotSkill(plugin));
+        addSkill(new PowerShotSkill(plugin));
+        addSkill(new SnareShotSkill(plugin));
     }
 
     public Skill getSkill(String name) {

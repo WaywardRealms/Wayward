@@ -6,8 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-
 public class BookshelfBlockBreakListener implements Listener {
 
     private WaywardMechanics plugin;
@@ -24,11 +22,7 @@ public class BookshelfBlockBreakListener implements Listener {
                     event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), itemStack);
                 }
             }
-            plugin.getBookshelfInventories().remove(event.getBlock());
-            File bookshelfFile = new File(plugin.getDataFolder().getPath() + File.separator + "bookshelves" + event.getBlock().getWorld().getName() + File.separator + event.getBlock().getX() + File.separator + event.getBlock().getY() + File.separator + event.getBlock().getZ() + "bookshelf.yml");
-            if (bookshelfFile.exists()) {
-                bookshelfFile.delete();
-            }
+            plugin.setBookshelfInventory(event.getBlock(), null);
         }
     }
 

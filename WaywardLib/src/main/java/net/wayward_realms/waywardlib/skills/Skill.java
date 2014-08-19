@@ -88,18 +88,11 @@ public interface Skill {
     public void setName(String name);
 
     /**
-     * Gets the type of skill
+     * Gets a description of how the skill is used in RP
      *
-     * @return the type
+     * @return a description of how the skill is used in RP
      */
-    public SkillType getType();
-
-    /**
-     * Sets the type of skill
-     *
-     * @param type the type to set
-     */
-    public void setType(SkillType type);
+    public String getDescription();
 
     /**
      * Gets the cooldown for the skill
@@ -114,5 +107,26 @@ public interface Skill {
      * @param coolDown the cooldown to set, in seconds
      */
     public void setCoolDown(int coolDown);
+
+    /**
+     * Gets the amount of turns the skill is on cooldown for after use
+     *
+     * @return the amount of turns the skill takes to cool down
+     */
+    public int getCoolDownTurns();
+
+    /**
+     * Sets the amount of turns the skills is on cooldown for after use
+     *
+     * @param coolDownTurns the amount of turns the skill takes to cool down
+     */
+    public void setCoolDownTurns(int coolDownTurns);
+
+    /**
+     * Gets the information on the specialisations required to unlock the skill
+     *
+     * @return the information on specialisations required
+     */
+    public String getSpecialisationInfo();
 
 }

@@ -1,7 +1,11 @@
 package net.wayward_realms.waywardmonsters;
 
+import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.character.Party;
+import net.wayward_realms.waywardlib.skills.Stat;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -41,6 +45,9 @@ public class EntityDamageByEntityListener implements Listener {
             attacker = (LivingEntity) event.getDamager();
             attackStat = Stat.MELEE_ATTACK;
             defenceStat = Stat.MELEE_DEFENCE;
+        } else {
+            attackStat = Stat.MAGIC_ATTACK;
+            defenceStat = Stat.MAGIC_DEFENCE;
         }
         if (event.getEntity() instanceof LivingEntity) {
             defender = (LivingEntity) event.getEntity();
@@ -65,6 +72,24 @@ public class EntityDamageByEntityListener implements Listener {
                 }
             } else {
                 defence = plugin.getEntityLevelManager().getEntityStatValue(defender);
+            }
+        }
+        if (attacker != null && defender != null && attacker instanceof Player && defender instanceof Player) {
+            RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+            if (characterPluginProvider != null) {
+                CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                Character attackingCharacter = characterPlugin.getActiveCharacter((Player) attacker);
+                Character defendingCharacter = characterPlugin.getActiveCharacter((Player) defender);
+                Party party = characterPlugin.getParty(attackingCharacter);
+                if (party != null) {
+                    for (Character character : party.getMembers()) {
+                        if (character.getId() == defendingCharacter.getId()) {
+                            event.setCancelled(true);
+                            ((Player) attacker).sendMessage(ChatColor.RED + "You cannot attack members of your party!");
+                            return;
+                        }
+                    }
+                }
             }
         }
         if (attacker != null && defender != null && (defender instanceof Monster || defender instanceof Player)) {

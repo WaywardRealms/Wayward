@@ -1,7 +1,8 @@
 package net.wayward_realms.waywardmonsters.trainingdummy;
 
-import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
+import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardmonsters.WaywardMonsters;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -25,7 +26,7 @@ public class TrainingDummyPlayerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 6; i++) {
                 Block block = event.getClickedBlock().getRelative(BlockFace.DOWN, i);
                 if (block.getState() instanceof Sign) {
                     Sign sign = (Sign) block.getState();
@@ -45,12 +46,16 @@ public class TrainingDummyPlayerInteractListener implements Listener {
                                     event.getPlayer().setItemInHand(null);
                                 }
                             } else {
-                                event.getPlayer().damage(0.5D);
+                                event.getPlayer().damage(2D);
                             }
-                            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
-                            if (classesPluginProvider != null) {
-                                ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
-                                classesPlugin.giveExperience(event.getPlayer(), 1);
+                            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
+                            if (skillsPluginProvider != null) {
+                                SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+                                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+                                if (characterPluginProvider != null) {
+                                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+                                    skillsPlugin.giveExperience(characterPlugin.getActiveCharacter(event.getPlayer()), 5);
+                                }
                             }
                             uses = 0;
                         } else {

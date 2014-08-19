@@ -21,7 +21,7 @@ public class WarningManager {
 
     public Collection<Warning> getWarnings(OfflinePlayer player) {
         File warningsDirectory = new File(plugin.getDataFolder(), "warnings");
-        File warningsFile = new File(warningsDirectory, player.getName() + ".yml");
+        File warningsFile = new File(warningsDirectory, player.getUniqueId().toString() + ".yml");
         if (warningsFile.exists()) {
             YamlConfiguration warningsSave = YamlConfiguration.loadConfiguration(warningsFile);
             return (List<Warning>) warningsSave.getList("warnings");
@@ -32,7 +32,7 @@ public class WarningManager {
 
     public void addWarning(OfflinePlayer player, Warning warning) {
         File warningsDirectory = new File(plugin.getDataFolder(), "warnings");
-        File warningsFile = new File(warningsDirectory, player.getName() + ".yml");
+        File warningsFile = new File(warningsDirectory, player.getUniqueId().toString() + ".yml");
         YamlConfiguration warningsSave;
         List<Warning> warnings;
         if (warningsFile.exists()) {
@@ -53,7 +53,7 @@ public class WarningManager {
 
     public void removeWarning(OfflinePlayer player, Warning warning) {
         File warningsDirectory = new File(plugin.getDataFolder(), "warnings");
-        File warningsFile = new File(warningsDirectory, player.getName() + ".yml");
+        File warningsFile = new File(warningsDirectory, player.getUniqueId().toString() + ".yml");
         YamlConfiguration warningsSave;
         List<Warning> warnings;
         if (warningsFile.exists()) {
