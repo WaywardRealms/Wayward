@@ -32,7 +32,7 @@ public class PrepareItemCraftListener implements Listener {
                             CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                             net.wayward_realms.waywardlib.character.Character character = characterPlugin.getActiveCharacter((Player) viewer);
                             int craftEfficiency = plugin.getCraftEfficiency(character, craftedItem.getType());
-                            int amount = (int) Math.min(1, Math.round(((double) craftEfficiency / 50D) * (double) craftedItem.getAmount()));
+                            int amount = (int) Math.max(1, Math.round(((double) craftEfficiency / 50D) * (double) craftedItem.getAmount()));
                             craftedItem.setAmount(amount);
                             if (ToolType.getToolType(event.getInventory().getResult().getType()) != null) {
                                 ToolType type = ToolType.getToolType(event.getInventory().getResult().getType());
