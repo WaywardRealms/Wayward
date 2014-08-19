@@ -30,7 +30,7 @@ public class EntityLevelManager {
                 exception.printStackTrace();
             }
         } else {
-            levelMap = new BufferedImage(256, 256, BufferedImage.TYPE_BYTE_GRAY);
+            levelMap = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
             try {
                 ImageIO.write(levelMap, "png", levelMapFile);
             } catch (IOException exception) {
