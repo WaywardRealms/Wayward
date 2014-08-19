@@ -27,7 +27,7 @@ public class RollCommand implements CommandExecutor {
                     Character character = characterPlugin.getActiveCharacter((Player) sender);
                     RollContext context = new RollContext(character, args[0].equalsIgnoreCase("attack") || args[0].equalsIgnoreCase("a"));
                     plugin.setRollContext((Player) sender, context);
-                    ((Player) sender).openInventory(plugin.getHandSelectionInventory("Specialisation"));
+                    ((Player) sender).openInventory(plugin.getHandSelectionInventory("Hand"));
                 }
             } else if (args.length > 0) {
                 plugin.getRollsManager().roll((Player) sender, args[0]);
