@@ -15,7 +15,6 @@
         <module>WaywardLib</module>
         <module>WaywardCharacters</module>
         <module>WaywardChat</module>
-        <module>WaywardClasses</module>
         <module>WaywardSkills</module>
         <module>WaywardMonsters</module>
         <module>WaywardCombat</module>
