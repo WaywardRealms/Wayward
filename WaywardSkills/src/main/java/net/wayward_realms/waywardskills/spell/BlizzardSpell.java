@@ -182,7 +182,7 @@ public class BlizzardSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Water Magic")) >= 50;
+        return hasScroll(character);
     }
 
     @Override

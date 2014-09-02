@@ -97,7 +97,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 9;
+        return false;
     }
 
     @Override

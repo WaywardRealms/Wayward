@@ -80,7 +80,7 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Lightning Magic")) >= 25 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 30;
+        return hasScroll(character);
     }
 
     @Override

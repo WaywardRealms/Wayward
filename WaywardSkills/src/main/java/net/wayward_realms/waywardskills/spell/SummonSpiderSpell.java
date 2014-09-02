@@ -79,7 +79,7 @@ public class SummonSpiderSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Summoning Magic")) >= 20;
+        return hasScroll(character);
     }
 
     @Override

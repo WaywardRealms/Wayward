@@ -69,7 +69,7 @@ public class FireballSpell extends AttackSpellBase {
     }
 
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 30;
+        return hasScroll(character);
     }
 
     @Override

@@ -79,7 +79,7 @@ public class SummonZombieSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Summoning Magic")) >= 10;
+        return hasScroll(character);
     }
 
     @Override

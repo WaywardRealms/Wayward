@@ -89,7 +89,7 @@ public class EsunaSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Regenerative Magic")) >= 3;
+        return hasScroll(character);
     }
 
     @Override

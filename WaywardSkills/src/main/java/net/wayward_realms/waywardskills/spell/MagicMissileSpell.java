@@ -55,7 +55,7 @@ public class MagicMissileSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Magic Offence")) >= 3;
+        return hasScroll(character);
     }
 
     @Override

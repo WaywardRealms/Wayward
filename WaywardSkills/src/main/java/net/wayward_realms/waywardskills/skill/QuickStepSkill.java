@@ -73,7 +73,7 @@ public class QuickStepSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Nimble")) >= 10;
+        return false;
     }
 
     @Override

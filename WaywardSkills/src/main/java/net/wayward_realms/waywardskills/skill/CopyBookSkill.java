@@ -48,7 +48,7 @@ public class CopyBookSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Scribe")) >= 5;
+        return false;
     }
 
     @Override

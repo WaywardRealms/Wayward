@@ -99,7 +99,7 @@ public class CureSpell extends SpellBase {
     }
 
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Regenerative Magic")) >= 6;
+        return hasScroll(character);
     }
 
     @Override

@@ -101,7 +101,7 @@ public class StabSkill extends AttackSkillBase {
     }
 
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Offence")) >= 12;
+        return false;
     }
 
     @Override

@@ -100,7 +100,7 @@ public class MultiShotSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 20;
+        return false;
     }
 
     @Override

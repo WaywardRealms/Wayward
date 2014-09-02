@@ -48,7 +48,7 @@ public class CopyScrollSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Scribe")) >= 25;
+        return false;
     }
 
     @Override

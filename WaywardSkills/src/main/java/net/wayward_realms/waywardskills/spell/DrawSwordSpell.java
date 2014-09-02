@@ -71,7 +71,7 @@ public class DrawSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 10;
+        return hasScroll(character);
     }
 
     @Override

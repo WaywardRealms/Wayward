@@ -123,7 +123,7 @@ public class BandageSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Healing")) >= 3;
+        return false;
     }
 
     @Override

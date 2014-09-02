@@ -72,7 +72,7 @@ public class EmpowerSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Buff")) >= 3;
+        return hasScroll(character);
     }
 
     @Override

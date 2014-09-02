@@ -82,7 +82,7 @@ public class ArrowSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 3;
+        return false;
     }
 
     @Override

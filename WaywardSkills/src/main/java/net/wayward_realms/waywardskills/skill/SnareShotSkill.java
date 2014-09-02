@@ -78,7 +78,7 @@ public class SnareShotSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 8;
+        return false;
     }
 
     @Override

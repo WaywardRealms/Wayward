@@ -65,7 +65,7 @@ public class DashSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Nimble")) >= 3;
+        return false;
     }
 
     @Override

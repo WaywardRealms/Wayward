@@ -123,7 +123,7 @@ public class ArmourUpSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Shield Defence")) >= 3;
+        return false;
     }
 
     @Override

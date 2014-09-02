@@ -53,7 +53,7 @@ public class FireSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 15 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 25;
+        return hasScroll(character);
     }
 
     @Override

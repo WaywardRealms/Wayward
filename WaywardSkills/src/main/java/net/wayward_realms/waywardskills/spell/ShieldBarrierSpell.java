@@ -92,7 +92,7 @@ public class ShieldBarrierSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Shielding Magic")) >= 45;
+        return hasScroll(character);
     }
 
     @Override

@@ -71,7 +71,7 @@ public class CloakOfShadowsSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Illusory Magic")) >= 20;
+        return hasScroll(character);
     }
 
     @Override
