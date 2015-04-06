@@ -54,6 +54,11 @@ public class RollCommand implements CommandExecutor {
 
             String secondHalf;
             if (rollString.contains("d")) {
+                String[] parts = rollString.split("d");
+                if (parts.length < 2) {
+                    roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "Invalid roll format");
+                    return -1;
+                }
                 amount = Integer.parseInt(rollString.split("d")[0]);
                 secondHalf = rollString.split("d")[1];
             } else {
@@ -63,10 +68,20 @@ public class RollCommand implements CommandExecutor {
                 roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "You can't roll that many times!");
                 return -1;
             }
-            if (rollString.contains("+")) {
+            if (secondHalf.contains("+")) {
+                String[] parts = secondHalf.split("\\+");
+                if (parts.length < 2) {
+                    roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "Invalid roll format");
+                    return -1;
+                }
                 plus = Integer.parseInt(secondHalf.split("\\+")[1]);
                 maxRoll = Integer.parseInt(secondHalf.split("\\+")[0]);
             } else if (rollString.contains("-")) {
+                String[] parts = secondHalf.split("\\-");
+                if (parts.length < 2) {
+                    roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "Invalid roll format");
+                    return -1;
+                }
                 plus = -Integer.parseInt(secondHalf.split("\\-")[1]);
                 maxRoll = Integer.parseInt(secondHalf.split("\\-")[0]);
             } else {
