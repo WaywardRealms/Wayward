@@ -149,7 +149,7 @@ public class TemporaryStatModification implements ConfigurationSerializable {
     }
 
     public static TemporaryStatModification deserialize(Map<String, Object> serialised) {
-        return new TemporaryStatModification(Stat.valueOf((String) serialised.get("stat")), (float) serialised.get("multiplier"));
+        return new TemporaryStatModification(Stat.valueOf((String) serialised.get("stat")), (float) ((double) serialised.get("multiplier")));
     }
 
 }

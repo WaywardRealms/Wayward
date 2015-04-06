@@ -1,6 +1,7 @@
 package net.wayward_realms.waywardlib;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
@@ -48,6 +49,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         PlayerNamePlateUtils.init(this);
         ConfigurationSerialization.registerClass(SerialisableLocation.class);
         ConfigurationSerialization.registerClass(SerialisableChunk.class);
+        ConfigurationSerialization.registerClass(TemporaryStatModification.class);
         loadState();
         getServer().getPluginManager().registerEvents(new Listener() {
             @EventHandler
