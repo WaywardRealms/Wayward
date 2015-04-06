@@ -1,7 +1,7 @@
 package net.wayward_realms.waywardmonsters;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -76,10 +76,10 @@ public class EntityLevelManager {
             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
             if (characterPluginProvider != null) {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-                if (skillsPluginProvider != null) {
-                    SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-                    return skillsPlugin.getLevel(characterPlugin.getActiveCharacter((Player) entity));
+                RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                if (classesPluginProvider != null) {
+                    ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                    return classesPlugin.getLevel(characterPlugin.getActiveCharacter((Player) entity));
                 }
             }
         }

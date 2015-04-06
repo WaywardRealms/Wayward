@@ -13,6 +13,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
+import static org.bukkit.block.Biome.*;
+
 public class PlayerItemConsumeListener implements Listener {
 
     private WaywardCharacters plugin;
@@ -36,7 +38,7 @@ public class PlayerItemConsumeListener implements Listener {
                         if (!isSafe) {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 1500, 2), true);
                             player.sendMessage(ChatColor.RED + "You feel sick. Perhaps it was the water.");
-                            if (biome.toString().contains("OCEAN") || biome.toString().contains("BEACH")) {
+                            if (biome == OCEAN || biome == BEACH) {
                                 character.setThirst(character.getThirst() - 2);
                                 player.sendMessage(ChatColor.RED + "You suddenly feel dehydrated from drinking salt water.");
                                 player.sendMessage(ChatColor.RED + "Thirst: -2" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");

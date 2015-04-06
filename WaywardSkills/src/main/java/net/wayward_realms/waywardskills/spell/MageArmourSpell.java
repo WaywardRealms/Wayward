@@ -4,6 +4,7 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
@@ -28,6 +29,7 @@ public class MageArmourSpell extends SpellBase {
         setName("MageArmour");
         setManaCost(25);
         setCoolDown(180);
+        setType(SkillType.MAGIC_DEFENCE);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class MageArmourSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Shielding Magic")) >= 5;
+        return character.getSkillPoints(SkillType.MAGIC_DEFENCE) >= 5;
     }
 
     @Override
@@ -119,11 +121,6 @@ public class MageArmourSpell extends SpellBase {
     @Override
     public String getDescription() {
         return "Increases defensive rolls by 25% for 5 turns";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "5 Shielding Magic points required";
     }
 
 }

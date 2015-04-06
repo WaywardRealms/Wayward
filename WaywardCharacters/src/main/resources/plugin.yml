@@ -1,5 +1,5 @@
 name: ${project.name}
-authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
+authors: [alyphen, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardcharacters.WaywardCharacters
@@ -16,6 +16,10 @@ commands:
         description: Shows your stats
         aliases: [statistics]
         usage: /<command>
+    skillpoints:
+        description: Shows your skill points
+        aliases: [sp]
+        usage: /<command>
     togglethirst:
         description: Toggles thirst
         usage: /<command>
@@ -26,7 +30,7 @@ commands:
         description: Parent command for party commands
         usage: /<command> [invite|join|leave|members|disband]
     freezehealth:
-        description: Freezes health regen
+        description: Freezes your health regeneration
         usage: /<command>
 permissions:
     wayward.characters.createmasheekwell:
@@ -41,6 +45,9 @@ permissions:
     wayward.characters.command.character.list.others:
         default: op
         description: Allows you to list other players characters
+    wayward.characters.command.character.resetstatpoints:
+        default: op
+        description: Allows you to reset character stat points
     wayward.characters.command.togglehunger:
         default: op
         description: Allows you to toggle hunger

@@ -1,0 +1,22 @@
+package net.wayward_realms.waywardlib.skills;
+
+/**
+ * An enum containing skill types
+ */
+public enum SkillType {
+
+    MELEE_OFFENCE,
+    MELEE_DEFENCE,
+    RANGED_OFFENCE,
+    RANGED_DEFENCE,
+    MAGIC_OFFENCE,
+    MAGIC_DEFENCE,
+    MAGIC_HEALING,
+    MAGIC_NATURE,
+    MAGIC_ILLUSION,
+    MAGIC_SUMMONING,
+    MAGIC_SWORD,
+    SPEED_NIMBLE,
+    SUPPORT_PERFORM
+
+}

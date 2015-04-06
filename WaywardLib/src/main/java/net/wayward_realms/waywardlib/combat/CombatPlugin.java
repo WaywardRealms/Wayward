@@ -1,7 +1,6 @@
 package net.wayward_realms.waywardlib.combat;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
-import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -40,5 +39,4 @@ public interface CombatPlugin extends WaywardPlugin {
      */
     public Fight getActiveFight(Combatant combatant);
 
-    int roll(Player player, String rollString);
 }

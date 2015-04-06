@@ -2,23 +2,17 @@ package net.wayward_realms.waywardcharacters;
 
 import mkremins.fanciful.FancyMessage;
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.character.Equipment;
 import net.wayward_realms.waywardlib.character.Gender;
 import net.wayward_realms.waywardlib.character.Race;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.events.EventCharacter;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CharacterCommand implements CommandExecutor {
 
@@ -58,6 +52,7 @@ public class CharacterCommand implements CommandExecutor {
                 }
                 if (player != null) {
                     Character character = plugin.getActiveCharacter(player);
+                    ClassesPlugin classesPlugin = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class).getProvider();
                     if (sender instanceof Player) {
                         FancyMessage message = new FancyMessage("")
                                 .then(character.getName() + "'s ")
@@ -76,6 +71,13 @@ public class CharacterCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.DARK_GRAY + "Gender: " + ChatColor.BLUE + character.getGender().getName());
                     if (!character.isRaceHidden())
                         sender.sendMessage(ChatColor.DARK_GRAY + "Race: " + ChatColor.BLUE + character.getRace().getName());
+                    if (classesPlugin != null) {
+                        if (classesPlugin.getClass(character) != null) {
+                            if (!character.isClassHidden()) {
+                                sender.sendMessage(ChatColor.DARK_GRAY + "Class: " + ChatColor.BLUE + "Lv" + classesPlugin.getLevel(character) + " " + classesPlugin.getClass(character).getName());
+                            }
+                        }
+                    }
                     if (!character.isDescriptionHidden())
                         sender.sendMessage(ChatColor.DARK_GRAY + "Description: " + ChatColor.BLUE + character.getDescription());
                 } else {
@@ -228,6 +230,31 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " extenddescription [info]");
                 }
+            } else if (args[0].equalsIgnoreCase("assignstatpoint") || args[0].equalsIgnoreCase("asp")) {
+                if (args.length >= 2) {
+                    Character character = plugin.getActiveCharacter((Player) sender);
+                    if (character instanceof CharacterImpl) {
+                        CharacterImpl characterImpl = (CharacterImpl) character;
+                        if (characterImpl.getUnassignedStatPoints() >= 1) {
+                            try {
+                                Stat stat = Stat.valueOf(args[1].toUpperCase());
+                                characterImpl.assignStatPoint(stat);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Stat point assigned to " + stat.toString().toLowerCase().replace("_", " "));
+                            } catch (IllegalArgumentException exception) {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That stat doesn't exist! Try one of the following:");
+                                for (Stat stat : Stat.values()) {
+                                    sender.sendMessage(ChatColor.RED + stat.toString().toLowerCase());
+                                }
+                            }
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have any unassigned stat points.");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You are using a non-default character implementation, stat points are unsupported for this character type.");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0].toLowerCase() + " [stat]");
+                }
             } else if (args[0].equalsIgnoreCase("list")) {
                 Player player = (Player) sender;
                 if (sender.hasPermission("wayward.characters.command.character.list.others")) {
@@ -348,43 +375,36 @@ public class CharacterCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
                 }
-            } else if (args[0].equalsIgnoreCase("equipment")) {
-                if (sender instanceof Player) {
-                    Character character = plugin.getActiveCharacter((Player) sender);
-                    Equipment equipment = character.getEquipment();
-                    Inventory equipmentInventory = plugin.getServer().createInventory(null, 27, "Equipment");
-                    if (equipment.getOnHandItem() != null)
-                        equipmentInventory.setItem(10, character.getEquipment().getOnHandItem());
-                    if (equipment.getOffHandItem() != null)
-                        equipmentInventory.setItem(11, character.getEquipment().getOffHandItem());
-                    if (equipment.getPet() != null) {
-                        ItemStack petItem = new ItemStack(Material.MONSTER_EGG);
-                        ItemMeta meta = petItem.getItemMeta();
-                        meta.setDisplayName(equipment.getPet().getName());
-                        List<String> lore = new ArrayList<>();
-                        lore.add(Integer.toString(equipment.getPet().getId()));
-                        meta.setLore(lore);
-                        petItem.setItemMeta(meta);
-                        equipmentInventory.setItem(13, petItem);
-                    }
-                    for (int i = 0; i < 9; i++) {
-                        if (equipment.getScrolls()[i] != null) {
-                            if (i < 3) {
-                                equipmentInventory.setItem(i + 6, equipment.getScrolls()[i]);
-                            } else if (i < 6) {
-                                equipmentInventory.setItem(i + 12, equipment.getScrolls()[i]);
+            } else if (args[0].equalsIgnoreCase("resetstatpoints") || args[0].equalsIgnoreCase("rsp")) {
+                if (sender.hasPermission("wayward.characters.command.character.resetstatpoints")) {
+                    if (args.length > 1) {
+                        try {
+                            int cid = Integer.parseInt(args[1]);
+                            Character character = plugin.getCharacter(cid);
+                            if (character != null) {
+                                if (character instanceof CharacterImpl) {
+                                    ((CharacterImpl) character).resetStatPoints();
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Reset " + character.getName() + "'s stat points.");
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character is using a non-default character implementation, and cannot use stat points.");
+                                }
                             } else {
-                                equipmentInventory.setItem(i + 18, equipment.getScrolls()[i]);
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That character does not exist.");
                             }
+                        } catch (NumberFormatException exception) {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
                         }
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " " + args[0] + " [character id]");
                     }
-                    ((Player) sender).openInventory(equipmentInventory);
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
                 }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide|transfer|equipment]");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|list|revive|hide|unhide|transfer|equipment]");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [new|switch|card|set|extenddescription|assignstatpoint|list|revive|hide|unhide|transfer|resetstatpoints]");
         }
         return true;
     }

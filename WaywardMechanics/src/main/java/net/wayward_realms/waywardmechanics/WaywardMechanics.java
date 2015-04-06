@@ -19,6 +19,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Map;
+
 public class WaywardMechanics extends JavaPlugin implements MechanicsPlugin {
 
     private BookshelfManager bookshelfManager = new BookshelfManager(this);

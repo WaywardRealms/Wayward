@@ -1,9 +1,10 @@
 package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,6 +22,7 @@ public class PowerShotSkill extends AttackSkillBase {
         this.plugin = plugin;
         setName("PowerShot");
         setCoolDown(90);
+        setType(SkillType.RANGED_OFFENCE);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
         setCriticalChance(2);
@@ -81,17 +83,12 @@ public class PowerShotSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 50;
+        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 24;
     }
 
     @Override
     public String getDescription() {
         return "Deals damage equal to double the difference between your ranged attack roll and your target's ranged defence roll";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "50 Bow Offence points required";
     }
 
 }

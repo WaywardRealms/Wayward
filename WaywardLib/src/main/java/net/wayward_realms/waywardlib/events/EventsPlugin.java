@@ -47,7 +47,7 @@ public interface EventsPlugin extends WaywardPlugin {
      * @param id the id
      * @return the event character if there is one by the ID, otherwise null if the character doesn't exist, or is a normal character
      */
-    public EventCharacter getEventCharacter(int id);
+    public EventCharacter getEventCharacter(long id);
 
     /**
      * Creates a new event character for the given player

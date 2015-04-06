@@ -1,11 +1,11 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.professions.ToolType;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardskills.WaywardSkills;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,13 +17,11 @@ import java.util.List;
 
 public class LightningSwordSpell extends AttackSpellBase {
 
-    private WaywardSkills plugin;
-
-    public LightningSwordSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public LightningSwordSpell() {
         setName("LightningSword");
         setManaCost(100);
         setCoolDown(3600);
+        setType(SkillType.MAGIC_SWORD);
         setCriticalMultiplier(4D);
         setCriticalChance(15);
         setPower(90);
@@ -80,17 +78,11 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Lightning Magic")) >= 25 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 30;
+        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 80;
     }
 
     @Override
     public String getDescription() {
         return "Add 20 to your melee attack rolls for 3 turns";
     }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "25 Lightning Magic and 30 Sword Magic points required";
-    }
-
 }

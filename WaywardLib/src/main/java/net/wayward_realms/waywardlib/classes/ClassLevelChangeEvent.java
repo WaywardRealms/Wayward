@@ -7,9 +7,7 @@ import org.bukkit.event.HandlerList;
 /**
  * Called when a character's level changesWaywardPlugin
  *
- * @deprecated classes are going to be removed
  */
-@Deprecated
 public class ClassLevelChangeEvent extends ClassEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -19,15 +17,6 @@ public class ClassLevelChangeEvent extends ClassEvent implements Cancellable {
     private final int newLevel;
     private boolean cancel;
 
-    /**
-     * Default constructor
-     *
-     * @param character the character
-     * @param clazz the class
-     * @param oldLevel the old level of the character in the class
-     * @param newLevel the new level of the character in the class
-     * @deprecated classes are going to be removed
-     */
     public ClassLevelChangeEvent(final Character character, final Class clazz, final int oldLevel, final int newLevel) {
         super(clazz);
         this.character = character;

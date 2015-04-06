@@ -1,7 +1,7 @@
 package net.wayward_realms.waywardlib.monsters;
 
 import net.wayward_realms.waywardlib.WaywardPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardlib.classes.Stat;
 import org.bukkit.entity.Entity;
 
 /**

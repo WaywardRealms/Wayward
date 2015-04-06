@@ -4,8 +4,8 @@ import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.professions.ToolType;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
-import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,13 +17,11 @@ import java.util.List;
 
 public class BlizzardSwordSpell extends SpellBase {
 
-    private WaywardSkills plugin;
-
-    public BlizzardSwordSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public BlizzardSwordSpell() {
         setName("BlizzardSword");
         setManaCost(100);
         setCoolDown(1800);
+        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -65,17 +63,12 @@ public class BlizzardSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 50 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Water Magic")) >= 20;
+        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 70;
     }
 
     @Override
     public String getDescription() {
         return "Add 10 to your melee attack roll for 3 turns";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "50 Sword Magic and 20 Water Magic points required";
     }
 
 }

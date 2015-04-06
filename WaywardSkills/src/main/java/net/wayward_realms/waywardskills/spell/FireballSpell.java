@@ -1,32 +1,35 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardskills.WaywardSkills;
+import net.wayward_realms.waywardlib.skills.SkillType;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-import static net.wayward_realms.waywardlib.skills.Stat.MAGIC_ATTACK;
-import static net.wayward_realms.waywardlib.skills.Stat.MAGIC_DEFENCE;
+import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_ATTACK;
+import static net.wayward_realms.waywardlib.classes.Stat.MAGIC_DEFENCE;
 
 public class FireballSpell extends AttackSpellBase {
 
-    private WaywardSkills plugin;
-
-    public FireballSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public FireballSpell() {
         setName("Fireball");
         setManaCost(5);
         setCoolDown(15);
+        setType(SkillType.MAGIC_OFFENCE);
         setCriticalChance(2);
         setPower(50);
         setAttackStat(MAGIC_ATTACK);
@@ -68,8 +71,23 @@ public class FireballSpell extends AttackSpellBase {
         return (attacking.isNameHidden() ? ChatColor.MAGIC + attacking.getName() + ChatColor.RESET : attacking.getName()) + ChatColor.YELLOW + " tried to form a fireball, but did not have enough mana.";
     }
 
+    @Override
+    public boolean canUse(Combatant combatant) {
+        return canUse((Character) combatant);
+    }
+
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 30;
+        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 30;
+    }
+
+    @Override
+    public boolean canUse(OfflinePlayer player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            return canUse(characterPlugin.getActiveCharacter(player));
+        }
+        return false;
     }
 
     @Override
@@ -87,11 +105,6 @@ public class FireballSpell extends AttackSpellBase {
     @Override
     public int getStatusEffectChance(StatusEffect statusEffect) {
         return 30;
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "30 Fire Magic points required";
     }
 
 }

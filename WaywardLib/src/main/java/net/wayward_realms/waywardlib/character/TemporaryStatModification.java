@@ -1,6 +1,6 @@
 package net.wayward_realms.waywardlib.character;
 
-import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardlib.classes.Stat;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.HashMap;
@@ -149,7 +149,7 @@ public class TemporaryStatModification implements ConfigurationSerializable {
     }
 
     public static TemporaryStatModification deserialize(Map<String, Object> serialised) {
-        return new TemporaryStatModification(Stat.valueOf((String) serialised.get("stat")), (float) serialised.get("multiplier"));
+        return new TemporaryStatModification(Stat.valueOf((String) serialised.get("stat")), (float) ((double) serialised.get("multiplier")));
     }
 
 }

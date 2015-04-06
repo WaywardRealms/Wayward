@@ -2,10 +2,10 @@ package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.*;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import org.bukkit.*;
@@ -14,6 +14,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,8 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static net.wayward_realms.waywardlib.util.plugin.ListenerUtils.registerListeners;
-
 public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     private Map<String, Gender> genders = new HashMap<>();
@@ -33,31 +32,15 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
 
     @Override
     public void onEnable() {
-        ConfigurationSerialization.registerClass(EquipmentImpl.class);
         ConfigurationSerialization.registerClass(GenderImpl.class);
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
         saveDefaultConfig();
-        registerListeners(
-                this,
-                new EntityDamageListener(this),
-                new EntityRegainHealthListener(this),
-                new FoodLevelChangeListener(this),
-                new InventoryClickListener(),
-                new InventoryCloseListener(this),
-                new PlayerItemConsumeListener(this),
-                new PlayerInteractListener(this),
-                new PlayerInteractEntityListener(this),
-                new PlayerJoinListener(this),
-                new PlayerLoginListener(this),
-                new PlayerRespawnListener(this),
-                new SignChangeListener(this),
-                new PlayerEditBookListener(this),
-                new PlayerNamePlateChangeListener(this)
-        );
+        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener(this));
         getCommand("character").setExecutor(new CharacterCommand(this));
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
+        getCommand("skillpoints").setExecutor(new SkillPointsCommand(this));
         getCommand("togglethirst").setExecutor(new ToggleThirstCommand(this));
         getCommand("togglehunger").setExecutor(new ToggleHungerCommand(this));
         getCommand("party").setExecutor(new PartyCommand(this));
@@ -112,7 +95,6 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
                                     player.sendMessage(getPrefix() + ChatColor.GREEN + "Health regenerated: " + (Math.round(healthRegen * 100D) / 100D));
                                 }
                             }
-                            if (character.getHealth() > character.getMaxHealth()) character.setHealth(character.getMaxHealth());
                             player.setMaxHealth(character.getMaxHealth());
                             player.setHealth(Math.max(character.getHealth(), 0));
                         } else {
@@ -137,20 +119,20 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         final float finalNewExhaustStartLevel = newExhaustStartLevel;
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
-                for (Player player : getServer().getOnlinePlayers()) {
-                    if (isHungerDisabled(player)) {
-                        player.setFoodLevel(20);
-                        player.setExhaustion(0.0F);
-                    } else {
-                        float currentExhaustion = player.getExhaustion();
-                        if (((currentExhaustion > -1.0F ? 1 : 0) & (currentExhaustion < 0.0F ? 1 : 0)) != 0) {
-                            player.setExhaustion(4.0F);
-                        }
-                        if (((currentExhaustion > 0.0F ? 1 : 0) & (currentExhaustion < 4.0F ? 1 : 0)) != 0) {
-                            player.setExhaustion(finalNewExhaustStartLevel);
-                        }
+            for (Player player : getServer().getOnlinePlayers()) {
+                if (isHungerDisabled(player)) {
+                    player.setFoodLevel(20);
+                    player.setExhaustion(0.0F);
+                } else {
+                    float currentExhaustion = player.getExhaustion();
+                    if (((currentExhaustion > -1.0F ? 1 : 0) & (currentExhaustion < 0.0F ? 1 : 0)) != 0) {
+                        player.setExhaustion(4.0F);
+                    }
+                    if (((currentExhaustion > 0.0F ? 1 : 0) & (currentExhaustion < 4.0F ? 1 : 0)) != 0) {
+                        player.setExhaustion(finalNewExhaustStartLevel);
                     }
                 }
+            }
             }
         }, 0L, 1L);
     }
@@ -158,6 +140,12 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     @Override
     public void onDisable() {
         saveState();
+    }
+
+    private void registerListeners(Listener... listeners) {
+        for (Listener listener : listeners) {
+            this.getServer().getPluginManager().registerEvents(listener, this);
+        }
     }
 
     @Override
@@ -393,11 +381,11 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         player.setMaxHealth(character.getMaxHealth());
         player.setHealth(Math.max(character.getHealth(), 0));
         player.setFoodLevel(character.getFoodLevel());
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (skillsPluginProvider != null) {
-            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            player.setExp((float) skillsPlugin.getExperience(character) / (float) skillsPlugin.getExperienceForLevel(skillsPlugin.getLevel(character) + 1));
-            player.setLevel(skillsPlugin.getLevel(character));
+        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+        if (classesPluginProvider != null) {
+            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+            player.setExp((float) classesPlugin.getExperienceTowardsNextLevel(player) / (float) classesPlugin.getExpToNextLevel(classesPlugin.getLevel(player)));
+            player.setLevel(classesPlugin.getLevel(player));
         }
     }
 
@@ -406,7 +394,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         File newCharacterDirectory = new File(getDataFolder(), "characters-new");
         File newCharacterFile = new File(newCharacterDirectory, id + ".yml");
         if (newCharacterFile.exists()) {
-            Character character = new CharacterImpl(newCharacterFile);
+            Character character = new CharacterImpl(this, newCharacterFile);
             character.getPlayer(); // UUID conversion
             return character;
         } else {
@@ -631,9 +619,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     public boolean isSafeWater(Biome biome) {
         switch (biome) {
             case BEACH:
-            case STONE_BEACH:
             case COLD_BEACH:
-            case DEEP_OCEAN:
             case FROZEN_OCEAN:
             case OCEAN:
             case SWAMPLAND:

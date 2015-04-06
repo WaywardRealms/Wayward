@@ -1,10 +1,12 @@
 package net.wayward_realms.waywardlib;
 
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.chat.ChatPlugin;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.death.DeathPlugin;
+import net.wayward_realms.waywardlib.donation.DonationPlugin;
 import net.wayward_realms.waywardlib.economy.EconomyPlugin;
 import net.wayward_realms.waywardlib.essentials.EssentialsPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
@@ -47,6 +49,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         PlayerNamePlateUtils.init(this);
         ConfigurationSerialization.registerClass(SerialisableLocation.class);
         ConfigurationSerialization.registerClass(SerialisableChunk.class);
+        ConfigurationSerialization.registerClass(TemporaryStatModification.class);
         loadState();
         getServer().getPluginManager().registerEvents(new Listener() {
             @EventHandler
@@ -68,6 +71,9 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                     }
                     if (plugin instanceof DeathPlugin) {
                         servicesManager.register(DeathPlugin.class, (DeathPlugin) plugin, plugin, ServicePriority.Normal);
+                    }
+                    if (plugin instanceof DonationPlugin) {
+                        servicesManager.register(DonationPlugin.class, (DonationPlugin) plugin, plugin, ServicePriority.Normal);
                     }
                     if (plugin instanceof EconomyPlugin) {
                         servicesManager.register(EconomyPlugin.class, (EconomyPlugin) plugin, plugin, ServicePriority.Normal);
@@ -133,10 +139,10 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         if (loadPluginState(CharacterPlugin.class)) {
             if (loadPluginState(ClassesPlugin.class)) {
                 loadPluginState(CombatPlugin.class);
-                loadPluginState(SkillsPlugin.class);
             }
             loadPluginState(EconomyPlugin.class);
         }
+        loadPluginState(DonationPlugin.class);
         loadPluginState(LockPlugin.class);
         loadPluginState(ModerationPlugin.class);
         loadPluginState(PermissionsPlugin.class);
@@ -147,6 +153,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         loadPluginState(ChatPlugin.class);
         loadPluginState(MonstersPlugin.class);
         loadPluginState(ProfessionsPlugin.class);
+        loadPluginState(SkillsPlugin.class);
         loadPluginState(WorldgenPlugin.class);
         loadPluginState(ItemsPlugin.class);
         loadPluginState(MechanicsPlugin.class);
@@ -173,6 +180,7 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
             }
             savePluginState(EconomyPlugin.class);
         }
+        savePluginState(DonationPlugin.class);
         savePluginState(LockPlugin.class);
         savePluginState(ModerationPlugin.class);
         savePluginState(PermissionsPlugin.class);

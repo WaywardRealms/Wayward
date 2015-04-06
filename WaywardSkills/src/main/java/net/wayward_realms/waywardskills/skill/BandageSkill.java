@@ -5,8 +5,8 @@ import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.items.ItemsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillBase;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.vector.Vector3D;
-import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,15 +18,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class BandageSkill extends SkillBase {
 
-    private WaywardSkills plugin;
-
     private int reach = 16;
     private double healthRestore = 10D;
 
-    public BandageSkill(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public BandageSkill() {
         setName("Bandage");
         setCoolDown(30);
+        setType(SkillType.MAGIC_HEALING);
     }
 
     public int getReach() {
@@ -123,17 +121,12 @@ public class BandageSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Healing")) >= 3;
+        return character.getSkillPoints(SkillType.MAGIC_HEALING) > 0;
     }
 
     @Override
     public String getDescription() {
         return "Restores " + (int) Math.round(getHealthRestore()) + " HP to one target, and uses one bandage";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "3 Healing points required";
     }
 
 }
