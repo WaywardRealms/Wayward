@@ -1,13 +1,12 @@
 package net.wayward_realms.waywardcharacters;
 
-import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.character.*;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
-
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -36,6 +35,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         ConfigurationSerialization.registerClass(GenderImpl.class);
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
+        ConfigurationSerialization.registerClass(TemporaryStatModification.class);
         saveDefaultConfig();
         registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener(this));
         getCommand("character").setExecutor(new CharacterCommand(this));
