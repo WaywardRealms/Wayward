@@ -2,17 +2,13 @@ package net.wayward_realms.waywardcombat;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.character.Equipment;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Specialisation;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class RollsCommand implements CommandExecutor {
@@ -37,36 +33,16 @@ public class RollsCommand implements CommandExecutor {
             }
         }
         if (player != null) {
-            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-            BookMeta meta = (BookMeta) book.getItemMeta();
-            meta.setTitle("Rolls");
-            meta.setAuthor("Wayward");
-            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-            if (skillsPluginProvider != null && characterPluginProvider != null) {
-                SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
+            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+            if (characterPluginProvider != null && classesPluginProvider != null) {
                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
                 Character character = characterPlugin.getActiveCharacter(player);
-                Equipment equipment = character.getEquipment();
-                for (Specialisation specialisation : skillsPlugin.getSpecialisations()) {
-                    StringBuilder pageBuilder = new StringBuilder();
-                    pageBuilder.append(ChatColor.BOLD).append(specialisation.getName()).append(ChatColor.RESET).append("\n");
-                    if (specialisation.meetsAttackRequirement(equipment.getOnHandItem())) {
-                        pageBuilder.append("Attack roll with onhand item: ").append(skillsPlugin.getAttackRoll(character, specialisation, true)).append("\n");
-                    }
-                    if (specialisation.meetsAttackRequirement(equipment.getOffHandItem())) {
-                        pageBuilder.append("Attack roll with offhand item: ").append(skillsPlugin.getAttackRoll(character, specialisation, false)).append("\n");
-                    }
-                    if (specialisation.meetsDefenceRequirement(equipment.getOnHandItem())) {
-                        pageBuilder.append("Defence roll with onhand item: ").append(skillsPlugin.getDefenceRoll(character, specialisation, true)).append("\n");
-                    }
-                    if (specialisation.meetsDefenceRequirement(equipment.getOffHandItem())) {
-                        pageBuilder.append("Defence roll with offhand item: ").append(skillsPlugin.getDefenceRoll(character, specialisation, false)).append("\n");
-                    }
-                    meta.addPage(pageBuilder.toString());
-                }
-                book.setItemMeta(meta);
-                player.getInventory().addItem(book);
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GRAY + "==== " + ChatColor.GREEN + character.getName() + "'s rolls " + ChatColor.GRAY + " ====");
+                sender.sendMessage(ChatColor.GRAY + "Melee: Attack " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MELEE_ATTACK) + ChatColor.GRAY + " | " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MELEE_DEFENCE) + ChatColor.GRAY + " Defence");
+                sender.sendMessage(ChatColor.GRAY + "Ranged: Attack " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.RANGED_ATTACK) + ChatColor.GRAY + " | " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.RANGED_DEFENCE) + ChatColor.GRAY + " Defence");
+                sender.sendMessage(ChatColor.GRAY + "Magic: Attack " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MAGIC_ATTACK) + ChatColor.GRAY + " | " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.MAGIC_DEFENCE) + ChatColor.GRAY + " Defence");
+                sender.sendMessage(ChatColor.GRAY + "Speed: " + ChatColor.YELLOW + plugin.getRollsManager().getRoll(character, Stat.SPEED));
             }
         }
         return true;

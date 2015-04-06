@@ -12,6 +12,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,11 +29,19 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
     @Override
     public void onEnable() {
         ConfigurationSerialization.registerClass(ClassImpl.class);
+        getCommand("class").setExecutor(new ClassCommand(this));
+        registerListeners(new EntityDamageListener(this), new PlayerDeathListener(), new PlayerExpChangeListener(), new PlayerJoinListener(this));
     }
 
     @Override
     public void onDisable() {
         saveState();
+    }
+
+    private void registerListeners(Listener... listeners) {
+        for (Listener listener : listeners) {
+            getServer().getPluginManager().registerEvents(listener, this);
+        }
     }
 
     @Override

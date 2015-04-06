@@ -3,9 +3,10 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
+import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
-import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,13 +20,11 @@ import java.util.Set;
 
 public class EmpowerSpell extends SpellBase {
 
-    private WaywardSkills plugin;
-
-    public EmpowerSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public EmpowerSpell() {
         setName("Empower");
         setCoolDown(300);
         setManaCost(10);
+        setType(SkillType.SUPPORT_PERFORM);
     }
 
     @Override
@@ -72,17 +71,27 @@ public class EmpowerSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Buff")) >= 3;
+        return character.getSkillPoints(SkillType.SUPPORT_PERFORM) >= 7;
+    }
+
+    @Override
+    public boolean canUse(Combatant combatant) {
+        return canUse((Character) combatant);
+    }
+
+    @Override
+    public boolean canUse(OfflinePlayer player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            return canUse(characterPlugin.getActiveCharacter(player));
+        }
+        return false;
     }
 
     @Override
     public String getDescription() {
         return "Increase your attack stats by 25% for 3 turns";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "3 Buff points required";
     }
 
 }

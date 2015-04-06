@@ -3,10 +3,11 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
+import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,15 +22,13 @@ import java.util.Set;
 
 public class CureSpell extends SpellBase {
 
-    private WaywardSkills plugin;
-
     private int radius = 8;
 
-    public CureSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public CureSpell() {
         setName("Cure");
         setManaCost(5);
         setCoolDown(20);
+        setType(SkillType.MAGIC_HEALING);
     }
 
     @Override
@@ -98,18 +97,28 @@ public class CureSpell extends SpellBase {
         return icon;
     }
 
+    @Override
+    public boolean canUse(Combatant combatant) {
+        return canUse((Character) combatant);
+    }
+
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Regenerative Magic")) >= 6;
+        return character.getSkillPoints(SkillType.MAGIC_HEALING) >= 2;
+    }
+
+    @Override
+    public boolean canUse(OfflinePlayer player) {
+        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
+        if (characterPluginProvider != null) {
+            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
+            return canUse(characterPlugin.getActiveCharacter(player));
+        }
+        return false;
     }
 
     @Override
     public String getDescription() {
         return "Restore HP equal to 25% of your magic defence stat to one target";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "6 Regenerative Magic points required";
     }
 
 }

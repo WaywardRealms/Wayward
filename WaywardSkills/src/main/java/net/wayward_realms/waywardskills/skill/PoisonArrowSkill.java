@@ -2,13 +2,13 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,12 +26,10 @@ import java.util.Map;
 
 public class PoisonArrowSkill extends AttackSkillBase {
 
-    private WaywardSkills plugin;
-
-    public PoisonArrowSkill(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public PoisonArrowSkill() {
         setName("PoisonArrow");
         setCoolDown(20);
+        setType(SkillType.RANGED_OFFENCE);
         setPower(30);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
@@ -97,7 +95,7 @@ public class PoisonArrowSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 9;
+        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 5;
     }
 
     @Override
@@ -121,10 +119,4 @@ public class PoisonArrowSkill extends AttackSkillBase {
         statusEffects.put(StatusEffect.POISON, 5);
         return statusEffects;
     }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "9 Bow Offence points required";
-    }
-
 }

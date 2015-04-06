@@ -1,9 +1,7 @@
 package net.wayward_realms.waywardmonsters.target;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardmonsters.WaywardMonsters;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.block.Block;
@@ -50,14 +48,10 @@ public class TargetProjectileHitListener implements Listener {
                                     player.sendMessage(ChatColor.RED + "Could not parse target hits");
                                 }
                                 if (uses >= 4) {
-                                    RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-                                    if (skillsPluginProvider != null) {
-                                        SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-                                        RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                                        if (characterPluginProvider != null) {
-                                            CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                                            skillsPlugin.giveExperience(characterPlugin.getActiveCharacter(player), 5);
-                                        }
+                                    RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                                    if (classesPluginProvider != null) {
+                                        ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                                        classesPlugin.giveExperience(player, 1);
                                     }
                                     uses = 0;
                                 } else {

@@ -2,8 +2,8 @@ package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
-import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -13,13 +13,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class FireSwordSpell extends SpellBase {
 
-    private WaywardSkills plugin;
-
-    public FireSwordSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public FireSwordSpell() {
         setName("FireSword");
         setCoolDown(1800);
         setManaCost(100);
+        setType(SkillType.MAGIC_SWORD);
     }
 
     @Override
@@ -53,17 +51,12 @@ public class FireSwordSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 15 && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Sword Magic")) >= 25;
+        return character.getSkillPoints(SkillType.MAGIC_SWORD) >= 25;
     }
 
     @Override
     public String getDescription() {
         return "For the next three turns, melee attacks cause 3 burn damage for 3 turns after the attack";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "15 Fire Magic and 25 Sword Magic points required";
     }
 
 }

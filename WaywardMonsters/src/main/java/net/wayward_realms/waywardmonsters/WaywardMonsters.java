@@ -1,6 +1,6 @@
 package net.wayward_realms.waywardmonsters;
 
-import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.monsters.MonstersPlugin;
 import net.wayward_realms.waywardmonsters.bleed.BleedBlockBreakListener;
 import net.wayward_realms.waywardmonsters.bleed.BleedCommand;

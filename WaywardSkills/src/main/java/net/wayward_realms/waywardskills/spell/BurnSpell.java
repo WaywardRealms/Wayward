@@ -3,12 +3,12 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardskills.WaywardSkills;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,20 +19,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class BurnSpell extends AttackSpellBase {
-
-    private WaywardSkills plugin;
 
     private int radius = 8;
     private int fireTicks = 200;
 
-    public BurnSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public BurnSpell() {
         setName("Burn");
         setManaCost(15);
         setCoolDown(5);
+        setType(SkillType.MAGIC_OFFENCE);
         setAttackStat(Stat.MAGIC_ATTACK);
         setDefenceStat(Stat.MAGIC_DEFENCE);
         setHitChance(100);
@@ -95,7 +96,7 @@ public class BurnSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Fire Magic")) >= 5;
+        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 15;
     }
 
     @Override
@@ -124,10 +125,4 @@ public class BurnSpell extends AttackSpellBase {
         statusEffects.put(StatusEffect.BURNED, 5);
         return statusEffects;
     }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "5 Fire Magic points required";
-    }
-
 }

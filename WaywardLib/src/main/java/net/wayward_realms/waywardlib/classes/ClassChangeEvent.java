@@ -5,11 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a character's combat class is changed
+ * Called when a character's combat class is changedWaywardPlugin
  *
- * @deprecated classes are going to be removed
  */
-@Deprecated
 public class ClassChangeEvent extends ClassEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -18,15 +16,6 @@ public class ClassChangeEvent extends ClassEvent implements Cancellable {
     private final Class oldClass;
     private boolean cancel;
 
-    /**
-     * Default constructor
-     *
-     * @param character the character
-     * @param oldClass the class the character is changing from
-     * @param clazz the class the character is changing to
-     * @deprecated classes are going to be removed
-     */
-    @Deprecated
     public ClassChangeEvent(final Character character, final Class oldClass, final Class clazz) {
         super(clazz);
         this.character = character;
@@ -46,9 +35,7 @@ public class ClassChangeEvent extends ClassEvent implements Cancellable {
      * Gets the character involved in this event
      *
      * @return the character involved in this event
-     * @deprecated classes are going to be removed
      */
-    @Deprecated
     public Character getCharacter() {
         return character;
     }
@@ -57,9 +44,7 @@ public class ClassChangeEvent extends ClassEvent implements Cancellable {
      * Gets the old class of the player involved in this event
      *
      * @return the old class of the player
-     * @deprecated classes are going to be removed
      */
-    @Deprecated
     public Class getOldClass() {
         return oldClass;
     }

@@ -1,8 +1,7 @@
 package net.wayward_realms.waywardmonsters.trainingdummy;
 
-import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.professions.ToolType;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardmonsters.WaywardMonsters;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -46,16 +45,12 @@ public class TrainingDummyPlayerInteractListener implements Listener {
                                     event.getPlayer().setItemInHand(null);
                                 }
                             } else {
-                                event.getPlayer().damage(2D);
+                                event.getPlayer().damage(0.5D);
                             }
-                            RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = plugin.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-                            if (skillsPluginProvider != null) {
-                                SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-                                RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = plugin.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
-                                if (characterPluginProvider != null) {
-                                    CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
-                                    skillsPlugin.giveExperience(characterPlugin.getActiveCharacter(event.getPlayer()), 5);
-                                }
+                            RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = plugin.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+                            if (classesPluginProvider != null) {
+                                ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+                                classesPlugin.giveExperience(event.getPlayer(), 1);
                             }
                             uses = 0;
                         } else {

@@ -1,11 +1,11 @@
 package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,10 +17,7 @@ import org.bukkit.plugin.Plugin;
 
 public class MultiShotSkill extends AttackSkillBase {
 
-    private WaywardSkills plugin;
-
-    public MultiShotSkill(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public MultiShotSkill() {
         setName("MultiShot");
         setCriticalChance(30);
         setCriticalMultiplier(1.1D);
@@ -29,6 +26,7 @@ public class MultiShotSkill extends AttackSkillBase {
         setCoolDown(20);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
+        setType(SkillType.RANGED_OFFENCE);
     }
 
     @Override
@@ -100,17 +98,12 @@ public class MultiShotSkill extends AttackSkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 20;
+        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 8;
     }
 
     @Override
     public String getDescription() {
         return "Deals one fifth of the difference between your ranged attack roll and your target's ranged defence roll five times";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "20 Bow Offence points required";
     }
 
 }

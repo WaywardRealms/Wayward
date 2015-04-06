@@ -6,6 +6,7 @@ import net.wayward_realms.waywardlib.character.Party;
 import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.SkillBase;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,6 +24,7 @@ public class ArmourUpSkill extends SkillBase {
     public ArmourUpSkill(WaywardSkills plugin) {
         this.plugin = plugin;
         setName("ArmourUp");
+        setType(SkillType.SUPPORT_PERFORM);
         setCoolDown(180);
         setCoolDownTurns(5);
     }
@@ -123,17 +125,12 @@ public class ArmourUpSkill extends SkillBase {
 
     @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Shield Defence")) >= 3;
+        return character.getSkillPoints(SkillType.SUPPORT_PERFORM) >= 2;
     }
 
     @Override
     public String getDescription() {
         return "Add 25% to each of your defence rolls";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "3 Shield Defence points required";
     }
 
 }

@@ -2,10 +2,11 @@ package net.wayward_realms.waywardskills.skill;
 
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSkillBase;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardskills.WaywardSkills;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,12 +19,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class ArrowSkill extends AttackSkillBase {
 
-    private WaywardSkills plugin;
-
-    public ArrowSkill(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public ArrowSkill() {
         setName("Arrow");
         setCoolDown(5);
+        setType(SkillType.RANGED_OFFENCE);
         setAttackStat(Stat.RANGED_ATTACK);
         setDefenceStat(Stat.RANGED_DEFENCE);
         setCriticalChance(2);
@@ -81,8 +80,13 @@ public class ArrowSkill extends AttackSkillBase {
     }
 
     @Override
+    public boolean canUse(Combatant combatant) {
+        return canUse((Character) combatant);
+    }
+
+    @Override
     public boolean canUse(Character character) {
-        return plugin.getSpecialisationValue(character, plugin.getSpecialisation("Bow Offence")) >= 3;
+        return character.getSkillPoints(SkillType.RANGED_OFFENCE) >= 1;
     }
 
     @Override
@@ -98,11 +102,6 @@ public class ArrowSkill extends AttackSkillBase {
     @Override
     public String getDescription() {
         return "Deal damage equal to the difference between your ranged attack roll and your target's ranged defence roll";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "3 Bow Offence points required";
     }
 
 }

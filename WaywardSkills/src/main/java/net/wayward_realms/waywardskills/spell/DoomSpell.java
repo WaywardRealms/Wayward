@@ -3,6 +3,7 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -23,6 +24,7 @@ public class DoomSpell extends SpellBase {
         setName("Doom");
         setCoolDown(240);
         setManaCost(60);
+        setType(SkillType.MAGIC_OFFENCE);
     }
 
     @Override
@@ -72,17 +74,10 @@ public class DoomSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character)  {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Dark Magic")) >= 50;
+        return character.getSkillPoints(SkillType.MAGIC_OFFENCE) >= 80;
     }
 
     @Override
     public String getDescription()  {
-        return "Dooms the opponent, causing them to become unconscious in 5 turns.";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "50 Dark Magic points required";
-    }
-
+        return "Dooms the opponent, causing them to become unconscious in 5 turns.";}
 }

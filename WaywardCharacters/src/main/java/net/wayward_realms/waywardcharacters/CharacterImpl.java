@@ -1,9 +1,12 @@
 package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.character.*;
-import net.wayward_realms.waywardlib.skills.SkillsPlugin;
-import net.wayward_realms.waywardlib.skills.Stat;
+import net.wayward_realms.waywardlib.character.Gender;
+import net.wayward_realms.waywardlib.character.Race;
+import net.wayward_realms.waywardlib.character.TemporaryStatModification;
+import net.wayward_realms.waywardlib.classes.ClassesPlugin;
+import net.wayward_realms.waywardlib.classes.Stat;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
@@ -16,10 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CharacterImpl implements Character {
 
@@ -38,12 +38,16 @@ public class CharacterImpl implements Character {
         CharacterImpl.nextId = id;
     }
 
+    private WaywardCharacters plugin;
     private File file;
     private static final int MAX_THIRST = 20;
     private static final int MIN_THIRST = 0;
 
+    private CharacterImpl() {}
+
     public CharacterImpl(WaywardCharacters plugin, OfflinePlayer player) {
         int id = CharacterImpl.nextAvailableId();
+        this.plugin = plugin;
         this.file = new File(new File(plugin.getDataFolder(), "characters-new"), id + ".yml");
         setId(id);
         setPlayer(player);
@@ -62,7 +66,8 @@ public class CharacterImpl implements Character {
         setNamePlate("");
     }
 
-    public CharacterImpl(File file) {
+    public CharacterImpl(WaywardCharacters plugin, File file) {
+        this.plugin = plugin;
         this.file = file;
     }
 
@@ -292,16 +297,6 @@ public class CharacterImpl implements Character {
     }
 
     @Override
-    public Equipment getEquipment() {
-        return getFieldValue("equipment") != null ? (Equipment) getFieldValue("equipment") : new EquipmentImpl(null, null, null, new ItemStack[9]);
-    }
-
-    @Override
-    public void setEquipment(Equipment equipment) {
-        setFieldValue("equipment", equipment);
-    }
-
-    @Override
     public ItemStack[] getInventoryContents() {
         if (getFieldValue("inventory-contents") instanceof List<?>) {
             return ((List<ItemStack>) getFieldValue("inventory-contents")).toArray(new ItemStack[36]);
@@ -354,10 +349,10 @@ public class CharacterImpl implements Character {
 
     @Override
     public double getMaxHealth() {
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (skillsPluginProvider != null) {
-            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            return skillsPlugin.getMaxHealth(this);
+        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+        if (classesPluginProvider != null) {
+            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getHpBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 10D);
         }
         return 0;
     }
@@ -374,10 +369,10 @@ public class CharacterImpl implements Character {
 
     @Override
     public int getMaxMana() {
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (skillsPluginProvider != null) {
-            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            return skillsPlugin.getMaxMana(this);
+        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+        if (classesPluginProvider != null) {
+            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+            return (int) Math.round((((250D + (20D * classesPlugin.getClass(this).getManaBonus())) * (double) classesPlugin.getLevel(this)) / 100D) + 20D);
         }
         return 0;
     }
@@ -395,10 +390,10 @@ public class CharacterImpl implements Character {
 
     @Override
     public int getStatValue(Stat stat) {
-        RegisteredServiceProvider<SkillsPlugin> skillsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(SkillsPlugin.class);
-        if (skillsPluginProvider != null) {
-            SkillsPlugin skillsPlugin = skillsPluginProvider.getProvider();
-            int value = skillsPlugin.getStatValue(this, stat);
+        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+        if (classesPluginProvider != null) {
+            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+            int value = (int) Math.round((((150D + (20D * (double) (classesPlugin.getClass(this).getStatBonus(stat) + getStatPoints(stat) + getRace().getStatBonus(stat)))) * (double) classesPlugin.getLevel(this)) / 100D) + 5D);
             for (TemporaryStatModification modification : getTemporaryStatModifications()) {
                 if (modification != null) value = modification.apply(stat, value);
             }
@@ -426,6 +421,16 @@ public class CharacterImpl implements Character {
         setFieldValue("temporary-stat-modifications", statModifications);
     }
 
+    @Override
+    public int getSkillPoints(SkillType type) {
+        RegisteredServiceProvider<ClassesPlugin> classesPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ClassesPlugin.class);
+        if (classesPluginProvider != null) {
+            ClassesPlugin classesPlugin = classesPluginProvider.getProvider();
+            return classesPlugin.getClass(this).getSkillPointBonus(type) * classesPlugin.getLevel(this);
+        }
+        return 0;
+    }
+
     public boolean isClassHidden() {
         return getFieldBooleanValue("class-hidden");
     }
@@ -442,6 +447,38 @@ public class CharacterImpl implements Character {
     @Override
     public void setNamePlate(String namePlate) {
         setFieldValue("nameplate", namePlate);
+    }
+
+    public int getStatPoints(Stat stat) {
+        return getFieldValue("stat-points." + stat.toString().toLowerCase()) != null ? getFieldIntValue("stat-points." + stat.toString().toLowerCase()) : 0;
+    }
+
+    public void setStatPoints(Stat stat, int amount) {
+        setFieldValue("stat-points." + stat.toString().toLowerCase(), amount);
+    }
+
+    public int getAssignedStatPoints() {
+        int assigned = 0;
+        for (Stat stat : Stat.values()) {
+            assigned += getStatPoints(stat);
+        }
+        return assigned;
+    }
+
+    public int getUnassignedStatPoints() {
+        return getTotalStatPoints() - getAssignedStatPoints();
+    }
+
+    public int getTotalStatPoints() {
+        return 10;
+    }
+
+    public void assignStatPoint(Stat stat) {
+        setStatPoints(stat, getStatPoints(stat) + 1);
+    }
+
+    public void resetStatPoints() {
+        setFieldValue("stat-points", null);
     }
 
 }

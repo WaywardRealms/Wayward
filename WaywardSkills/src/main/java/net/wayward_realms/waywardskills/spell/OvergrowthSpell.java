@@ -1,10 +1,10 @@
 package net.wayward_realms.waywardskills.spell;
 
 import net.wayward_realms.waywardlib.character.Character;
+import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.skills.AttackSpellBase;
-import net.wayward_realms.waywardlib.skills.Stat;
-import net.wayward_realms.waywardskills.WaywardSkills;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,10 +22,7 @@ import static net.wayward_realms.waywardlib.util.lineofsight.LineOfSightUtils.ge
 
 public class OvergrowthSpell extends AttackSpellBase {
 
-    private WaywardSkills plugin;
-
-    public OvergrowthSpell(WaywardSkills plugin) {
-        this.plugin = plugin;
+    public OvergrowthSpell() {
         setName("Overgrowth");
         setPower(65);
         setCoolDown(1500);
@@ -35,6 +32,7 @@ public class OvergrowthSpell extends AttackSpellBase {
         setDefenceStat(Stat.MAGIC_DEFENCE);
         setHitChance(80);
         setCriticalMultiplier(2.5D);
+        setType(SkillType.MAGIC_NATURE);
     }
 
     @Override
@@ -94,17 +92,12 @@ public class OvergrowthSpell extends AttackSpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Nature Magic")) >= 50;
+        return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 80;
     }
 
     @Override
     public String getDescription() {
         return "Deals damage equal to 3 times the difference between your magic attack roll and target's magic defence roll to up to 3 targets, and prevents them from making one move";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "50 Nature Magic points required";
     }
 
 }

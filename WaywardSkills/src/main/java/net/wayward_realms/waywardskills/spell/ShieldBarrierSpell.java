@@ -3,6 +3,7 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.combat.Fight;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -22,6 +23,7 @@ public class ShieldBarrierSpell extends SpellBase {
         setName("ShieldBarrier");
         setManaCost(20);
         setCoolDown(120);
+        setType(SkillType.MAGIC_DEFENCE);
     }
 
     @Override
@@ -92,17 +94,12 @@ public class ShieldBarrierSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Shielding Magic")) >= 45;
+        return character.getSkillPoints(SkillType.MAGIC_DEFENCE) >= 40;
     }
 
     @Override
     public String getDescription() {
         return "Prevents your party taking damage for 1 turn";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "45 Shielding Magic points required";
     }
 
 }

@@ -3,6 +3,7 @@ package net.wayward_realms.waywardskills.spell;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
+import net.wayward_realms.waywardlib.skills.SkillType;
 import net.wayward_realms.waywardlib.skills.SpellBase;
 import net.wayward_realms.waywardskills.WaywardSkills;
 import org.bukkit.ChatColor;
@@ -22,6 +23,7 @@ public class IceBreathSpell extends SpellBase {
         setName("IceBreath");
         setManaCost(8);
         setCoolDown(90);
+        setType(SkillType.MAGIC_NATURE);
     }
 
     @Override
@@ -58,17 +60,12 @@ public class IceBreathSpell extends SpellBase {
 
     @Override
     public boolean canUse(Character character) {
-        return hasScroll(character) && plugin.getSpecialisationValue(character, plugin.getSpecialisation("Water Magic")) >= 5;
+        return character.getSkillPoints(SkillType.MAGIC_NATURE) >= 20;
     }
 
     @Override
     public String getDescription() {
         return "Prevents one target from moving for 5 turns";
-    }
-
-    @Override
-    public String getSpecialisationInfo() {
-        return ChatColor.GRAY + "5 Water Magic points required";
     }
 
 }
