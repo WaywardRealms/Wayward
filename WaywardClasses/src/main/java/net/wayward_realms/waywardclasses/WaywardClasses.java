@@ -77,6 +77,7 @@ public class WaywardClasses extends JavaPlugin implements ClassesPlugin {
             ClassImpl spellFencer = new ClassImpl("SpellFencer", 2.0, 5, 3, 5, 5, 5, 5, 0, 10, 30, spellFencerPrereqs);
             classes.put("SPELLFENCER", spellFencer);
             saveState();
+            getConfig().set("classes", classes);
             getConfig().set("default-class", wanderer);
             saveConfig();
         }
