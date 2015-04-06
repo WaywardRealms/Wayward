@@ -54,6 +54,7 @@ public class RollCommand implements CommandExecutor {
 
             String secondHalf;
             if (rollString.contains("d")) {
+                if (rollString.startsWith("d")) rollString = "1" + rollString;
                 String[] parts = rollString.split("d");
                 if (parts.length < 2) {
                     roller.sendMessage(plugin.getPrefix() + ChatColor.RED + "Invalid roll format");
