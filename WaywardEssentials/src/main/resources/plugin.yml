@@ -1,5 +1,5 @@
 name: ${project.name}
-authors: [Lucariatias, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
+authors: [alyphen, Xslare, melodichand, Exodin, PsychoTea, sudhirmohanraj]
 version: ${project.version}
 description: ${project.description}
 main: net.wayward_realms.waywardessentials.WaywardEssentials
