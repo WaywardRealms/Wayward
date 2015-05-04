@@ -34,9 +34,13 @@ public class MoneyCommand implements CommandExecutor {
                                 try {
                                     if (Integer.parseInt(args[2]) > 0) {
                                         if (plugin.getMoney(player) + Integer.parseInt(args[2]) <= plugin.getMaximumMoney()) {
-                                            plugin.transferMoney((Player) sender, player, currency, Integer.parseInt(args[2]));
-                                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + ChatColor.GREEN + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
-                                            player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + ChatColor.GREEN + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
+                                            if (plugin.transferMoney((Player) sender, player, currency, Integer.parseInt(args[2]))) {
+                                                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + ChatColor.GREEN + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
+                                                player.sendMessage(plugin.getPrefix() + ChatColor.GREEN + ((Player) sender).getDisplayName() + ChatColor.GREEN + " gave " + args[2] + " " + (Integer.parseInt(args[2]) == 1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName());
+                                            } else {
+                                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + ((Player) sender).getDisplayName() + ChatColor.RED + " attempted to give " + args[2] + " " + (Integer.parseInt(args[2]) ==1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName() + ChatColor.RED + " but did not have enough money.");
+                                                player.sendMessage(plugin.getPrefix() + ChatColor.RED + ((Player) sender).getDisplayName() + ChatColor.RED + " attempted to give " + args[2] + " " + (Integer.parseInt(args[2]) ==1 ? currency.getNameSingular() : currency.getNamePlural()) + " to " + player.getDisplayName() + ChatColor.RED + " but did not have enough money.");
+                                            }
                                         } else {
                                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + player.getDisplayName() + " does not have enough room in their wallet to fit this much money.");
                                         }

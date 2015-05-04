@@ -100,9 +100,13 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
     }
 
     @Override
-    public void transferMoney(OfflinePlayer takeFrom, OfflinePlayer giveTo, int amount) {
-        setMoney(takeFrom, getMoney(takeFrom) - amount);
-        setMoney(giveTo, getMoney(giveTo) + amount);
+    public boolean transferMoney(OfflinePlayer takeFrom, OfflinePlayer giveTo, int amount) {
+        if (getMoney(takeFrom) >= amount) {
+            setMoney(takeFrom, getMoney(takeFrom) - amount);
+            setMoney(giveTo, getMoney(giveTo) + amount);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -121,9 +125,13 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
     }
 
     @Override
-    public void transferMoney(Character takeFrom, Character giveTo, int amount) {
-        setMoney(takeFrom, getMoney(takeFrom) - amount);
-        setMoney(giveTo, getMoney(giveTo) + amount);
+    public boolean transferMoney(Character takeFrom, Character giveTo, int amount) {
+        if (getMoney(takeFrom) >= amount) {
+            setMoney(takeFrom, getMoney(takeFrom) - amount);
+            setMoney(giveTo, getMoney(giveTo) + amount);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -202,12 +210,13 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
     }
 
     @Override
-    public void transferMoney(OfflinePlayer takeFrom, OfflinePlayer giveTo, Currency currency, int amount) {
+    public boolean transferMoney(OfflinePlayer takeFrom, OfflinePlayer giveTo, Currency currency, int amount) {
         RegisteredServiceProvider<CharacterPlugin> characterProvider = getServer().getServicesManager().getRegistration(CharacterPlugin.class);
         if (characterProvider != null) {
             CharacterPlugin characterPlugin = characterProvider.getProvider();
-            transferMoney(characterPlugin.getActiveCharacter(takeFrom), characterPlugin.getActiveCharacter(giveTo), currency, amount);
+            return transferMoney(characterPlugin.getActiveCharacter(takeFrom), characterPlugin.getActiveCharacter(giveTo), currency, amount);
         }
+        return false;
     }
 
     @Override
@@ -226,8 +235,8 @@ public class WaywardEconomy extends JavaPlugin implements EconomyPlugin {
     }
 
     @Override
-    public void transferMoney(Character takeFrom, Character giveTo, Currency currency, int amount) {
-        currencyManager.transferMoney(takeFrom, giveTo, currency, amount);
+    public boolean transferMoney(Character takeFrom, Character giveTo, Currency currency, int amount) {
+        return currencyManager.transferMoney(takeFrom, giveTo, currency, amount);
     }
 
     @Override
