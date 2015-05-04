@@ -94,9 +94,13 @@ public class CurrencyManager {
         setMoney(character, currency, getMoney(character, currency) + amount);
     }
 
-    public void transferMoney(Character takeFrom, Character giveTo, Currency currency, int amount) {
-        addMoney(takeFrom, currency, -amount);
-        addMoney(giveTo, currency, amount);
+    public boolean transferMoney(Character takeFrom, Character giveTo, Currency currency, int amount) {
+        if (getMoney(takeFrom, currency) >= amount) {
+            addMoney(takeFrom, currency, -amount);
+            addMoney(giveTo, currency, amount);
+            return true;
+        }
+        return false;
     }
 
     public void loadState() {
