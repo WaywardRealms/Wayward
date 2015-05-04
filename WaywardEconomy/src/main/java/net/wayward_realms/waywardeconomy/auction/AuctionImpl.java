@@ -67,7 +67,7 @@ public class AuctionImpl implements Auction {
 
     @Override
     public Bid getHighestBid() {
-        return bids.get(bids.size() - 1);
+        return bids.isEmpty() ? null : bids.get(bids.size() - 1);
     }
 
     @Override

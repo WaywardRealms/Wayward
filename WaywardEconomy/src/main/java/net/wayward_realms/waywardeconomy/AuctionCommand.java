@@ -35,6 +35,7 @@ public class AuctionCommand implements CommandExecutor {
                     Auction auction = new AuctionImpl();
                     auction.setCharacter(characterPlugin.getActiveCharacter(player));
                     auction.setItem(player.getItemInHand());
+                    auction.setCurrency(plugin.getPrimaryCurrency());
                     player.setItemInHand(null);
                     auction.setLocation(player.getLocation());
                     plugin.addAuction(auction);
@@ -53,11 +54,15 @@ public class AuctionCommand implements CommandExecutor {
                                 Player player = (Player) sender;
                                 CharacterPlugin characterPlugin = plugin.getCharacterPlugin();
                                 Auction auction = plugin.getAuction(characterPlugin.getActiveCharacter(player));
-                                try {
-                                    auction.setMinimumBidIncrement(Integer.parseInt(args[2]));
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set minimum bid increment to " + args[2]);
-                                } catch(NumberFormatException exception) {
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify an integer for minimum bid increment.");
+                                if (auction != null) {
+                                    try {
+                                        auction.setMinimumBidIncrement(Integer.parseInt(args[2]));
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set minimum bid increment to " + args[2]);
+                                    } catch (NumberFormatException exception) {
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify an integer for minimum bid increment.");
+                                    }
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "YOu must first create an auction with /auction create");
                                 }
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
@@ -72,12 +77,16 @@ public class AuctionCommand implements CommandExecutor {
                                 CharacterPlugin characterPlugin = plugin.getCharacterPlugin();
                                 Character character = characterPlugin.getActiveCharacter(player);
                                 Auction auction = plugin.getAuction(character);
-                                try {
-                                    Bid bid = new BidImpl(character, Integer.parseInt(args[2]));
-                                    auction.addBid(bid);
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set starting bid to " + bid.getAmount());
-                                } catch(NumberFormatException exception) {
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify an integer for starting bid.");
+                                if (auction != null) {
+                                    try {
+                                        Bid bid = new BidImpl(character, Integer.parseInt(args[2]));
+                                        auction.addBid(bid);
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Set starting bid to " + bid.getAmount());
+                                    } catch (NumberFormatException exception) {
+                                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify an integer for starting bid.");
+                                    }
+                                } else {
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must first create an auction with /auction create");
                                 }
                             } else {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
@@ -92,37 +101,53 @@ public class AuctionCommand implements CommandExecutor {
                     Player player = (Player) sender;
                     CharacterPlugin characterPlugin = plugin.getCharacterPlugin();
                     final Auction auction = plugin.getAuction(characterPlugin.getActiveCharacter(player));
-                    if (auction.getBids().size() == 0) {
-                        auction.addBid(new BidImpl(characterPlugin.getActiveCharacter(player), 0));
-                    }
-                    auction.openBidding();
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bidding opened!");
-                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            auction.closeBidding();
+                    if (auction != null) {
+                        if (auction.getBids().size() == 0) {
+                            auction.addBid(new BidImpl(characterPlugin.getActiveCharacter(player), 0));
                         }
-                    }, 6000L);
-                    int[] intervals = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 60, 120, 180, 240};
-                    for (final int interval : intervals) {
+                        auction.openBidding();
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bidding opened!");
+                        for (Player bystander : plugin.getServer().getOnlinePlayers()) {
+                            if (bystander.getLocation().distanceSquared(auction.getLocation()) <= 1024) {
+                                bystander.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bidding opened for " + (auction.getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getCharacter().getName() + ChatColor.RESET : auction.getCharacter().getName()) + ChatColor.GREEN + "'s " + auction.getItem().getAmount() + "x" + auction.getItem().getType().toString().toLowerCase().replace('_', ' ') + " at " + auction.getHighestBid().getAmount() + " " + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()));
+                                bystander.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Use /bid " + auction.getCharacter().getPlayer().getName() + " [amount] to bid");
+                            }
+                        }
                         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             @Override
                             public void run() {
-                                Set<Player> players = new HashSet<>();
-                                for (Bid bid : auction.getBids()) {
-                                    if (bid.getCharacter().getPlayer().isOnline()) {
-                                        players.add(bid.getCharacter().getPlayer().getPlayer());
+                                auction.closeBidding();
+                            }
+                        }, 6000L);
+                        int[] intervals = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 60, 120, 180, 240};
+                        for (final int interval : intervals) {
+                            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                                @Override
+                                public void run() {
+                                    Set<Player> players = new HashSet<>();
+                                    for (Bid bid : auction.getBids()) {
+                                        if (bid.getCharacter().getPlayer().isOnline()) {
+                                            players.add(bid.getCharacter().getPlayer().getPlayer());
+                                        }
+                                    }
+                                    int minutes = (int) Math.floor(interval / 60);
+                                    int seconds = interval % 60;
+                                    String[] messages = new String[]{plugin.getPrefix() + ChatColor.GREEN + (minutes > 0 ? minutes + " minutes, " : "") + seconds + " seconds till " + (auction.getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getCharacter().getName() + ChatColor.RESET : auction.getCharacter().getName()) + ChatColor.GREEN + "'s auction for " + auction.getItem().getAmount() + "x" + auction.getItem().getType().toString().toLowerCase().replace('_', ' ') + " ends.",
+                                            ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + " " + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + (auction.getHighestBid().getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getHighestBid().getCharacter().getName() + ChatColor.RESET : auction.getHighestBid().getCharacter().getName())};
+                                    for (Player player : players) {
+                                        player.sendMessage(messages);
                                     }
                                 }
-                                int minutes = (int) Math.floor(interval / 60);
-                                int seconds = interval % 60;
-                                String[] messages = new String[] {plugin.getPrefix() + ChatColor.GREEN + (minutes > 0 ? minutes + " minutes, " : "") + seconds + "seconds till " + auction.getCharacter() + "'s auction for " + auction.getItem().getAmount() + "x" + auction.getItem().getType().toString().toLowerCase().replace('_', ' ') + "ends.",
-                                        ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + (auction.getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getHighestBid().getCharacter().getName() + ChatColor.RESET : auction.getHighestBid().getCharacter().getName())};
-                                for (Player player : players) {
-                                    player.sendMessage(messages);
-                                }
+                            }, (240 - interval) * 20);
+                        }
+                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                auction.closeBidding();
                             }
-                        }, interval * 20);
+                        }, 4800);
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must first create an auction with /auction create");
                     }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
@@ -132,14 +157,24 @@ public class AuctionCommand implements CommandExecutor {
                     Player player = (Player) sender;
                     CharacterPlugin characterPlugin = plugin.getCharacterPlugin();
                     Auction auction = plugin.getAuction(characterPlugin.getActiveCharacter(player));
-                    auction.closeBidding();
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bidding closed.");
+                    if (auction != null) {
+                        auction.closeBidding();
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Bidding closed.");
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must first create an auction with /auction create");
+                    }
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
                 }
-            } else {
+            } else if (args[0].equalsIgnoreCase("status")) {
+                Player player = null;
                 if (sender instanceof Player) {
-                    Player player = (Player) sender;
+                    player = (Player) sender;
+                }
+                if (args.length >= 2 && plugin.getServer().getPlayer(args[1]) != null) {
+                    player = plugin.getServer().getPlayer(args[1]);
+                }
+                if (player != null) {
                     CharacterPlugin characterPlugin = plugin.getCharacterPlugin();
                     Auction auction = plugin.getAuction(characterPlugin.getActiveCharacter(player));
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Auction status: ");
@@ -147,14 +182,27 @@ public class AuctionCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "Item: " + auction.getItem().getAmount() + " x " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));
                     sender.sendMessage(ChatColor.GREEN + "Bidding is " + (auction.isBiddingOpen() ? (ChatColor.GREEN + "OPEN") : (ChatColor.RED + "CLOSED")));
                     sender.sendMessage(ChatColor.GREEN + "Located at: " + auction.getLocation().getBlockX() + ", " + auction.getLocation().getBlockY() + ", " + auction.getLocation().getBlockZ());
-                    sender.sendMessage(ChatColor.GREEN + "Starting at: " + ((List<Bid>) auction.getBids()).get(0).getAmount());
+                    if (!auction.getBids().isEmpty()) sender.sendMessage(ChatColor.GREEN + "Starting at: " + ((List<Bid>) auction.getBids()).get(0).getAmount());
                     sender.sendMessage(ChatColor.GREEN + "Minimum bid increment: " + auction.getMinimumBidIncrement());
-                    sender.sendMessage(ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + (auction.getHighestBid().getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getHighestBid().getCharacter().getName() + ChatColor.RESET : auction.getHighestBid().getCharacter().getName()));
+                    if (auction.getHighestBid() != null)sender.sendMessage(ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + " " + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + (auction.getHighestBid().getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getHighestBid().getCharacter().getName() + ChatColor.RESET : auction.getHighestBid().getCharacter().getName()));
                     sender.sendMessage(ChatColor.GREEN + "Currency: " + auction.getCurrency().getNamePlural());
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a player");
+                }
+            } else if (args[0].equalsIgnoreCase("list")) {
+                for (Auction auction : plugin.getAuctions()) {
+                    sender.sendMessage(ChatColor.DARK_GRAY + "=== " + ChatColor.YELLOW + auction.getCharacter().getName() + ChatColor.DARK_GRAY + "/" + ChatColor.YELLOW + auction.getCharacter().getPlayer().getName() + ChatColor.DARK_GRAY + " ===");
+                    sender.sendMessage(ChatColor.GREEN + "Item: " + auction.getItem().getAmount() + " x " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));
+                    sender.sendMessage(ChatColor.GREEN + "Bidding is " + (auction.isBiddingOpen() ? (ChatColor.GREEN + "OPEN") : (ChatColor.RED + "CLOSED")));
+                    sender.sendMessage(ChatColor.GREEN + "Located at: " + auction.getLocation().getBlockX() + ", " + auction.getLocation().getBlockY() + ", " + auction.getLocation().getBlockZ());
+                    if (!auction.getBids().isEmpty()) sender.sendMessage(ChatColor.GREEN + "Starting at: " + ((List<Bid>) auction.getBids()).get(0).getAmount());
+                    sender.sendMessage(ChatColor.GREEN + "Minimum bid increment: " + auction.getMinimumBidIncrement());
+                    if (auction.getHighestBid() != null) sender.sendMessage(ChatColor.GREEN + "Highest bid: " + auction.getHighestBid().getAmount() + " " + (auction.getHighestBid().getAmount() == 1 ? auction.getCurrency().getNameSingular() : auction.getCurrency().getNamePlural()) + " by " + (auction.getHighestBid().getCharacter().isNameHidden() ? ChatColor.MAGIC + auction.getHighestBid().getCharacter().getName() + ChatColor.RESET : auction.getHighestBid().getCharacter().getName()));
+                    sender.sendMessage(ChatColor.GREEN + "Currency: " + auction.getCurrency().getNamePlural());
                 }
             }
+        } else {
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /" + label + " [create|set|openBidding|closeBidding|status|list]");
         }
         return true;
     }
