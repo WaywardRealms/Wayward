@@ -18,23 +18,27 @@ public class DistanceCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            if (args.length > 0) {
-                Player player = plugin.getServer().getPlayer(args[0]);
-                if (player != null) {
-                    if (player.getWorld() == ((Player) sender).getWorld()) {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Distance to " + player.getName() + "/" + player.getDisplayName() + ": " + MathUtils.fastsqrt(player.getLocation().distanceSquared(((Player) sender).getLocation())));
+        if (sender.hasPermission("wayward.essentials.command.distance")) {
+            if (sender instanceof Player) {
+                if (args.length > 0) {
+                    Player player = plugin.getServer().getPlayer(args[0]);
+                    if (player != null) {
+                        if (player.getWorld() == ((Player) sender).getWorld()) {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Distance to " + player.getName() + "/" + player.getDisplayName() + ": " + MathUtils.fastsqrt(player.getLocation().distanceSquared(((Player) sender).getLocation())));
+                        } else {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is in a different world.");
+                        }
                     } else {
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is in a different world.");
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not online");
                     }
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not online");
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a player.");
                 }
             } else {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a player.");
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform that command.");
             }
         } else {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform that command.");
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
         }
         return true;
     }
