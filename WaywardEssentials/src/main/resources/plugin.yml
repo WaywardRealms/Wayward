@@ -121,6 +121,9 @@ permissions:
     wayward.essentials.command.deletewarp:
         description: Allows you to delete a warp
         default: op
+    wayward.essentials.command.distance:
+        description: Allows you to check your distance to players
+        default: op
     wayward.essentials.command.enchant:
         description: Allows you to enchant items by command
         default: op
@@ -186,6 +189,9 @@ permissions:
         default: op
     wayward.essentials.command.togglelogmessages:
         description: Allows you to toggle log in/out messages
+        default: op
+    wayward.essentials.command.track:
+        description: Allows you to track players
         default: op
     wayward.essentials.command.unsign:
         description: Allows you to unsign books

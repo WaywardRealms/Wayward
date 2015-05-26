@@ -17,14 +17,24 @@ public class TrackCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            if (args.length > 0) {
-                Player player = plugin.getServer().getPlayer(args[0]);
-                if (player != null) {
-                    ((Player) sender).setCompassTarget(player.getLocation());
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Now tracking " + player.getName() + "/" + player.getDisplayName());
+        if (sender.hasPermission("wayward.essentials.command.track")) {
+            if (sender instanceof Player) {
+                if (args.length > 0) {
+                    Player player = plugin.getServer().getPlayer(args[0]);
+                    if (player != null) {
+                        ((Player) sender).setCompassTarget(player.getLocation());
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Now tracking " + player.getName() + "/" + player.getDisplayName());
+                    } else {
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "No player by that name is online.");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must specify a player to track.");
                 }
+            } else {
+                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to perform this command.");
             }
+        } else {
+            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have permission.");
         }
         return true;
     }
