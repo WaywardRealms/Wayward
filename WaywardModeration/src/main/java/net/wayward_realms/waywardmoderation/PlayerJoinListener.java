@@ -1,6 +1,5 @@
 package net.wayward_realms.waywardmoderation;
 
-import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,8 +20,6 @@ public class PlayerJoinListener implements Listener {
             if (event.getPlayer() != player) {
                 if (!plugin.canSee(event.getPlayer(), player)) {
                     event.getPlayer().hidePlayer(player);
-                } else {
-                    PlayerNamePlateUtils.refreshPlayer(player);
                 }
             }
         }
@@ -31,7 +28,6 @@ public class PlayerJoinListener implements Listener {
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 if (!plugin.canSee(player, event.getPlayer())) player.hidePlayer(event.getPlayer());
             }
-            PlayerNamePlateUtils.refreshPlayer(event.getPlayer());
         }
         event.getPlayer().sendMessage(plugin.getWarnings(event.getPlayer()).size() <= 0 ? ChatColor.GREEN + "You have no warnings." : ChatColor.RED + "You have " + plugin.getWarnings(event.getPlayer()).size() + " warnings. Use /warnings to view them.");
     }

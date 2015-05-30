@@ -9,7 +9,6 @@ import net.wayward_realms.waywardlib.events.EventCharacter;
 import net.wayward_realms.waywardlib.events.EventCharacterTemplate;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -128,7 +127,6 @@ public class EventCharacterImpl implements EventCharacter {
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
             player.getPlayer().setDisplayName(isNameHidden() ? ChatColor.MAGIC + name + ChatColor.RESET : name);
-            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
 
@@ -141,7 +139,6 @@ public class EventCharacterImpl implements EventCharacter {
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
             player.getPlayer().setDisplayName(nameHidden ? ChatColor.MAGIC + getName() + ChatColor.RESET : getName());
-            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
 

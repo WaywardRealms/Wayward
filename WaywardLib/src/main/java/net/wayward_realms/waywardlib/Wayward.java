@@ -19,16 +19,10 @@ import net.wayward_realms.waywardlib.permissions.PermissionsPlugin;
 import net.wayward_realms.waywardlib.professions.ProfessionsPlugin;
 import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.travel.TravelPlugin;
-import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableChunk;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import net.wayward_realms.waywardlib.worldgen.WorldgenPlugin;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -46,7 +40,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
 
     @Override
     public void onEnable() {
-        PlayerNamePlateUtils.init(this);
         ConfigurationSerialization.registerClass(SerialisableLocation.class);
         ConfigurationSerialization.registerClass(SerialisableChunk.class);
         ConfigurationSerialization.registerClass(TemporaryStatModification.class);
@@ -115,18 +108,6 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
                 }
             }
         }, this);
-        getCommand("refreshprofile").setExecutor(new CommandExecutor() {
-            @Override
-            public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-                if (sender instanceof Player) {
-                    PlayerNamePlateUtils.invalidate((Player) sender);
-                    sender.sendMessage(getPrefix() + ChatColor.GREEN + "Your profile has been invalidated, it will be re-requested from Mojang's servers as needed.");
-                } else {
-                    sender.sendMessage(getPrefix() + ChatColor.RED + "You cannot attempt to refresh your profile if you are not a player.");
-                }
-                return true;
-            }
-        });
     }
 
     @Override

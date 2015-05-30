@@ -231,7 +231,7 @@ public class WaywardChat extends JavaPlugin implements ChatPlugin {
                 }
                 i += ("%message%").length() - 1;
             } else {
-                fancy.then(format.charAt(i));
+                fancy.then(Character.toString(format.charAt(i)));
                 if (chatColour != null) fancy.color(chatColour);
                 if (chatFormat != null) fancy.style(chatFormat);
             }
