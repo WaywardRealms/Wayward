@@ -7,7 +7,6 @@ import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +18,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 public class CharacterImpl implements Character {
 
@@ -136,7 +138,6 @@ public class CharacterImpl implements Character {
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
             player.getPlayer().setDisplayName(isNameHidden() ? "???" : name);
-            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
 
@@ -149,7 +150,6 @@ public class CharacterImpl implements Character {
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
             player.getPlayer().setDisplayName(nameHidden ? ChatColor.MAGIC + getName() + ChatColor.RESET : getName());
-            PlayerNamePlateUtils.refreshPlayer(player.getPlayer());
         }
     }
 
