@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.wayward-realms</groupId>
     <artifactId>wayward</artifactId>
-    <version>0.11.2-SNAPSHOT</version>
+    <version>0.12.1-SNAPSHOT</version>
     <name>Wayward</name>
     <description>Plugins designed for Wayward Realms server</description>
     <url>http://wayward-realms.net/</url>
@@ -94,13 +94,17 @@
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.8.6-R0.1-SNAPSHOT</version>
+            <version>1.8.6-R0.1-20150601.092622-22</version>
         </dependency>
     </dependencies>
     <build>
@@ -149,6 +153,7 @@
                 </dependencies>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                 </configuration>
             </plugin>
         </plugins>
