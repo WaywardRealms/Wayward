@@ -25,6 +25,11 @@ public class DistanceCommand implements CommandExecutor {
                     Player player = plugin.getServer().getPlayer(args[0]);
                     if (player != null) {
                         if (player.getWorld() == ((Player) sender).getWorld()) {
+                            if (!plugin.isTrackable(player)) {
+                                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not currently trackable.");
+                                player.sendMessage(plugin.getPrefix() + ChatColor.RED + sender.getName() + " attempted to check their distance to you. If you wish for them to be able to find you, re-enable tracking with /toggletracking");
+                                return true;
+                            }
                             ItemStack itemRequirement = plugin.getConfig().getItemStack("distance-command.item-requirement");
                             if (itemRequirement != null && !player.getInventory().containsAtLeast(itemRequirement, itemRequirement.getAmount())) {
                                 sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You require " + itemRequirement.getAmount() + " x " + itemRequirement.getType().toString().toLowerCase().replace('_', ' ') + " to use that command.");

@@ -35,6 +35,9 @@ commands:
     heal:
         description: Heals a player
         usage: /<command> (player)
+    toggletracking:
+        description: Hides or unhides yourself from /distance and /track
+        usage: /<command>
     inventory:
         description: Opens someone's inventory
         usage: /<command> [player]
@@ -123,7 +126,7 @@ permissions:
         default: op
     wayward.essentials.command.distance:
         description: Allows you to check your distance to players
-        default: op
+        default: true
     wayward.essentials.command.enchant:
         description: Allows you to enchant items by command
         default: op
@@ -190,9 +193,12 @@ permissions:
     wayward.essentials.command.togglelogmessages:
         description: Allows you to toggle log in/out messages
         default: op
+    wayward.essentials.command.toggletracking:
+        description: Allows you to hide from /track and /distance
+        default: true
     wayward.essentials.command.track:
         description: Allows you to track players
-        default: op
+        default: true
     wayward.essentials.command.unsign:
         description: Allows you to unsign books
         default: true

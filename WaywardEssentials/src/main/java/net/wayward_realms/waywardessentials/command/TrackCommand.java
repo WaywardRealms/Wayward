@@ -24,6 +24,11 @@ public class TrackCommand implements CommandExecutor {
                 if (args.length > 0) {
                     Player player = plugin.getServer().getPlayer(args[0]);
                     if (player != null) {
+                        if (!plugin.isTrackable(player)) {
+                            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That player is not currently trackable.");
+                            player.sendMessage(plugin.getPrefix() + ChatColor.RED + sender.getName() + " attempted to track you. If you wish for them to be able to find you, re-enable tracking with /toggletracking");
+                            return true;
+                        }
                         ItemStack itemRequirement = plugin.getConfig().getItemStack("track-command.item-requirement");
                         if (itemRequirement != null && !player.getInventory().containsAtLeast(itemRequirement, itemRequirement.getAmount())) {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You require " + itemRequirement.getAmount() + " x " + itemRequirement.getType().toString().toLowerCase().replace('_', ' ') + " to use that command.");
