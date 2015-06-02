@@ -111,6 +111,7 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
         getCommand("speed").setExecutor(new SpeedCommand(this));
         getCommand("sudo").setExecutor(new SudoCommand(this));
         getCommand("togglelogmessages").setExecutor(new ToggleLogMessagesCommand(this));
+        getCommand("toggletracking").setExecutor(new ToggleTrackingCommand(this));
         getCommand("track").setExecutor(new TrackCommand(this));
         getCommand("unsign").setExecutor(new UnsignCommand(this));
         getCommand("warp").setExecutor(new WarpCommand(this));
@@ -251,6 +252,23 @@ public class WaywardEssentials extends JavaPlugin implements EssentialsPlugin {
             }
         }
         return getConfig().getStringList("daily-messages").get(i);
+    }
+
+    public boolean isTrackable(Player player) {
+        File trackingFile = new File(getDataFolder(), "tracking.yml");
+        YamlConfiguration trackingConfiguration = YamlConfiguration.loadConfiguration(trackingFile);
+        return trackingConfiguration.getBoolean(player.getUniqueId().toString(), true);
+    }
+
+    public void setTrackable(Player player, boolean trackable) {
+        File trackingFile = new File(getDataFolder(), "tracking.yml");
+        YamlConfiguration trackingConfiguration = YamlConfiguration.loadConfiguration(trackingFile);
+        trackingConfiguration.set(player.getUniqueId().toString(), trackable);
+        try {
+            trackingConfiguration.save(trackingFile);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }

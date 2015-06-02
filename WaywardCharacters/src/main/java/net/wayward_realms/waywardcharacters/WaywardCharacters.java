@@ -7,7 +7,6 @@ import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.CombatPlugin;
 import net.wayward_realms.waywardlib.events.EventsPlugin;
 import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
-import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -36,7 +35,7 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         ConfigurationSerialization.registerClass(RaceImpl.class);
         ConfigurationSerialization.registerClass(RaceKit.class);
         saveDefaultConfig();
-        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this), new PlayerNamePlateChangeListener(this));
+        registerListeners(new EntityDamageListener(this), new EntityRegainHealthListener(this), new FoodLevelChangeListener(this), new PlayerItemConsumeListener(this), new PlayerInteractListener(this), new PlayerInteractEntityListener(this), new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerRespawnListener(this), new SignChangeListener(this), new PlayerEditBookListener(this));
         getCommand("character").setExecutor(new CharacterCommand(this));
         getCommand("racekit").setExecutor(new RaceKitCommand(this));
         getCommand("stats").setExecutor(new StatsCommand(this));
@@ -377,7 +376,6 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         player.getInventory().setContents(character.getInventoryContents());
         player.teleport(character.getLocation());
         player.setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
-        PlayerNamePlateUtils.refreshPlayer(player);
         player.setMaxHealth(character.getMaxHealth());
         player.setHealth(Math.max(character.getHealth(), 0));
         player.setFoodLevel(character.getFoodLevel());

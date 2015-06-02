@@ -1,9 +1,7 @@
 package net.wayward_realms.waywardcharacters;
 
 import net.wayward_realms.waywardlib.character.Character;
-import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -23,8 +21,6 @@ public class PlayerJoinListener implements Listener {
         }
         Character character = plugin.getActiveCharacter(event.getPlayer());
         event.getPlayer().setDisplayName(character.isNameHidden() ? ChatColor.MAGIC + character.getName() + ChatColor.RESET : character.getName());
-        Player player = event.getPlayer();
-        PlayerNamePlateUtils.refreshPlayer(player);
     }
 
 }

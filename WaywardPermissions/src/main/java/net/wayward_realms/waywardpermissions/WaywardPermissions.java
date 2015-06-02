@@ -18,7 +18,7 @@ public class WaywardPermissions extends JavaPlugin implements PermissionsPlugin 
     public void onEnable() {
         saveDefaultConfig();
         getConfig().options().pathSeparator('/');
-        if (getServer().getOnlinePlayers().length != 0) {
+        if (getServer().getOnlinePlayers().size() != 0) {
             for (Player player : getServer().getOnlinePlayers()) {
                 assignPermissions(player);
             }
@@ -38,7 +38,7 @@ public class WaywardPermissions extends JavaPlugin implements PermissionsPlugin 
 
     @Override
     public void onDisable() {
-        if (getServer().getOnlinePlayers().length != 0) {
+        if (getServer().getOnlinePlayers().size() != 0) {
             for (Player player : getServer().getOnlinePlayers()) {
                 unassignPermissions(player);
             }

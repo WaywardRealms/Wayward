@@ -7,7 +7,6 @@ import net.wayward_realms.waywardmoderation.reputation.ReputationCommand;
 import net.wayward_realms.waywardmoderation.reputation.ReputationManager;
 import net.wayward_realms.waywardmoderation.ticket.*;
 import net.wayward_realms.waywardmoderation.vanish.AmIVanishedCommand;
-import net.wayward_realms.waywardmoderation.vanish.PlayerNamePlateChangeListener;
 import net.wayward_realms.waywardmoderation.vanish.VanishCommand;
 import net.wayward_realms.waywardmoderation.vanish.VanishManager;
 import net.wayward_realms.waywardmoderation.warning.*;
@@ -55,7 +54,7 @@ public class WaywardModeration extends JavaPlugin implements ModerationPlugin {
         getCommand("amivanished").setExecutor(new AmIVanishedCommand(this));
         getCommand("tempban").setExecutor(new TempBanCommand(this));
         getCommand("onlinestaff").setExecutor(new OnlineStaffCommand(this));
-        registerListeners(new PlayerJoinListener(this), new PlayerLoginListener(this), new PlayerNamePlateChangeListener(this));
+        registerListeners(new PlayerJoinListener(this), new PlayerLoginListener(this));
         for (Ticket ticket : getTickets()) {
             if (ticket.getId() > TicketImpl.getNextId()) {
                 TicketImpl.setNextId(ticket.getId());

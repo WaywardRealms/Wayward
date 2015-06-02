@@ -1,6 +1,5 @@
 package net.wayward_realms.waywardmoderation.vanish;
 
-import net.wayward_realms.waywardlib.util.player.PlayerNamePlateUtils;
 import net.wayward_realms.waywardmoderation.WaywardModeration;
 import org.bukkit.entity.Player;
 
@@ -34,7 +33,6 @@ public class VanishManager {
                 player1.showPlayer(player);
             }
         }
-        PlayerNamePlateUtils.refreshPlayer(player);
     }
 
     public Set<Player> getVanishedPlayers() {
