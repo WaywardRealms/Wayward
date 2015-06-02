@@ -13,8 +13,8 @@
     </properties>
     <repositories>
         <repository>
-            <id>fanciful-mvn-repo</id>
-            <url>https://raw.github.com/mkremins/fanciful/mvn-repo/</url>
+            <id>franga2000-repo</id>
+            <url>http://repo.franga2000.com/public/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
