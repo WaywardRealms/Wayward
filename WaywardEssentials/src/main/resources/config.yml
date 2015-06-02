@@ -30,3 +30,13 @@ daily-messages:
 - '"I *warned* you, but did you listen to me? Oh, no, you *knew*, didn''t you? Oh, it''s just a harmless little *bunny*, isn''t it?"'
 - '"Don''t like her? What''s wrong with her? She''s beautiful, she''s rich, she''s got huge... tracts of land."'
 - '"You must spank her well, and after you are done with her, you may deal with her as you like... and then... spank me."'
+distance-command:
+    item-requirement:
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPASS
+    maximum-distance: -1
+track-command:
+    item-requirement:
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPASS
+    maximum-distance: -1
