@@ -1,0 +1,5 @@
+database:
+    url: localhost
+    database: wayward
+    username: DB-USER-HERE
+    password: DB-PASSWORD-HERE

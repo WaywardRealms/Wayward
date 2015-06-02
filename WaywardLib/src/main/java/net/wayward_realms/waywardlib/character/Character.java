@@ -3,6 +3,7 @@ package net.wayward_realms.waywardlib.character;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Combatant;
 import net.wayward_realms.waywardlib.skills.SkillType;
+import net.wayward_realms.waywardlib.util.database.TableRow;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +14,7 @@ import java.util.Collection;
  * Represents a character
  * 
  */
-public interface Character extends Combatant {
+public interface Character extends Combatant, TableRow {
 
     /**
      * Gets the character's unique ID
@@ -401,19 +402,5 @@ public interface Character extends Combatant {
      * @param hidden whether to hide the class
      */
     public void setClassHidden(boolean hidden);
-
-    /**
-     * Gets what to use for the name plate
-     *
-     * @return the name plate
-     */
-    public String getNamePlate();
-
-    /**
-     * Sets what to use for the name plate
-     *
-     * @param namePlate the name plate to set
-     */
-    public void setNamePlate(String namePlate);
 
 }

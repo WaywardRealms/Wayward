@@ -7,23 +7,17 @@ import net.wayward_realms.waywardlib.character.TemporaryStatModification;
 import net.wayward_realms.waywardlib.classes.ClassesPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.skills.SkillType;
-import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
+import net.wayward_realms.waywardlib.util.database.TableRowImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class CharacterImpl implements Character {
+public class CharacterImpl extends TableRowImpl implements Character {
 
     private static int nextId = 0;
 
@@ -40,19 +34,39 @@ public class CharacterImpl implements Character {
         CharacterImpl.nextId = id;
     }
 
-    private WaywardCharacters plugin;
-    private File file;
     private static final int MAX_THIRST = 20;
     private static final int MIN_THIRST = 0;
 
-    private CharacterImpl() {}
+    private WaywardCharacters plugin;
+    private String name;
+    private boolean nameHidden;
+    private int age;
+    private boolean ageHidden;
+    private UUID playerUUID;
+    private Gender gender;
+    private boolean genderHidden;
+    private Race race;
+    private boolean raceHidden;
+    private String description;
+    private boolean descriptionHidden;
+    private Location location;
+    private ItemStack helmet;
+    private ItemStack chestplate;
+    private ItemStack leggings;
+    private ItemStack boots;
+    private ItemStack[] inventoryContents;
+    private double health;
+    private int foodLevel;
+    private int thirstLevel;
+    private int mana;
+    private boolean dead;
+    private Collection<TemporaryStatModification> temporaryStatModifications;
+    private boolean classHidden;
+    private Map<Stat, Integer> statPoints;
 
     public CharacterImpl(WaywardCharacters plugin, OfflinePlayer player) {
-        int id = CharacterImpl.nextAvailableId();
+        super(CharacterImpl.nextAvailableId());
         this.plugin = plugin;
-        this.file = new File(new File(plugin.getDataFolder(), "characters-new"), id + ".yml");
-        setId(id);
-        setPlayer(player);
         setName("Unknown");
         setGender(plugin.getGender("UNKNOWN"));
         setAge(0);
@@ -65,76 +79,46 @@ public class CharacterImpl implements Character {
         setFoodLevel(20);
         setMana(getMaxMana());
         setThirst(20);
-        setNamePlate("");
     }
 
-    public CharacterImpl(WaywardCharacters plugin, File file) {
+    public CharacterImpl(int id, WaywardCharacters plugin, int id1, String name, boolean nameHidden, int age, boolean ageHidden, UUID playerUUID, Gender gender, boolean genderHidden, Race race, boolean raceHidden, String description, boolean descriptionHidden, Location location, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack[] inventoryContents, double health, int foodLevel, int thirstLevel, int mana, boolean dead, Collection<TemporaryStatModification> temporaryStatModifications, boolean classHidden, Map<Stat, Integer> statPoints) {
+        super(id);
         this.plugin = plugin;
-        this.file = file;
-    }
-
-    private void setFieldValue(String field, Object value) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        save.set("character." + field, value);
-        try {
-            save.save(file);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    private Object getFieldValue(String field) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        return save.get("character." + field);
-    }
-
-    private int getFieldIntValue(String field) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        return save.getInt("character." + field);
-    }
-
-    private double getFieldDoubleValue(String field) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        return save.getDouble("character." + field);
-    }
-
-    private boolean getFieldBooleanValue(String field) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        return save.getBoolean("character." + field);
-    }
-
-    private String getFieldStringValue(String field) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        return save.getString("character." + field);
-    }
-
-    private ItemStack getFieldItemStackValue(String field) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        return save.getItemStack("character." + field);
-    }
-
-    private List<?> getFieldListValue(String field) {
-        YamlConfiguration save = YamlConfiguration.loadConfiguration(file);
-        return save.getList("character." + field);
-    }
-
-    @Override
-    public int getId() {
-        return getFieldIntValue("id");
-    }
-
-    private void setId(int id) {
-        setFieldValue("id", id);
+        this.name = name;
+        this.nameHidden = nameHidden;
+        this.age = age;
+        this.ageHidden = ageHidden;
+        this.playerUUID = playerUUID;
+        this.gender = gender;
+        this.genderHidden = genderHidden;
+        this.race = race;
+        this.raceHidden = raceHidden;
+        this.description = description;
+        this.descriptionHidden = descriptionHidden;
+        this.location = location;
+        this.helmet = helmet;
+        this.chestplate = chestplate;
+        this.leggings = leggings;
+        this.boots = boots;
+        this.inventoryContents = inventoryContents;
+        this.health = health;
+        this.foodLevel = foodLevel;
+        this.thirstLevel = thirstLevel;
+        this.mana = mana;
+        this.dead = dead;
+        this.temporaryStatModifications = temporaryStatModifications;
+        this.classHidden = classHidden;
+        this.statPoints = statPoints;
     }
 
     @Override
     public String getName() {
-        return getFieldStringValue("name");
+        return name;
     }
 
     @Override
     public void setName(String name) {
-        setFieldValue("name", name);
+        this.name = name;
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
             player.getPlayer().setDisplayName(isNameHidden() ? "???" : name);
@@ -142,11 +126,11 @@ public class CharacterImpl implements Character {
     }
 
     public boolean isNameHidden() {
-        return getFieldBooleanValue("name-hidden");
+        return nameHidden;
     }
 
     public void setNameHidden(boolean nameHidden) {
-        setFieldValue("name-hidden", nameHidden);
+        this.nameHidden = nameHidden;
         OfflinePlayer player = getPlayer();
         if (player.isOnline()) {
             player.getPlayer().setDisplayName(nameHidden ? ChatColor.MAGIC + getName() + ChatColor.RESET : getName());
@@ -155,82 +139,76 @@ public class CharacterImpl implements Character {
 
     @Override
     public int getAge() {
-        return getFieldIntValue("age");
+        return age;
     }
 
     @Override
     public void setAge(int age) {
-        setFieldValue("age", age);
+        this.age = age;
     }
 
     public boolean isAgeHidden() {
-        return getFieldBooleanValue("age-hidden");
+        return ageHidden;
     }
 
     public void setAgeHidden(boolean ageHidden) {
-        setFieldValue("age-hidden", ageHidden);
+        this.ageHidden = ageHidden;
     }
 
     @Override
     public OfflinePlayer getPlayer() {
-        if (getFieldValue("uuid") != null) {
-            return Bukkit.getOfflinePlayer(UUID.fromString(getFieldStringValue("uuid")));
-        } else {
-            setFieldValue("uuid", Bukkit.getOfflinePlayer(getFieldStringValue("ign")).getUniqueId().toString());
-            setFieldValue("ign", null);
-            return getPlayer();
-        }
+        return plugin.getServer().getOfflinePlayer(playerUUID);
     }
 
     @Override
     public void setPlayer(OfflinePlayer player) {
-        setFieldValue("uuid", player.getUniqueId().toString());
+        this.playerUUID = player.getUniqueId();
     }
 
     @Override
     public Gender getGender() {
-        return (Gender) getFieldValue("gender");
+        return gender;
     }
 
     @Override
     public void setGender(Gender gender) {
-        setFieldValue("gender", gender);
+        this.gender = gender;
     }
 
     public boolean isGenderHidden() {
-        return getFieldBooleanValue("gender-hidden");
+        return genderHidden;
     }
 
     public void setGenderHidden(boolean genderHidden) {
-        setFieldValue("gender-hidden", genderHidden);
+        this.genderHidden = genderHidden;
     }
 
     @Override
     public Race getRace() {
-        return (Race) getFieldValue("race");
+        return race;
     }
 
     @Override
     public void setRace(Race race) {
-        setFieldValue("race", race);
+        this.race = race;
     }
 
     public boolean isRaceHidden() {
-        return getFieldBooleanValue("race-hidden");
+        return raceHidden;
     }
 
     public void setRaceHidden(boolean raceHidden) {
-        setFieldValue("race-hidden", raceHidden);
+        this.raceHidden = raceHidden;
     }
 
     @Override
     public String getDescription() {
-        return getFieldStringValue("description");
+        return description;
     }
 
     @Override
     public void setDescription(String description) {
-        setFieldValue("description", description + " ");
+        this.description = description + " ";
     }
 
     @Override
@@ -239,105 +217,101 @@ public class CharacterImpl implements Character {
     }
 
     public boolean isDescriptionHidden() {
-        return getFieldBooleanValue("description-hidden");
+        return descriptionHidden;
     }
 
     public void setDescriptionHidden(boolean descriptionHidden) {
-        setFieldValue("description-hidden", descriptionHidden);
+        this.descriptionHidden = descriptionHidden;
     }
 
     @Override
     public Location getLocation() {
-        return ((SerialisableLocation) getFieldValue("location")).toLocation();
+        return location;
     }
 
     @Override
     public void setLocation(Location location) {
-        setFieldValue("location", new SerialisableLocation(location));
+        this.location = location;
     }
 
     @Override
     public ItemStack getHelmet() {
-        return getFieldItemStackValue("helmet");
+        return helmet;
     }
 
     @Override
     public void setHelmet(ItemStack helmet) {
-        setFieldValue("helmet", helmet);
+        this.helmet = helmet;
     }
 
     @Override
     public ItemStack getChestplate() {
-        return getFieldItemStackValue("chestplate");
+        return chestplate;
     }
 
     @Override
     public void setChestplate(ItemStack chestplate) {
-        setFieldValue("chestplate", chestplate);
+        this.chestplate = chestplate;
     }
 
     @Override
     public ItemStack getLeggings() {
-        return getFieldItemStackValue("leggings");
+        return leggings;
     }
 
     @Override
     public void setLeggings(ItemStack leggings) {
-        setFieldValue("leggings", leggings);
+        this.leggings = leggings;
     }
 
     @Override
     public ItemStack getBoots() {
-        return getFieldItemStackValue("boots");
+        return boots;
     }
 
     @Override
     public void setBoots(ItemStack boots) {
-        setFieldValue("boots", boots);
+        this.boots = boots;
     }
 
     @Override
     public ItemStack[] getInventoryContents() {
-        if (getFieldValue("inventory-contents") instanceof List<?>) {
-            return ((List<ItemStack>) getFieldValue("inventory-contents")).toArray(new ItemStack[36]);
-        } else {
-            return new ItemStack[36];
-        }
+        return inventoryContents;
     }
 
     @Override
     public void setInventoryContents(ItemStack[] inventoryContents) {
-        setFieldValue("inventory-contents", inventoryContents);
+        this.inventoryContents = inventoryContents;
     }
 
     @Override
     public double getHealth() {
-        return getFieldDoubleValue("health");
+        return health;
     }
 
     @Override
     public void setHealth(double health) {
-        setFieldValue("health", Math.max(Math.min(health, getMaxHealth()), 0));
+        this.health = Math.max(Math.min(health, getMaxHealth()), 0);
     }
 
     @Override
     public int getFoodLevel() {
-        return getFieldIntValue("food-level");
+        return foodLevel;
     }
 
     @Override
     public void setFoodLevel(int foodLevel) {
-        setFieldValue("food-level", foodLevel);
+        this.foodLevel = foodLevel;
     }
 
     @Override
     public int getThirst() {
-        return getFieldIntValue("thirst");
+        return thirstLevel;
     }
 
     @Override
     public void setThirst(int thirstLevel) {
-        setFieldValue("thirst", thirstLevel);
+        this.thirstLevel = thirstLevel;
         if (getThirst() > MAX_THIRST) {
             setThirst(MAX_THIRST);
         }
@@ -359,12 +333,12 @@ public class CharacterImpl implements Character {
 
     @Override
     public int getMana() {
-        return getFieldIntValue("mana");
+        return mana;
     }
 
     @Override
     public void setMana(int mana) {
-        setFieldValue("mana", mana);
+        this.mana = mana;
     }
 
     @Override
@@ -379,12 +353,12 @@ public class CharacterImpl implements Character {
 
     @Override
     public boolean isDead() {
-        return getFieldBooleanValue("dead");
+        return dead;
     }
 
     @Override
     public void setDead(boolean dead) {
-        setFieldValue("dead", dead);
+        this.dead = dead;
         if (dead) setHealth(0D); else setHealth(1D);
     }
 
@@ -404,21 +378,18 @@ public class CharacterImpl implements Character {
 
     @Override
     public Collection<TemporaryStatModification> getTemporaryStatModifications() {
-        return getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
+        if (temporaryStatModifications == null) temporaryStatModifications = new ArrayList<>();
+        return temporaryStatModifications;
     }
 
     @Override
     public void addTemporaryStatModification(TemporaryStatModification modification) {
-        List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
-        statModifications.add(modification);
-        setFieldValue("temporary-stat-modifications", statModifications);
+        getTemporaryStatModifications().add(modification);
     }
 
     @Override
     public void removeTemporaryStatModification(TemporaryStatModification modification) {
-        List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
-        statModifications.remove(modification);
-        setFieldValue("temporary-stat-modifications", statModifications);
+        getTemporaryStatModifications().remove(modification);
     }
 
     @Override
@@ -432,29 +403,19 @@ public class CharacterImpl implements Character {
     }
 
     public boolean isClassHidden() {
-        return getFieldBooleanValue("class-hidden");
+        return classHidden;
     }
 
     public void setClassHidden(boolean classHidden) {
-        setFieldValue("class-hidden", classHidden);
-    }
-
-    @Override
-    public String getNamePlate() {
-        return getFieldStringValue("nameplate");
-    }
-
-    @Override
-    public void setNamePlate(String namePlate) {
-        setFieldValue("nameplate", namePlate);
+        this.classHidden = classHidden;
     }
 
     public int getStatPoints(Stat stat) {
-        return getFieldValue("stat-points." + stat.toString().toLowerCase()) != null ? getFieldIntValue("stat-points." + stat.toString().toLowerCase()) : 0;
+        return statPoints.containsKey(stat) ? statPoints.get(stat) : 0;
     }
 
     public void setStatPoints(Stat stat, int amount) {
-        setFieldValue("stat-points." + stat.toString().toLowerCase(), amount);
+        statPoints.put(stat, amount);
     }
 
     public int getAssignedStatPoints() {
@@ -478,7 +439,7 @@ public class CharacterImpl implements Character {
     }
 
     public void resetStatPoints() {
-        setFieldValue("stat-points", null);
+        statPoints = new EnumMap<>(Stat.class);
     }
 
 }
