@@ -104,7 +104,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.8.6-R0.1-SNAPSHOT</version>
+            <version>1.8.6-R0.1-20150601.092622-22</version>
         </dependency>
     </dependencies>
     <build>
@@ -153,6 +153,7 @@
                 </dependencies>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                 </configuration>
             </plugin>
         </plugins>

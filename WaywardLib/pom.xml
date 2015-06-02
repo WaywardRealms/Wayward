@@ -30,7 +30,7 @@
         <dependency>
             <groupId>mkremins</groupId>
             <artifactId>fanciful</artifactId>
-            <version>0.3.3-SNAPSHOT</version>
+            <version>0.3.3-20150330.224758-1</version>
         </dependency>
         <dependency>
             <groupId>org.pircbotx</groupId>
@@ -115,6 +115,7 @@
                 <version>2.4.1</version>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                 </configuration>
             </plugin>
         </plugins>

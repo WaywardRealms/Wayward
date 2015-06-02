@@ -49,6 +49,7 @@
                 <version>2.4.1</version>
                 <configuration>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                 </configuration>
             </plugin>
         </plugins>
