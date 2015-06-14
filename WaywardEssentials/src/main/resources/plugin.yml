@@ -99,6 +99,9 @@ commands:
         description: Toggles messages when players log in and out
         usage: /<command>
         aliases: [tlm]
+    tp:
+        description: Teleports the given player (or yourself) to another player or coordinates
+        usage: /<command> [player] <target> and/or <x> <y> <z>
     track:
         description: Tracks a player with your compass
         usage: /<command> [player]
@@ -189,6 +192,9 @@ permissions:
         default: op
     wayward.essentials.command.sudo:
         description: Allows you to run a command with elevated priveledges
+        default: op
+    wayward.essentials.command.teleport:
+        description: Allows you to teleport
         default: op
     wayward.essentials.command.togglelogmessages:
         description: Allows you to toggle log in/out messages
