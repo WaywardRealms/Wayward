@@ -13,8 +13,8 @@
     </properties>
     <repositories>
         <repository>
-            <id>franga2000-repo</id>
-            <url>http://repo.franga2000.com/public/</url>
+            <id>stealthyone-repo</id>
+            <url>http://repo.stealthyone.com/content/groups/public</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>mkremins</groupId>
             <artifactId>fanciful</artifactId>
-            <version>0.3.3-20150330.224758-1</version>
+            <version>0.3.3-20160128.025139-2</version>
         </dependency>
         <dependency>
             <groupId>org.pircbotx</groupId>
