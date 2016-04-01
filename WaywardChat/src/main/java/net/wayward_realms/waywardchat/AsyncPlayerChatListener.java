@@ -38,8 +38,6 @@ public class AsyncPlayerChatListener implements Listener {
         this.pluginConfig = (YamlConfiguration)plugin.getConfig();
         essentialsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(EssentialsPlugin.class);
         // SET UP FUCKING PLAYER LOCATION GETTER SHIT COLLECTION
-        Bukkit.getScheduler().runTaskTimer(
-                plugin,
                 new BukkitRunnable(){
                     @Override
                     public void run() {
@@ -47,7 +45,7 @@ public class AsyncPlayerChatListener implements Listener {
                             uuidLocations.put(player.getUniqueId(), player.getLocation());
                         }
                     }
-                },100L,100L);
+                }.runTaskTimer(plugin, 100L, 100L);
         // END THAT SHIT
     }
 

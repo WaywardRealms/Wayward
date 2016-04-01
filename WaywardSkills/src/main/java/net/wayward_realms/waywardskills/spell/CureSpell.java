@@ -52,8 +52,8 @@ public class CureSpell extends SpellBase {
             }
             for (Player player1 : players) {
                 double potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE) / 4D;
-                if (player.getItemInHand() != null) {
-                    switch (player.getItemInHand().getType()) {
+                if (player.getInventory().getItemInMainHand() != null) {
+                    switch (player.getInventory().getItemInMainHand().getType()) {
                         case STICK: potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE) / 2D; break;
                         case BLAZE_ROD: potency = characterPlugin.getActiveCharacter(player).getStatValue(Stat.MAGIC_DEFENCE); break;
                         default: break;

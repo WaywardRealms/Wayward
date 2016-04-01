@@ -27,8 +27,8 @@ public class PlayerInteractListener implements Listener {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (event.getClickedBlock().getType() == Material.ANVIL) {
                     event.setCancelled(true);
-                    if (event.getPlayer().getItemInHand() != null) {
-                        ItemStack itemInHand = event.getPlayer().getItemInHand();
+                    if (event.getPlayer().getInventory().getItemInMainHand() != null) {
+                        ItemStack itemInHand = event.getPlayer().getInventory().getItemInMainHand();
                         Material material = itemInHand.getType();
                         ToolType toolType = ToolType.getToolType(material);
                         if (toolType != null) {
@@ -54,7 +54,7 @@ public class PlayerInteractListener implements Listener {
                                 }
                                 if (cost == null || event.getPlayer().getInventory().containsAtLeast(cost, 1)) {
                                     event.getPlayer().getInventory().removeItem(cost);
-                                    event.getPlayer().getItemInHand().setDurability((short) (material.getMaxDurability() - plugin.getMaxToolDurability(character, toolType)));
+                                    event.getPlayer().getInventory().getItemInMainHand().setDurability((short) (material.getMaxDurability() - plugin.getMaxToolDurability(character, toolType)));
                                     event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Item repaired.");
                                 } else {
                                     event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You need at least " + cost.getAmount() + " " + cost.getType().toString().toLowerCase().replace("_", " ") + (cost.getAmount() != 1 ? "s" : "") + " to repair your " + material.toString().toLowerCase().replace("_", " "));

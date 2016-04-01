@@ -20,8 +20,8 @@ public class RepairCommand implements CommandExecutor {
         if (sender.hasPermission("wayward.essentials.command.repair")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (player.getItemInHand() != null) {
-                    player.getItemInHand().setDurability((short) 0);
+                if (player.getInventory().getItemInMainHand() != null) {
+                    player.getInventory().getItemInMainHand().setDurability((short) 0);
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Item repaired.");
                 } else {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding something to repair.");

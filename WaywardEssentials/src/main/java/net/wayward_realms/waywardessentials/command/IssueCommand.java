@@ -33,10 +33,10 @@ public class IssueCommand implements CommandExecutor {
                     }
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Please write your issue in the book, titling it with the title of the issue, then use /issue submit [plugin] with the book in hand when done.");
                 } else if (args[0].equalsIgnoreCase("submit")) {
-                    if (player.getItemInHand() != null) {
-                        if (player.getItemInHand().hasItemMeta()) {
-                            if (player.getItemInHand().getItemMeta() instanceof BookMeta) {
-                                BookMeta meta = (BookMeta) player.getItemInHand().getItemMeta();
+                    if (player.getInventory().getItemInMainHand() != null) {
+                        if (player.getInventory().getItemInMainHand().hasItemMeta()) {
+                            if (player.getInventory().getItemInMainHand().getItemMeta() instanceof BookMeta) {
+                                BookMeta meta = (BookMeta) player.getInventory().getItemInMainHand().getItemMeta();
                                 StringBuilder issueBody = new StringBuilder();
                                 for (String pageText : meta.getPages()) {
                                     issueBody.append("> ").append(pageText.replace("\n", "\n> ")).append('\n');
@@ -45,7 +45,7 @@ public class IssueCommand implements CommandExecutor {
                                 try {
                                     GHRepository repo = plugin.getGitHub().getRepository("WaywardRealms/Wayward");
                                     GHIssue issue = repo.createIssue(meta.hasTitle() ? meta.getTitle() : "Issue").body(issueBody.toString()).create();
-                                    player.setItemInHand(null);
+                                    player.getInventory().setItemInMainHand(null);
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Issue submitted. Thank you!");
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "You can view it at " + issue.getUrl().toString());
                                 } catch (IOException exception) {

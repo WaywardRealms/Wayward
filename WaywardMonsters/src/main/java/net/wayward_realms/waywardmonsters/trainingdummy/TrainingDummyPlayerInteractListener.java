@@ -37,12 +37,12 @@ public class TrainingDummyPlayerInteractListener implements Listener {
                             event.getPlayer().sendMessage(ChatColor.RED + "Could not parse dummy uses");
                         }
                         if (uses >= 19) {
-                            ItemStack item = event.getPlayer().getItemInHand();
+                            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
                             ToolType toolType = ToolType.getToolType(item.getType());
                             if (toolType != null && toolType == ToolType.SWORD) {
                                 item.setDurability((short) (item.getDurability() + 5));
                                 if (item.getDurability() >= item.getType().getMaxDurability()) {
-                                    event.getPlayer().setItemInHand(null);
+                                    event.getPlayer().getInventory().setItemInMainHand(null);
                                 }
                             } else {
                                 event.getPlayer().damage(0.5D);

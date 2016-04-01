@@ -8,8 +8,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionType;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class ProjectileHitListener implements Listener {
 
@@ -20,24 +21,26 @@ public class ProjectileHitListener implements Listener {
             if (arrow.getShooter() instanceof Player) {
                 if (arrow.getMetadata("isPoisonArrow") != null) {
                     if (!arrow.getMetadata("isPoisonArrow").isEmpty()) {
-                        Potion potion = new Potion(PotionType.POISON, 2).splash();
-                        ItemStack itemStack = new ItemStack(Material.POTION);
-                        potion.apply(itemStack);
+                        ItemStack potion = new ItemStack(Material.POTION);
+                        PotionMeta potionMeta = (PotionMeta) potion.getItemMeta();
+                        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 120, 2), false);
+                        potion.setItemMeta(potionMeta);
                         ThrownPotion thrownPotion = arrow.getShooter().launchProjectile(ThrownPotion.class);
                         thrownPotion.teleport(arrow);
                         thrownPotion.setVelocity(arrow.getVelocity());
-                        thrownPotion.setItem(itemStack);
+                        thrownPotion.setItem(potion);
                     }
                 }
                 if (arrow.getMetadata("isSnareShot") != null) {
                     if (!arrow.getMetadata("isSnareShot").isEmpty()) {
-                        Potion potion = new Potion(PotionType.SLOWNESS, 2).splash();
-                        ItemStack itemStack = new ItemStack(Material.POTION);
-                        potion.apply(itemStack);
+                        ItemStack potion = new ItemStack(Material.POTION);
+                        PotionMeta potionMeta = (PotionMeta) potion.getItemMeta();
+                        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.SLOW, 300, 2), false);
+                        potion.setItemMeta(potionMeta);
                         ThrownPotion thrownPotion = arrow.getShooter().launchProjectile(ThrownPotion.class);
                         thrownPotion.teleport(arrow);
                         thrownPotion.setVelocity(arrow.getVelocity());
-                        thrownPotion.setItem(itemStack);
+                        thrownPotion.setItem(potion);
                     }
                 }
             }

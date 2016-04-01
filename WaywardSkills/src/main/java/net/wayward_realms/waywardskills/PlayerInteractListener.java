@@ -25,10 +25,10 @@ public class PlayerInteractListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getPlayer().getItemInHand() != null) {
-                if (plugin.getSpellManager().getBoundSpell(event.getPlayer(), event.getPlayer().getItemInHand().getType()) != null) {
+            if (event.getPlayer().getInventory().getItemInMainHand() != null) {
+                if (plugin.getSpellManager().getBoundSpell(event.getPlayer(), event.getPlayer().getInventory().getItemInMainHand().getType()) != null) {
                     Player player = event.getPlayer();
-                    Spell spell = plugin.getSpellManager().getBoundSpell(event.getPlayer(), event.getPlayer().getItemInHand().getType());
+                    Spell spell = plugin.getSpellManager().getBoundSpell(event.getPlayer(), event.getPlayer().getInventory().getItemInMainHand().getType());
                     RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                     if (characterPluginProvider != null) {
                         CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
@@ -65,9 +65,9 @@ public class PlayerInteractListener implements Listener {
                         player.sendMessage(plugin.getPrefix() + ChatColor.RED + "No character plugin detected!");
                     }
                 }
-                if (plugin.getSkillManager().getBoundSkill(event.getPlayer(), event.getPlayer().getItemInHand().getType()) != null) {
+                if (plugin.getSkillManager().getBoundSkill(event.getPlayer(), event.getPlayer().getInventory().getItemInMainHand().getType()) != null) {
                     Player player = event.getPlayer();
-                    Skill skill = plugin.getSkillManager().getBoundSkill(event.getPlayer(), event.getPlayer().getItemInHand().getType());
+                    Skill skill = plugin.getSkillManager().getBoundSkill(event.getPlayer(), event.getPlayer().getInventory().getItemInMainHand().getType());
                     RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                     if (characterPluginProvider != null) {
                         CharacterPlugin characterPlugin = characterPluginProvider.getProvider();

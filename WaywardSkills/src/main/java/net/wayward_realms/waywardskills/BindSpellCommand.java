@@ -20,9 +20,9 @@ public class BindSpellCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (args.length > 0) {
                 if (plugin.getSpell(args[0]) != null) {
-                    if (player.getItemInHand() != null) {
-                        plugin.getSpellManager().bindSpell(player, player.getItemInHand().getType(), plugin.getSpell(args[0]));
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + plugin.getSpell(args[0]).getName() + " was bound to " + player.getItemInHand().getType().toString().toLowerCase().replace('_', ' '));
+                    if (player.getInventory().getItemInMainHand() != null) {
+                        plugin.getSpellManager().bindSpell(player, player.getInventory().getItemInMainHand().getType(), plugin.getSpell(args[0]));
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + plugin.getSpell(args[0]).getName() + " was bound to " + player.getInventory().getItemInMainHand().getType().toString().toLowerCase().replace('_', ' '));
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding an item to bind a spell.");
                     }
@@ -30,8 +30,8 @@ public class BindSpellCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That spell does not exist.");
                 }
             } else {
-                plugin.getSpellManager().unbindSpell(player, player.getItemInHand().getType());
-                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Spell unbound from " + player.getItemInHand().getType().toString().toLowerCase().replace('_', ' '));
+                plugin.getSpellManager().unbindSpell(player, player.getInventory().getItemInMainHand().getType());
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Spell unbound from " + player.getInventory().getItemInMainHand().getType().toString().toLowerCase().replace('_', ' '));
             }
         } else {
             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to bind a spell.");

@@ -7,8 +7,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionType;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.io.IOException;
@@ -141,7 +142,11 @@ public class MobDropManager {
                 for (int i = 0; i < 40; i++) {
                     drops.add(new MobDrop(i, i, 75, new ItemStack(Material.STRING, (int) Math.ceil((double) i / 4D))));
                     drops.add(new MobDrop(i, i, 20, new ItemStack(Material.SPIDER_EYE, (int) Math.ceil((double) i / 8D))));
-                    ItemStack spiderVenom = new Potion(PotionType.POISON).toItemStack(i);
+                    //ItemStack spiderVenom = new Potion(PotionType.POISON).toItemStack(i);
+                    ItemStack spiderVenom = new ItemStack(Material.POTION, i);
+                    PotionMeta potionMeta = (PotionMeta) spiderVenom.getItemMeta();
+                    potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 120, 1), false);
+                    spiderVenom.setItemMeta(potionMeta);
                     ItemMeta spiderVenomMeta = spiderVenom.getItemMeta();
                     spiderVenomMeta.setDisplayName("Spider venom");
                     spiderVenom.setItemMeta(spiderVenomMeta);
@@ -210,9 +215,12 @@ public class MobDropManager {
                 drops.add(new MobDrop(0, -1, 100, new ItemStack(Material.DRAGON_EGG)));
                 break;
             case WITHER:
-                ItemStack witherVenom = new Potion(PotionType.INSTANT_DAMAGE, 2).toItemStack(5);
+                //ItemStack witherVenom = new Potion(PotionType.INSTANT_DAMAGE, 2).toItemStack(5);
+                ItemStack witherVenom = new ItemStack(Material.POTION);
                 ItemMeta witherVenomMeta = witherVenom.getItemMeta();
                 witherVenomMeta.setDisplayName("Wither venom");
+                PotionMeta witherVenomPotionMeta = (PotionMeta) witherVenomMeta;
+                witherVenomPotionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HARM, 120, 2), false);
                 witherVenom.setItemMeta(witherVenomMeta);
                 drops.add(new MobDrop(0, -1, 2, witherVenom));
                 break;
@@ -224,8 +232,12 @@ public class MobDropManager {
                 drops.add(new MobDrop(0, -1, 80, batFang));
                 break;
             case WITCH:
-                for (PotionType potionType : PotionType.values()) {
-                    if (potionType != PotionType.WATER) drops.add(new MobDrop(0, -1, 5, new Potion(potionType, 1).toItemStack(1)));
+                for (PotionEffectType potionEffectType : PotionEffectType.values()) {
+                    ItemStack potion = new ItemStack(Material.POTION);
+                    PotionMeta potionMeta = (PotionMeta) potion.getItemMeta();
+                    potionMeta.addCustomEffect(new PotionEffect(potionEffectType, 120, 1), false);
+                    potion.setItemMeta(potionMeta);
+                    drops.add(new MobDrop(0, -1, 5, potion));
                 }
                 break;
             case PIG:

@@ -92,10 +92,10 @@ public class EntityDamageByEntityListener implements Listener {
             }
         } else if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
-            if (player.getItemInHand() != null) {
-                if (ToolType.getToolType(player.getItemInHand().getType()) == ToolType.SWORD) {
-                    if (player.getItemInHand().getItemMeta().hasLore()) {
-                        for (String lore : player.getItemInHand().getItemMeta().getLore()) {
+            if (player.getInventory().getItemInMainHand() != null) {
+                if (ToolType.getToolType(player.getInventory().getItemInMainHand().getType()) == ToolType.SWORD) {
+                    if (player.getInventory().getItemInMainHand().getItemMeta().hasLore()) {
+                        for (String lore : player.getInventory().getItemInMainHand().getItemMeta().getLore()) {
                             if (lore.startsWith("lightning:")) {
                                 long endTime = Long.parseLong(lore.split(":")[1]);
                                 if (endTime >= System.currentTimeMillis()) {

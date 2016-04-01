@@ -22,11 +22,11 @@ public class UnsignCommand implements CommandExecutor {
         if (sender.hasPermission("wayward.essentials.command.unsign")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (player.getItemInHand() != null) {
-                    if (player.getItemInHand().getType() == Material.WRITTEN_BOOK) {
-                        BookMeta meta = (BookMeta) player.getItemInHand().getItemMeta();
-                        player.getItemInHand().setType(Material.BOOK_AND_QUILL);
-                        player.getItemInHand().setItemMeta(meta);
+                if (player.getInventory().getItemInMainHand() != null) {
+                    if (player.getInventory().getItemInMainHand().getType() == Material.WRITTEN_BOOK) {
+                        BookMeta meta = (BookMeta) player.getInventory().getItemInMainHand().getItemMeta();
+                        player.getInventory().getItemInMainHand().setType(Material.BOOK_AND_QUILL);
+                        player.getInventory().getItemInMainHand().setItemMeta(meta);
                         sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Book unsigned.");
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding a written book to unsign.");

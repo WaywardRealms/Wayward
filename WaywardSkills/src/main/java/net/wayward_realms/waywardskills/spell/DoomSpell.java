@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardskills.spell;
 
+import com.google.common.collect.ImmutableMap;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.combat.Fight;
 import net.wayward_realms.waywardlib.combat.StatusEffect;
@@ -14,6 +15,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.EnumMap;
+
+import static java.math.BigDecimal.ZERO;
 
 public class DoomSpell extends SpellBase {
 
@@ -35,7 +40,8 @@ public class DoomSpell extends SpellBase {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, 9999D);
+                    double damage = 9999D;
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(damage))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, ZERO)));
                     plugin.getServer().getPluginManager().callEvent(event);
                     if (!event.isCancelled()) {
                         if (event.getEntity() instanceof LivingEntity) {

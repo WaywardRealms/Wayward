@@ -12,6 +12,6 @@ public class OpenTicketFilter implements TicketFilter {
 
     @Override
     public boolean accept(Ticket ticket) {
-        return open ? !ticket.isClosed() : ticket.isClosed();
+        return open != ticket.isClosed();
     }
 }

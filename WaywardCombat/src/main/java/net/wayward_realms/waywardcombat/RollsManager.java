@@ -62,10 +62,10 @@ public class RollsManager {
     private double getWeaponBonus(Character character, Stat stat) {
         double bonus = 0D;
         Player player = character.getPlayer().getPlayer();
-        Material weaponType = player.getItemInHand().getType();
+        Material weaponType = player.getInventory().getItemInMainHand().getType();
         bonus += plugin.getConfig().getDouble("rolls.weapons." + weaponType.toString() + "." + stat.toString());
-        bonus += getEtBonus(player.getItemInHand(), stat);
-        bonus += getEnchantmentBonus(player.getItemInHand(), stat);
+        bonus += getEtBonus(player.getInventory().getItemInMainHand(), stat);
+        bonus += getEnchantmentBonus(player.getInventory().getItemInMainHand(), stat);
         return bonus;
     }
 

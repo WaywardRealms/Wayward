@@ -41,7 +41,7 @@ public class ChairPlayerInteractListener implements Listener {
         if (isSitting(player)) {
             return false;
         }
-        if (player.getItemInHand().getType() != Material.AIR) {
+        if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
             return false;
         }
         if (player.isSneaking()) {

@@ -22,13 +22,13 @@ public class EnchantCommand implements CommandExecutor {
         if (sender.hasPermission("wayward.essentials.command.enchant")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
+                if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                     if (args.length >= 2) {
                         if (sender.hasPermission("wayward.essentials.command.enchant.unsafe")) {
                             if (Enchantment.getByName(args[0].toUpperCase()) != null) {
                                 try {
-                                    player.getItemInHand().addUnsafeEnchantment(Enchantment.getByName(args[0].toUpperCase()), Integer.parseInt(args[1]));
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Successfully enchanted " + player.getItemInHand().getAmount() + " x " + player.getItemInHand().getType() + " with " + Enchantment.getByName(args[0].toUpperCase()).getName() + " " + Integer.parseInt(args[1]));
+                                    player.getInventory().getItemInMainHand().addUnsafeEnchantment(Enchantment.getByName(args[0].toUpperCase()), Integer.parseInt(args[1]));
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Successfully enchanted " + player.getInventory().getItemInMainHand().getAmount() + " x " + player.getInventory().getItemInMainHand().getType() + " with " + Enchantment.getByName(args[0].toUpperCase()).getName() + " " + Integer.parseInt(args[1]));
                                 } catch (NumberFormatException exception) {
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "The enchantment level must be a number");
                                 } catch (IllegalArgumentException exception) {
@@ -40,8 +40,8 @@ public class EnchantCommand implements CommandExecutor {
                         } else {
                             if (Enchantment.getByName(args[0].toUpperCase()) != null) {
                                 try {
-                                    player.getItemInHand().addEnchantment(Enchantment.getByName(args[0].toUpperCase()), Integer.parseInt(args[1]));
-                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Successfully enchanted " + player.getItemInHand().getAmount() + " x " + player.getItemInHand().getType() + " with " + Enchantment.getByName(args[0].toUpperCase()).getName() + " " + Integer.parseInt(args[1]));
+                                    player.getInventory().getItemInMainHand().addEnchantment(Enchantment.getByName(args[0].toUpperCase()), Integer.parseInt(args[1]));
+                                    sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Successfully enchanted " + player.getInventory().getItemInMainHand().getAmount() + " x " + player.getInventory().getItemInMainHand().getType() + " with " + Enchantment.getByName(args[0].toUpperCase()).getName() + " " + Integer.parseInt(args[1]));
                                 } catch (NumberFormatException exception) {
                                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "The enchantment level must be a number");
                                 } catch (IllegalArgumentException exception) {

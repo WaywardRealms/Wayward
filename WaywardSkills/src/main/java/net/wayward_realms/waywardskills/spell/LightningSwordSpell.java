@@ -53,13 +53,13 @@ public class LightningSwordSpell extends AttackSpellBase {
 
     @Override
     public boolean use(Player player) {
-        if (player.getItemInHand() != null) {
-            if (ToolType.getToolType(player.getItemInHand().getType()) == ToolType.SWORD) {
-                ItemMeta meta = player.getItemInHand().getItemMeta();
+        if (player.getInventory().getItemInMainHand() != null) {
+            if (ToolType.getToolType(player.getInventory().getItemInMainHand().getType()) == ToolType.SWORD) {
+                ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
                 List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();
                 lore.add("lightning:" + (System.currentTimeMillis() + 60000));
                 meta.setLore(lore);
-                player.getItemInHand().setItemMeta(meta);
+                player.getInventory().getItemInMainHand().setItemMeta(meta);
                 player.sendMessage(ChatColor.GREEN + "Imbued weapon with lightning for 1 minute.");
                 return true;
             }
