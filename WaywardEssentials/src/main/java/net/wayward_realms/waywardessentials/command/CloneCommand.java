@@ -21,8 +21,8 @@ public class CloneCommand implements CommandExecutor {
         if (sender.hasPermission("wayward.essentials.command.clone")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (player.getItemInHand() != null) {
-                    player.getInventory().addItem(new ItemStack(player.getItemInHand()));
+                if (player.getInventory().getItemInMainHand() != null) {
+                    player.getInventory().addItem(new ItemStack(player.getInventory().getItemInMainHand()));
                     player.updateInventory();
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Item cloned.");
                 } else {

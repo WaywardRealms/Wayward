@@ -206,8 +206,8 @@ public class WaywardLocks extends JavaPlugin implements LockPlugin {
     public boolean isClaiming(OfflinePlayer offlinePlayer) {
         if (offlinePlayer.isOnline()) {
             Player player = offlinePlayer.getPlayer();
-            if (player.getItemInHand() != null) {
-                ItemStack item = player.getItemInHand();
+            if (player.getInventory().getItemInMainHand() != null) {
+                ItemStack item = player.getInventory().getItemInMainHand();
                 if (item.hasItemMeta()) {
                     if (item.getItemMeta().hasDisplayName() && item.getItemMeta().hasLore()) {
                         return item.getItemMeta().getDisplayName().equalsIgnoreCase("Lock") && item.getItemMeta().getLore().contains("Used for locking chests");

@@ -579,27 +579,27 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
         switch (biome) {
             case DESERT:
             case DESERT_HILLS:
-            case DESERT_MOUNTAINS:
+            case MUTATED_DESERT:
                 return 8;
             case HELL:
                 return 16;
             case JUNGLE:
             case JUNGLE_EDGE:
-            case JUNGLE_EDGE_MOUNTAINS:
+            case MUTATED_JUNGLE_EDGE:
             case JUNGLE_HILLS:
-            case JUNGLE_MOUNTAINS:
+            case MUTATED_JUNGLE:
                 return 6;
             case MESA:
-            case MESA_BRYCE:
-            case MESA_PLATEAU:
-            case MESA_PLATEAU_FOREST:
-            case MESA_PLATEAU_FOREST_MOUNTAINS:
-            case MESA_PLATEAU_MOUNTAINS:
+            case MESA_ROCK:
+            case MESA_CLEAR_ROCK:
+            case MUTATED_MESA:
+            case MUTATED_MESA_ROCK:
+            case MUTATED_MESA_CLEAR_ROCK:
                 return 8;
             case SAVANNA:
-            case SAVANNA_MOUNTAINS:
-            case SAVANNA_PLATEAU:
-            case SAVANNA_PLATEAU_MOUNTAINS:
+            case SAVANNA_ROCK:
+            case MUTATED_SAVANNA:
+            case MUTATED_SAVANNA_ROCK:
                 return 6;
             default:
                 return 4;
@@ -616,12 +616,12 @@ public class WaywardCharacters extends JavaPlugin implements CharacterPlugin {
     
     public boolean isSafeWater(Biome biome) {
         switch (biome) {
-            case BEACH:
+            case BEACHES:
             case COLD_BEACH:
             case FROZEN_OCEAN:
             case OCEAN:
             case SWAMPLAND:
-            case SWAMPLAND_MOUNTAINS:
+            case MUTATED_SWAMPLAND:
                 return false;
             default:
                 return true;

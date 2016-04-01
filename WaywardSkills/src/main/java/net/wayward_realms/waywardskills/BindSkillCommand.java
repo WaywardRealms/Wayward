@@ -20,9 +20,9 @@ public class BindSkillCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (args.length > 0) {
                 if (plugin.getSkill(args[0]) != null) {
-                    if (player.getItemInHand() != null) {
-                        plugin.getSkillManager().bindSkill(player, player.getItemInHand().getType(), plugin.getSkill(args[0]));
-                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + plugin.getSkill(args[0]).getName() + " was bound to " + player.getItemInHand().getType().toString().toLowerCase().replace('_', ' '));
+                    if (player.getInventory().getItemInMainHand() != null) {
+                        plugin.getSkillManager().bindSkill(player, player.getInventory().getItemInMainHand().getType(), plugin.getSkill(args[0]));
+                        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + plugin.getSkill(args[0]).getName() + " was bound to " + player.getInventory().getItemInMainHand().getType().toString().toLowerCase().replace('_', ' '));
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding an item to bind a skill.");
                     }
@@ -30,8 +30,8 @@ public class BindSkillCommand implements CommandExecutor {
                     sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "That skill does not exist.");
                 }
             } else {
-                plugin.getSkillManager().unbindSkill(player, player.getItemInHand().getType());
-                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Skill unbound from " + player.getItemInHand().getType().toString().toLowerCase().replace('_', ' '));
+                plugin.getSkillManager().unbindSkill(player, player.getInventory().getItemInMainHand().getType());
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Skill unbound from " + player.getInventory().getItemInMainHand().getType().toString().toLowerCase().replace('_', ' '));
             }
         } else {
             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be a player to bind a skill.");

@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardskills.spell;
 
+import com.google.common.collect.ImmutableMap;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -18,6 +19,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.EnumMap;
+
+import static java.math.BigDecimal.ZERO;
 import static net.wayward_realms.waywardlib.util.lineofsight.LineOfSightUtils.getTargetBlock;
 
 public class OvergrowthSpell extends AttackSpellBase {
@@ -65,7 +69,8 @@ public class OvergrowthSpell extends AttackSpellBase {
         if (successful) {
             for (LivingEntity entity : player.getWorld().getLivingEntities()) {
                 if (entity.getLocation().distanceSquared(targetBlock.getLocation()) <= 256) {
-                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, 15D);
+                    double damage = 15D;
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(damage))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, ZERO)));
                     Bukkit.getPluginManager().callEvent(event);
                     if (!event.isCancelled()) {
                         if (event.getEntity() instanceof LivingEntity) {

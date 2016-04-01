@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardskills.skill;
 
+import com.google.common.collect.ImmutableMap;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.classes.Stat;
@@ -19,6 +20,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.EnumMap;
+
+import static java.math.BigDecimal.ZERO;
+
 public class SlashSkill extends AttackSkillBase {
 
     public SlashSkill() {
@@ -37,7 +42,8 @@ public class SlashSkill extends AttackSkillBase {
         for (LivingEntity livingEntity : player.getWorld().getLivingEntities()) {
             if (livingEntity == player) continue;
             if (player.getLocation().distanceSquared(livingEntity.getLocation()) <= 64) {
-                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, livingEntity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 4D);
+                double damage = 4D;
+                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, livingEntity, EntityDamageEvent.DamageCause.ENTITY_ATTACK, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(damage))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, ZERO)));
                 Bukkit.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     if (event.getEntity() instanceof LivingEntity) {

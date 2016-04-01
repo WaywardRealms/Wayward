@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardskills.skill;
 
+import com.google.common.collect.ImmutableMap;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.classes.Stat;
 import net.wayward_realms.waywardlib.combat.Fight;
@@ -17,6 +18,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.EnumMap;
+
+import static java.math.BigDecimal.ZERO;
 
 public class SpinningSweepSkill extends AttackSkillBase {
 
@@ -79,7 +84,8 @@ public class SpinningSweepSkill extends AttackSkillBase {
                         Vector3D maximum = targetPos.add(0.5, 1.67, 0.5);
                         if (target != player && VectorUtils.hasIntersection(observerStart, observerEnd, minimum, maximum)) {
                             player.teleport(target);
-                            EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, target, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 10D);
+                            double damage = 10D;
+                            EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, target, EntityDamageEvent.DamageCause.ENTITY_ATTACK, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(damage))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, ZERO)));
                             plugin.getServer().getPluginManager().callEvent(event);
                             if (!event.isCancelled()) {
                                 if (event.getEntity() instanceof LivingEntity) {

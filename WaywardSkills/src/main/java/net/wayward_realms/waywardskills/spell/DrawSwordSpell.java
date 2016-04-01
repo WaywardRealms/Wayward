@@ -43,10 +43,10 @@ public class DrawSwordSpell extends SpellBase {
         }
         if (sword != null) {
             block.setType(Material.AIR);
-            if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
-                player.getWorld().dropItem(player.getLocation(), player.getItemInHand());
+            if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType() != Material.AIR) {
+                player.getWorld().dropItem(player.getLocation(), player.getInventory().getItemInMainHand());
             }
-            player.setItemInHand(sword);
+            player.getInventory().setItemInMainHand(sword);
             return true;
         }
         return false;

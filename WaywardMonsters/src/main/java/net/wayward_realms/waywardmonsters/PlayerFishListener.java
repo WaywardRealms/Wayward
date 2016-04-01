@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Fish;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,10 +16,7 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class PlayerFishListener implements Listener {
 
@@ -53,7 +50,7 @@ public class PlayerFishListener implements Listener {
         }
     }
 
-    private Vector reelVelocity(Player player, Fish hook) {
+    private Vector reelVelocity(Player player, FishHook hook) {
         double x = player.getLocation().getX() - hook.getLocation().getX();
         double y = player.getLocation().getY() - hook.getLocation().getY();
         double z = player.getLocation().getZ() - hook.getLocation().getZ();
@@ -109,7 +106,7 @@ public class PlayerFishListener implements Listener {
         ItemStack fish = new ItemStack(Material.RAW_FISH);
         ItemMeta troutMeta = fish.getItemMeta();
         troutMeta.setDisplayName(name);
-        troutMeta.setLore(Arrays.asList(description));
+        troutMeta.setLore(Collections.singletonList(description));
         fish.setItemMeta(troutMeta);
         return fish;
     }
