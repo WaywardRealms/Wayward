@@ -8,6 +8,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CustomItemStackImpl implements CustomItemStack {
 
     private CustomMaterial material;
@@ -49,6 +52,18 @@ public class CustomItemStackImpl implements CustomItemStack {
         meta.setDisplayName(material.getName());
         minecraftStack.setItemMeta(meta);
         return minecraftStack;
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> serialized = new HashMap<>();
+        serialized.put("material", material);
+        serialized.put("amount", amount);
+        return serialized;
+    }
+
+    public static CustomItemStackImpl deserialize(Map<String, Object> serialized) {
+        return new CustomItemStackImpl((CustomMaterialImpl) serialized.get("material"), (int) serialized.get("amount"));
     }
 
 }
