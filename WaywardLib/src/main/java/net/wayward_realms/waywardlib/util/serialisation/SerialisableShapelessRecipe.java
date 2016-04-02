@@ -4,6 +4,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,10 @@ public class SerialisableShapelessRecipe implements SerialisableRecipe {
 
     @Override
     public Map<String, Object> serialize() {
-        return null;
+        Map<String, Object> serialised = new HashMap<>();
+        serialised.put("ingredients", ingredients);
+        serialised.put("result", result);
+        return serialised;
     }
 
     public static SerialisableShapelessRecipe deserialize(Map<String, Object> serialised) {

@@ -79,10 +79,18 @@ public class CustomMaterialImpl implements CustomMaterial {
     }
 
     public static CustomMaterialImpl deserialize(Map<String, Object> serialised) {
-        if (serialised.containsKey("recipe")) {
-            return new CustomMaterialImpl((String) serialised.get("name"), Material.getMaterial((String) serialised.get("material")), ((SerialisableRecipe) serialised.get("recipe")).toRecipe());
+        if (serialised.get("recipe") != null) {
+            return new CustomMaterialImpl(
+                    (String) serialised.get("name"),
+                    Material.getMaterial((String) serialised.get("material")),
+                    ((SerialisableRecipe) serialised.get("recipe")).toRecipe()
+            );
         } else {
-            return new CustomMaterialImpl((String) serialised.get("name"), Material.getMaterial((String) serialised.get("material")), null);
+            return new CustomMaterialImpl(
+                    (String) serialised.get("name"),
+                    Material.getMaterial((String) serialised.get("material")),
+                    null
+            );
         }
     }
 

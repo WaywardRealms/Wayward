@@ -51,9 +51,15 @@ public class SerialisableShapedRecipe implements SerialisableRecipe {
 
     public static SerialisableShapedRecipe deserialize(Map<String, Object> serialised) {
         SerialisableShapedRecipe deserialised = new SerialisableShapedRecipe();
-        deserialised.shape = (String[]) ((List<String>) serialised.get("shape")).toArray();
+        List<String> shapeList = (List<String>) serialised.get("shape");
+        deserialised.shape = shapeList.toArray(new String[shapeList.size()]);
         deserialised.result = (ItemStack) serialised.get("result");
-        deserialised.ingredients = (Map<Character, ItemStack>) serialised.get("ingredients");
+        Map<String, ItemStack> stringIngredients = (Map<String, ItemStack>) serialised.get("ingredients");
+        Map<Character, ItemStack> characterIngredients = new HashMap<>();
+        for (Map.Entry<String, ItemStack> entry : stringIngredients.entrySet()) {
+            characterIngredients.put(entry.getKey().charAt(0), entry.getValue());
+        }
+        deserialised.ingredients = characterIngredients;
         return deserialised;
     }
 
