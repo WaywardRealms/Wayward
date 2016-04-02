@@ -9,6 +9,7 @@ import net.wayward_realms.waywardlib.util.file.filter.YamlFileFilter;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -28,6 +29,8 @@ public class WaywardItems extends JavaPlugin implements ItemsPlugin {
 
     @Override
     public void onEnable() {
+        ConfigurationSerialization.registerClass(CustomItemStackImpl.class);
+        ConfigurationSerialization.registerClass(CustomMaterialImpl.class);
         recipeManager = new RecipeManager(this);
         recipeManager.setupRecipes();
         saveResource("music/canon.mid", false);
