@@ -18,10 +18,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CharacterImpl implements Character {
 
@@ -417,7 +414,14 @@ public class CharacterImpl implements Character {
     @Override
     public void removeTemporaryStatModification(TemporaryStatModification modification) {
         List<TemporaryStatModification> statModifications = getFieldValue("temporary-stat-modifications") != null ? (List<TemporaryStatModification>) getFieldListValue("temporary-stat-modifications") : new ArrayList<TemporaryStatModification>();
-        statModifications.remove(modification);
+        Iterator<TemporaryStatModification> iterator = statModifications.iterator();
+        while (iterator.hasNext()) {
+            TemporaryStatModification statMod = iterator.next();
+            if (statMod.equals(modification)) {
+                iterator.remove();
+                break;
+            }
+        }
         setFieldValue("temporary-stat-modifications", statModifications);
     }
 
