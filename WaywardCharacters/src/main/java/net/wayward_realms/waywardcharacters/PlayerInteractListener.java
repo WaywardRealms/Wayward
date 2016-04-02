@@ -34,8 +34,8 @@ public class PlayerInteractListener implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getPlayer().getItemInHand() != null) {
-            if (event.getPlayer().getItemInHand().getType() == Material.GLASS_BOTTLE) {
+        if (event.getPlayer().getInventory().getItemInMainHand() != null) {
+            if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE) {
                 Block targetBlock = getTargetBlock(event.getPlayer());
                 if (targetBlock != null) {
                     if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
@@ -45,10 +45,10 @@ public class PlayerInteractListener implements Listener {
                                 try {
                                     if (Integer.parseInt(sign.getLine(1)) > 0) {
                                         event.setCancelled(true);
-                                        if (event.getPlayer().getItemInHand().getAmount() > 1) {
-                                            event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
+                                        if (event.getPlayer().getInventory().getItemInMainHand().getAmount() > 1) {
+                                            event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1);
                                         } else {
-                                            event.getPlayer().setItemInHand(null);
+                                            event.getPlayer().getInventory().setItemInMainHand(null);
                                         }
                                         ItemStack masheek = new ItemStack(Material.POTION);
                                         ItemMeta meta = masheek.getItemMeta();
@@ -74,7 +74,7 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
-            if (event.getPlayer().getItemInHand().getType() == Material.AIR) {
+            if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
                     Block targetBlock = getTargetBlock(event.getPlayer());
                     if (targetBlock != null) {
@@ -86,7 +86,7 @@ public class PlayerInteractListener implements Listener {
                             } else {
                                 event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 1500, 2), true);
                                 event.getPlayer().sendMessage(ChatColor.RED + "You feel sick. Perhaps it was the water.");
-                                if (targetBlock.getBiome() == OCEAN || targetBlock.getBiome() == DEEP_OCEAN || targetBlock.getBiome() == FROZEN_OCEAN || targetBlock.getBiome() == BEACH || targetBlock.getBiome() == COLD_BEACH || targetBlock.getBiome() == STONE_BEACH) {
+                                if (targetBlock.getBiome() == OCEAN || targetBlock.getBiome() == DEEP_OCEAN || targetBlock.getBiome() == FROZEN_OCEAN || targetBlock.getBiome() == BEACHES || targetBlock.getBiome() == COLD_BEACH || targetBlock.getBiome() == STONE_BEACH) {
                                     character.setThirst(character.getThirst() - 2);
                                     event.getPlayer().sendMessage(ChatColor.RED + "You suddenly feel dehydrated from drinking salt water.");
                                     event.getPlayer().sendMessage(ChatColor.RED + "Thirst: -2" + ChatColor.GRAY + " (Total: " + character.getThirst() + ")");
@@ -95,16 +95,16 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 }
-            } else if (event.getPlayer().getItemInHand().getType() == Material.GLASS_BOTTLE) {
+            } else if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE) {
                 if (event.getAction() == RIGHT_CLICK_BLOCK || event.getAction() == RIGHT_CLICK_AIR) {
                     Block targetBlock = getTargetBlock(event.getPlayer());
                     if (targetBlock != null) {
                         if (targetBlock.getType() == Material.WATER || targetBlock.getType() == Material.STATIONARY_WATER) {
                             event.setCancelled(true);
-                            if (event.getPlayer().getItemInHand().getAmount() > 1) {
-                                event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
+                            if (event.getPlayer().getInventory().getItemInMainHand().getAmount() > 1) {
+                                event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1);
                             } else {
-                                event.getPlayer().setItemInHand(null);
+                                event.getPlayer().getInventory().setItemInMainHand(null);
                             }
                             ItemStack water = new ItemStack(Material.POTION);
                             ItemMeta meta = water.getItemMeta();

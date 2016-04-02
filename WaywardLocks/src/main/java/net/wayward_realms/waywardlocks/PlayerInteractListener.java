@@ -46,10 +46,10 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                     if (block == null) {
-                        if (event.getPlayer().getItemInHand().getAmount() == 1) {
-                            event.getPlayer().setItemInHand(null);
+                        if (event.getPlayer().getInventory().getItemInMainHand().getAmount() == 1) {
+                            event.getPlayer().getInventory().setItemInMainHand(null);
                         } else {
-                            event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - 1);
+                            event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1);
                         }
                         for (ItemStack item : event.getPlayer().getInventory().addItem(plugin.lock(event.getClickedBlock())).values()) {
                             event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), item);
@@ -270,7 +270,7 @@ public class PlayerInteractListener implements Listener {
     }
 
     public boolean hasLockpick(Player player) {
-        ItemStack lockpick = player.getItemInHand();
+        ItemStack lockpick = player.getInventory().getItemInMainHand();
         if (lockpick != null) {
             if (lockpick.hasItemMeta()) {
                 if (lockpick.getItemMeta().hasDisplayName()) {

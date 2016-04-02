@@ -26,13 +26,13 @@ public class SharpenSkill extends SkillBase {
 
     @Override
     public boolean use(Player player) {
-        if (player.getItemInHand() != null) {
-            if (player.getItemInHand().getType() == Material.WOOD_SWORD ||
-                    player.getItemInHand().getType() == Material.STONE_SWORD ||
-                    player.getItemInHand().getType() == Material.IRON_SWORD ||
-                    player.getItemInHand().getType() == Material.DIAMOND_SWORD) {
+        if (player.getInventory().getItemInMainHand() != null) {
+            if (player.getInventory().getItemInMainHand().getType() == Material.WOOD_SWORD ||
+                    player.getInventory().getItemInMainHand().getType() == Material.STONE_SWORD ||
+                    player.getInventory().getItemInMainHand().getType() == Material.IRON_SWORD ||
+                    player.getInventory().getItemInMainHand().getType() == Material.DIAMOND_SWORD) {
                 if (player.getInventory().containsAtLeast(new ItemStack(Material.FLINT), 10)) {
-                    player.getItemInHand().addEnchantment(Enchantment.DAMAGE_ALL, 1);
+                    player.getInventory().getItemInMainHand().addEnchantment(Enchantment.DAMAGE_ALL, 1);
                     player.getInventory().removeItem(new ItemStack(Material.FLINT, 10));
                     return true;
                 } else {

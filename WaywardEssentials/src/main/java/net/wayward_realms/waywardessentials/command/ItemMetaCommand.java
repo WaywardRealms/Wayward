@@ -25,9 +25,9 @@ public class ItemMetaCommand implements CommandExecutor {
         if (sender.hasPermission("wayward.essentials.command.itemmeta")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
+                if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                     if (args.length >= 2) {
-                        ItemMeta meta = player.getItemInHand().getItemMeta();
+                        ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
                         if (args[0].equalsIgnoreCase("setname")) {
                             StringBuilder nameBuilder = new StringBuilder();
                             for (int i = 1; i < args.length; i++) {
@@ -77,7 +77,7 @@ public class ItemMetaCommand implements CommandExecutor {
                         } else {
                             sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /itemmeta [setname|addlore|removelore] [name|lore]");
                         }
-                        player.getItemInHand().setItemMeta(meta);
+                        player.getInventory().getItemInMainHand().setItemMeta(meta);
                     } else {
                         sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Usage: /itemmeta [setname|addlore|removelore] [name|lore]");
                     }

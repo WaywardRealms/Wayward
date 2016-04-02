@@ -34,9 +34,9 @@ public class AuctionCommand implements CommandExecutor {
                     CharacterPlugin characterPlugin = plugin.getCharacterPlugin();
                     Auction auction = new AuctionImpl();
                     auction.setCharacter(characterPlugin.getActiveCharacter(player));
-                    auction.setItem(player.getItemInHand());
+                    auction.setItem(player.getInventory().getItemInMainHand());
                     auction.setCurrency(plugin.getPrimaryCurrency());
-                    player.setItemInHand(null);
+                    player.getInventory().setItemInMainHand(null);
                     auction.setLocation(player.getLocation());
                     plugin.addAuction(auction);
                     sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Created an auction for your " + auction.getItem().getType().toString().toLowerCase().replace('_', ' '));

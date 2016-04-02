@@ -1,5 +1,6 @@
 package net.wayward_realms.waywardskills.spell;
 
+import com.google.common.collect.ImmutableMap;
 import net.wayward_realms.waywardlib.character.Character;
 import net.wayward_realms.waywardlib.character.CharacterPlugin;
 import net.wayward_realms.waywardlib.character.Party;
@@ -28,6 +29,8 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static java.math.BigDecimal.ZERO;
 
 public class BlizzardSpell extends AttackSpellBase {
 
@@ -143,7 +146,8 @@ public class BlizzardSpell extends AttackSpellBase {
         for (LivingEntity entity : player.getWorld().getLivingEntities()) {
             if (entity.getLocation().distanceSquared(player.getLocation()) <= 64) {
                 if (!invulnerableEntities.contains(entity)) {
-                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, entity.getHealth() / 2D);
+                    double damage = entity.getHealth() / 2D;
+                    EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(player, entity, EntityDamageEvent.DamageCause.MAGIC, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(damage))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, ZERO)));
                     plugin.getServer().getPluginManager().callEvent(event);
                     if (!event.isCancelled()) {
                         if (event.getEntity() instanceof LivingEntity) {

@@ -115,8 +115,8 @@ public class PlayerInteractListener implements Listener {
                                 if (sign.getLine(1).toLowerCase().contains("buy")) {
                                     event.getPlayer().openInventory(chest.getInventory());
                                 } else if (sign.getLine(1).toLowerCase().contains("sell")) {
-                                    if (event.getPlayer().getItemInHand().getType() == Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_'))) {
-                                        if (event.getPlayer().getItemInHand().getAmount() >= Integer.parseInt(sign.getLine(1).split(" ")[2])) {
+                                    if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_'))) {
+                                        if (event.getPlayer().getInventory().getItemInMainHand().getAmount() >= Integer.parseInt(sign.getLine(1).split(" ")[2])) {
                                             RegisteredServiceProvider<CharacterPlugin> characterPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(CharacterPlugin.class);
                                             if (characterPluginProvider != null) {
                                                 CharacterPlugin characterPlugin = characterPluginProvider.getProvider();
@@ -126,21 +126,21 @@ public class PlayerInteractListener implements Listener {
                                                         plugin.addMoney(event.getPlayer(), Integer.parseInt(sign.getLine(2).split(" ")[1]));
                                                     } else {
                                                         if (characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().isOnline()) {
-                                                            characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your shop bought " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()) + " from " + event.getPlayer().getDisplayName());
+                                                            characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))).getPlayer().getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Your shop bought " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getInventory().getItemInMainHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()) + " from " + event.getPlayer().getDisplayName());
                                                         }
                                                         if (!plugin.transferMoney(characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))), characterPlugin.getActiveCharacter(event.getPlayer()), Integer.parseInt(sign.getLine(2).replace("for ", "")))) {
                                                             success = false;
                                                         }
                                                     }
                                                     if (success) {
-                                                        event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " " + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
-                                                        ItemStack item = new ItemStack(event.getPlayer().getItemInHand());
+                                                        event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Sold " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " x " + event.getPlayer().getInventory().getItemInMainHand().getType().toString().toLowerCase().replace('_', ' ') + " for " + Integer.parseInt(sign.getLine(2).replace("for ", "")) + " " + (Integer.parseInt(sign.getLine(2).replace("for ", "")) == 1 ? plugin.getPrimaryCurrency().getNameSingular() : plugin.getPrimaryCurrency().getNamePlural()));
+                                                        ItemStack item = new ItemStack(event.getPlayer().getInventory().getItemInMainHand());
                                                         item.setAmount(Integer.parseInt(sign.getLine(1).split(" ")[2]));
                                                         chest.getInventory().addItem(item);
-                                                        if (event.getPlayer().getItemInHand().getAmount() > Integer.parseInt(sign.getLine(1).split(" ")[2])) {
-                                                            event.getPlayer().getItemInHand().setAmount(event.getPlayer().getItemInHand().getAmount() - Integer.parseInt(sign.getLine(1).split(" ")[2]));
+                                                        if (event.getPlayer().getInventory().getItemInMainHand().getAmount() > Integer.parseInt(sign.getLine(1).split(" ")[2])) {
+                                                            event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - Integer.parseInt(sign.getLine(1).split(" ")[2]));
                                                         } else {
-                                                            event.getPlayer().setItemInHand(null);
+                                                            event.getPlayer().getInventory().setItemInMainHand(null);
                                                         }
                                                     } else {
                                                         event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + characterPlugin.getCharacter(Integer.parseInt(sign.getLine(3))) + ChatColor.RED + " does not have enough money to buy that from you!");
@@ -149,7 +149,7 @@ public class PlayerInteractListener implements Listener {
                                                 }
                                             }
                                         } else {
-                                            event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough " + event.getPlayer().getItemInHand().getType().toString().toLowerCase().replace('_', ' ') + "s to sell");
+                                            event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You do not have enough " + event.getPlayer().getInventory().getItemInMainHand().getType().toString().toLowerCase().replace('_', ' ') + "s to sell");
                                         }
                                     } else {
                                         event.getPlayer().sendMessage(plugin.getPrefix() + ChatColor.RED + "You must be holding at least " + Integer.parseInt(sign.getLine(1).split(" ")[2]) + " " + Material.matchMaterial(sign.getLine(1).split(" ")[1].replace(' ', '_')).toString().toLowerCase().replace('_', ' ') + "s");

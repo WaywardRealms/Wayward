@@ -11,8 +11,8 @@ public class PlayerInteractEntityListener implements Listener {
     @EventHandler
     public void onPlayernteractEntity(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof LivingEntity) {
-            if (event.getPlayer().getItemInHand() != null) {
-                if (event.getPlayer().getItemInHand().getType() == Material.SADDLE) {
+            if (event.getPlayer().getInventory().getItemInMainHand() != null) {
+                if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SADDLE) {
                     event.getRightClicked().setPassenger(event.getPlayer());
                 }
             }

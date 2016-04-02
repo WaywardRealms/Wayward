@@ -45,11 +45,11 @@ public class BandageSkill extends SkillBase {
 
     @Override
     public boolean use(Player player) {
-        if (player.getItemInHand() != null) {
+        if (player.getInventory().getItemInMainHand() != null) {
             RegisteredServiceProvider<ItemsPlugin> itemsPluginProvider = Bukkit.getServer().getServicesManager().getRegistration(ItemsPlugin.class);
             if (itemsPluginProvider != null) {
                 ItemsPlugin itemsPlugin = itemsPluginProvider.getProvider();
-                if (itemsPlugin.getMaterial("Bandage").isMaterial(player.getItemInHand())) {
+                if (itemsPlugin.getMaterial("Bandage").isMaterial(player.getInventory().getItemInMainHand())) {
                     Location observerPos = player.getEyeLocation();
                     Vector3D observerDir = new Vector3D(observerPos.getDirection());
                     Vector3D observerStart = new Vector3D(observerPos);

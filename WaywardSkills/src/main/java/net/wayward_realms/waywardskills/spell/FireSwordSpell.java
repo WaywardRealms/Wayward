@@ -22,9 +22,9 @@ public class FireSwordSpell extends SpellBase {
 
     @Override
     public boolean use(Player player) {
-        if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
+        if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getType() != Material.AIR) {
             try {
-                player.getItemInHand().addEnchantment(Enchantment.FIRE_ASPECT, 1);
+                player.getInventory().getItemInMainHand().addEnchantment(Enchantment.FIRE_ASPECT, 1);
                 return true;
             } catch (IllegalArgumentException exception) {
                 player.sendMessage(ChatColor.RED + "Fire aspect cannot be applied to that weapon.");

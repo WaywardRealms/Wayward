@@ -17,8 +17,8 @@ public class DurabilityCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            if (((Player) sender).getItemInHand() != null) {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Durability: " + (((Player) sender).getItemInHand().getType().getMaxDurability() - ((Player) sender).getItemInHand().getDurability()));
+            if (((Player) sender).getInventory().getItemInMainHand() != null) {
+                sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + "Durability: " + (((Player) sender).getInventory().getItemInMainHand().getType().getMaxDurability() - ((Player) sender).getInventory().getItemInMainHand().getDurability()));
             }
         }
         return true;

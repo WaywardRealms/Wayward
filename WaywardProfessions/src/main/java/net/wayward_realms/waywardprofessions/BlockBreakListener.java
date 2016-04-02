@@ -37,7 +37,7 @@ public class BlockBreakListener implements Listener {
                 
                 if (material == null || !plugin.canGainMiningEfficiency(material)) return;
                 
-                for (ItemStack drop : event.getBlock().getDrops(event.getPlayer().getItemInHand())) {
+                for (ItemStack drop : event.getBlock().getDrops(event.getPlayer().getInventory().getItemInMainHand())) {
                     int miningEfficiency = plugin.getMiningEfficiency(character, event.getBlock().getType());
                     int amount = (int) Math.max(1, Math.round(((double) miningEfficiency / 50D) * (double) drop.getAmount()));
                     if (amount > 0) {
@@ -47,24 +47,24 @@ public class BlockBreakListener implements Listener {
                     }
                 }
                 event.setCancelled(true);
-                if (event.getPlayer().getItemInHand() != null) {
-                    if (ToolType.getToolType(event.getPlayer().getItemInHand().getType()) != null) {
-                        ToolType toolType = ToolType.getToolType(event.getPlayer().getItemInHand().getType());
+                if (event.getPlayer().getInventory().getItemInMainHand() != null) {
+                    if (ToolType.getToolType(event.getPlayer().getInventory().getItemInMainHand().getType()) != null) {
+                        ToolType toolType = ToolType.getToolType(event.getPlayer().getInventory().getItemInMainHand().getType());
                         switch (toolType) {
                             case SWORD:
-                                if (event.getPlayer().getItemInHand().getDurability() + 2 < event.getPlayer().getItemInHand().getType().getMaxDurability()) {
-                                    event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 2));
+                                if (event.getPlayer().getInventory().getItemInMainHand().getDurability() + 2 < event.getPlayer().getInventory().getItemInMainHand().getType().getMaxDurability()) {
+                                    event.getPlayer().getInventory().getItemInMainHand().setDurability((short) (event.getPlayer().getInventory().getItemInMainHand().getDurability() + 2));
                                 } else {
-                                    event.getPlayer().setItemInHand(null);
+                                    event.getPlayer().getInventory().setItemInMainHand(null);
                                 }
                                 break;
                             case PICKAXE:
                             case AXE:
                             case SPADE:
-                                if (event.getPlayer().getItemInHand().getDurability() + 1 < event.getPlayer().getItemInHand().getType().getMaxDurability()) {
-                                    event.getPlayer().getItemInHand().setDurability((short) (event.getPlayer().getItemInHand().getDurability() + 1));
+                                if (event.getPlayer().getInventory().getItemInMainHand().getDurability() + 1 < event.getPlayer().getInventory().getItemInMainHand().getType().getMaxDurability()) {
+                                    event.getPlayer().getInventory().getItemInMainHand().setDurability((short) (event.getPlayer().getInventory().getItemInMainHand().getDurability() + 1));
                                 } else {
-                                    event.getPlayer().setItemInHand(null);
+                                    event.getPlayer().getInventory().setItemInMainHand(null);
                                 }
                                 break;
                         }

@@ -141,6 +141,25 @@ public class TemporaryStatModification implements ConfigurationSerializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TemporaryStatModification that = (TemporaryStatModification) o;
+
+        if (Float.compare(that.getMultiplier(), getMultiplier()) != 0) return false;
+        return getStat() == that.getStat();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getStat().hashCode();
+        result = 31 * result + (getMultiplier() != +0.0f ? Float.floatToIntBits(getMultiplier()) : 0);
+        return result;
+    }
+
+    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
         serialised.put("stat", getStat().toString());
