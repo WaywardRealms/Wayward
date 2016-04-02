@@ -71,7 +71,7 @@ public class CustomMaterialImpl implements CustomMaterial {
     public Map<String, Object> serialize() {
         Map<String, Object> serialised = new HashMap<>();
         serialised.put("name", name);
-        serialised.put("material", minecraftMaterial);
+        serialised.put("material", minecraftMaterial.name());
         if (recipe != null) {
             serialised.put("recipe", recipe instanceof ShapedRecipe ? new SerialisableShapedRecipe((ShapedRecipe) recipe) : new SerialisableShapelessRecipe((ShapelessRecipe) recipe));
         }
@@ -80,9 +80,9 @@ public class CustomMaterialImpl implements CustomMaterial {
 
     public static CustomMaterialImpl deserialize(Map<String, Object> serialised) {
         if (serialised.containsKey("recipe")) {
-            return new CustomMaterialImpl((String) serialised.get("name"), Material.getMaterial("material"), ((SerialisableRecipe) serialised.get("recipe")).toRecipe());
+            return new CustomMaterialImpl((String) serialised.get("name"), Material.getMaterial((String) serialised.get("material")), ((SerialisableRecipe) serialised.get("recipe")).toRecipe());
         } else {
-            return new CustomMaterialImpl((String) serialised.get("name"), Material.getMaterial("material"), null);
+            return new CustomMaterialImpl((String) serialised.get("name"), Material.getMaterial((String) serialised.get("material")), null);
         }
     }
 
