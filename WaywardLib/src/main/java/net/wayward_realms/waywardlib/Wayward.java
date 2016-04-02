@@ -21,6 +21,8 @@ import net.wayward_realms.waywardlib.skills.SkillsPlugin;
 import net.wayward_realms.waywardlib.travel.TravelPlugin;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableChunk;
 import net.wayward_realms.waywardlib.util.serialisation.SerialisableLocation;
+import net.wayward_realms.waywardlib.util.serialisation.SerialisableShapedRecipe;
+import net.wayward_realms.waywardlib.util.serialisation.SerialisableShapelessRecipe;
 import net.wayward_realms.waywardlib.worldgen.WorldgenPlugin;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
@@ -43,6 +45,8 @@ public class Wayward extends JavaPlugin implements WaywardPlugin {
         ConfigurationSerialization.registerClass(SerialisableLocation.class);
         ConfigurationSerialization.registerClass(SerialisableChunk.class);
         ConfigurationSerialization.registerClass(TemporaryStatModification.class);
+        ConfigurationSerialization.registerClass(SerialisableShapedRecipe.class);
+        ConfigurationSerialization.registerClass(SerialisableShapelessRecipe.class);
         loadState();
         getServer().getPluginManager().registerEvents(new Listener() {
             @EventHandler
